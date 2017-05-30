@@ -33,7 +33,6 @@ export class AuthenticationComponent implements OnInit {
     this.authentication.login(this.credentials.username, this.credentials.password)
       .subscribe(
       data => {
-        console.log('login successful');
         this.token = data;
         this.who();
         this.loggedIn = true;

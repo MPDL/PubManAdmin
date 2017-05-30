@@ -13,6 +13,7 @@ import { NavigationComponent } from './base/navigation/navigation.component';
 import { HomeComponent } from './base/home/home.component';
 import { PageNotFoundComponent } from './base/common/page-not-found.component';
 
+import { SharedModule } from './base/shared/shared.module';
 import { UsersModule } from './users/users.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { ContextsModule } from './contexts/contexts.module';
@@ -22,6 +23,7 @@ import { AuthenticationService } from './base/services/authentication.service';
 import { ElasticService } from './base/services/elastic.service';
 import { MessagesService } from './base/services/messages.service';
 import { NavigationService } from './base/services/navigation.service';
+import { AuthGuard } from './base/services/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -40,13 +42,15 @@ import { NavigationService } from './base/services/navigation.service';
     OrganizationsModule,
     ContextsModule,
     SearchModule,
+    SharedModule,
     AppRoutingModule
   ],
   providers: [
     AuthenticationService,
     ElasticService,
     MessagesService,
-    NavigationService
+    NavigationService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

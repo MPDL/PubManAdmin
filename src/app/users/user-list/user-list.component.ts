@@ -43,7 +43,6 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     this.loginSubscription = this.loginService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
-      console.log("you are logged in: " + this.isLoggedIn);
     });
     this.tokenSubscription = this.loginService.token$.subscribe(token => {
       this.token = token;
