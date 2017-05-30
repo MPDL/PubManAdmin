@@ -1,0 +1,71 @@
+<div class="container-fluid">
+  <h3 class="text-primary">Home of Administration</h3>
+
+  <div class="card-deck">
+    <div class="card card-inverse card-primary text-right">
+      <div class="card-block">
+        <h4 class="card-title">User Administration</h4>
+        <p class="card-text">Create, update or delete ...</p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-primary justify-content-end">
+          <span class="badge badge-primary badge-pill">tons of</span>
+          <span class="text-primary ml-2">users</span>
+        </li>
+        <li class="list-group-item list-group-item-primary justify-content-end">
+          <span class="badge badge-primary badge-pill">some</span>
+          <span class="text-primary ml-2">contexts</span>
+        </li>
+        <li class="list-group-item list-group-item-primary justify-content-end">
+          <span class="badge badge-primary badge-pill">many</span>
+          <span class="text-primary ml-2">organizations</span>
+        </li>
+      </ul>
+      <div class="card-block">
+        <a [routerLink]="['/users']" class="card-link">User Administration</a>
+      </div>
+    </div>
+    <div class="card card-inverse card-info text-right">
+      <div class="card-block">
+        <h4 class="card-title">Find Resources</h4>
+        <p class="card-text">and irrevocably purge ...</p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-info justify-content-end">
+          <span class="badge badge-info badge-pill">{{items}}</span>
+          <span class="ml-2">items</span>
+        </li>
+        <li class="list-group-item list-group-item-info justify-content-end">
+          <span class="badge badge-info badge-pill">{{contexts}}</span>
+          <span class="ml-2">contexts</span>
+        </li>
+        <li class="list-group-item list-group-item-info justify-content-end">
+          <span class="badge badge-info badge-pill">{{ous}}</span>
+          <span class="ml-2">organizational units</span>
+        </li>
+      </ul>
+      <div class="card-block">
+        <a [routerLink]="['/search']" class="card-link">Have fun with resource deletion ...</a>
+      </div>
+    </div>
+    <div class="card card-inverse card-warning text-right">
+      <div class="card-block">
+        <h4 class="card-title">More 2 come ...</h4>
+        <p class="card-text">... ask your developer </p>
+      </div>
+      <ul class="list-group list-group-flush h-100">
+        <li class="list-group-item list-group-item-warning justify-content-end">
+          <span class="badge badge-warning badge-pill">Indices</span>
+          <span class="ml-2">aliasing, mapping, reindexing ...</span>
+        </li>
+        <li class="list-group-item list-group-item-warning justify-content-end">
+          <span class="badge badge-warning badge-pill">External Services</span>
+          <span class="ml-2">Cone, GND, ... </span>
+        </li>
+      </ul>
+      <div class="card-block">
+        <a [routerLink]="['/indices']" class="card-link">Select an index</a>
+      </div>
+    </div>
+  </div>
+</div>

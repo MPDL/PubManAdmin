@@ -1,0 +1,18 @@
+<div class="container-fluid">
+<div class="row offset-2">
+		<div class="col-2">
+			<select class="select form-control form-control-sm" [(ngModel)]="selectedRole" (ngModelChange)="onChangeRole($event)" name="selectedRole">
+			<option [ngValue]="role" *ngFor="let role of roles" data-subtext="role.id">{{role.name}}</option>
+			</select>
+		</div>
+		<div class="col-9">
+			<select class="select form-control form-control-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)" name="selectedCtx">
+			<option [ngValue]="ctx" *ngFor="let ctx of ctxs">{{ctx.name}} {{ctx.reference.objectId}}</option>
+			</select>
+		</div>
+		<div class="col-1">
+			<input type="button" class="btn btn-outline-primary btn-sm" name="add" value="add" (click)="addExistingOrCreate()"
+			/>
+		</div>
+</div>
+</div>

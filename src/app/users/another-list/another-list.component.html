@@ -1,0 +1,9 @@
+<div>
+  <p>
+    {{singleUser$ | async | json}}
+  </p>
+
+  <div *ngFor="let user of users | async">
+    {{ user.userid }} <button (click)="deleteUser(user)">x</button>
+  </div>
+</div>
