@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { User, Grant } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
+import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
 
 @Component({
@@ -18,7 +19,7 @@ import { MessagesService } from '../../base/services/messages.service';
 
 export class UserListComponent implements OnInit, OnDestroy {
 
-  users: Observable<User[]>;
+  users: User[];
   selected: User;
   loggedInUser: User;
   isNewUser: boolean = false;
@@ -32,6 +33,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    private elastic: ElasticService,
     private usersService: UsersService,
     private loginService: AuthenticationService,
     private messageService: MessagesService,
@@ -58,9 +60,9 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.getAllUsersAsObservable(this.token);
       } else if (this.loggedInUser != null) {
         this.messageService.warning("Only administartors are allowed to view this list");
-        this.router.navigate(['/user', this.loggedInUser.userid, this.token]);
+        this.router.navigate(['/user', this.loggedInUser.reference.objectId], {queryParams:{token: this.token}, skipLocationChange: true});
       }
-    }
+    } 
   }
 
   ngOnDestroy() {
@@ -71,23 +73,25 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getAllUsersAsObservable(token) {
-    this.users = this.usersService.listAllUsers(token);
+    this.elastic.listAllUsers(users => {
+      this.users = users;
+    });
   }
 
   isSelected(user: User) {
     this.selected = user;
-    return user.id === this.selected.id;
+    return user.reference.objectId === this.selected.reference.objectId;
   }
 
   onSelect(user: User) {
     this.isNewUser = false;
     this.selected = user;
-    this.router.navigate(['/user', user.userid, this.token]);
+    this.router.navigate(['/user', user.reference.objectId], {queryParams:{token: this.token}, skipLocationChange: true});
   }
 
   addNewUser() {
     let userid = "new user";
-    this.router.navigate(['/user', userid, 'new']);
+    this.router.navigate(['/user', userid], {queryParams:{token: 'new'}, skipLocationChange: true});
   }
 
   delete(user) {

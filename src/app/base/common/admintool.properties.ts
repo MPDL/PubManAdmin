@@ -7,7 +7,7 @@ export const props = {
     // auth_users_url: "http://localhost:8080/auth/users",
     elastic_http_url: "https://dev.inge.mpdl.mpg.de/inge",
     // elastic_http_url: "http://localhost:9200",
-    pubman_rest_http_url: "http://localhost:8080/pubman_rest",
+    pubman_rest_url: "http://localhost:8080/pubman_rest",
     blazegraph_sparql_url: "http://localhost:8080/blazegraph/namespace/wf/sparql",
     // blazegraph_sparql_url: "http://b253.demo/blazegraph/namespace/inge/sparql",
     blazegraph_gnd_graph: "http://wf.mpdl.mpg.de/GND"

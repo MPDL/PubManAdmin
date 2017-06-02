@@ -74,7 +74,6 @@ export class AnotherService {
     headers.set("Authorization", token);
     headers.append('Content-Type', 'application/json');
     let body = JSON.stringify(user);
-    console.log('users body ' + body);
 
     let options = new RequestOptions({
       headers: headers,
@@ -94,9 +93,8 @@ export class AnotherService {
     let headers = new Headers();
     headers.set("Authorization", token);
     headers.append('Content-Type', 'application/json');
-    let userUrl = this.baseUrl + '/' + user.id;
+    let userUrl = this.baseUrl + '/' + user.reference.objectId;
     let body = JSON.stringify(user);
-    console.log('users body ' + body);
 
     let options = new RequestOptions({
       headers: headers,
@@ -119,7 +117,7 @@ export class AnotherService {
   delete(user2delete: User, token: string) {
     let headers = new Headers();
     headers.set("Authorization", token);
-    let userUrl = this.baseUrl + '/' + user2delete.id;
+    let userUrl = this.baseUrl + '/' + user2delete.reference.objectId;
 
     let options = new RequestOptions({
       headers: headers,

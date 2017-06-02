@@ -3,111 +3,134 @@
         <div class="card-block">
             <h4 class="card-title">{{selected.userid}}</h4>
         </div>
-        <div class="list-group-item text-primary">
+        <!--<div class="list-group-item text-primary">-->
 
-            <form name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
+        <form class="list-group-item text-primary" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
 
-                <div class="form-group row">
-                    <label for="selected-userid" class="col-2 col-form-label col-form-label-sm">userid</label>
-                    <div class="col-4">
-                        <input class="form-control form-control-sm" type="text" name="userid" [(ngModel)]="selected.userid" id="selected-userid"
-                            [readonly]="!isNewUser">
-                    </div>
-                    <label for="selected-id" class="col-1 col-form-label col-form-label-sm">exid</label>
-                    <div class="col-2">
-                        <input class="form-control form-control-sm" type="text" name="exid" [(ngModel)]="selected.exid" id="selected-exid">
-                    </div>
-                    <label for="selected-id" class="col-1 col-form-label col-form-label-sm">id</label>
-                    <div class="col-2">
-                        <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="selected.id" id="selected-id" readonly>
-                    </div>
+            <div class="form-group row w-100">
+                <label for="selected-userid" class="col-2 col-form-label col-form-label-sm">userid</label>
+                <div class="col-6">
+                    <input class="form-control form-control-sm" type="text" name="userid" [(ngModel)]="selected.userid" id="selected-userid"
+                        [readonly]="!isNewUser">
                 </div>
-                <div class="form-group row">
-                    <label for="selected-password" class="col-2 col-form-label col-form-label-sm">password</label>
-                    <div class="col-6">
-                        <input class="form-control form-control-sm" type="password" name="password" [(ngModel)]="selected.password" id="selected-password"
-                            readonly>
-                    </div>
-                    <div class="col-4">
-                        <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="resetPassword(selected)" name="resetPassword"
-                            value="reset" />
-                    </div>
+                <label *ngIf="!isNewUser" for="selected-id" class="col-1 col-form-label col-form-label-sm">id</label>
+                <div *ngIf="!isNewUser" class="col-3">
+                    <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="selected.reference.objectId" id="selected-id"
+                        readonly>
                 </div>
-                <div class="form-group row">
-                    <label for="selected-active" class="col-2 col-form-label col-form-label-sm">active</label>
-                    <div class="col-6">
-                        <input class="form-control form-control-sm" type="text" name="active" [(ngModel)]="selected.active" id="selected-active"
-                            readonly>
-                    </div>
-                    <div class="col-4">
-                        <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="activateUser(selected)" name="activate"
-                            [value]="selected.active === false ? 'activate' : 'deactivate'" />
-                    </div>
+            </div>
+            <div class="form-group row w-100">
+                <label for="selected-password" class="col-2 col-form-label col-form-label-sm">password</label>
+                <div class="col-6">
+                    <input class="form-control form-control-sm" type="password" name="password" [(ngModel)]="selected.password" id="selected-password"
+                        readonly>
                 </div>
-                <div class="form-group row">
-                    <label for="selected-first-name" class="col-2 col-form-label col-form-label-sm">First name</label>
-                    <div class="col-10">
-                        <input class="form-control form-control-sm" type="text" name="firstName" [(ngModel)]="selected.firstName" id="selected-first-name">
-                    </div>
+                <div class="col-4">
+                    <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="resetPassword(selected)" name="resetPassword"
+                        value="reset" />
                 </div>
-                <div class="form-group row">
-                    <label for="selected-last-name" class="col-2 col-form-label col-form-label-sm">Last name</label>
-                    <div class="col-10">
-                        <input class="form-control form-control-sm" type="text" name="lastName" [(ngModel)]="selected.lastName" id="selected-last-name">
-                    </div>
+            </div>
+            <div class="form-group row w-100">
+                <label for="selected-active" class="col-2 col-form-label col-form-label-sm">active</label>
+                <div class="col-6">
+                    <input class="form-control form-control-sm" type="text" name="active" [(ngModel)]="selected.active" id="selected-active"
+                        readonly>
                 </div>
-                <div class="form-group row">
-                    <label for="selected-email" class="col-2 col-form-label col-form-label-sm">Email</label>
-                    <div class="col-10">
-                        <input class="form-control form-control-sm" type="email" name="email" [(ngModel)]="selected.email" id="selected-email">
-                    </div>
+                <div class="col-4">
+                    <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="activateUser(selected)" name="activate"
+                        [value]="selected.active === false ? 'activate' : 'deactivate'" />
                 </div>
-                <div *ngIf="!isNewUser" class="form-group row">
-                    <label for="selected-ou" class="col-2 col-form-label col-form-label-sm">Organization</label>
-                    <div class="col-10">
-                        <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="selected.ouid" id="selected-ou">
-                    </div>
+            </div>
+            <div class="form-group row w-100">
+                <label for="selected-name" class="col-2 col-form-label col-form-label-sm">Name</label>
+                <div class="col-10">
+                    <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="selected.name" id="selected-name">
                 </div>
-                <div *ngIf="isNewUser" class="form-group row">
-                    <label for="ou2select" class="col-2 col-form-label col-form-label-sm">Organization</label>
-                     <div class="col-10">
+            </div>
+            <div class="form-group row w-100">
+                <label for="selected-email" class="col-2 col-form-label col-form-label-sm">Email</label>
+                <div class="col-10">
+                    <input class="form-control form-control-sm" type="email" name="email" [(ngModel)]="selected.email" id="selected-email">
+                </div>
+            </div>
+            <div *ngIf="!isNewUser" class="form-group row w-100">
+                <label for="selected-ou" class="col-2 col-form-label col-form-label-sm">Organization</label>
+                <div class="col-10">
+                    <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="selected.affiliations[0].title" id="selected-ou">
+                </div>
+            </div>
+            <div *ngIf="isNewUser" class="form-group row w-100">
+                <label for="ou2select" class="col-2 col-form-label col-form-label-sm">Organization</label>
+                <div class="col-10">
                     <select id="ou2select" class="select form-control form-control-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)"
                         name="selectedOu">
 			<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.defaultMetadata.name}} {{ou.reference.objectId}}</option>
 			</select>
-                     </div>
                 </div>
-                <div class="form-group row">
+            </div>
+
+            <div class="form-group row w-100">
+                <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">Grants</label>
+                <div class="col-10 text-right">
+                    <ul class="list-group">
+                        <li class="list-group-item row p-0" *ngFor="let usergrant of selected.grants">
+                            <label class="col-3 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
+                            <label class="col-7 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
+                            <span class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()"
+                                            name="deleteGrant" value="x" /></span>
+                            <span *ngIf="!isNewGrant" class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="addGrant(); $event.stopPropagation()"
+                                            name="addGrant" value="+" /></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div *ngIf="isNewGrant" class="form-group row w-100">
+                <grants [selectedUser]="selected" [token]="token"></grants>
+            </div>
+
+            <div *ngIf="grants2remove" class="form-group row offset-2 w-100">
+                <div class="col-10">
+                    <textarea class="form-control" rows="3" name="grantsToRemove" [(ngModel)]="grantsToRemove"></textarea>
+                </div>
+                <div class="col-2">
+                    <input type="button" class="btn btn-outline-primary btn-sm" name="removeGrants" value="remove Grants" (click)="removeGrants()"
+                    />
+                </div>
+            </div>
+
+            <!--
+                <div class="form-group row w-100">
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">Grants</label>
                     <div class="col-10 text-right">
                         <input type="button" class="btn btn-outline-primary btn-sm" (click)="addGrant()" name="addGrantButton" value="+" />
                     </div>
                 </div>
-                <div *ngIf="isNewGrant" class="form-group row">
+                <div *ngIf="isNewGrant" class="form-group row w-100">
                         <grants [selectedUser]="selected" [token]="token"></grants>
                 </div>
-                <div class="form-group row">
+                -->
+            <!--
+                <div class="form-group row w-100">
                     <div class="col-10 offset-2">
-                        <table class="table table-hover table-sm">
-                            <tbody id="grantsTable">
-                                <tr class="list-group-item row p-0" *ngFor="let usergrant of selected.grants">
-                                    <th class="col-1 p-0" scope="row"><label class="col-form-label-sm">{{usergrant.id}}</label></th>
-                                    <td class="col-3 p-0"><label class="col-form-label-sm">{{usergrant.role.name}}</label></td>
-                                    <td class="col-7 p-0"><label class="col-form-label-sm">{{usergrant.targetId}}</label></td>
-                                    <td class="col-1 p-0 text-right"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()"
-                                            name="deleteGrant" value="x" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <ul class="list-group">
+                            <li class="list-group-item row p-0" *ngFor="let usergrant of selected.grants">
+                                <label class="col-3 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
+                                <label class="col-7 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
+                                <span class="col-2"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()"
+                                            name="deleteGrant" value="x" /></span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <div class="col-2 offset-10">
-                        <input type="button" class="btn btn-outline-primary btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
-                        <input type="button" class="btn btn-outline-primary btn-sm" name="save" value="save" (click)="save(selected)" />
-                    </div>
+                -->
+            <div class="form-group row w-100">
+                <div class="col-2 offset-10">
+                    <input type="button" class="btn btn-outline-primary btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
+                    <input type="button" class="btn btn-outline-primary btn-sm" name="save" value="save" (click)="save(selected)" />
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
+        <!--</div>-->
     </div>
 </div>

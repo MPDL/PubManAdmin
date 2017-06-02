@@ -1,3 +1,20 @@
-<p>
-  context-details works!
-</p>
+    <pre>{{ctx | json}}</pre>
+
+<div class="form-group row">
+                         <div class="col-6">
+
+      <select class="select form-control" size="10" multiple [(ngModel)]="selected">
+        <option *ngFor="let genre of genres2display" [value]="genre">{{genre}}</option>
+      </select>
+    </div>
+    <div class="col-1">
+       <input type="button" class="btn btn-outline-success btn-sm" name="addGenres" value=">>" (click)="addGenres(selected)" />
+    </div>
+
+                             <div class="col-5">
+<!--<genre-area id="selectedgenres" [(ngModel)]="selectedGenres"></genre-area>-->
+<textarea class="form-control" rows="10" id="selectedgenres" [(ngModel)]="selectedGenres"></textarea> 
+                             </div>
+    </div>
+
+

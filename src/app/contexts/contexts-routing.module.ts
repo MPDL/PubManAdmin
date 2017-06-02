@@ -12,7 +12,8 @@ const routes: Routes = [
   },
   {
     path: 'context/:id',
-    component: ContextDetailsComponent
+    component: ContextDetailsComponent,
+    resolve: {ctx: ContextDetailsResolverService}
   }
 ];
 

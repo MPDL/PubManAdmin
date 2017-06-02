@@ -5,16 +5,19 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { User } from '../../base/common/model';
+import { ElasticService } from '../../base/services/elastic.service';
+import { User, Grant } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
 
 @Injectable()
 export class UsersService {
-  constructor(private http: Http) {
-  }
+  constructor(
+    private http: Http,
+    private elastic: ElasticService
+    ) { }
 
-  usersUrl: string = props.auth_users_url;
+  usersUrl: string = props.pubman_rest_url + '/users';
 
   users: User[];
   user: User;
@@ -31,8 +34,8 @@ export class UsersService {
       .map((response: Response) => {
         this.users = response.json();
         this.users.sort((a, b) => {
-          if (a.lastName < b.lastName) return -1;
-          else if (a.lastName > b.lastName) return 1;
+          if (a.name < b.name) return -1;
+          else if (a.name > b.name) return 1;
           else return 0;
         });
         return this.users;
@@ -60,7 +63,6 @@ export class UsersService {
     headers.set("Authorization", token);
     headers.append('Content-Type', 'application/json');
     let body = JSON.stringify(user);
-    console.log('users body ' + body);
 
     let options = new RequestOptions({
       headers: headers,
@@ -79,9 +81,48 @@ export class UsersService {
     let headers = new Headers();
     headers.set("Authorization", token);
     headers.append('Content-Type', 'application/json');
-    let userUrl = this.usersUrl + '/' + user.id;
+    let userUrl = this.usersUrl + '/' + user.reference.objectId;
     let body = JSON.stringify(user);
-    console.log('users body ' + body);
+
+    let options = new RequestOptions({
+      headers: headers,
+      method: RequestMethod.Put,
+      url: userUrl,
+      body: body
+    });
+    return this.http.request(new Request(options))
+      .map((response: Response) => {
+        let status = response.status;
+        return status;
+      });
+  }
+
+  addGrants(user: User, grants: Grant[], token: string): Observable<number> {
+    let headers = new Headers();
+    headers.set("Authorization", token);
+    headers.append('Content-Type', 'application/json');
+    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/add';
+    let body = JSON.stringify(grants);
+
+    let options = new RequestOptions({
+      headers: headers,
+      method: RequestMethod.Put,
+      url: userUrl,
+      body: body
+    });
+    return this.http.request(new Request(options))
+      .map((response: Response) => {
+        let status = response.status;
+        return status;
+      });
+  }
+
+  removeGrants(user: User, grants: Grant[], token: string): Observable<number> {
+    let headers = new Headers();
+    headers.set("Authorization", token);
+    headers.append('Content-Type', 'application/json');
+    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/remove';
+    let body = JSON.stringify(grants);
 
     let options = new RequestOptions({
       headers: headers,
@@ -99,7 +140,7 @@ export class UsersService {
   delete(user: User, token: string): Observable<number> {
     let headers = new Headers();
     headers.set("Authorization", token);
-    let userUrl = this.usersUrl + '/' + user.id;
+    let userUrl = this.usersUrl + '/' + user.reference.objectId;
 
     let options = new RequestOptions({
       headers: headers,

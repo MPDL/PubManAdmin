@@ -11,7 +11,7 @@ export class Elastic4usersService extends ElasticService {
     if (ctxId) {
 
       return this.client.search({
-        index: 'contexts',
+        index: 'db_contexts',
         q: `_id:${ctxId}`,
         _sourceInclude: 'name'
       },
@@ -61,7 +61,7 @@ export class Elastic4usersService extends ElasticService {
     if (ouId) {
 
       return this.client.search({
-        index: 'ous',
+        index: 'db_ous',
         q: `_id:${ouId}`,
         _sourceInclude: 'defaultMetadata.name'
       },
@@ -93,7 +93,7 @@ export class Elastic4usersService extends ElasticService {
 
     if (queryString.length > 0) {
       return this.client.search({
-        index: "ous",
+        index: "db_ous",
         // q: "parentAffiliations.objectId:*" + parent,
         q: queryString,
         _sourceInclude: "reference.objectId, defaultMetadata.name, hasChildren, publicStatus",

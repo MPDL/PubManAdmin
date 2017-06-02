@@ -41,4 +41,53 @@ export class ElasticService {
       })
   }
 
+  listAllContextNames(callback): any {
+        return this.client.search({
+            index: "db_contexts",
+            q: "*",
+            _sourceInclude: "name, reference.objectId",
+            size: 500,
+            sort: 'name.sorted:asc'
+        },
+            (error, response) => {
+                if (error) {
+                    this.messages.error(error);
+                }
+                if (response) {
+                    let hitList = Array<any>();
+                    response.hits.hits.forEach((hit) => {
+                        let source = JSON.stringify(hit._source);
+                        let json = JSON.parse(source);
+                        hitList.push(json);
+                    })
+                    callback(hitList)
+                }
+            });
+    }
+
+    listAllUsers(callback): any {
+        return this.client.search({
+            index: "db_users",
+            q: "*",
+            // _sourceInclude: "name, reference.objectId",
+            size: 500,
+            sort: 'name.sorted:asc'
+        },
+            (error, response) => {
+                if (error) {
+                    this.messages.error(error);
+                }
+                if (response) {
+                    let hitList = Array<any>();
+                    response.hits.hits.forEach((hit) => {
+                        let source = JSON.stringify(hit._source);
+                        let json = JSON.parse(source);
+                        hitList.push(json);
+                    })
+                    callback(hitList)
+                }
+            });
+    }
+
+
 }

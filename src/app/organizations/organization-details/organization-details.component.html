@@ -1,9 +1,9 @@
 <div class="container" *ngIf="selected">
-  <div class="card card-inverse card-primary text-right">
+  <div class="card card-inverse card-info text-right">
     <div class="card-block">
       <h4 class="card-title">{{selected.defaultMetadata.name}}</h4>
     </div>
-    <div class="list-group-item text-primary">
+    <div class="list-group-item text-info">
 
       <form name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
 
@@ -33,7 +33,7 @@
               readonly>
           </div>
           <div class="col-4">
-            <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="openClose(selected)" name="openClose" [value]="selected.publicStatus === 'opened' ? 'close' : 'open'"
+            <input type="button" class="btn btn-outline-info btn-sm float-right" (click)="openClose(selected)" name="openClose" [value]="selected.publicStatus === 'opened' ? 'close' : 'open'"
             />
           </div>
         </div>
@@ -72,9 +72,11 @@
                 <tr class="list-group-item row p-0" *ngFor="let child of children" (click)="showDetails(child.reference.objectId)">
                   <th class="col-3 p-0" scope="row"><label class="col-form-label-sm">{{child.reference.objectId}}</label></th>
                   <th class="col-2 p-0" scope="row"><label class="col-form-label-sm">{{child.publicStatus}}</label></th>
-                  <td class="col-6 p-0"><label class="col-form-label-sm">{{child.defaultMetadata.name}}</label></td>
-                  <td class="col-1 p-0 text-right"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteChild(child); $event.stopPropagation()"
+                  <td class="col-7 p-0"><label class="col-form-label-sm">{{child.defaultMetadata.name}}</label></td>
+                  <!--
+                  <td class="col-1 p-0 text-right"><input type="button" class="btn btn-outline-info btn-sm" (click)="deleteChild(child); $event.stopPropagation()"
                       name="deleteChild" value="x" /></td>
+                      -->
                 </tr>
               </tbody>
             </table>
@@ -91,7 +93,7 @@
                   <th class="col-3 p-0" scope="row"><label class="col-form-label-sm">{{predecessor.reference.objectId}}</label></th>
                   <th class="col-2 p-0" scope="row"><label class="col-form-label-sm">{{predecessor.publicStatus}}</label></th>
                   <td class="col-6 p-0"><label class="col-form-label-sm">{{predecessor.defaultMetadata.name}}</label></td>
-                  <td class="col-1 p-0 text-right"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteChild(predecessor); $event.stopPropagation()"
+                  <td class="col-1 p-0 text-right"><input type="button" class="btn btn-outline-info btn-sm" (click)="deleteChild(predecessor); $event.stopPropagation()"
                       name="deletePredecessor" value="x" /></td>
                 </tr>
               </tbody>
@@ -100,8 +102,8 @@
         </div>
         <div class="form-group row">
           <div class="col-2 offset-10">
-            <input type="button" class="btn btn-outline-primary btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
-            <input type="button" class="btn btn-outline-primary btn-sm" name="save" value="save" (click)="save(selected)" />
+            <input type="button" class="btn btn-outline-info btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
+            <input type="button" class="btn btn-outline-info btn-sm" name="save" value="save" (click)="save(selected)" />
           </div>
         </div>
       </form>

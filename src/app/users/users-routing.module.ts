@@ -6,7 +6,7 @@ import { UserDetailsResolverService } from './services/user-details-resolver.ser
 
 const routes: Routes = [
   { path: 'users',  component: UserListComponent },
-  { path: 'user/:id/:token', component: UserDetailsComponent, resolve: {user: UserDetailsResolverService} }
+  { path: 'user/:id', component: UserDetailsComponent, resolve: {user: UserDetailsResolverService} }
 ];
 
 @NgModule({

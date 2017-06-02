@@ -1,34 +1,32 @@
+interface ro {
+    objectId: string;
+    title: string;
+}
+
 class AbstractEntity {
-    id: number;
-    creationTime: Date;
-    modificationTime: Date;
-    createdByUser: string;
-    modifiedByUser: string;
-    version: number;
+    creationDate: Date;
+    lastModificationDate: Date;
+    creator: ro;
+    modifiedBy: ro;
+    reference: ro;
 }
 
-export class Role extends AbstractEntity {;
-    name: string;
-    constructor(name: string) {
-        super();
-        this.name = name;
-    }
+export class Affiliation implements ro {
+    objectId: string;
+    title: string;
 }
 
-export class Grant extends AbstractEntity {
-    role: Role;
-    targetType: string;
-    targetId: string;
+export class Grant {
+    role: string;
+    objectRef: string;
 }
 
 export class User extends AbstractEntity {
     userid: string;
     password: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
-    ouid: string;
-    exid: string;
+    affiliations: Affiliation[];
     active: boolean;
     grants: Grant[];
 }

@@ -63,7 +63,7 @@ export class AuthenticationComponent implements OnInit {
           this.user = data;
           this.hasToken = true;
 
-          this.credentials.username = this.user.firstName + ' ' + this.user.lastName;
+          this.credentials.username = this.user.name;
         },
         error => {
           this.messages.error(error);

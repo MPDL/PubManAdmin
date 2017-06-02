@@ -108,7 +108,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   save(ou) {
     // alert("not yet implemented!");
     ou.lastModificationDate = new Date();
-    ou.modifiedBy.objectId = this.user.exid;
+    ou.modifiedBy.objectId = this.user.reference.objectId;
     this.elastic.updateOu(ou);
   }
 
@@ -117,8 +117,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   gotoList() {
-    //let ouid = this.ou ? this.ou.referece.objectId : null;
-    this.router.navigate(['/organizations', { id: this.selected.reference.objectId }]);
+    this.router.navigate(['/organizations']);
   }
 
   lists = ['childAffiliations', 'predecessorAffiliations',

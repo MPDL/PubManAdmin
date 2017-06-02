@@ -40,7 +40,7 @@ export class AuthenticationService {
     this.isAdmin.next(isAdmin);
   }
 
-  private tokenUrl: string = props.auth_token_url;
+  private tokenUrl: string = props.pubman_rest_url + "/login";
 
   constructor(
     private http: Http,
@@ -51,7 +51,7 @@ export class AuthenticationService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    let body = '{"userid": "' + username + '", "password": "' + password + '"}';
+    let body = '"' + username + ":" + password + '"';
 
     let options = new RequestOptions({
       method: RequestMethod.Post,
@@ -95,7 +95,7 @@ export class AuthenticationService {
       .map((response: Response) => {
         user = response.json();
         this.setUser(user);
-        if (user.grants.find(role => role.role.name == "SYSADMIN")) {
+        if (user.grants.find(grant => grant.role == "SYSADMIN")) {
           this.setIsAdmin(true);
         }
         return user;

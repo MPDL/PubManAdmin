@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { GrantsComponent } from '../grants/grants.component';
-import { User, Grant } from '../../base/common/model';
+import { User, Grant, Affiliation } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
@@ -21,6 +21,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedOu: any;
   isNewUser: boolean = false;
   isNewGrant: boolean = false;
+  grants2remove: boolean = false;
+  selectedGrant: Grant;
+  selectedGrants: Grant[] = [];
+  grantsToRemove: string;
+
   subscription: Subscription;
   token: string;
   isLoggedIn: boolean;
@@ -78,8 +83,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteGrant(grant) {
-    let index = this.selected.grants.indexOf(grant);
-    this.selected.grants.splice(index, 1);
+    this.grants2remove = true;
+    this.selectedGrant = grant;
+    this.selectedGrants.push(grant);
+    this.grantsToRemove = JSON.stringify(this.selectedGrants);
   }
 
   gotoList() {
@@ -90,8 +97,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   resetPassword(user) {
     this.selected = user;
-    if (this.selected.firstName && this.selected.firstName != "") {
-      this.selected.password = this.selected.firstName.split('').reverse().join('');
+    if (this.selected.name && this.selected.name != "") {
+      this.selected.password = this.selected.name.split('').reverse().join('');
     } else {
       this.selected.password = this.resettedPassword;
       this.messageService.warning("passeord was reset to: " + this.resettedPassword);
@@ -108,9 +115,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   getNameForOU(ouId) {
-    let id = this.selected.ouid.substring(this.selected.ouid.lastIndexOf("/") + 1);
+    let id = this.selected.affiliations[0].objectId.substring(this.selected.affiliations[0].objectId.lastIndexOf("/") + 1);
     console.log("ctx id passed to elastic " + id);
-    let result = this.elasticService.getOUName(id, (s) => this.selected.ouid = s);
+    let result = this.elasticService.getOUName(id, (s) => this.selected.affiliations[0].objectId = s);
   }
 
   save(user2save) {
@@ -118,8 +125,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.isNewUser) {
       if (this.selectedOu != null) {
         let ou_id = this.selectedOu.reference.objectId;
-        this.selected.ouid = ou_id
+        let aff = new Affiliation();
+        aff.objectId = ou_id;
+        this.selected.affiliations.push(aff);
       }
+      console.log("creating   " + JSON.stringify(this.selected));
       this.usersService.postUser(this.selected, this.token)
         .subscribe(
         data => {
@@ -148,5 +158,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         );
     }
   }
+
+      removeGrants() {
+        alert("removing   " + JSON.stringify(this.selectedGrants));
+        this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(data => {
+            this.messageService.success("removed Grants from " + this.selected.userid);
+            this.selectedGrants.slice(0, this.selectedGrants.length);
+            this.grants2remove = false;
+        }, error => {
+            this.messageService.error(error);
+        });
+    }
 
 }

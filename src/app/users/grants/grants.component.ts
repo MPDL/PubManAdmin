@@ -4,16 +4,15 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from "../../base/services/authentication.service";
-import { Grant, Role, User } from '../../base/common/model';
-import { GrantsService } from '../services/grants.service';
-import { RolesService } from '../services/roles.service';
+import { Grant, User } from '../../base/common/model';
 import { Elastic4usersService } from '../services/elastic4users.service';
+import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'grants',
   templateUrl: './grants.component.html',
   styleUrls: ['./grants.component.scss'],
-  providers: [ GrantsService, RolesService ]
+  providers: [ ]
 })
 
 export class GrantsComponent implements OnInit, OnDestroy {
@@ -22,10 +21,12 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Input() token: string;
 
     grants: Grant[];
-    roles: Role[];
+    roles: string[] = ["DEPOSITOR", "MODERATOR", "SYSADMIN"];
     ctxs: Array<any>;
     selectedGrant: Grant;
-    selectedRole: Role;
+    selectedGrants: Grant[] = [];
+    grantsToAdd: string;
+    selectedRole: string;
     selectedCtx: any;
     idString: string;
     isNewGrant: boolean = false;
@@ -34,13 +35,12 @@ export class GrantsComponent implements OnInit, OnDestroy {
     loginSubscription: Subscription;
     tokenSubscription: Subscription;
 
-    constructor(private grantsService: GrantsService,
-        private rolesService: RolesService,
+    constructor(
         private messageService: MessagesService,
         private loginService: AuthenticationService,
-        private elasticService: Elastic4usersService) {
-
-    }
+        private elasticService: Elastic4usersService,
+        private usersService: UsersService 
+        ) { }
 
     ngOnInit() {
         this.loginSubscription = this.loginService.isLoggedIn$.subscribe(isLoggedIn => {
@@ -51,7 +51,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
             console.log("do i get the token ? " + this.token)
         });
         if (this.token != null) {
-            //this.getAllGrants(this.token);
             this.getNewGrantSelect();
         }
     }
@@ -61,73 +60,17 @@ export class GrantsComponent implements OnInit, OnDestroy {
         this.tokenSubscription.unsubscribe();
     }
 
-    getAllGrants(token) {
-        this.grantsService.listAllGrants(token)
-            .subscribe(
-            data => {
-                this.grants = data;
-                this.grants.map(g => {
-                    if (g.targetId.startsWith("vm44")) {
-                        let id = g.targetId.substring(g.targetId.lastIndexOf("/") + 1);
-                        this.elasticService.getContextName(id, (s) => g.targetId = s)
-                    }
-                });
-                this.grants.sort((a, b) => {
-                    if (a.targetId < b.targetId) return -1;
-                    else if (a.targetId > b.targetId) return 1;
-                    else return 0;
-                });
-            },
-            error => {
-                this.messageService.error(error);
-            });
-    }
-
-    getName4Ctx(ctxId: string) {
-        let id = ctxId.substring(ctxId.lastIndexOf("/") + 1);
-        console.log("ctx id passed to elastic " + id);
-        this.elasticService.getContextName(id, (s) => this.selectedGrant.targetId = s);
-    }
-
-    onSelect(grant: Grant) {
-        this.selectedGrant = grant;
-        let id = grant.targetId.substring(grant.targetId.lastIndexOf("/") + 1);
-        console.log("ctx id passed to elastic " + id);
-        let result = this.elasticService.getContextName(id, (s) => this.selectedGrant.targetId = s);
-    }
-
     getNewGrantSelect() {
         this.isNewGrant = true;
-        this.rolesService.listAllRoles(this.token)
-            .subscribe(
-            data => {
-                this.roles = data;
-                this.roles.sort((a, b) => {
-                if (a.name < b.name) return -1;
-                else if (a.name > b.name) return 1;
-                else return 0;
-            });
-            },
-            error => {
-                this.messageService.error(error);
-            }
-            );
         this.elasticService.listAllContextNames((contexts) => {
-            this.ctxs = contexts;
-            /*
-            this.ctxs.sort((a, b) => {
-                if (a < b) return -1;
-                else if (a > b) return 1;
-                else return 0;
-            });
-            */
+        this.ctxs = contexts;
         });
 
     }
 
     onChangeRole(val) {
         this.selectedRole = val;
-        console.log("selected role: " + this.selectedRole.name);
+        console.log("selected role: " + this.selectedRole);
     }
 
     onChangeCtx(val) {
@@ -136,56 +79,38 @@ export class GrantsComponent implements OnInit, OnDestroy {
         console.log("displayed ctx: " + val.name);
     }
 
-    addNewGrant() {
-        let grant2add = new Grant();
-        grant2add.role = this.selectedRole;
-        grant2add.targetType = "CONTEXT";
-        let id: string = this.selectedCtx.reference.objectId;
-        console.log('setting id ' + id);
-        grant2add.targetId = id;
-        this.grantsService.postGrant(grant2add, this.token)
-            .subscribe(
-            data => {
-                this.getAllGrants(this.token);
-                this.messageService.success('added grant ' + data);
-                // this.grants.push(grant2add);
-                this.selectedUser.grants.push(grant2add);
-
-            },
-            error => {
-                this.messageService.error(error);
-            }
-            );
-    }
-
-    addExistingOrCreate() {
-        let rolename = this.selectedRole.name;
+    addGrant() {
+        let rolename = this.selectedRole;
         let ctx_id = this.selectedCtx.reference.objectId;
-        this.grantsService.getExistingOrCreate(rolename, ctx_id, this.token)
-        .subscribe(
-            data => {
-                this.messageService.success('added grant ' + data);
-                this.selectedUser.grants.push(data);
-            },
-            error => {
-                this.messageService.error(error);
-            }
-        );
+        let grant2add = new Grant();
+        grant2add.role = rolename;
+        grant2add.objectRef = ctx_id;
+        // this.selectedUser.grants.push(grant2add);
+        this.selectedGrants.push(grant2add);
+        this.grantsToAdd = JSON.stringify(this.selectedGrants);
     }
 
     deleteGrant(grant) {
         this.selectedGrant = grant;
-        this.grantsService.delete(this.selectedGrant, this.token)
-            .subscribe(
-            data => {
-                this.messageService.success('deleted grant ' + data);
-            },
-            error => {
-                this.messageService.error(error);
-            }
-            );
-        let index = this.grants.indexOf(grant);
-        this.grants.splice(index, 1);
+        // let index = this.grants.indexOf(grant);
+        // this.grants.splice(index, 1);
+        // this.selectedUser.grants.splice(index, 1);
+        this.selectedGrants.push(grant);
+        this.grantsToAdd = JSON.stringify(this.selectedGrants);
+    }
+
+    addGrants() {
+        alert("adding   " + JSON.stringify(this.selectedGrants));
+        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(data => {
+            this.messageService.success("added Grants to " + this.selectedUser.userid);
+            this.selectedGrants.slice(0, this.selectedGrants.length);
+        }, error => {
+            this.messageService.error(error);
+        });
+    }
+
+    removeGrants() {
+        alert("removing   " + JSON.stringify(this.selectedGrants));
     }
 }
 

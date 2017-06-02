@@ -1,8 +1,8 @@
-<div class="container-fluid">
-<div class="row offset-2">
+<!--<div class="container-fluid">-->
+<div class="form-group row offset-2 w-1ßß">
 		<div class="col-2">
 			<select class="select form-control form-control-sm" [(ngModel)]="selectedRole" (ngModelChange)="onChangeRole($event)" name="selectedRole">
-			<option [ngValue]="role" *ngFor="let role of roles" data-subtext="role.id">{{role.name}}</option>
+			<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
 			</select>
 		</div>
 		<div class="col-9">
@@ -11,8 +11,16 @@
 			</select>
 		</div>
 		<div class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm" name="add" value="add" (click)="addExistingOrCreate()"
+			<input type="button" class="btn btn-outline-primary btn-sm" name="add" value="add" (click)="addGrant()"
 			/>
 		</div>
 </div>
+<div class="form-group row offset-2 w-1ßß">
+		<div class="col-10">
+			<textarea class="form-control" rows="3" id="selectedGrants" [(ngModel)]="grantsToAdd"></textarea> 
+		</div>
+		<div class="col-2">
+			<input type="button" class="btn btn-outline-primary btn-sm" name="addGrants" value="add Grants" (click)="addGrants()"/>
+		</div>
 </div>
+<!--</div>-->
