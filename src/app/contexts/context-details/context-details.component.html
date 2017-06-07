@@ -1,20 +1,88 @@
-    <pre>{{ctx | json}}</pre>
+<div class="container" *ngIf="ctx">
+  <div class="card card-inverse card-success text-right">
+    <div class="card-block">
+      <h4 class="card-title">{{ctx.name}}</h4>
+    </div>
+    <form class="list-group-item text-success" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
 
-<div class="form-group row">
-                         <div class="col-6">
+      <div class="form-group row w-100">
+        <label for="ctx-name" class="col-2 col-form-label col-form-label-sm">name</label>
+        <div class="col-6">
+          <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="ctx.name" id="ctx-name">
+        </div>
+        <label *ngIf="!isNewCtx" for="ctx-id" class="col-1 col-form-label col-form-label-sm">id</label>
+        <div *ngIf="!isNewCtx" class="col-3">
+          <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="ctx.reference.objectId" id="ctx-id" readonly>
+        </div>
+      </div>
+      <div class="form-group row w-100">
+        <label for="ctx-description" class="col-2 col-form-label col-form-label-sm">description</label>
+        <div class="col-10">
+          <input class="form-control form-control-sm" type="text" name="description" [(ngModel)]="ctx.description" id="ctx-description">
+        </div>
+      </div>
+      <div class="form-group row w-100">
+        <label for="ctx-state" class="col-2 col-form-label col-form-label-sm">state</label>
+        <div class="col-6">
+          <input class="form-control form-control-sm" type="text" name="state" [(ngModel)]="ctx.state" id="ctx-state" readonly>
+        </div>
+        <div class="col-4">
+          <input type="button" class="btn btn-outline-success btn-sm float-right" (click)="activateContext(ctx)" name="state" [value]="ctx.state === 'CLOSED' || ctx.state === 'CREATED' ? 'open' : 'close'"
+          />
+        </div>
+      </div>
+      <div *ngIf="!isNewCtx" class="form-group row w-100">
+        <label for="ctx-ou" class="col-2 col-form-label col-form-label-sm">Organization</label>
+        <div class="col-10">
+          <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="ctx.responsibleAffiliations[0].title" id="ctx-ou">
+        </div>
+      </div>
+      <div *ngIf="isNewCtx" class="form-group row w-100">
+        <label for="ou2select" class="col-2 col-form-label col-form-label-sm">Organization</label>
+        <div class="col-10">
+          <select id="ou2select" class="select form-control form-control-sm" [(ngModel)]="ctxOu" (ngModelChange)="onChangeOu($event)"
+            name="ctxOu">
+			<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.defaultMetadata.name}} {{ou.reference.objectId}}</option>
+			</select>
+        </div>
+      </div>
 
-      <select class="select form-control" size="10" multiple [(ngModel)]="selected">
+      <div class="form-group row w-100">
+        <div class="col-2 offset-10">
+          <input type="button" class="btn btn-outline-success btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
+          <input type="button" class="btn btn-outline-success btn-sm" name="save" value="save" (click)="save(ctx)" />
+        </div>
+      </div>
+
+      <div class="form-group row w-100">
+        <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">Admin Descriptor</label>
+        <div class="col-10 text-right">
+          <pre>{{ctx.adminDescriptor | json}}</pre>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+
+
+
+
+
+  <div class="form-group row">
+    <div class="col-6">
+
+      <select class="select form-control" size="10" multiple [(ngModel)]="selectedGenre">
         <option *ngFor="let genre of genres2display" [value]="genre">{{genre}}</option>
       </select>
     </div>
     <div class="col-1">
-       <input type="button" class="btn btn-outline-success btn-sm" name="addGenres" value=">>" (click)="addGenres(selected)" />
+      <input type="button" class="btn btn-outline-success btn-sm" name="addGenres" value=">>" (click)="addGenres(selectedGenre)" />
+      <input type="button" class="btn btn-outline-success btn-sm" name="removeGenres" value="<<" (click)="removeGenres(selectedGenres)" />
     </div>
 
-                             <div class="col-5">
-<!--<genre-area id="selectedgenres" [(ngModel)]="selectedGenres"></genre-area>-->
-<textarea class="form-control" rows="10" id="selectedgenres" [(ngModel)]="selectedGenres"></textarea> 
-                             </div>
+    <div class="col-5">
+      <!--<genre-area id="ctxgenres" [(ngModel)]="ctxGenres"></genre-area>-->
+      <textarea class="form-control" rows="10" id="selectedgenres" [(ngModel)]="selectedGenres"></textarea>
     </div>
-
-
+  </div>

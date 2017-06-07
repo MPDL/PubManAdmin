@@ -76,8 +76,7 @@ export class ContextListComponent implements OnInit {
       },
       error => {
         this.message.error(error);
-      }
-      );
+      });
     this.selected = null;
     let index = this.ctxs.indexOf(ctx);
     this.ctxs.splice(index, 1);

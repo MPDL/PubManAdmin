@@ -6,18 +6,18 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { props } from '../../base/common/admintool.properties';
-import { MessagesService } from '../../base/services/messages.service'; 
+import { MessagesService } from '../../base/services/messages.service';
 
 @Injectable()
 export class ContextsService {
 
-  context_url = props.pubman_rest_url + "/contexts"
-  ctx;
+    context_url = props.pubman_rest_url + "/contexts"
+    ctx;
 
-  constructor(private http : Http,
-      private message: MessagesService) { }
+    constructor(private http: Http,
+        private message: MessagesService) { }
 
-  getContext(id, token): Observable<any> {
+    getContext(id, token): Observable<any> {
 
         let headers = new Headers();
         headers.set("Authorization", token);
@@ -31,9 +31,93 @@ export class ContextsService {
             .map((response: Response) => {
                 this.ctx = response.json();
                 return this.ctx;
-            });
-    }    
-  
+            })
+            .catch((error: any) => Observable.throw(error.json().message || "Error getting context"));
+    }
+
+    postContext(ctx: any, token: string): Observable<number> {
+        let headers = new Headers();
+        headers.set("Authorization", token);
+        headers.append('Content-Type', 'application/json');
+        let body = JSON.stringify(ctx);
+
+        let options = new RequestOptions({
+            headers: headers,
+            method: RequestMethod.Post,
+            url: this.context_url,
+            body: body
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => {
+                let status = response.status;
+                return status;
+            })
+            .catch((error: any) => Observable.throw(error.json().message || 'Error creating context'));
+    }
+
+    putContext(ctx: any, token: string): Observable<number> {
+        let headers = new Headers();
+        headers.set("Authorization", token);
+        headers.append('Content-Type', 'application/json');
+        let ctxUrl = this.context_url + '/' + ctx.reference.objectId;
+        let body = JSON.stringify(ctx);
+
+        let options = new RequestOptions({
+            headers: headers,
+            method: RequestMethod.Put,
+            url: ctxUrl,
+            body: body
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => {
+                let status = response.status;
+                return status;
+            })
+            .catch((error: any) => Observable.throw(error.json().message || 'Error updating context'));
+    }
+
+    openContext(ctx: any, token: string): Observable<number> {
+        let headers = new Headers();
+        headers.set("Authorization", token);
+        headers.append('Content-Type', 'application/json');
+        let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/open';
+        let body = JSON.stringify(ctx);
+
+        let options = new RequestOptions({
+            headers: headers,
+            method: RequestMethod.Put,
+            url: ctxUrl,
+            body: body
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => {
+                let status = response.status;
+                return status;
+            })
+            .catch((error: any) => Observable.throw(error.json().message || 'Error opening context'));
+    }
+
+    closeContext(ctx: any, token: string): Observable<number> {
+        let headers = new Headers();
+        headers.set("Authorization", token);
+        headers.append('Content-Type', 'application/json');
+        let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/close';
+        let body = JSON.stringify(ctx);
+
+        let options = new RequestOptions({
+            headers: headers,
+            method: RequestMethod.Put,
+            url: ctxUrl,
+            body: body
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => {
+                let status = response.status;
+                return status;
+            })
+            .catch((error: any) => Observable.throw(error.json().message || 'Error closing context'));
+    }
+
     delete(id, token): Observable<number> {
         let headers = new Headers();
         headers.set("Authorization", token);
@@ -47,7 +131,8 @@ export class ContextsService {
             .map((response: Response) => {
                 let status = response.status;
                 return status;
-            });
+            })
+            .catch((error: any) => Observable.throw(error.json().message || "Error deleting context"));
     }
 }
 

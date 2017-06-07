@@ -15,7 +15,7 @@ export class UsersService {
   constructor(
     private http: Http,
     private elastic: ElasticService
-    ) { }
+  ) { }
 
   usersUrl: string = props.pubman_rest_url + '/users';
 
@@ -39,7 +39,8 @@ export class UsersService {
           else return 0;
         });
         return this.users;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error getting user list'));
   }
 
   getUser(id: string, token: string): Observable<User> {
@@ -55,7 +56,8 @@ export class UsersService {
       .map((response: Response) => {
         this.user = response.json();
         return this.user;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error getting user'));
   }
 
   postUser(user: User, token: string): Observable<number> {
@@ -74,7 +76,8 @@ export class UsersService {
       .map((response: Response) => {
         let status = response.status;
         return status;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error creating user'));
   }
 
   putUser(user: User, token: string): Observable<number> {
@@ -94,7 +97,8 @@ export class UsersService {
       .map((response: Response) => {
         let status = response.status;
         return status;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error updating user'));
   }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<number> {
@@ -114,7 +118,8 @@ export class UsersService {
       .map((response: Response) => {
         let status = response.status;
         return status;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error adding grants'));
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<number> {
@@ -134,7 +139,8 @@ export class UsersService {
       .map((response: Response) => {
         let status = response.status;
         return status;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error removing grants'));
   }
 
   delete(user: User, token: string): Observable<number> {
@@ -151,7 +157,8 @@ export class UsersService {
       .map((response: Response) => {
         let status = response.status;
         return status;
-      });
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error deleting user'));
   }
 }
 

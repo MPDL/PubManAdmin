@@ -101,7 +101,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.selected.password = this.selected.name.split('').reverse().join('');
     } else {
       this.selected.password = this.resettedPassword;
-      this.messageService.warning("passeord was reset to: " + this.resettedPassword);
+      this.messageService.warning("password was reset to: " + this.resettedPassword);
     }
   }
 
@@ -163,6 +163,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         alert("removing   " + JSON.stringify(this.selectedGrants));
         this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(data => {
             this.messageService.success("removed Grants from " + this.selected.userid);
+            this.selectedGrants.forEach((g) => {
+              let i = this.selected.grants.indexOf(g);
+              this.selected.grants.splice(i, 1);
+            });
             this.selectedGrants.slice(0, this.selectedGrants.length);
             this.grants2remove = false;
         }, error => {

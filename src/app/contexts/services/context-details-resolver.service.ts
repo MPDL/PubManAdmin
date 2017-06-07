@@ -17,6 +17,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
         let id = route.params['id'];
         if (id == 'new ctx') {
             let ctx = template;
+            ctx.name = "new ctx";
             return Observable.of(ctx);
         } else {
             let token = route.params['token'];

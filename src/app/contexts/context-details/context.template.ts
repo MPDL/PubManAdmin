@@ -5,7 +5,7 @@ export const template = {
   },
   name: "",
   type: "PubMan",
-  state: "CLOSED",
+  state: "",
   description: "",
   creator: {
     objectId: ""

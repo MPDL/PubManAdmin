@@ -70,18 +70,31 @@
             </div>
 
             <div class="form-group row w-100">
+                <div class="col-2 offset-10">
+                    <input type="button" class="btn btn-outline-primary btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
+                    <input type="button" class="btn btn-outline-primary btn-sm" name="save" value="save" (click)="save(selected)" />
+                </div>
+            </div>
+
+           <!-- <div *ngIf="!isNewUser" class="w-100">-->
+            <div class="form-group row w-100">
                 <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">Grants</label>
                 <div class="col-10 text-right">
                     <ul class="list-group">
                         <li class="list-group-item row p-0" *ngFor="let usergrant of selected.grants">
                             <label class="col-3 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
-                            <label class="col-7 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
+                            <label class="col-8 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
                             <span class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()"
                                             name="deleteGrant" value="x" /></span>
-                            <span *ngIf="!isNewGrant" class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="addGrant(); $event.stopPropagation()"
-                                            name="addGrant" value="+" /></span>
                         </li>
                     </ul>
+                </div>
+            </div>
+            <div *ngIf="!isNewGrant" class="form-group row w-100">
+
+                <div class="col-2 offset-10">
+                    <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="addGrant(); $event.stopPropagation()" name="addGrant"
+                        value="add Grants" />
                 </div>
             </div>
 
@@ -89,16 +102,18 @@
                 <grants [selectedUser]="selected" [token]="token"></grants>
             </div>
 
-            <div *ngIf="grants2remove" class="form-group row offset-2 w-100">
-                <div class="col-10">
-                    <textarea class="form-control" rows="3" name="grantsToRemove" [(ngModel)]="grantsToRemove"></textarea>
-                </div>
-                <div class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm" name="removeGrants" value="remove Grants" (click)="removeGrants()"
-                    />
+            <div *ngIf="grants2remove" class="form-group row w-100">
+                <div class="form-group row offset-2 w-100">
+                    <div class="col-9">
+                        <textarea class="form-control form-control-sm" rows="3" name="grantsToRemove" [(ngModel)]="grantsToRemove"></textarea>
+                    </div>
+                    <div class="col-3">
+                        <input type="button" class="btn btn-outline-primary btn-sm float-left" name="removeGrants" value="remove Grants" (click)="removeGrants()"
+                        />
+                    </div>
                 </div>
             </div>
-
+       <!--     </div>-->
             <!--
                 <div class="form-group row w-100">
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">Grants</label>
@@ -124,13 +139,6 @@
                     </div>
                 </div>
                 -->
-            <div class="form-group row w-100">
-                <div class="col-2 offset-10">
-                    <input type="button" class="btn btn-outline-primary btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
-                    <input type="button" class="btn btn-outline-primary btn-sm" name="save" value="save" (click)="save(selected)" />
-                </div>
-            </div>
         </form>
         <!--</div>-->
     </div>
-</div>

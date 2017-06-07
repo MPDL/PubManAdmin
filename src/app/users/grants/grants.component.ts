@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -29,7 +29,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
     selectedRole: string;
     selectedCtx: any;
     idString: string;
-    isNewGrant: boolean = false;
     // token: string;
     isLoggedIn: boolean;
     loginSubscription: Subscription;
@@ -39,7 +38,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
         private messageService: MessagesService,
         private loginService: AuthenticationService,
         private elasticService: Elastic4usersService,
-        private usersService: UsersService 
+        private usersService: UsersService,
+        private router: Router
         ) { }
 
     ngOnInit() {
@@ -61,7 +61,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
     }
 
     getNewGrantSelect() {
-        this.isNewGrant = true;
         this.elasticService.listAllContextNames((contexts) => {
         this.ctxs = contexts;
         });
@@ -103,7 +102,9 @@ export class GrantsComponent implements OnInit, OnDestroy {
         alert("adding   " + JSON.stringify(this.selectedGrants));
         this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(data => {
             this.messageService.success("added Grants to " + this.selectedUser.userid);
+            this.selectedGrants.forEach(g => this.selectedUser.grants.push(g));
             this.selectedGrants.slice(0, this.selectedGrants.length);
+            this.grantsToAdd = "";
         }, error => {
             this.messageService.error(error);
         });

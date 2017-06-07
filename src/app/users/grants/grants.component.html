@@ -5,22 +5,22 @@
 			<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
 			</select>
 		</div>
-		<div class="col-9">
+		<div class="col-7">
 			<select class="select form-control form-control-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)" name="selectedCtx">
 			<option [ngValue]="ctx" *ngFor="let ctx of ctxs">{{ctx.name}} {{ctx.reference.objectId}}</option>
 			</select>
 		</div>
-		<div class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm" name="add" value="add" (click)="addGrant()"
+		<div class="col-3">
+			<input type="button" class="btn btn-outline-primary btn-sm float-left" name="add" value="add" (click)="addGrant()"
 			/>
 		</div>
 </div>
 <div class="form-group row offset-2 w-1ßß">
-		<div class="col-10">
-			<textarea class="form-control" rows="3" id="selectedGrants" [(ngModel)]="grantsToAdd"></textarea> 
+		<div class="col-9">
+			<textarea class="form-control form-control-sm" rows="3" id="selectedGrants" [(ngModel)]="grantsToAdd"></textarea> 
 		</div>
-		<div class="col-2">
-			<input type="button" class="btn btn-outline-primary btn-sm" name="addGrants" value="add Grants" (click)="addGrants()"/>
+		<div class="col-3">
+			<input type="button" class="btn btn-outline-primary btn-sm float-left" name="addGrants" value="add Grants" (click)="addGrants()"/>
 		</div>
 </div>
 <!--</div>-->
