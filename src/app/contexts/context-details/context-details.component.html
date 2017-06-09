@@ -55,34 +55,66 @@
       </div>
 
       <div class="form-group row w-100">
-        <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">Admin Descriptor</label>
+        <label for="allowedGenres" class="col-2 col-form-label col-form-label-sm">Allowed Genres</label>
         <div class="col-10 text-right">
-          <pre>{{ctx.adminDescriptor | json}}</pre>
+          <div class="form-group row">
+            <div class="col-5">
+              <select class="select form-control form-control-sm" size="10" multiple name="genres2display" [(ngModel)]="selectedGenres">
+        <option *ngFor="let genre of genres2display" [value]="genre">{{genre}}</option>
+      </select>
+            </div>
+            <div class="col-1 justify-content-start">
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addGenres" value=">>" (click)="addGenres(selectedGenres)"
+              />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllGenres" value="all" (click)="addAllGenres()"
+              />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" data-toggle="tooltip" data-placement="top" title="REMOVE ALL!"
+                name="clearGenres" value="<<" (click)="clearGenres()" />
+            </div>
+            <div class="col-6">
+              <ul class="list-group">
+                <div silver="lightgreen" class="list-group-item list-group-item-success p-0" *ngFor="let genre of allowedGenres" [class.selected]="isSelected(genre)">
+                  <span class="col-sm-11">{{genre}}</span>
+                  <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="delete(genre); $event.stopPropagation()"
+                                name="delete" value="x" /></span>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row w-100">
+        <label for="aloowedSubjects" class="col-2 col-form-label col-form-label-sm">Subject Classifications</label>
+        <div class="col-10 text-right">
+          <div class="form-group row">
+            <div class="col-5">
+              <select class="select form-control form-control-sm" size="10" multiple name="subjects2display" [(ngModel)]="selectedSubjects">
+        <option *ngFor="let subject of subjects2display" [value]="subject">{{subject}}</option>
+      </select>
+            </div>
+            <div class="col-1">
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addSubjects" value=">>" (click)="addSubjects(selectedSubjects)"
+              />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllSubjects" value="all" (click)="addAllSubjects()"
+              />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" data-toggle="tooltip" data-placement="top" title="REMOVE ALL!"
+                name="clearSubjects" value="<<" (click)="clearSubjects()" />
+            </div>
+            <div class="col-6">
+              <ul class="list-group">
+                <div silver="lightgreen" class="list-group-item list-group-item-success p-0" *ngFor="let subject of allowedSubjects" [class.selected]="isSelected(subject)">
+                  <span class="col-sm-11">{{subject}}</span>
+                  <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="deleteSubject(subject); $event.stopPropagation()"
+                                name="deleteSubject" value="x" /></span>
+                </div>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </form>
-  </div>
 
+    <pre>{{ctx.adminDescriptor | json}}</pre>
 
-
-
-
-
-
-  <div class="form-group row">
-    <div class="col-6">
-
-      <select class="select form-control" size="10" multiple [(ngModel)]="selectedGenre">
-        <option *ngFor="let genre of genres2display" [value]="genre">{{genre}}</option>
-      </select>
-    </div>
-    <div class="col-1">
-      <input type="button" class="btn btn-outline-success btn-sm" name="addGenres" value=">>" (click)="addGenres(selectedGenre)" />
-      <input type="button" class="btn btn-outline-success btn-sm" name="removeGenres" value="<<" (click)="removeGenres(selectedGenres)" />
-    </div>
-
-    <div class="col-5">
-      <!--<genre-area id="ctxgenres" [(ngModel)]="ctxGenres"></genre-area>-->
-      <textarea class="form-control" rows="10" id="selectedgenres" [(ngModel)]="selectedGenres"></textarea>
-    </div>
   </div>

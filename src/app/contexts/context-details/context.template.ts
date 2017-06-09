@@ -36,6 +36,20 @@ export const template = {
   }
 };
 
+export enum subjects {
+  DDC,
+  ISO639_3,
+  JEL,
+  MPINP,
+  MPIPKS,
+  MPIRG,
+  MPIS_GROUPS,
+  MPIS_PROJECTS,
+  MPIWG_PROJECTS
+
+
+}
+
 export enum genres {
 ARTICLE,
 CONFERENCE_PAPER,

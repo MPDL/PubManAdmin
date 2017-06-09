@@ -13,9 +13,31 @@ export class ContextsService {
 
     context_url = props.pubman_rest_url + "/contexts"
     ctx;
+    ctxs: any[];
 
     constructor(private http: Http,
         private message: MessagesService) { }
+
+    listAllContexts(token: string): Observable<any[]> {
+    let headers = new Headers();
+    // headers.set("Authorization", token);
+    let options = new RequestOptions({
+      headers: headers,
+      method: RequestMethod.Get,
+      url: this.context_url
+    });
+    return this.http.request(new Request(options))
+      .map((response: Response) => {
+        this.ctxs = response.json();
+        this.ctxs.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          else if (a.name > b.name) return 1;
+          else return 0;
+        });
+        return this.ctxs;
+      })
+      .catch((error: any) => Observable.throw(error.json().message || 'Error getting context list'));
+  }
 
     getContext(id, token): Observable<any> {
 

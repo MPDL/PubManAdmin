@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContextsService } from '../services/contexts.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { genres } from './context.template';
+import { genres, subjects } from './context.template';
 import { Affiliation } from '../../base/common/model';
 
 @Component({
@@ -23,8 +23,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   loginSubscription: Subscription;
   genres2display: string[] = [];
-  selectedGenre: string;
-  selectedGenres: string[] = [];
+  selectedGenres: string[];
+  allowedGenres: string[] = [];
+  subjects2display: string[] = [];
+  selectedSubjects: string[];
+  allowedSubjects: string[] = [];
   selectedOu: any;
 
   constructor(private ctxSvc: ContextsService,
@@ -39,6 +42,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.isNewCtx = true;
     }
     this.genres2display = Object.keys(genres).filter(val => val.match(/^[A-Z]/));
+    this.allowedGenres = this.ctx.adminDescriptor.allowedGenres || [];
+    this.subjects2display = Object.keys(subjects).filter(val => val.match(/^[A-Z]/));
+    this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications || [];
   }
 
   ngOnDestroy() {
@@ -54,15 +60,60 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  addGenres(selected) {
-    this.selectedGenre = selected;
-    //this.selectedGenres = JSON.stringify(selected, null, 1);
-    this.selectedGenres.push(this.selectedGenre);
+  isSelected(genre) {
+    return true;
   }
 
-  removeGenres(selected) {
+  delete(genre) {
+    let index = this.allowedGenres.indexOf(genre);
+    this.allowedGenres.splice(index, 1);
+  }
+
+  deleteSubject(subject) {
+    let index = this.allowedSubjects.indexOf(subject);
+    this.allowedSubjects.splice(index, 1);
+  }
+
+  addGenres(selected) {
     this.selectedGenres = selected;
-    this.selectedGenre;
+    this.selectedGenres.forEach(g => {
+      if (!this.allowedGenres.includes(g)) {
+        this.allowedGenres.push(g);
+      }
+    });
+  }
+
+  addSubjects(selected) {
+    this.selectedSubjects = selected;
+    this.selectedSubjects.forEach(s => {
+      if (!this.allowedSubjects.includes(s)) {
+        this.allowedSubjects.push(s);
+      }
+    });
+  }
+
+  addAllGenres() {
+    this.genres2display.forEach(g => {
+      if (!this.allowedGenres.includes(g)) {
+        this.allowedGenres.push(g);
+      }
+    });
+  }
+
+  addAllSubjects() {
+    this.subjects2display.forEach(s => {
+      if (!this.allowedSubjects.includes(s)) {
+        this.allowedSubjects.push(s);
+      }
+    });
+  }
+
+  clearGenres() {
+    this.allowedGenres.splice(0, this.allowedGenres.length);
+  }
+
+  clearSubjects() {
+    this.allowedSubjects.splice(0, this.allowedSubjects.length);
   }
 
   activateContext(ctx) {

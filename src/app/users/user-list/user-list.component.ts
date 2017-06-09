@@ -19,7 +19,7 @@ import { MessagesService } from '../../base/services/messages.service';
 
 export class UserListComponent implements OnInit, OnDestroy {
 
-  users: User[];
+  users: Observable<User[]>;
   selected: User;
   loggedInUser: User;
   isNewUser: boolean = false;
@@ -73,9 +73,12 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getAllUsersAsObservable(token) {
+    /*
     this.elastic.listAllUsers(users => {
       this.users = users;
     });
+    */
+    this.users = this.usersService.listAllUsers(token);
   }
 
   isSelected(user: User) {
@@ -106,6 +109,5 @@ export class UserListComponent implements OnInit, OnDestroy {
       }
       );
     this.selected = null;
-    this.getAllUsersAsObservable(this.token);
   }
 }

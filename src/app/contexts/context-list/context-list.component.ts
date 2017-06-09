@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -15,7 +15,7 @@ import { ContextsService } from '../services/contexts.service';
   templateUrl: './context-list.component.html',
   styleUrls: ['./context-list.component.scss']
 })
-export class ContextListComponent implements OnInit {
+export class ContextListComponent implements OnInit, OnDestroy {
 
   @ViewChild(PaginationComponent)
   private paginator: PaginationComponent;
@@ -37,19 +37,31 @@ export class ContextListComponent implements OnInit {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
-    this.listAllContexts();
+    this.listAllContexts(this.token);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   updatePaginator() {
     this.pagedCtxs = this.paginator.pagedItems;
   }
 
-  listAllContexts() {
+  listAllContexts(token) {
+    /*
     this.elastic.listAllContextNames(names => {
       this.ctxs = names;
       this.paginator.init(1, this.ctxs);
       this.pagedCtxs = this.paginator.pagedItems;
     });
+    */
+    this.ctxSvc.listAllContexts(token)
+      .subscribe(ctxs => {
+        this.ctxs = ctxs;
+        this.paginator.init(1, this.ctxs);
+        this.pagedCtxs = this.paginator.pagedItems;
+      });
   }
 
   goTo(ctx) {
@@ -78,7 +90,6 @@ export class ContextListComponent implements OnInit {
         this.message.error(error);
       });
     this.selected = null;
-    let index = this.ctxs.indexOf(ctx);
-    this.ctxs.splice(index, 1);
+
   }
 }

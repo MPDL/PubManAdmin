@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
+import { AuthenticationService } from '../../base/services/authentication.service';
+import { MessagesService } from '../../base/services/messages.service';
+import { OrganizationsService } from '../services/organizations.service';
 import { Elastic4ousService } from '../services/elastic4ous.service';
 
 @Component({
@@ -8,62 +13,53 @@ import { Elastic4ousService } from '../services/elastic4ous.service';
   templateUrl: './organization-list.component.html',
   styleUrls: ['./organization-list.component.scss']
 })
-export class OrganizationListComponent implements OnInit {
+export class OrganizationListComponent implements OnInit, OnDestroy {
 
   external: boolean = false;
   current: string = "";
   currentChild = "";
   selected: any;
-
-  mpgOus: any[];
-  extOus: any[];
-  children: any[];
-  grandChildren: any[];
+  subscription: Subscription;
+  token;
+  mpgOus: Observable<any[]>;
+  extOus: Observable<any[]>;
+  children: Observable<any[]>;
+  grandChildren: Observable<any[]>;
   grandGrandChildren: any[];
 
   constructor(
-    private ouSvc: Elastic4ousService,
+    private ouSvc: OrganizationsService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private message: MessagesService,
+    private loginService: AuthenticationService
   ) { }
 
   ngOnInit() {
-    this.listOuNames4mpg("persistent13");
-    this.listOuNames4ext("persistent22");
+    this.subscription = this.loginService.token$.subscribe(token => {
+      this.token = token;
+    })
+    this.listOuNames4mpg("?q=parentAffiliations.objectId:ou_persistent13", this.token);
+    this.listOuNames4ext("?q=parentAffiliations.objectId:ou_persistent22", this.token);
   }
 
-  listOuNames4mpg(mother: string) {
-    this.ouSvc.listOuNames("parent", mother, (names) => {
-      this.mpgOus = names;
-    });
+  ngOnDestroy() {
+
+  }
+
+  listOuNames4mpg(query: string, token) {
+    this.mpgOus = this.ouSvc.listFilteredOus(token, query);
   }
 
   get diagnostic() { return JSON.stringify(this.mpgOus) };
 
-  listOuNames4ext(mother: string) {
-    this.ouSvc.listOuNames("parent", mother, (names) => {
-      this.extOus = names;
-
-      this.extOus.sort((a, b) => {
-        if (a < b) return -1;
-        else if (a > b) return 1;
-        else return 0;
-      });
-    });
+  listOuNames4ext(query: string, token) {
+    this.extOus = this.ouSvc.listFilteredOus(token, query);
   }
 
   getChildren(id) {
     this.current = id;
-    let ou_id = id.substring(id.indexOf('_') + 1)
-    this.ouSvc.listOuNames("parent", ou_id, (names) => {
-      this.children = names;
-
-      this.children.sort((a, b) => {
-        if (a < b) return -1;
-        else if (a > b) return 1;
-        else return 0;
-      });
-    });
+    this.children = this.ouSvc.listChildren4Ou(id, this.token);
   }
 
   getRidOfChildren(id) {
@@ -73,16 +69,7 @@ export class OrganizationListComponent implements OnInit {
 
   getChildrenOfChild(id) {
     this.currentChild = id;
-    let ou_id = id.substring(id.indexOf('_') + 1)
-    this.ouSvc.listOuNames("parent", ou_id, (names) => {
-      this.grandChildren = names;
-
-      this.grandChildren.sort((a, b) => {
-        if (a < b) return -1;
-        else if (a > b) return 1;
-        else return 0;
-      });
-    });
+    this.grandChildren = this.ouSvc.listChildren4Ou(id, this.token);
   }
 
   getRidOfChildrenOfChild(id) {
