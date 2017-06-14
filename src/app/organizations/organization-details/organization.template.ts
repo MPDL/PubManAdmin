@@ -2,15 +2,13 @@ export const template = {
     reference: {
         objectId: ""
     },
-    lastModificationDate: new Date(),
+    lastModificationDate: "",
     creator: {
         objectId: ""
     },
     predecessorAffiliations: [],
     defaultMetadata: {
-        alternativeNames: [
-            ""
-        ],
+        alternativeNames: [],
         city: "",
         countryCode: "",
         identifiers: [
@@ -21,9 +19,7 @@ export const template = {
         ],
         name: "",
         type: "",
-        descriptions: [
-            ""
-        ]
+        descriptions: []
     },
     hasChildren: false,
     childAffiliations: [],
@@ -36,6 +32,6 @@ export const template = {
     modifiedBy: {
         objectId: ""
     },
-    publicStatus: "closed",
-    creationDate: new Date()
+    publicStatus: null,
+    creationDate: ""
 };

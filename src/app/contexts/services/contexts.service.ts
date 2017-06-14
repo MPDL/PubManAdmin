@@ -103,7 +103,7 @@ export class ContextsService {
         headers.set("Authorization", token);
         headers.append('Content-Type', 'application/json');
         let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/open';
-        let body = JSON.stringify(ctx);
+        let body = JSON.stringify(ctx.lastModificationDate);
 
         let options = new RequestOptions({
             headers: headers,
@@ -124,7 +124,7 @@ export class ContextsService {
         headers.set("Authorization", token);
         headers.append('Content-Type', 'application/json');
         let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/close';
-        let body = JSON.stringify(ctx);
+        let body = JSON.stringify(ctx.lastModificationDate);
 
         let options = new RequestOptions({
             headers: headers,
@@ -140,21 +140,24 @@ export class ContextsService {
             .catch((error: any) => Observable.throw(error.json().message || 'Error closing context'));
     }
 
-    delete(id, token): Observable<number> {
+    delete(ctx: any, token: string): Observable<number> {
         let headers = new Headers();
         headers.set("Authorization", token);
-        let contextUrl = this.context_url + '/' + id;
+        headers.append('Content-Type', 'application/json');
+        let contextUrl = this.context_url + '/' + ctx.reference.objectId;
+        let body = JSON.stringify(ctx.lastModificationDate);
         let options = new RequestOptions({
             headers: headers,
             method: RequestMethod.Delete,
-            url: contextUrl
+            url: contextUrl,
+            body: body
         });
         return this.http.request(new Request(options))
             .map((response: Response) => {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || "Error deleting context"));
-    }
+            .catch((error: any) => Observable.throw(error.json().message || 'Error deleting context'));
+        }
 }
 

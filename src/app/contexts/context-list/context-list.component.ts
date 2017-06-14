@@ -79,17 +79,4 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/context', ctxid]);
   }
 
-  delete(ctx) {
-    this.selected = ctx;
-    this.ctxSvc.delete(this.selected, this.token)
-      .subscribe(
-      data => {
-        this.message.success('deleted ' + this.selected.reference.objectId + ' ' + data);
-      },
-      error => {
-        this.message.error(error);
-      });
-    this.selected = null;
-
-  }
 }

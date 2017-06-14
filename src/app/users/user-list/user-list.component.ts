@@ -99,10 +99,11 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   delete(user) {
     this.selected = user;
+    let id = this.selected.userid;
     this.usersService.delete(this.selected, this.token)
       .subscribe(
       data => {
-        this.messageService.success('deleted ' + this.selected.userid + ' ' + data);
+        this.messageService.success('deleted ' + id + ' ' + data);
       },
       error => {
         this.messageService.error(error);

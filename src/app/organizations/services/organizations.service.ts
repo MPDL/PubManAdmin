@@ -156,7 +156,7 @@ export class OrganizationsService {
         headers.set("Authorization", token);
         headers.append('Content-Type', 'application/json');
         let ouUrl = this.ous_rest_url + '/' + ou.reference.objectId + '/open';
-        let body = JSON.stringify(ou);
+        let body = JSON.stringify(ou.lastModificationDate);
 
         let options = new RequestOptions({
             headers: headers,
@@ -177,7 +177,7 @@ export class OrganizationsService {
         headers.set("Authorization", token);
         headers.append('Content-Type', 'application/json');
         let ouUrl = this.ous_rest_url + '/' + ou.reference.objectId + '/close';
-        let body = JSON.stringify(ou);
+        let body = JSON.stringify(ou.lastModificationDate);
 
         let options = new RequestOptions({
             headers: headers,
@@ -193,21 +193,25 @@ export class OrganizationsService {
             .catch((error: any) => Observable.throw(error.json().message || 'Error closing ou with id ' + ou.reference.objectId));
     }
 
-    delete(id, token): Observable<number> {
+    delete(ou: any, token: string): Observable<number> {
         let headers = new Headers();
         headers.set("Authorization", token);
-        let ouUrl = this.ous_rest_url + '/' + id;
+        headers.append('Content-Type', 'application/json');
+        let ouUrl = this.ous_rest_url + '/' + ou.reference.objectId;
+        let body = JSON.stringify(ou.lastModificationDate);
+        console.log("lmd " + body);
         let options = new RequestOptions({
             headers: headers,
             method: RequestMethod.Delete,
-            url: ouUrl
+            url: ouUrl,
+            body: body
         });
         return this.http.request(new Request(options))
             .map((response: Response) => {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || "Error deleting ou with id " + id));
+            .catch((error: any) => Observable.throw(error.json().message || "Error deleting ou with id " + ou.reference.objectId));
     }
 
 }

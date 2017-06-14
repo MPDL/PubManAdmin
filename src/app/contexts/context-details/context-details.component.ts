@@ -5,9 +5,10 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { ContextsService } from '../services/contexts.service';
+import { OrganizationsService } from '../../organizations/services/organizations.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { genres, subjects } from './context.template';
+import { genres, subjects, workflow } from './context.template';
 import { Affiliation } from '../../base/common/model';
 
 @Component({
@@ -20,6 +21,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   token: string;
   ctx: any;
   isNewCtx: boolean = false;
+  ous: any[];
+  selectedOu: any;
   subscription: Subscription;
   loginSubscription: Subscription;
   genres2display: string[] = [];
@@ -28,9 +31,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   subjects2display: string[] = [];
   selectedSubjects: string[];
   allowedSubjects: string[] = [];
-  selectedOu: any;
+  workflows2display: string[] = [];
+  selectedWorkflow: string;
 
   constructor(private ctxSvc: ContextsService,
+    private ouSvc: OrganizationsService,
     private router: Router,
     private route: ActivatedRoute,
     private login: AuthenticationService,
@@ -40,14 +45,42 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx = this.route.snapshot.data["ctx"];
     if (this.ctx.name == "new ctx") {
       this.isNewCtx = true;
+      this.listOuNames();
     }
+    this.loginSubscription = this.login.token$.subscribe(token => {
+      this.token = token;
+    });
     this.genres2display = Object.keys(genres).filter(val => val.match(/^[A-Z]/));
-    this.allowedGenres = this.ctx.adminDescriptor.allowedGenres || [];
+    if (this.ctx.adminDescriptor.allowedGenres != null) {
+      this.allowedGenres = this.ctx.adminDescriptor.allowedGenres || [];
+    } else {
+      this.ctx.adminDescriptor.allowedGenres = [];
+      this.allowedGenres = this.ctx.adminDescriptor.allowedGenres;
+    }
     this.subjects2display = Object.keys(subjects).filter(val => val.match(/^[A-Z]/));
-    this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications || [];
+    if (this.ctx.adminDescriptor.allowedSubjectClassifications != null) {
+      this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications || [];
+    } else {
+      this.ctx.adminDescriptor.allowedSubjectClassifications = [];
+      this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications;
+    }
+    
+    this.workflows2display = Object.keys(workflow).filter(val => val.match(/^[A-Z]/));
   }
 
   ngOnDestroy() {
+    this.loginSubscription.unsubscribe();
+  }
+
+  listOuNames() {
+    this.ouSvc.listChildren4Ou("ou_persistent13" ,this.token)
+    .subscribe(ous => {
+      this.ous = ous;
+    });
+  }
+
+  onChangeOu(val) {
+    this.selectedOu = val;
   }
 
   getSelectedCtx(id) {
@@ -64,7 +97,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  delete(genre) {
+  deleteGenre(genre) {
     let index = this.allowedGenres.indexOf(genre);
     this.allowedGenres.splice(index, 1);
   }
@@ -116,13 +149,47 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.allowedSubjects.splice(0, this.allowedSubjects.length);
   }
 
+  onChangedWorkflow(value) {
+    this.ctx.adminDescriptor.workflow = value;
+  }
+
   activateContext(ctx) {
     this.ctx = ctx;
+    if (this.ctx.state == 'CREATED' || this.ctx.state == 'CLOSED') {
+          this.ctxSvc.openContext(this.ctx, this.token)
+          .subscribe(httpStatus => {
+            this.message.success("Opened " + ctx.reference.objectId + " " + httpStatus);
+          }, error => {
+            this.message.error(error);
+          });
+    } else {
+      this.ctxSvc.closeContext(this.ctx, this.token)
+      .subscribe(httpStatus => {
+            this.message.success("Closed " + ctx.reference.objectId + " " + httpStatus);
+          }, error => {
+            this.message.error(error);
+          });
+    }
+    /*
     if (this.ctx.state == 'OPENED') {
       this.ctx.state = 'CLOSED';
     } else {
       this.ctx.state = 'OPENED';
     }
+    */
+  }
+
+  delete(ctx) {
+    this.ctx = ctx;
+    let id = this.ctx.reference.objectId;
+    this.ctxSvc.delete(this.ctx, this.token)
+      .subscribe(
+      data => {
+        this.message.success('deleted ' + id + ' ' + data);
+      }, error => {
+        this.message.error(error);
+      });
+    this.gotoList();
   }
 
   gotoList() {

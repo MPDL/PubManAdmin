@@ -44,7 +44,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.subscription.unsubscribe();
   }
 
   listOuNames4mpg(query: string, token) {

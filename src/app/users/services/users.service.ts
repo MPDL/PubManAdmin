@@ -146,12 +146,15 @@ export class UsersService {
   delete(user: User, token: string): Observable<number> {
     let headers = new Headers();
     headers.set("Authorization", token);
+    headers.append('Content-Type', 'application/json');
     let userUrl = this.usersUrl + '/' + user.reference.objectId;
+    let body = JSON.stringify(user.lastModificationDate);
 
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Delete,
-      url: userUrl
+      url: userUrl,
+      body: body
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {

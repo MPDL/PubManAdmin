@@ -1,11 +1,11 @@
 export const template = {
-    reference: {
+  reference: {
     objectId: "",
     title: ""
   },
   name: "",
   type: "PubMan",
-  state: "",
+  state: null,
   description: "",
   creator: {
     objectId: ""
@@ -16,12 +16,7 @@ export const template = {
     objectId: ""
   },
   validationPoints: [],
-  responsibleAffiliations: [
-    {
-      objectId: "",
-      title: ""
-    }
-  ],
+  responsibleAffiliations: [],
   adminDescriptor: {
     allowedGenres: [],
     allowedSubjectClassifications: [],
@@ -36,6 +31,11 @@ export const template = {
   }
 };
 
+export enum workflow {
+  SIMPLE,
+  STANDARD
+}
+
 export enum subjects {
   DDC,
   ISO639_3,
@@ -46,49 +46,47 @@ export enum subjects {
   MPIS_GROUPS,
   MPIS_PROJECTS,
   MPIWG_PROJECTS
-
-
 }
 
 export enum genres {
-ARTICLE,
-CONFERENCE_PAPER,
-BOOK_ITEM,
-THESIS,
-TALK_AT_EVENT,
-POSTER,
-BOOK,
-CONTRIBUTION_TO_COLLECTED_EDITION,
-REPORT,
-OTHER,
-PAPER,
-MEETING_ABSTRACT,
-BOOK_REVIEW,
-COURSEWARE_LECTURE,
-MONOGRAPH,
-COLLECTED_EDITION,
-PROCEEDINGS,
-CONTRIBUTION_TO_FESTSCHRIFT,
-CONTRIBUTION_TO_ENCYCLOPEDIA,
-NEWSPAPER_ARTICLE,
-CASE_NOTE,
-ISSUE,
-CONTRIBUTION_TO_COMMENTARY,
-CONFERENCE_REPORT,
-JOURNAL,
-CONTRIBUTION_TO_HANDBOOK,
-EDITORIAL,
-SERIES,
-PATENT,
-FILM,
-MANUSCRIPT,
-COMMENTARY,
-FESTSCHRIFT,
-OPINION,
-HANDBOOK,
-CASE_STUDY,
-ENCYCLOPEDIA,
-MANUAL,
-MULTI_VOLUME,
-NEWSPAPER
+  ARTICLE,
+  CONFERENCE_PAPER,
+  BOOK_ITEM,
+  THESIS,
+  TALK_AT_EVENT,
+  POSTER,
+  BOOK,
+  CONTRIBUTION_TO_COLLECTED_EDITION,
+  REPORT,
+  OTHER,
+  PAPER,
+  MEETING_ABSTRACT,
+  BOOK_REVIEW,
+  COURSEWARE_LECTURE,
+  MONOGRAPH,
+  COLLECTED_EDITION,
+  PROCEEDINGS,
+  CONTRIBUTION_TO_FESTSCHRIFT,
+  CONTRIBUTION_TO_ENCYCLOPEDIA,
+  NEWSPAPER_ARTICLE,
+  CASE_NOTE,
+  ISSUE,
+  CONTRIBUTION_TO_COMMENTARY,
+  CONFERENCE_REPORT,
+  JOURNAL,
+  CONTRIBUTION_TO_HANDBOOK,
+  EDITORIAL,
+  SERIES,
+  PATENT,
+  FILM,
+  MANUSCRIPT,
+  COMMENTARY,
+  FESTSCHRIFT,
+  OPINION,
+  HANDBOOK,
+  CASE_STUDY,
+  ENCYCLOPEDIA,
+  MANUAL,
+  MULTI_VOLUME,
+  NEWSPAPER
 };

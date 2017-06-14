@@ -3,7 +3,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AuthenticationService } from '../../base/services/authentication.service';
-import { Elastic4ousService } from '..//services/elastic4ous.service';
+import { MessagesService } from '../../base/services/messages.service';
+import { OrganizationsService } from '..//services/organizations.service';
 import { template } from './organization.template';
 import { User } from '../../base/common/model';
 
@@ -20,6 +21,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   selected: any;
   children: any[];
   predecessors: any[] = [];
+  alternativeName;
+  description;
 
   subscription: Subscription;
   loginSubscription: Subscription;
@@ -28,8 +31,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private elastic: Elastic4ousService,
-    private login: AuthenticationService
+    private ouSvc: OrganizationsService,
+    private login: AuthenticationService,
+    private message: MessagesService
   ) { }
 
   ngOnInit() {
@@ -43,74 +47,147 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         });
         let id = params['id'];
         if (id == 'new org') {
+          this.isNewOrganization = true;
           this.selected = template;
-          template.reference.objectId = "pure_newest_org";
-          template.creator.objectId = "pure_org_admin";
-          template.modifiedBy.objectId = "pure_org_admin";
+          template.reference.objectId = id;
         } else {
-          id = id.substring(id.indexOf('_') + 1);
-          this.getSelectedOu(id);
+          this.getSelectedOu(id, this.token);
           this.listChildren(id);
         }
-
       });
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     this.loginSubscription.unsubscribe();
   }
 
-  getSelectedOu(id) {
-    this.elastic.searchOu(id, (list) => {
-      this.selected = list[0];
-      if (this.selected.hasPredecessors == true) {
-        let pre_id = this.selected.predecessorAffiliations[0].objectId;
-        console.log("predecessor: " + pre_id);
-        this.listPredecessors(pre_id);
-      } else {
-        this.predecessors = [];
-      }
-    });
+  getSelectedOu(id, token) {
+    this.ouSvc.getOu(id, token)
+      .subscribe(ou => {
+        this.selected = ou;
+        if (this.selected.hasPredecessors == true) {
+          let pre_id = this.selected.predecessorAffiliations[0].objectId;
+          console.log("predecessor: " + pre_id);
+          this.listPredecessors(pre_id, token);
+        } else {
+          this.predecessors = [];
+        }
+      }, error => {
+        this.message.error(error);
+      });
   }
 
-  listPredecessors(id: string) {
-    this.elastic.listOuNames("predecessor", id, (names) => {
-      this.predecessors = names;
-    });
+  listPredecessors(id: string, token) {
+    this.ouSvc.listFilteredOus(token, "?q=reference.objectId:" + id)
+      .subscribe(ous => {
+        this.predecessors = ous;
+      });
   }
 
   listChildren(mother: string) {
-    this.elastic.listOuNames("parent", mother, (names) => {
-      this.children = names;
-
-      this.children.sort((a, b) => {
-        if (a < b) return -1;
-        else if (a > b) return 1;
-        else return 0;
+    this.ouSvc.listChildren4Ou(mother, null)
+      .subscribe(children => {
+        this.children = children;
       });
-    });
   }
 
   openClose(ou) {
     this.selected = ou;
-    if (this.selected.publicStatus == 'opened') {
-      this.selected.publicStatus = 'closed';
+    if (this.selected.publicStatus == 'CREATED' || this.selected.state == 'CLOSED') {
+      this.ouSvc.openOu(this.selected, this.token)
+        .subscribe(httpStatus => {
+          this.message.success("Opened " + this.selected.reference.objectId + " " + httpStatus);
+        }, error => {
+          this.message.error(error);
+        });
     } else {
-      this.selected.publicStatus = 'opened';
+      this.ouSvc.closeOu(this.selected, this.token)
+        .subscribe(httpStatus => {
+          this.message.success("Closed " + this.selected.reference.objectId + " " + httpStatus);
+        }, error => {
+          this.message.error(error);
+        });
     }
   }
 
-  deleteChild(ou) {
-    let index = this.children.indexOf(ou);
-    this.children.splice(index, 1);
+  isSelected(name) {
+    return true;
+  }
+
+  addName(selected) {
+      if (!this.selected.defaultMetadata.alternativeNames.includes(selected)) {
+        this.selected.defaultMetadata.alternativeNames.push(selected);
+      }
+  }
+
+  deleteName(selected) {
+    let index = this.selected.defaultMetadata.alternativeNames.indexOf(selected);
+    this.selected.defaultMetadata.alternativeNames.splice(index, 1);
+  }
+
+  clearNames() {
+    this.selected.defaultMetadata.alternativeNames.splice(0, this.selected.defaultMetadata.alternativeNames.length);
+  }
+
+  addDesc(selected) {
+      if (!this.selected.defaultMetadata.descriptions.includes(selected)) {
+        this.selected.defaultMetadata.descriptions.push(selected);
+      }
+  }
+
+  deleteDesc(selected) {
+    let index = this.selected.defaultMetadata.descriptions.indexOf(selected);
+    this.selected.defaultMetadata.descriptions.splice(index, 1);
+  }
+
+  clearDescs() {
+    this.selected.defaultMetadata.descriptions.splice(0, this.selected.defaultMetadata.descriptions.length);
   }
 
   save(ou) {
-    // alert("not yet implemented!");
-    ou.lastModificationDate = new Date();
-    ou.modifiedBy.objectId = this.user.reference.objectId;
-    this.elastic.updateOu(ou);
+    this.selected = ou;
+    if (this.isNewOrganization) {
+      this.ouSvc.postOu(this.selected, this.token)
+        .subscribe(
+        data => {
+          this.message.success('added new organization ' + data);
+          this.gotoList();
+          this.selected = null;
+        },
+        error => {
+          this.message.error(error);
+        });
+
+    } else {
+      this.message.success("updating " + this.selected.reference.objectId);
+      this.ouSvc.putOu(this.selected, this.token)
+        .subscribe(
+        data => {
+          this.message.success('updated ' + this.selected.reference.objectId + ' ' + data);
+          this.gotoList();
+          this.selected = null;
+        },
+        error => {
+          this.message.error(error);
+        }
+        );
+    }
   }
+
+  delete(ou) {
+    this.selected = ou;
+    let id = this.selected.reference.objectId;
+    this.ouSvc.delete(this.selected, this.token)
+      .subscribe(
+      data => {
+        this.message.success('deleted ' + id + ' ' + data);
+      }, error => {
+        this.message.error(error);
+      });
+    this.gotoList();
+  }
+
 
   showDetails(id) {
     this.router.navigate(['/organization', id]);

@@ -5,15 +5,18 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
 import { ContextsService } from './contexts.service';
+import { MessagesService } from '../../base/services/messages.service';
 import { template } from '../context-details/context.template';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
 
-  constructor(private ctxSvc: ContextsService,
-      private router: Router) { }
+    constructor(
+        private ctxSvc: ContextsService,
+        private message: MessagesService,
+        private router: Router) { }
 
-      resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
         let id = route.params['id'];
         if (id == 'new ctx') {
             let ctx = template;
@@ -21,9 +24,13 @@ export class ContextDetailsResolverService implements Resolve<any> {
             return Observable.of(ctx);
         } else {
             let token = route.params['token'];
-        return this.ctxSvc.getContext(id, token).first(); // add first() to ensure observable completion 
+            return this.ctxSvc.getContext(id, token).first()
+                .catch((err, obs) => {
+                    this.message.error(err);
+                    return Observable.throw(err);
+                }); // add first() to ensure observable completion 
         }
-      }
+    }
 
 }
 
