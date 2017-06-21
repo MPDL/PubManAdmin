@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 
+import { SharedModule } from '../base/shared/shared.module';
 import { UsersRoutingModule } from './users-routing.module';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
@@ -16,6 +17,7 @@ import { GrantsComponent } from './grants/grants.component';
     FormsModule,
     HttpModule,
     CommonModule,
+    SharedModule,
     UsersRoutingModule
   ],
   declarations: [

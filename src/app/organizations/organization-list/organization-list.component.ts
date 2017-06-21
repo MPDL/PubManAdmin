@@ -65,6 +65,10 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   getRidOfChildren(id) {
     this.current = "";
     this.children = null;
+    if (this.currentChild.length > 0) {
+      this.currentChild = "";
+      this.grandChildren = null;
+    }
   }
 
   getChildrenOfChild(id) {

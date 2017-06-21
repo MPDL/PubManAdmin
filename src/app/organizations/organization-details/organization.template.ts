@@ -1,3 +1,8 @@
+export const identifier = {
+    typeString: "",
+    id: ""
+};
+
 export const template = {
     reference: {
         objectId: ""
@@ -12,10 +17,7 @@ export const template = {
         city: "",
         countryCode: "",
         identifiers: [
-            {
-                typeString: "",
-                id: ""
-            }
+            identifier
         ],
         name: "",
         type: "",
@@ -35,3 +37,4 @@ export const template = {
     publicStatus: null,
     creationDate: ""
 };
+

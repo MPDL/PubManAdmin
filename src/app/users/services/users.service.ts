@@ -101,6 +101,48 @@ export class UsersService {
       .catch((error: any) => Observable.throw(error.json().message || 'Error updating user'));
   }
 
+  activate(user: User, token: string): Observable<number> {
+        let headers = new Headers();
+        headers.set("Authorization", token);
+        headers.append('Content-Type', 'application/json');
+        let userUrl = this.usersUrl + '/' + user.reference.objectId + '/activate';
+        let body = JSON.stringify(user.lastModificationDate);
+
+        let options = new RequestOptions({
+            headers: headers,
+            method: RequestMethod.Put,
+            url: userUrl,
+            body: body
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => {
+                let status = response.status;
+                return status;
+            })
+            .catch((error: any) => Observable.throw(error.json().message || 'Error activating user with id ' + user.reference.objectId));
+    }
+
+    deactivate(user: User, token: string): Observable<number> {
+        let headers = new Headers();
+        headers.set("Authorization", token);
+        headers.append('Content-Type', 'application/json');
+        let userUrl = this.usersUrl + '/' + user.reference.objectId + '/deactivate';
+        let body = JSON.stringify(user.lastModificationDate);
+
+        let options = new RequestOptions({
+            headers: headers,
+            method: RequestMethod.Put,
+            url: userUrl,
+            body: body
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => {
+                let status = response.status;
+                return status;
+            })
+            .catch((error: any) => Observable.throw(error.json().message || 'Error deactivating user with id ' + user.reference.objectId));
+    }
+
   addGrants(user: User, grants: Grant[], token: string): Observable<number> {
     let headers = new Headers();
     headers.set("Authorization", token);

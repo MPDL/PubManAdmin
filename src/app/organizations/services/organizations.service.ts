@@ -199,7 +199,6 @@ export class OrganizationsService {
         headers.append('Content-Type', 'application/json');
         let ouUrl = this.ous_rest_url + '/' + ou.reference.objectId;
         let body = JSON.stringify(ou.lastModificationDate);
-        console.log("lmd " + body);
         let options = new RequestOptions({
             headers: headers,
             method: RequestMethod.Delete,

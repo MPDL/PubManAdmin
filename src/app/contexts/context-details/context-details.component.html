@@ -3,7 +3,7 @@
     <div class="card-block">
       <h4 class="card-title">{{ctx.name}}</h4>
     </div>
-    <form class="list-group-item text-success" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
+    <form class="list-group-item text-success" name="form" (ngSubmit)="f.valid && save()" #f="ngForm" novalidate>
 
       <div class="form-group row w-100">
         <label for="ctx-name" class="col-2 col-form-label col-form-label-sm">name</label>
@@ -32,13 +32,13 @@
         </div>
       </div>
       <div *ngIf="!isNewCtx" class="form-group row w-100">
-        <label for="ctx-ou" class="col-2 col-form-label col-form-label-sm">Organization</label>
+        <label for="ctx-ou" class="col-2 col-form-label col-form-label-sm">organization</label>
         <div class="col-10">
           <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="ctx.responsibleAffiliations[0].title" id="ctx-ou">
         </div>
       </div>
       <div *ngIf="isNewCtx" class="form-group row w-100">
-        <label for="ou2select" class="col-2 col-form-label col-form-label-sm">Organization</label>
+        <label for="ou2select" class="col-2 col-form-label col-form-label-sm">organization</label>
         <div class="col-10">
           <select id="ou2select" class="select form-control form-control-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)"
             name="selectedOu">
@@ -51,12 +51,13 @@
         <div class="col-3 offset-9">
           <input type="button" class="btn btn-outline-success btn-sm" name="cancel" value="cancel" (click)="gotoList()" />
           <input type="button" class="btn btn-outline-success btn-sm" name="save" value="save" (click)="save(ctx)" />
-          <input *ngIf="ctx.state === 'CREATED'" type="button" class="btn btn-outline-success btn-sm" name="delete" value="delete" (click)="delete(ctx)" />
+          <input *ngIf="ctx.state === 'CREATED'" type="button" class="btn btn-outline-success btn-sm" name="delete" value="delete"
+            (click)="delete(ctx)" />
         </div>
       </div>
 
       <div class="form-group row w-100">
-        <label for="allowedGenres" class="col-2 col-form-label col-form-label-sm">Allowed Genres</label>
+        <label for="allowedGenres" class="col-2 col-form-label col-form-label-sm">allowed genres</label>
         <div class="col-10 text-right">
           <div class="form-group row">
             <div class="col-5">
@@ -74,7 +75,7 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div silver="lightgreen" class="list-group-item list-group-item-success p-0" *ngFor="let genre of allowedGenres" [class.selected]="isSelected(genre)">
+                <div silver="palegreen" class="list-group-item list-group-item-success p-0" *ngFor="let genre of allowedGenres" [class.selected]="isSelected(genre)">
                   <span class="col-sm-11">{{genre}}</span>
                   <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="deleteGenre(genre); $event.stopPropagation()"
                                 name="deleteGenre" value="x" /></span>
@@ -86,7 +87,7 @@
       </div>
 
       <div class="form-group row w-100">
-        <label for="allowedSubjects" class="col-2 col-form-label col-form-label-sm">Subject Classifications</label>
+        <label for="allowedSubjects" class="col-2 col-form-label col-form-label-sm">subject classifications</label>
         <div class="col-10 text-right">
           <div class="form-group row">
             <div class="col-5">
@@ -104,7 +105,7 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div silver="lightgreen" class="list-group-item list-group-item-success p-0" *ngFor="let subject of allowedSubjects" [class.selected]="isSelected(subject)">
+                <div silver="palegreen" class="list-group-item list-group-item-success p-0" *ngFor="let subject of allowedSubjects" [class.selected]="isSelected(subject)">
                   <span class="col-sm-11">{{subject}}</span>
                   <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="deleteSubject(subject); $event.stopPropagation()"
                                 name="deleteSubject" value="x" /></span>
@@ -116,7 +117,7 @@
       </div>
 
       <div class="form-group row w-100">
-        <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">Workflow</label>
+        <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">workflow</label>
         <div class="col-10 text-right">
           <div class="form-group row">
             <div class="col-5">
@@ -125,21 +126,21 @@
       </select>
             </div>
             <div class="col-1">
-              
+
             </div>
             <div class="col-6">
-          <input silver="lightgreen" class="form-control form-control-sm" type="text" readonly name="allowedWorkflow" [ngModel]="ctx.adminDescriptor?.workflow">
+              <input silver="palegreen" class="form-control form-control-sm" type="text" readonly name="allowedWorkflow" [ngModel]="ctx.adminDescriptor?.workflow">
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group row w-100">
-        <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">Contact Email</label>
+        <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">contact email</label>
         <div class="col-10 text-right">
           <div class="form-group row">
             <div class="col-5">
-                <input class="form-control form-control-sm" type="text" name="contactEmail" [ngModel]="ctx.adminDescriptor?.contactEmail">
+              <input class="form-control form-control-sm" type="text" name="contactEmail" #contactEmail="ngModel" [(ngModel)]="ctx.adminDescriptor.contactEmail">
             </div>
             <div class="col-1">
             </div>
@@ -149,7 +150,5 @@
         </div>
       </div>
     </form>
-    <!--
-    <pre>{{ctx | json}}</pre>
-    -->
   </div>
+</div>

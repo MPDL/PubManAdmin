@@ -6,18 +6,13 @@
       <h4 class="card-title">Users</h4>
       <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewUser()" />
     </div>
-    <div class="list-group-item">
-
-      <table class="table table-hover table-sm text-primary">
-        <tbody id="userTable">
-          <tr class="list-group-item row p-1" *ngFor="let user of users | async" [class.selected]="isSelected(user)" (click)="onSelect(user)">
-            <th class="col-sm-1" scope="row">{{user.reference.objectId}}</th>
-            <td class="col-sm-10">{{user.name}} ({{user.userid}})</td>
-            <td class="col-sm-1"> <input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
-                name="delete" value="x" /></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <ul class="list-group">
+          <div silver="lightgray" class="list-group-item list-group-item-primary text-primary p-1" *ngFor="let user of users | async" [class.selected]="isSelected(user)" (click)="onSelect(user)">
+            <span class="col-sm-1">{{user.reference.objectId}}</span>
+            <span class="col-sm-10">{{user.name}} ({{user.userid}})</span>
+            <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
+                name="delete" value="x" /></span>
+          </div>
+    </ul>
   </div>
 </div>

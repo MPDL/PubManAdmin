@@ -66,6 +66,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
     
     this.workflows2display = Object.keys(workflow).filter(val => val.match(/^[A-Z]/));
+    this.selectedWorkflow = this.ctx.adminDescriptor.workflow;
   }
 
   ngOnDestroy() {

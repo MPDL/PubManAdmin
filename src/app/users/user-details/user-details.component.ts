@@ -108,16 +108,20 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   activateUser(user) {
     this.selected = user;
     if (this.selected.active == true) {
-      this.selected.active = false;
+      this.usersService.deactivate(this.selected, this.token)
+        .subscribe(httpStatus => {
+          this.messageService.success("Deactivated " + this.selected.reference.objectId + " " + httpStatus);
+        }, error => {
+          this.messageService.error(error);
+        });
     } else {
-      this.selected.active = true;
+      this.usersService.activate(this.selected, this.token)
+        .subscribe(httpStatus => {
+          this.messageService.success("Activated " + this.selected.reference.objectId + " " + httpStatus);
+        }, error => {
+          this.messageService.error(error);
+        });
     }
-  }
-
-  getNameForOU(ouId) {
-    let id = this.selected.affiliations[0].objectId.substring(this.selected.affiliations[0].objectId.lastIndexOf("/") + 1);
-    console.log("ctx id passed to elastic " + id);
-    let result = this.elasticService.getOUName(id, (s) => this.selected.affiliations[0].objectId = s);
   }
 
   save(user2save) {
@@ -129,7 +133,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         aff.objectId = ou_id;
         this.selected.affiliations.push(aff);
       }
-      console.log("creating   " + JSON.stringify(this.selected));
       this.usersService.postUser(this.selected, this.token)
         .subscribe(
         data => {

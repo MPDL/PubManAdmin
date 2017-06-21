@@ -5,9 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '..//services/organizations.service';
-import { template } from './organization.template';
-import { User } from '../../base/common/model';
-
+import { template, identifier } from './organization.template';
 
 @Component({
   selector: 'app-organization-details',
@@ -17,12 +15,13 @@ import { User } from '../../base/common/model';
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   token: string;
-  user: User;
   selected: any;
   children: any[];
   predecessors: any[] = [];
   alternativeName;
   description;
+  ouIdentifierId;
+  ouIdentifier = identifier;
 
   subscription: Subscription;
   loginSubscription: Subscription;
@@ -41,9 +40,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.loginSubscription = this.login.token$.subscribe(token => {
           this.token = token;
-          this.login.who(this.token).subscribe(user => {
-            this.user = user;
-          });
         });
         let id = params['id'];
         if (id == 'new org') {
@@ -68,7 +64,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.selected = ou;
         if (this.selected.hasPredecessors == true) {
           let pre_id = this.selected.predecessorAffiliations[0].objectId;
-          console.log("predecessor: " + pre_id);
           this.listPredecessors(pre_id, token);
         } else {
           this.predecessors = [];
@@ -116,9 +111,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addName(selected) {
-      if (!this.selected.defaultMetadata.alternativeNames.includes(selected)) {
-        this.selected.defaultMetadata.alternativeNames.push(selected);
-      }
+    if (!this.selected.defaultMetadata.alternativeNames.includes(selected)) {
+      this.selected.defaultMetadata.alternativeNames.push(selected);
+    }
+    this.alternativeName = "";
   }
 
   deleteName(selected) {
@@ -131,9 +127,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addDesc(selected) {
-      if (!this.selected.defaultMetadata.descriptions.includes(selected)) {
-        this.selected.defaultMetadata.descriptions.push(selected);
-      }
+    if (!this.selected.defaultMetadata.descriptions.includes(selected)) {
+      this.selected.defaultMetadata.descriptions.push(selected);
+    }
+    this.description = "";
   }
 
   deleteDesc(selected) {
@@ -143,6 +140,23 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   clearDescs() {
     this.selected.defaultMetadata.descriptions.splice(0, this.selected.defaultMetadata.descriptions.length);
+  }
+
+  addIdentifier(selected) {
+    this.ouIdentifier.id = selected;
+    if (!this.selected.defaultMetadata.identifiers.includes(this.ouIdentifier)) {
+      this.selected.defaultMetadata.identifiers.push(this.ouIdentifier);
+    }
+    this.ouIdentifierId = "";
+  }
+
+  deleteIdentifier(selected) {
+    let index = this.selected.defaultMetadata.identifiers.indexOf(selected);
+    this.selected.defaultMetadata.identifiers.splice(index, 1);
+  }
+
+  clearIdentifiers() {
+    this.selected.defaultMetadata.identifiers.splice(0, this.selected.defaultMetadata.identifiers.length);
   }
 
   save(ou) {

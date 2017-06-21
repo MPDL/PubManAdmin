@@ -9,28 +9,34 @@
       </div>
       <ul id="mpg-org-units" class="list-group w-100">
         <div silver="lightsteelblue" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let mpgOu of mpgOus | async">
-          <a (click)="onSelect(mpgOu)">
+          <div class="row">
+            <div class="col-sm-11">
+              <a (click)="onSelect(mpgOu)">
           <span class="text-info"> {{mpgOu.defaultMetadata.name}}</span>
         </a>
-          <button *ngIf="mpgOu.hasChildren && current === ''" type="button" class="btn-outline-info ml-3" (click)="getChildren(mpgOu.reference.objectId)">children</button>
-          <button *ngIf="mpgOu.reference.objectId === current" type="button" class="btn-outline-info ml-3" (click)="getRidOfChildren(mpgOu.reference.objectId)">hide</button>
-
+            </div>
+            <div class="col-sm-1">
+              <button *ngIf="mpgOu.hasChildren && current === ''" type="button" class="btn-outline-info" (click)="getChildren(mpgOu.reference.objectId)">more</button>
+              <button *ngIf="mpgOu.reference.objectId === current" type="button" class="btn-outline-info" (click)="getRidOfChildren(mpgOu.reference.objectId)">less</button>
+            </div>
+          </div>
           <ul *ngIf="mpgOu.reference.objectId === current" class="list-group w-100">
-             <div silver="lightskyblue" class="list-group-item list-group-item-info bg-faded p-1" *ngFor="let child of children | async" [class.selected]="isSelected(child)">
+            <div silver="lightskyblue" class="list-group-item list-group-item-info bg-faded p-1" *ngFor="let child of children | async"
+              [class.selected]="isSelected(child)">
 
-            <a (click)="onSelect(child)">
+              <a class="col-sm-11" (click)="onSelect(child)">
                 <span class="badge text-info">></span><span class="text-info">{{ child.defaultMetadata.name }}</span>
               </a>
-              <button *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn-outline-info ml-3" (click)="getChildrenOfChild(child.reference.objectId)">more</button>
-              <button *ngIf="child.reference.objectId === currentChild" type="button" class="btn-outline-info ml-3" (click)="getRidOfChildrenOfChild(child.reference.objectId)">less</button>
 
-              <!--<div *ngIf="grandChildren" [attr.id]="child.reference.objectId" class="collapse" role="list-group">-->
+              <button *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn-outline-info" (click)="getChildrenOfChild(child.reference.objectId)">more</button>
+              <button *ngIf="child.reference.objectId === currentChild" type="button" class="btn-outline-info" (click)="getRidOfChildrenOfChild(child.reference.objectId)">less</button>
               <ul *ngIf="child.reference.objectId === currentChild" class="list-group w-100">
-                <li silver="lightsteelblue" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async" (click)=onSelect(grandChild)>
-                  <span class="badge text-info">>></span><span class="text-info"> {{ grandChild.defaultMetadata.name}}</span>
-                </li>
+                <div silver="lightsteelblue" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
+                  <a class="col-sm-11" (click)=onSelect(grandChild)>
+                    <span class="badge text-info">>></span><span class="text-info">{{ grandChild.defaultMetadata.name}}</span>
+                    </a>
+                </div>
               </ul>
-              <!-- </div>-->
             </div>
           </ul>
         </div>
@@ -43,28 +49,32 @@
       </div>
       <ul id="ext-org-units" class="list-group w-100">
         <div silver="lightsteelblue" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let extOu of extOus | async">
-          <a (click)="onSelect(extOu)">
+          <div class="row">
+            <div class="col-sm-11">
+              <a (click)="onSelect(extOu)">
           <span class="text-info"> {{extOu.defaultMetadata.name}}</span>
         </a>
-          <button *ngIf="extOu.hasChildren && current === ''" type="button" class="btn-outline-info ml-3" (click)="getChildren(extOu.reference.objectId)">children</button>
-          <button *ngIf="extOu.reference.objectId === current" type="button" class="btn-outline-info ml-3" (click)="getRidOfChildren(extOu.reference.objectId)">hide</button>
-
+            </div>
+            <div class="col-sm-1">
+              <button *ngIf="extOu.hasChildren && current === ''" type="button" class="btn-outline-info" (click)="getChildren(extOu.reference.objectId)">more</button>
+              <button *ngIf="extOu.reference.objectId === current" type="button" class="btn-outline-info" (click)="getRidOfChildren(extOu.reference.objectId)">less</button>
+            </div>
+          </div>
           <ul *ngIf="extOu.reference.objectId === current" class="list-group w-100">
-             <div silver="lightskyblue" class="list-group-item list-group-item-info bg-faded p-1" *ngFor="let child of children | async" [class.selected]="isSelected(child)">
-
-            <a (click)="onSelect(child)">
+            <div silver="lightskyblue" class="list-group-item list-group-item-info bg-faded p-1" *ngFor="let child of children | async"
+              [class.selected]="isSelected(child)">
+              <a class="col-sm-11" (click)="onSelect(child)">
                 <span class="badge text-info">></span><span class="text-info">{{ child.defaultMetadata.name }}</span>
               </a>
-              <button *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn-outline-info ml-3" (click)="getChildrenOfChild(child.reference.objectId)">more</button>
-              <button *ngIf="child.reference.objectId === currentChild" type="button" class="btn-outline-info ml-3" (click)="getRidOfChildrenOfChild(child.reference.objectId)">less</button>
-
-              <!--<div *ngIf="grandChildren" [attr.id]="child.reference.objectId" class="collapse" role="list-group">-->
+              <button *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn-outline-info" (click)="getChildrenOfChild(child.reference.objectId)">more</button>
+              <button *ngIf="child.reference.objectId === currentChild" type="button" class="btn-outline-info" (click)="getRidOfChildrenOfChild(child.reference.objectId)">less</button>
               <ul *ngIf="child.reference.objectId === currentChild" class="list-group w-100">
-                <li silver="lightsteelblue" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async" (click)=onSelect(grandChild)>
+                <div silver="lightsteelblue" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
+                  <a class="col-sm-11" (click)=onSelect(grandChild)>
                   <span class="badge text-info">>></span><span class="text-info"> {{ grandChild.defaultMetadata.name}}</span>
-                </li>
+                  </a>
+                </div>
               </ul>
-              <!-- </div>-->
             </div>
           </ul>
         </div>

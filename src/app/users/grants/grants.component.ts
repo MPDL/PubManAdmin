@@ -48,7 +48,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
         });
         this.tokenSubscription = this.loginService.token$.subscribe(token => {
             this.token = token
-            console.log("do i get the token ? " + this.token)
         });
         if (this.token != null) {
             this.getNewGrantSelect();
@@ -69,13 +68,10 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     onChangeRole(val) {
         this.selectedRole = val;
-        console.log("selected role: " + this.selectedRole);
     }
 
     onChangeCtx(val) {
         this.selectedCtx = val;
-        console.log("selected ctx: " + val);
-        console.log("displayed ctx: " + val.name);
     }
 
     addGrant() {

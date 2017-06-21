@@ -1,4 +1,4 @@
-<form [hidden]="loggedIn" *ngIf="empty" class="form-inline float-right" name="form1" (ngSubmit)="f1.form.valid && login()" #f1="ngForm"
+<form [hidden]="loggedIn" *ngIf="empty" class="form-inline float-right" name="form1" (ngSubmit)="f1.valid && login()" #f1="ngForm"
   novalidate>
   <div class="form-group align-self-center" [ngClass]="{ 'has-danger': f1.submitted && !username.valid }">
     <input type="text" class="form-control form-control-sm" name="username" [(ngModel)]="credentials.username" #username="ngModel"
