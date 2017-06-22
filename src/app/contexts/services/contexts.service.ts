@@ -36,7 +36,7 @@ export class ContextsService {
         });
         return this.ctxs;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error getting context list'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting context list'));
   }
 
     getContext(id, token): Observable<any> {
@@ -54,7 +54,7 @@ export class ContextsService {
                 this.ctx = response.json();
                 return this.ctx;
             })
-            .catch((error: any) => Observable.throw(error.json().message || "Error getting context"));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || "Error getting context"));
     }
 
     postContext(ctx: any, token: string): Observable<number> {
@@ -74,7 +74,7 @@ export class ContextsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error creating context'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error creating context'));
     }
 
     putContext(ctx: any, token: string): Observable<number> {
@@ -95,7 +95,7 @@ export class ContextsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error updating context'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error updating context'));
     }
 
     openContext(ctx: any, token: string): Observable<number> {
@@ -116,7 +116,7 @@ export class ContextsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error opening context'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error opening context'));
     }
 
     closeContext(ctx: any, token: string): Observable<number> {
@@ -137,7 +137,7 @@ export class ContextsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error closing context'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error closing context'));
     }
 
     delete(ctx: any, token: string): Observable<number> {
@@ -157,7 +157,7 @@ export class ContextsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error deleting context'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error deleting context'));
         }
 }
 

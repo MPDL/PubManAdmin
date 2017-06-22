@@ -38,6 +38,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
+      console.log("token subscription in ou list " + this.token);
     })
     this.listOuNames4mpg("?q=parentAffiliations.objectId:ou_persistent13", this.token);
     this.listOuNames4ext("?q=parentAffiliations.objectId:ou_persistent22", this.token);

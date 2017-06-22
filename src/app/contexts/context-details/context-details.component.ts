@@ -49,6 +49,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
     this.loginSubscription = this.login.token$.subscribe(token => {
       this.token = token;
+      console.log("token subscription in ctx details " + this.token);
     });
     this.genres2display = Object.keys(genres).filter(val => val.match(/^[A-Z]/));
     if (this.ctx.adminDescriptor.allowedGenres != null) {

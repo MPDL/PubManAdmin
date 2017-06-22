@@ -40,6 +40,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.loginSubscription = this.login.token$.subscribe(token => {
           this.token = token;
+          console.log("token subscription in ou details " + this.token);
         });
         let id = params['id'];
         if (id == 'new org') {

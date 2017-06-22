@@ -43,10 +43,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loginSubscription = this.loginService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn
+      this.isLoggedIn = isLoggedIn;
     });
     this.tokenSubscription = this.loginService.token$.subscribe(token => {
-      this.token = token
+      this.token = token;
+      console.log("token subscription in user details " + this.token);
     });
 
     this.selected = this.route.snapshot.data['user'];
@@ -132,6 +133,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         let aff = new Affiliation();
         aff.objectId = ou_id;
         this.selected.affiliations.push(aff);
+      } else {
+        this.messageService.warning("you MUST select an organization");
+        return;
       }
       this.usersService.postUser(this.selected, this.token)
         .subscribe(

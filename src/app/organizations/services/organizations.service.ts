@@ -40,7 +40,7 @@ export class OrganizationsService {
                 */
                 return this.ous;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error getting ou list'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting ou list'));
     }
 
     listFilteredOus(token: string, query: string): Observable<any[]> {
@@ -65,7 +65,7 @@ export class OrganizationsService {
                 */
                 return this.ous;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error getting ou list 4 ' + query));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting ou list 4 ' + query));
     }
 
     listChildren4Ou(id: string, token: string): Observable<any[]> {
@@ -89,7 +89,7 @@ export class OrganizationsService {
                 */
                 return this.ous;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error getting children 4 ' + id));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting children 4 ' + id));
     }
 
     getOu(id, token): Observable<any> {
@@ -107,7 +107,7 @@ export class OrganizationsService {
                 this.ou = response.json();
                 return this.ou;
             })
-            .catch((error: any) => Observable.throw(error.json().message || "Error getting ou with id " + id));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || "Error getting ou with id " + id));
     }
 
     postOu(ou: any, token: string): Observable<number> {
@@ -127,7 +127,7 @@ export class OrganizationsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error creating ou'));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error creating ou'));
     }
 
     putOu(ou: any, token: string): Observable<number> {
@@ -148,7 +148,7 @@ export class OrganizationsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error updating ou with id ' + ou.reference.objectId));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error updating ou with id ' + ou.reference.objectId));
     }
 
     openOu(ou: any, token: string): Observable<number> {
@@ -169,7 +169,7 @@ export class OrganizationsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error opening ou with id ' + ou.reference.objectId));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error opening ou with id ' + ou.reference.objectId));
     }
 
     closeOu(ou: any, token: string): Observable<number> {
@@ -190,7 +190,7 @@ export class OrganizationsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error closing ou with id ' + ou.reference.objectId));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error closing ou with id ' + ou.reference.objectId));
     }
 
     delete(ou: any, token: string): Observable<number> {
@@ -210,7 +210,7 @@ export class OrganizationsService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || "Error deleting ou with id " + ou.reference.objectId));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || "Error deleting ou with id " + ou.reference.objectId));
     }
 
 }

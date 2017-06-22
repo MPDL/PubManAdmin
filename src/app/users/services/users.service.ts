@@ -40,7 +40,7 @@ export class UsersService {
         });
         return this.users;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error getting user list'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting user list'));
   }
 
   getUser(id: string, token: string): Observable<User> {
@@ -57,7 +57,7 @@ export class UsersService {
         this.user = response.json();
         return this.user;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error getting user'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting user'));
   }
 
   postUser(user: User, token: string): Observable<number> {
@@ -77,7 +77,7 @@ export class UsersService {
         let status = response.status;
         return status;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error creating user'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error creating user'));
   }
 
   putUser(user: User, token: string): Observable<number> {
@@ -98,7 +98,7 @@ export class UsersService {
         let status = response.status;
         return status;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error updating user'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error updating user'));
   }
 
   activate(user: User, token: string): Observable<number> {
@@ -119,7 +119,7 @@ export class UsersService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error activating user with id ' + user.reference.objectId));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error activating user with id ' + user.reference.objectId));
     }
 
     deactivate(user: User, token: string): Observable<number> {
@@ -140,7 +140,7 @@ export class UsersService {
                 let status = response.status;
                 return status;
             })
-            .catch((error: any) => Observable.throw(error.json().message || 'Error deactivating user with id ' + user.reference.objectId));
+            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error deactivating user with id ' + user.reference.objectId));
     }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<number> {
@@ -161,7 +161,7 @@ export class UsersService {
         let status = response.status;
         return status;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error adding grants'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error adding grants'));
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<number> {
@@ -182,7 +182,7 @@ export class UsersService {
         let status = response.status;
         return status;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error removing grants'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error removing grants'));
   }
 
   delete(user: User, token: string): Observable<number> {
@@ -203,7 +203,7 @@ export class UsersService {
         let status = response.status;
         return status;
       })
-      .catch((error: any) => Observable.throw(error.json().message || 'Error deleting user'));
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error deleting user'));
   }
 }
 
