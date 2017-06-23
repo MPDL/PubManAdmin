@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { OrganizationsService } from '..//services/organizations.service';
+import { OrganizationsService } from '../services/organizations.service';
 import { template, identifier } from './organization.template';
 
 @Component({
@@ -40,7 +40,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.loginSubscription = this.login.token$.subscribe(token => {
           this.token = token;
-          console.log("token subscription in ou details " + this.token);
         });
         let id = params['id'];
         if (id == 'new org') {

@@ -97,7 +97,7 @@
                 </div>
 
                 <div *ngIf="isNewGrant" class="form-group row w-100">
-                    <grants [selectedUser]="selected" [token]="token"></grants>
+                    <grants [(selectedUser)]="selected" [token]="token" [(isNewGrant)]="isNewGrant"></grants>
                 </div>
 
                 <div *ngIf="grants2remove" class="form-group row w-100">

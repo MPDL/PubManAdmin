@@ -38,8 +38,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
-      console.log("token subscription in ou list " + this.token);
-    })
+    });
     this.listOuNames4mpg("?q=parentAffiliations.objectId:ou_persistent13", this.token);
     this.listOuNames4ext("?q=parentAffiliations.objectId:ou_persistent22", this.token);
   }
@@ -85,10 +84,6 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   addNewOrganization() {
     let id = "new org";
     this.router.navigate(['/organization', id]);
-  }
-
-  getGrandChildren(id) {
-    alert("getting more 4 " + id);
   }
 
   onSelect(ou: any) {

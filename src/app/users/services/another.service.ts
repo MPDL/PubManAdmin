@@ -20,7 +20,7 @@ export class AnotherService {
 
   constructor(private http: Http,
     private messages: MessagesService) {
-    this.baseUrl = props.auth_users_url;
+    this.baseUrl = props.pubman_rest_url + "/users";
     this.userStore = { users: [] };
     this._users = <BehaviorSubject<User[]>>new BehaviorSubject([]);
     this.users = this._users.asObservable();

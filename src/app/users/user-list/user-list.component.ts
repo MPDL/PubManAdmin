@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { User, Grant } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
 
 @Component({
@@ -25,15 +24,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   isNewUser: boolean = false;
   token: string;
   isAdmin: boolean;
-  isLoggedIn: boolean;
-  loginSubscription: Subscription;
   tokenSubscription: Subscription;
   userSubscription: Subscription;
   adminSubscription: Subscription;
+  comingFrom;
 
 
   constructor(
-    private elastic: ElasticService,
     private usersService: UsersService,
     private loginService: AuthenticationService,
     private messageService: MessagesService,
@@ -42,13 +39,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-
-    this.loginSubscription = this.loginService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
-    });
     this.tokenSubscription = this.loginService.token$.subscribe(token => {
       this.token = token;
-      console.log("token subscription in user list " + this.token);
     });
     this.userSubscription = this.loginService.user$.subscribe(user => {
       this.loggedInUser = user;
@@ -63,28 +55,26 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.messageService.warning("Only administartors are allowed to view this list");
         this.router.navigate(['/user', this.loggedInUser.reference.objectId], {queryParams:{token: this.token}, skipLocationChange: true});
       }
-    } 
+    }
+    this.comingFrom = this.route.snapshot.params["id"];
   }
 
   ngOnDestroy() {
-    this.loginSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
     this.adminSubscription.unsubscribe();
   }
 
   getAllUsersAsObservable(token) {
-    /*
-    this.elastic.listAllUsers(users => {
-      this.users = users;
-    });
-    */
     this.users = this.usersService.listAllUsers(token);
   }
 
-  isSelected(user: User) {
-    this.selected = user;
-    return user.reference.objectId === this.selected.reference.objectId;
+  isSelected(user) {
+    if (this.comingFrom != null) {
+      return  this.comingFrom === user.userid;
+    } else {
+      return false;
+    }
   }
 
   onSelect(user: User) {

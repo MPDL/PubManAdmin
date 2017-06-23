@@ -18,7 +18,10 @@ import { UsersService } from '../services/users.service';
 export class GrantsComponent implements OnInit, OnDestroy {
 
     @Input() selectedUser: User;
+    @Output() selectedUserChange = new EventEmitter<User>();
     @Input() token: string;
+    @Input() isNewGrant: boolean;
+    @Output() isNewGrantChange = new EventEmitter<boolean>();
 
     grants: Grant[];
     roles: string[] = ["DEPOSITOR", "MODERATOR", "SYSADMIN"];
@@ -29,9 +32,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
     selectedRole: string;
     selectedCtx: any;
     idString: string;
-    // token: string;
-    isLoggedIn: boolean;
-    loginSubscription: Subscription;
     tokenSubscription: Subscription;
 
     constructor(
@@ -43,9 +43,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
         ) { }
 
     ngOnInit() {
-        this.loginSubscription = this.loginService.isLoggedIn$.subscribe(isLoggedIn => {
-            this.isLoggedIn = isLoggedIn
-        });
         this.tokenSubscription = this.loginService.token$.subscribe(token => {
             this.token = token
         });
@@ -55,7 +52,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.loginSubscription.unsubscribe();
         this.tokenSubscription.unsubscribe();
     }
 
@@ -80,34 +76,29 @@ export class GrantsComponent implements OnInit, OnDestroy {
         let grant2add = new Grant();
         grant2add.role = rolename;
         grant2add.objectRef = ctx_id;
-        // this.selectedUser.grants.push(grant2add);
         this.selectedGrants.push(grant2add);
         this.grantsToAdd = JSON.stringify(this.selectedGrants);
     }
 
     deleteGrant(grant) {
         this.selectedGrant = grant;
-        // let index = this.grants.indexOf(grant);
-        // this.grants.splice(index, 1);
-        // this.selectedUser.grants.splice(index, 1);
         this.selectedGrants.push(grant);
         this.grantsToAdd = JSON.stringify(this.selectedGrants);
     }
 
     addGrants() {
-        alert("adding   " + JSON.stringify(this.selectedGrants));
-        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(data => {
+        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(user => {
+            this.selectedUser = user;
+            this.selectedUserChange.emit(this.selectedUser);
             this.messageService.success("added Grants to " + this.selectedUser.userid);
-            this.selectedGrants.forEach(g => this.selectedUser.grants.push(g));
-            this.selectedGrants.slice(0, this.selectedGrants.length);
+            // this.selectedGrants.forEach(g => this.selectedUser.grants.push(g));
+            // this.selectedGrants.slice(0, this.selectedGrants.length);
+            this.selectedGrants = null;
             this.grantsToAdd = "";
+            this.isNewGrantChange.emit(false);
         }, error => {
             this.messageService.error(error);
         });
-    }
-
-    removeGrants() {
-        alert("removing   " + JSON.stringify(this.selectedGrants));
     }
 }
 

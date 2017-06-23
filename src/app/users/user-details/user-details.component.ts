@@ -28,8 +28,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
   token: string;
-  isLoggedIn: boolean;
-  loginSubscription: Subscription;
   tokenSubscription: Subscription;
 
   constructor(
@@ -42,12 +40,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.loginSubscription = this.loginService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
-    });
     this.tokenSubscription = this.loginService.token$.subscribe(token => {
       this.token = token;
-      console.log("token subscription in user details " + this.token);
     });
 
     this.selected = this.route.snapshot.data['user'];
@@ -74,13 +68,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.loginSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
   }
 
   addGrant() {
     this.isNewGrant = true;
-    // this.getAllGrants(this.token);
   }
 
   deleteGrant(grant) {
@@ -92,7 +84,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   gotoList() {
     let userId = this.selected ? this.selected.userid : null;
-    // window.confirm('Do you really want to cancel?');
     this.router.navigate(['/users', { id: userId }]);
   }
 
@@ -110,15 +101,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected = user;
     if (this.selected.active == true) {
       this.usersService.deactivate(this.selected, this.token)
-        .subscribe(httpStatus => {
-          this.messageService.success("Deactivated " + this.selected.reference.objectId + " " + httpStatus);
+        .subscribe(user => {
+          this.selected = user;
+          this.messageService.success("Deactivated " + this.selected.reference.objectId);
         }, error => {
           this.messageService.error(error);
         });
     } else {
       this.usersService.activate(this.selected, this.token)
-        .subscribe(httpStatus => {
-          this.messageService.success("Activated " + this.selected.reference.objectId + " " + httpStatus);
+        .subscribe(user => {
+          this.selected = user;
+          this.messageService.success("Activated " + this.selected.reference.objectId);
         }, error => {
           this.messageService.error(error);
         });
@@ -167,14 +160,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
       removeGrants() {
-        alert("removing   " + JSON.stringify(this.selectedGrants));
-        this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(data => {
+        this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(user => {
+          this.selected = user;
             this.messageService.success("removed Grants from " + this.selected.userid);
+            /*
             this.selectedGrants.forEach((g) => {
               let i = this.selected.grants.indexOf(g);
               this.selected.grants.splice(i, 1);
             });
-            this.selectedGrants.slice(0, this.selectedGrants.length);
+            */
+            this.selectedGrants = null;
             this.grants2remove = false;
         }, error => {
             this.messageService.error(error);

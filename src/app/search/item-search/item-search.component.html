@@ -1,3 +1,50 @@
-<p>
-  item-search works!
-</p>
+<div class="container-fluid">
+    <h3 class="text-primary">search 4 items</h3>
+    <div class="card-deck">
+        <div class="card card-outline-primary text-right">
+            <div class="card-block">
+                <h4 class="card-title">Items</h4>
+            </div>
+            <ul class="list-group list-group-flush h-100">
+                <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelect(year)">
+                  <span class="badge badge-primary">{{year.doc_count}}</span>
+          <span class="text-primary ml-2">{{year.key}}</span>
+                    <li>
+            </ul>
+        </div>
+        <div class="card card-outline-primary text-right">
+            <div class="card-block">
+                <h4 class="card-title">Genres</h4>
+            </div>
+            <ul class="list-group list-group-flush h-100">
+                <li silver class="list-group-item text-primary justify-content-end p-1" *ngFor="let genre of genres" (click)="onSelect(genre)">
+                    <span class="badge badge-primary">{{genre.doc_count}}</span>
+          <span class="text-primary ml-2">{{genre.key}}</span>
+                    <li>
+            </ul>
+        </div>
+        <div class="card card-outline-primary text-right">
+            <div class="card-block">
+                <h4 class="card-title">Publishers</h4>
+            </div>
+            <ul class="list-group list-group-flush h-100">
+                <li silver class="list-group-item text-primary justify-content-end p-1" *ngFor="let publisher of publishers" (click)="onSelect(publisher)">
+                   <span class="badge badge-primary">{{publisher.doc_count}}</span>
+          <span class="text-primary ml-2">{{publisher.key}}</span>
+                    <li>
+            </ul>
+        </div>
+    </div>
+    <div>
+      <ul class="list-group list-group-flush h-100">
+                <li silver class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items" (click)="onSelect(genre)">
+                    <span class="badge badge-primary">{{item.version.objectId}}</span>
+                              <span class="text-primary ml-2">{{item.metadata.genre}}</span>
+
+          <span class="text-primary ml-2">{{item.metadata.title}}</span>
+                    <span class="text-primary ml-2">{{item.creationDate}}</span>
+
+                    <li>
+            </ul>
+    </div>
+</div>

@@ -5,7 +5,6 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { ElasticService } from '../../base/services/elastic.service';
 import { User, Grant } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
@@ -13,8 +12,7 @@ import { props } from '../../base/common/admintool.properties';
 @Injectable()
 export class UsersService {
   constructor(
-    private http: Http,
-    private elastic: ElasticService
+    private http: Http
   ) { }
 
   usersUrl: string = props.pubman_rest_url + '/users';
@@ -101,7 +99,7 @@ export class UsersService {
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error updating user'));
   }
 
-  activate(user: User, token: string): Observable<number> {
+  activate(user: User, token: string): Observable<User> {
         let headers = new Headers();
         headers.set("Authorization", token);
         headers.append('Content-Type', 'application/json');
@@ -116,13 +114,13 @@ export class UsersService {
         });
         return this.http.request(new Request(options))
             .map((response: Response) => {
-                let status = response.status;
-                return status;
+                let user = response.json();
+                return user;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error activating user with id ' + user.reference.objectId));
     }
 
-    deactivate(user: User, token: string): Observable<number> {
+    deactivate(user: User, token: string): Observable<User> {
         let headers = new Headers();
         headers.set("Authorization", token);
         headers.append('Content-Type', 'application/json');
@@ -137,13 +135,13 @@ export class UsersService {
         });
         return this.http.request(new Request(options))
             .map((response: Response) => {
-                let status = response.status;
-                return status;
+                let user = response.json();
+                return user;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error deactivating user with id ' + user.reference.objectId));
     }
 
-  addGrants(user: User, grants: Grant[], token: string): Observable<number> {
+  addGrants(user: User, grants: Grant[], token: string): Observable<User> {
     let headers = new Headers();
     headers.set("Authorization", token);
     headers.append('Content-Type', 'application/json');
@@ -158,13 +156,13 @@ export class UsersService {
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {
-        let status = response.status;
-        return status;
+        let user = response.json();
+        return user;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error adding grants'));
   }
 
-  removeGrants(user: User, grants: Grant[], token: string): Observable<number> {
+  removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
     let headers = new Headers();
     headers.set("Authorization", token);
     headers.append('Content-Type', 'application/json');
@@ -179,8 +177,8 @@ export class UsersService {
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {
-        let status = response.status;
-        return status;
+        let user = response.json();
+        return user;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error removing grants'));
   }

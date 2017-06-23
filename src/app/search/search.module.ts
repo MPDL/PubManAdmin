@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { SharedModule } from '../base/shared/shared.module';
+import { SearchService } from './services/search.service';
+import { ElasticSearchService } from './services/elastic-search.service';
+
 import { SearchRoutingModule } from './search-routing.module';
 import { SearchComponent } from './search.component';
 import { UserSearchComponent } from './user-search/user-search.component';
@@ -11,8 +15,19 @@ import { ItemSearchComponent } from './item-search/item-search.component';
 @NgModule({
   imports: [
     CommonModule,
+    SharedModule,
     SearchRoutingModule
   ],
-  declarations: [SearchComponent, UserSearchComponent, OrganizationSearchComponent, ContextSearchComponent, ItemSearchComponent]
+  declarations: [
+    SearchComponent,
+    UserSearchComponent,
+    OrganizationSearchComponent,
+    ContextSearchComponent,
+    ItemSearchComponent
+  ],
+  providers: [
+    ElasticSearchService,
+    SearchService
+  ]
 })
 export class SearchModule { }

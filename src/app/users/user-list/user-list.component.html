@@ -7,7 +7,7 @@
       <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewUser()" />
     </div>
     <ul class="list-group">
-          <div silver="lightgray" class="list-group-item list-group-item-primary text-primary p-1" *ngFor="let user of users | async" [class.selected]="isSelected(user)" (click)="onSelect(user)">
+          <div silver="lightgray" class="list-group-item list-group-item-primary text-primary p-1" *ngFor="let user of users | async" [class.active]="isSelected(user)" (click)="onSelect(user)">
             <span class="col-sm-1">{{user.reference.objectId}}</span>
             <span class="col-sm-10">{{user.name}} ({{user.userid}})</span>
             <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"

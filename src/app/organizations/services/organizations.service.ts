@@ -30,21 +30,12 @@ export class OrganizationsService {
         return this.http.request(new Request(options))
             .map((response: Response) => {
                 this.ous = response.json();
-                // sorting is done by the rest service ...
-                /*
-                this.ous.sort((a, b) => {
-                  if (a.defaultMetadata.name < b.defaultMetadata.name) return -1;
-                  else if (a.defaultMetadata.name > b.defaultMetadata.name) return 1;
-                  else return 0;
-                });
-                */
                 return this.ous;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting ou list'));
     }
 
     listFilteredOus(token: string, query: string): Observable<any[]> {
-        // let query = '?q=parentAffiliations.objectId:ou_persistent13';
         let headers = new Headers();
         // headers.set("Authorization", token);
         let options = new RequestOptions({
@@ -55,14 +46,6 @@ export class OrganizationsService {
         return this.http.request(new Request(options))
             .map((response: Response) => {
                 this.ous = response.json();
-                // sorting is done by the rest service ...
-                /*
-                this.ous.sort((a, b) => {
-                    if (a.defaultMetadata.name < b.defaultMetadata.name) return -1;
-                    else if (a.defaultMetadata.name > b.defaultMetadata.name) return 1;
-                    else return 0;
-                });
-                */
                 return this.ous;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting ou list 4 ' + query));
@@ -79,14 +62,6 @@ export class OrganizationsService {
         return this.http.request(new Request(options))
             .map((response: Response) => {
                 this.ous = response.json();
-                // sorting is done by the rest service ...
-                /*
-                this.ous.sort((a, b) => {
-                    if (a.defaultMetadata.name < b.defaultMetadata.name) return -1;
-                    else if (a.defaultMetadata.name > b.defaultMetadata.name) return 1;
-                    else return 0;
-                });
-                */
                 return this.ous;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting children 4 ' + id));
