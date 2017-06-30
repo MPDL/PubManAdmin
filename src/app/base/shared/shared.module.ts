@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { SelectedColourDirective } from '../directives/selected-colour.directive';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { PaginationService } from '../services/pagination.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    NgxPaginationModule
   ],
   declarations: [
     SelectedColourDirective,
@@ -19,6 +21,7 @@ import { PaginationService } from '../services/pagination.service';
     SelectedColourDirective,
     ClickOutsideDirective,
     PaginationComponent,
+    NgxPaginationModule,
     CommonModule,
     FormsModule
   ],

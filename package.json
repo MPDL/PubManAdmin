@@ -25,6 +25,7 @@
     "core-js": "^2.4.1",
     "elasticsearch": "^13.0.1",
     "jsonwebtoken": "^7.4.1",
+    "ngx-pagination": "^3.0.1",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"
   },

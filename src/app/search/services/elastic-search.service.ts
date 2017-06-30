@@ -33,20 +33,72 @@ export class ElasticSearchService extends ElasticService {
         });
     }
 
-    genreAggregation(callback): any {
-        return this.client.search({
-            index: "db_items",
-            body: '{"size":0, "aggs" : { "genres" : { "terms" : { "field" : "metadata.genre", "size" : 10, "order" : { "_count" : "desc" }}}}}'
+    buckets(index, body, nested): any[] {
+        let buckets = Array<any>();
+        this.client.search({
+            index: index,
+            body: body
         }, (err, res) => {
             if (err) {
                 this.message.error(err);
             } else {
-                let genres = Array<any>();
-                res.aggregations.genres.buckets.forEach((genre) => {
-                    genres.push(genre);
-                });
-                callback(genres);
+                if (nested) {
+                    res.aggregations.name1.name2.buckets.forEach((bucket) => {
+                        buckets.push(bucket);
+                    });
+                } else {
+                    res.aggregations.name1.buckets.forEach((bucket) => {
+                        buckets.push(bucket);
+                    });
+                }
             }
         });
+        return buckets;
+    }
+
+    getMappingFields(alias, type, index): Array<string> {
+        let fields = Array<string>();
+        this.client.indices.getFieldMapping({
+            index: alias,
+            type: type,
+            fields: "*",
+            includeDefaults: false
+        }, (error, response) => {
+            if (error) {
+                this.message.error(error);
+            } else {
+                let mapping = JSON.parse(JSON.stringify(response[index].mappings[type]));
+
+                JSON.parse(JSON.stringify(mapping), (key, value: string) => {
+                    if (key == "full_name") {
+                        if (!value.startsWith("_")) {
+                            fields.push(value);
+                        }
+                    }
+                });
+                fields.sort((a, b) => {
+                    if (a < b) return -1;
+                    else if (a > b) return 1;
+                    else return 0;
+                });
+            }
+        });
+        return fields;
+    }
+
+    // this returns 'undefined' !!!
+    getIndex4Alias(alias): any {
+        let index_name;
+        this.client.cat.aliases({
+            format: "json",
+            name: alias
+        }, (err, res) => {
+            if (err) {
+                this.message.error(err);
+            } else {
+                index_name = res[0].index;
+            }
+        });
+        return index_name;
     }
 }

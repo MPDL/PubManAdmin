@@ -38,26 +38,34 @@ export class SearchService {
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting filtered list 4 ' + query));
   }
 
-  listItemsByNestedQuery(token: string, body, limit): Observable<any[]> {
+  listItemsByQuery(token: string, body, limit): Observable<any> {
     let headers = new Headers();
     headers.set("Content-Type", "application/json");
-    headers.append("Accept", "application/json");
+    // headers.append("Accept", "application/json");
     if (token != null) {
       headers.append("Authorization", token);
     }
+    const perPage = 25;
+    let offset = limit * perPage;
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Post,
-      url: this.items_rest_url + '/search?limit=' + limit,
+      url: this.items_rest_url + '/search?limit=' + perPage + '&offset=' + offset,
       body: body
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {
+        let result = {list: [], records: ""};
+        let data = response.json();
         let items = [];
-        response.json().records.forEach(element => {
+        let records = data.numberOfRecords;
+        confirm("records: "+records)
+        data.records.forEach(element => {
           items.push(element.data)
         });;
-        return items;
+        result.list = items;
+        result.records = records;
+        return result;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting list 4 ' + JSON.stringify(body)));
   }
