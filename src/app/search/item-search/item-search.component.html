@@ -77,10 +77,10 @@
         </div>
         <div class="col-9">
             <div>
-                <span class="text-primary">your query returned {{records}} records</span>
+                <span class="text-primary">your query returned {{total}} records</span>
                 <div class="has-text-centered">
                     <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
-                    <pagination-controls (pageChange)="getPage($event, selectedField, searchTerm)" id="paginator"></pagination-controls>
+                    <pagination-controls class="admin-pagination" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="getPage($event, selectedField, searchTerm)" id="paginator"></pagination-controls>
                 </div>
                 <ul class="list-group list-group-flush h-100">
                     <li silver class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="onSelect(item)">
@@ -89,7 +89,7 @@
 
                         <span class="text-primary ml-2">{{item.metadata.title}}</span>
                         <span class="text-primary ml-2">{{item.creationDate}}</span>
-                        <span class="text-primary ml-2">{{item.metadata.sources[0]?.publishingInfo?.publisher}}</span>
+                        <span *ngIf="item.metadata.sources" class="text-primary ml-2">{{item.metadata.sources[0]?.publishingInfo?.publisher}}</span>
 
                         <li>
                 </ul>

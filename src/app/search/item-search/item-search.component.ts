@@ -22,7 +22,7 @@ export const aggs = {
 @Component({
   selector: 'app-item-search',
   templateUrl: './item-search.component.html',
-  styleUrls: ['./item-search.component.scss']
+  styleUrls: ['./item-search.component.scss'],
 })
 export class ItemSearchComponent implements OnInit, OnDestroy {
 
@@ -39,7 +39,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   items: any[];
   total: number;
   loading: boolean = false;
-  pageSize;
+  pageSize: number = 25;
   currentPage: number = 1;
   subscription: Subscription;
   token;
@@ -95,16 +95,19 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
         this.loading = true;
     this.search.listItemsByQuery(this.token, body, page)
-            .do(res => {
-                this.total = res.total;
+            .subscribe(res => {
+                this.total = res.records;
                 this.currentPage = page;
+                this.items = res.list
                 this.loading = false;
-            })
-            .map(res => this.items = res.items);
+            }, (err) => {
+              this.message.error(err);
+            });
     }
 
   searchItems(selection, term) {
     let body = { bool: { must: { match: { [selection]: term } } } };
+    this.currentPage = 1;
     this.search.listItemsByQuery(this.token, body, 1)
       .subscribe(items => {
         this.items = items.list;
@@ -135,8 +138,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   onSelectPublisher(publisher) {
     let body_nested = '"{\\"nested\\":{\\"path\\":\\"metadata.sources\\",\\"query\\":{\\"bool\\":{\\"filter\\":{\\"term\\":{\\"metadata.sources.publishingInfo.publisher.sorted\\":\\"' + publisher.key + '\\"}}}}}}"';
     let body = { nested: { path: "metadata.sources", query: { bool: { filter: { term: { ["metadata.sources.publishingInfo.publisher.sorted"]: publisher.key } } } } } };
-    let limit: number = Math.round(publisher.doc_count / 100);
-    this.search.listItemsByQuery(this.token, body, limit)
+    this.selectedField = "metadata.sources.publishingInfo.publisher.sorted";
+    this.searchTerm = publisher.key;
+    this.currentPage = 1;
+    // let limit: number = Math.round(publisher.doc_count / 100);
+    this.search.listItemsByQuery(this.token, body, 1)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;

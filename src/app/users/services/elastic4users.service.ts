@@ -116,4 +116,25 @@ export class Elastic4usersService extends ElasticService {
         });
     }
   }
+
+  users4auto(term, callback) {
+        let users = Array<any>();
+        if (term) {
+            this.client.search({
+                index: "db_users",
+                q: "name.auto:" + term,
+                sort: "name.sorted:asc"
+            }, (error, response) => {
+                if (error) {
+                    this.message.error(error);
+                } else {
+                    response.hits.hits.forEach(hit => {
+                        let username = JSON.parse(JSON.stringify(hit._source));
+                        users.push(username);
+                    });
+                    callback(users);
+                }
+            });
+        }
+    }
 }

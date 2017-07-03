@@ -17,26 +17,32 @@ export class UsersService {
 
   usersUrl: string = props.pubman_rest_url + '/users';
 
-  users: User[];
+  users: User[] = [];
   user: User;
 
-  listAllUsers(token: string): Observable<User[]> {
+  listAllUsers(token: string, page: number): Observable<any> {
+    const perPage = 25;
+    let offset = (page -1) * perPage;
     let headers = new Headers();
     headers.set("Authorization", token);
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Get,
-      url: this.usersUrl
+      url: this.usersUrl + '?limit=' + perPage + '&offset=' + offset
     });
+
     return this.http.request(new Request(options))
       .map((response: Response) => {
-        this.users = response.json();
-        this.users.sort((a, b) => {
-          if (a.name < b.name) return -1;
-          else if (a.name > b.name) return 1;
-          else return 0;
+        let result = {list: [], records: ""};
+        let data = response.json();
+        let users = [];
+        let records = data.numberOfRecords;
+        data.records.forEach(element => {
+          users.push(element.data)
         });
-        return this.users;
+        result.list = users;
+        result.records = records;
+        return result;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting user list'));
   }

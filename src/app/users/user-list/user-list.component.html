@@ -6,13 +6,30 @@
       <h4 class="card-title">Users</h4>
       <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewUser()" />
     </div>
+    <div class="row">
+    <div class="col-4">
+        <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="userSearchTerm" (keyup)="getUserNames(userSearchTerm)"
+          id="searchTerm">
+        <div *ngIf="usernames.length > 0">
+          <ul class="list-group" *ngFor="let username of usernames" (clickOutside)="close()">
+            <li silver="lightgray" class="list-group-item-primary text-left" (click)="select(username)"><small>{{username.name}}</small></li>
+          </ul>
+        </div>
+      </div>
+    <div class="col-8">
+      <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
+      <pagination-controls class="admin-pagination" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="getPage($event)"
+        id="paginator"></pagination-controls>
+    </div>
+    </div>
     <ul class="list-group">
-          <div silver="lightgray" class="list-group-item list-group-item-primary text-primary p-1" *ngFor="let user of users | async" [class.active]="isSelected(user)" (click)="onSelect(user)">
-            <span class="col-sm-1">{{user.reference.objectId}}</span>
-            <span class="col-sm-10">{{user.name}} ({{user.userid}})</span>
-            <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
+      <div silver="lightgray" class="list-group-item list-group-item-primary text-primary p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
+        [class.active]="isSelected(user)" (click)="onSelect(user)">
+        <span class="col-sm-1">{{user.reference.objectId}}</span>
+        <span class="col-sm-10">{{user.name}} ({{user.userid}})</span>
+        <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
                 name="delete" value="x" /></span>
-          </div>
+      </div>
     </ul>
   </div>
 </div>

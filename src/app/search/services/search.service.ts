@@ -46,7 +46,7 @@ export class SearchService {
       headers.append("Authorization", token);
     }
     const perPage = 25;
-    let offset = limit * perPage;
+    let offset = (limit -1) * perPage;
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Post,
@@ -59,10 +59,9 @@ export class SearchService {
         let data = response.json();
         let items = [];
         let records = data.numberOfRecords;
-        confirm("records: "+records)
         data.records.forEach(element => {
           items.push(element.data)
-        });;
+        });
         result.list = items;
         result.records = records;
         return result;

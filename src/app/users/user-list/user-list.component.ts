@@ -1,11 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/observable/of';
+
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { User, Grant } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
+import { Elastic4usersService } from '../services/elastic4users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 
@@ -18,7 +21,7 @@ import { MessagesService } from '../../base/services/messages.service';
 
 export class UserListComponent implements OnInit, OnDestroy {
 
-  users: Observable<User[]>;
+  users: User[];
   selected: User;
   loggedInUser: User;
   isNewUser: boolean = false;
@@ -28,10 +31,17 @@ export class UserListComponent implements OnInit, OnDestroy {
   userSubscription: Subscription;
   adminSubscription: Subscription;
   comingFrom;
+  total: number;
+  loading: boolean = false;
+  pageSize: number = 25;
+  currentPage: number = 1;
+  usernames: User[] = [];
+  userSearchTerm;
 
 
   constructor(
     private usersService: UsersService,
+    private elastic: Elastic4usersService,
     private loginService: AuthenticationService,
     private messageService: MessagesService,
     private route: ActivatedRoute,
@@ -50,10 +60,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
     if (this.token != null) {
       if (this.isAdmin) {
-        this.getAllUsersAsObservable(this.token);
+        this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
         this.messageService.warning("Only administartors are allowed to view this list");
-        this.router.navigate(['/user', this.loggedInUser.reference.objectId], {queryParams:{token: this.token}, skipLocationChange: true});
+        this.router.navigate(['/user', this.loggedInUser.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
       }
     }
     this.comingFrom = this.route.snapshot.params["id"];
@@ -65,13 +75,34 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.adminSubscription.unsubscribe();
   }
 
-  getAllUsersAsObservable(token) {
-    this.users = this.usersService.listAllUsers(token);
+  getAllUsersAsObservable(token, page) {
+    this.usersService.listAllUsers(token, page)
+      .subscribe(result => {
+        this.users = result.list;
+        this.total = result.records;
+      }, (err) => {
+        this.messageService.error(err);
+      });
+  }
+
+  getPage(page: number) {
+    if (this.token != null) {
+      this.loading = true;
+      this.usersService.listAllUsers(this.token, page)
+        .subscribe(result => {
+          this.users = result.list;
+          this.total = result.records;
+        }, (err) => {
+          this.messageService.error(err);
+        });
+      this.currentPage = page;
+      this.loading = false;
+    }
   }
 
   isSelected(user) {
     if (this.comingFrom != null) {
-      return  this.comingFrom === user.userid;
+      return this.comingFrom === user.userid;
     } else {
       return false;
     }
@@ -80,12 +111,12 @@ export class UserListComponent implements OnInit, OnDestroy {
   onSelect(user: User) {
     this.isNewUser = false;
     this.selected = user;
-    this.router.navigate(['/user', user.reference.objectId], {queryParams:{token: this.token}, skipLocationChange: true});
+    this.router.navigate(['/user', user.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
   }
 
   addNewUser() {
     let userid = "new user";
-    this.router.navigate(['/user', userid], {queryParams:{token: 'new'}, skipLocationChange: true});
+    this.router.navigate(['/user', userid], { queryParams: { token: 'new' }, skipLocationChange: true });
   }
 
   delete(user) {
@@ -102,4 +133,33 @@ export class UserListComponent implements OnInit, OnDestroy {
       );
     this.selected = null;
   }
+
+  getUserNames(a) {
+    let userNames: User[] = [];
+    this.elastic.users4auto(a, (names) => {
+      names.forEach(name => userNames.push(name));
+      if (userNames.length > 0) {
+        this.usernames = userNames;
+      } else {
+        this.usernames = [];
+      }
+    });
+  }
+
+  close() {
+    this.userSearchTerm = "";
+    this.usernames = [];
+  }
+
+  select(term) {
+    this.userSearchTerm = term.name;
+    if (this.token != null) {
+          this.router.navigate(['/user', term.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
+
+    } else {
+      this.messageService.warning("no login, no user !!!");
+    }
+    this.usernames = [];
+  }
+
 }
