@@ -14,6 +14,7 @@ import { ElasticSearchService } from '../services/elastic-search.service';
 import { SearchService } from '../services/search.service';
 
 export const aggs = {
+  select: {},
   creationDate: { size: 0, aggs: { name1: { date_histogram: { field: "creationDate", interval: "year", min_doc_count: 1 } } } },
   genre: { size: 0, aggs: { name1: { terms: { field: "metadata.genre", size: 100, order: { _count: "desc" } } } } },
   publisher: { size: 0, aggs: { name1: { nested: { path: "metadata.sources" }, aggs: { name2: { terms: { field: "metadata.sources.publishingInfo.publisher.sorted", size: 100 } } } } } }
@@ -37,7 +38,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   publishers: Array<any>;
   selected;
   items: any[];
-  total: number;
+  total: number = 0;
   loading: boolean = false;
   pageSize: number = 25;
   currentPage: number = 1;
@@ -68,6 +69,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.items = [];
+    this.currentPage = 0;
+    this.pageSize = 0;
   }
 
   onAggregationSelect(agg) {
@@ -92,6 +96,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
   getPage(page: number, selection, term) {
         let body = { bool: { must: { match: { [selection]: term } } } };
+        if (page > 400) {
+          page = 400;
+        }
 
         this.loading = true;
     this.search.listItemsByQuery(this.token, body, page)
@@ -118,18 +125,26 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   }
 
   onSelectYear(year) {
-    this.search.listFilteredItems(this.token, "?q=creationDate:" + year.key + "||/y&limit=100")
+    this.selectedField = "creationDate";
+    this.searchTerm = year.key_as_string + '||/y';
+    this.currentPage = 1;
+    this.search.listFilteredItems(this.token, "?q=creationDate:" + year.key + "||/y", 1)
       .subscribe(items => {
-        this.items = items;
+        this.items = items.list;
+        this.total = items.records;
       }, err => {
         this.message.error(err);
       });
   }
 
   onSelectGenre(genre) {
-    this.search.listFilteredItems(this.token, "?q=metadata.genre:" + genre.key + "&limit=100")
+    this.selectedField = "metadata.genre";
+    this.searchTerm = genre.key;
+    this.currentPage = 1;
+    this.search.listFilteredItems(this.token, "?q=metadata.genre:" + genre.key, 1)
       .subscribe(items => {
-        this.items = items;
+        this.items = items.list;
+        this.total = items.records;
       }, err => {
         this.message.error(err);
       });
@@ -141,7 +156,6 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.selectedField = "metadata.sources.publishingInfo.publisher.sorted";
     this.searchTerm = publisher.key;
     this.currentPage = 1;
-    // let limit: number = Math.round(publisher.doc_count / 100);
     this.search.listItemsByQuery(this.token, body, 1)
       .subscribe(items => {
         this.items = items.list;

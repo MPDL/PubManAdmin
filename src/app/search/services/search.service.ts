@@ -20,20 +20,30 @@ export class SearchService {
     private message: MessagesService) { }
 
 
-  listFilteredItems(token: string, query: string): Observable<any[]> {
+  listFilteredItems(token: string, query: string, limit): Observable<any> {
     let headers = new Headers();
     if (token != null) {
       headers.set("Authorization", token);
     }
+    const perPage = 25;
+    let offset = (limit -1) * perPage;
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Get,
-      url: this.items_rest_url + query
+      url: this.items_rest_url + query + '&limit=' + perPage + '&offset=' + offset
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {
-        let items = response.json();
-        return items;
+        let result = {list: [], records: ""};
+        let data = response.json();
+        let items = [];
+        let records = data.numberOfRecords;
+        data.records.forEach(element => {
+          items.push(element.data)
+        });
+        result.list = items;
+        result.records = records;
+        return result;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting filtered list 4 ' + query));
   }

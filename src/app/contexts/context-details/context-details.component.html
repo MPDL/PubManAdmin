@@ -76,8 +76,8 @@
             <div class="col-6">
               <ul class="list-group">
                 <div silver="palegreen" class="list-group-item list-group-item-success p-0" *ngFor="let genre of allowedGenres" [class.selected]="isSelected(genre)">
-                  <span class="col-sm-11">{{genre}}</span>
-                  <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="deleteGenre(genre); $event.stopPropagation()"
+                  <span class="col-11"><label class="col-form-label-sm">{{genre}}</label></span>
+                  <span class="col-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="deleteGenre(genre); $event.stopPropagation()"
                                 name="deleteGenre" value="x" /></span>
                 </div>
               </ul>
@@ -106,7 +106,7 @@
             <div class="col-6">
               <ul class="list-group">
                 <div silver="palegreen" class="list-group-item list-group-item-success p-0" *ngFor="let subject of allowedSubjects" [class.selected]="isSelected(subject)">
-                  <span class="col-sm-11">{{subject}}</span>
+                  <span class="col-sm-11"><label class="col-form-label-sm">{{subject}}</label></span>
                   <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="deleteSubject(subject); $event.stopPropagation()"
                                 name="deleteSubject" value="x" /></span>
                 </div>

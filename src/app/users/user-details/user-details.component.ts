@@ -67,6 +67,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selectedOu = val;
   }
 
+  selectOuByKey(val) {
+    confirm("you pressed " + val);
+    console.log("you pressed " + val);
+  }
+
   ngOnDestroy() {
     this.tokenSubscription.unsubscribe();
   }
