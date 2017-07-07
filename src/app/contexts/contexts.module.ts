@@ -9,6 +9,8 @@ import { ContextsRoutingModule } from './contexts-routing.module';
 import { ContextDetailsComponent } from './context-details/context-details.component';
 import { ContextListComponent } from './context-list/context-list.component';
 import { ContextsService } from './services/contexts.service';
+import { Elastic4contextsService } from './services/elastic4contexts.service';
+
 
 @NgModule({
   imports: [
@@ -23,7 +25,8 @@ import { ContextsService } from './services/contexts.service';
     ContextListComponent
   ],
   providers: [
-    ContextsService
+    ContextsService,
+    Elastic4contextsService
   ]
 })
 export class ContextsModule { }

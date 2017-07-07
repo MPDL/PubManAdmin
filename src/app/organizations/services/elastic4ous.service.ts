@@ -8,6 +8,27 @@ export class Elastic4ousService extends ElasticService {
 
   constructor(public messages: MessagesService) { super(messages) }
 
+  ous4auto(term, callback) {
+        let contexts = Array<any>();
+        if (term) {
+            this.client.search({
+                index: "db_ous_new",
+                q: "defaultMetadata.name.auto:" + term,
+                sort: "defaultMetadata.name.sorted:asc"
+            }, (error, response) => {
+                if (error) {
+                    this.messages.error(error);
+                } else {
+                    response.hits.hits.forEach(hit => {
+                        let ctxname = JSON.parse(JSON.stringify(hit._source));
+                        contexts.push(ctxname);
+                    });
+                    callback(contexts);
+                }
+            });
+        }
+    }
+
   listOuNames(parent: string, id: string, callback): any {
     let queryString: string;
     if (parent.match("parent")) {

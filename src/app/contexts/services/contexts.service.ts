@@ -18,13 +18,15 @@ export class ContextsService {
     constructor(private http: Http,
         private message: MessagesService) { }
 
-    listAllContexts(token: string): Observable<any[]> {
+    listAllContexts(token: string, page: number): Observable<any[]> {
+        const perPage = 25;
+    let offset = (page -1) * perPage;
     let headers = new Headers();
     // headers.set("Authorization", token);
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Get,
-      url: this.context_url
+      url: this.context_url + '?limit=' + perPage + '&offset=' + offset
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {

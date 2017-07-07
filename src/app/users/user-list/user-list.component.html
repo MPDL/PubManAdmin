@@ -9,10 +9,10 @@
     <div class="row">
     <div class="col-4">
         <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="userSearchTerm" (keyup)="getUserNames(userSearchTerm)"
-          id="searchTerm">
+           placeholder="search by name" id="searchTerm">
         <div *ngIf="usernames.length > 0">
           <ul class="list-group" *ngFor="let username of usernames" (clickOutside)="close()">
-            <li silver="lightgray" class="list-group-item-primary text-left" (click)="select(username)"><small>{{username.name}}</small></li>
+            <li silver="lightgray" class="list-group-item-primary text-left" (class.selected)="isSelectedName(username)" (keydown)="scrollDown($event)" (click)="select(username)"><small>{{username.name}}</small></li>
           </ul>
         </div>
       </div>

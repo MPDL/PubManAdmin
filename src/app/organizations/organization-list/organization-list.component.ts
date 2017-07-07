@@ -19,6 +19,8 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   current: string = "";
   currentChild = "";
   selected: any;
+  searchTerm;
+  ounames: any[] = [];
   subscription: Subscription;
   token;
   mpgOus: Observable<any[]>;
@@ -29,6 +31,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   constructor(
     private ouSvc: OrganizationsService,
+    private elastic: Elastic4ousService,
     private router: Router,
     private route: ActivatedRoute,
     private message: MessagesService,
@@ -93,6 +96,29 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
 
   isSelected(ou) {
     return true;
+  }
+
+  getNames(a) {
+    let ouNames: any[] = [];
+    this.elastic.ous4auto(a, (names) => {
+      names.forEach(name => ouNames.push(name));
+      if (ouNames.length > 0) {
+        this.ounames = ouNames;
+      } else {
+        this.ounames = [];
+      }
+    });
+  }
+
+  close() {
+    this.searchTerm = "";
+    this.ounames = [];
+  }
+
+  select(term) {
+    this.searchTerm = term.defaultMetadata.name;
+    this.router.navigate(['/organization', term.reference.objectId]);
+    this.ounames = [];
   }
 
 }

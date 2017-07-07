@@ -23,6 +23,9 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   users: User[];
   selected: User;
+  selectedUserName: User;
+  selectedNameIndex = 0;
+
   loggedInUser: User;
   isNewUser: boolean = false;
   token: string;
@@ -160,6 +163,18 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.messageService.warning("no login, no user !!!");
     }
     this.usernames = [];
+  }
+
+  isSelectedName(user: User) {
+    return this.selectedUserName ? this.selectedUserName.userid === user.userid : false;
+  }
+  scrollDown(event) {
+    event.preventDefault();
+    if (event.keyCode === 40) {
+        this.selectedUserName = this.usernames[++this.selectedNameIndex];
+    } else if (event.keyCode === 38) {
+        this.selectedUserName = this.usernames[--this.selectedNameIndex];
+    } else return;
   }
 
 }

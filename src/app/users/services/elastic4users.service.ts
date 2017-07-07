@@ -11,7 +11,7 @@ export class Elastic4usersService extends ElasticService {
     if (ctxId) {
 
       return this.client.search({
-        index: 'db_contexts',
+        index: 'db_contexts_new',
         q: `_id:${ctxId}`,
         _sourceInclude: 'name'
       },
@@ -35,7 +35,7 @@ export class Elastic4usersService extends ElasticService {
 
   listAllContextNames(callback): any {
     return this.client.search({
-      index: "db_contexts",
+      index: "db_contexts_new",
       q: "*",
       _sourceInclude: "name, reference.objectId",
       size: 500,

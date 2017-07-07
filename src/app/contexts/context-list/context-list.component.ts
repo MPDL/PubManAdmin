@@ -8,6 +8,7 @@ import { PaginationComponent } from '../../base/pagination/pagination.component'
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
+import { Elastic4contextsService } from '../services/elastic4contexts.service';
 
 @Component({
   selector: 'app-context-list',
@@ -20,12 +21,19 @@ export class ContextListComponent implements OnInit, OnDestroy {
   private paginator: PaginationComponent;
 
   ctxs: any[];
+  contextnames: any[] = [];
+  contextSearchTerm;
   selected;
   token;
   subscription: Subscription;
   pagedCtxs: any[];
+  total: number = 1;
+  loading: boolean = false;
+  pageSize: number = 25;
+  currentPage: number = 1;
 
   constructor(private ctxSvc: ContextsService,
+    private elastic: Elastic4contextsService,
     private router: Router,
     private route: ActivatedRoute,
     private message: MessagesService,
@@ -35,6 +43,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
+    this.elastic.count("db_contexts_new", (num) => this.total = num);
     this.listAllContexts(this.token);
   }
 
@@ -42,16 +51,29 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  getPage(page: number) {
+    this.loading = true;
+    this.ctxSvc.listAllContexts(this.token, page)
+      .subscribe(result => {
+        this.ctxs = result;
+      }, (err) => {
+        this.message.error(err);
+      });
+    this.currentPage = page;
+    this.loading = false;
+
+  }
+
   updatePaginator() {
     this.pagedCtxs = this.paginator.pagedItems;
   }
 
   listAllContexts(token) {
-    this.ctxSvc.listAllContexts(token)
+    this.ctxSvc.listAllContexts(token, 1)
       .subscribe(ctxs => {
         this.ctxs = ctxs;
-        this.paginator.init(1, this.ctxs);
-        this.pagedCtxs = this.paginator.pagedItems;
+        // this.paginator.init(1, this.ctxs);
+        // this.pagedCtxs = this.paginator.pagedItems;
       });
   }
 
@@ -68,5 +90,28 @@ export class ContextListComponent implements OnInit, OnDestroy {
   addNewContext() {
     let ctxid = "new ctx";
     this.router.navigate(['/context', ctxid]);
+  }
+
+  getContextNames(a) {
+    let contextNames: any[] = [];
+    this.elastic.contexts4auto(a, (names) => {
+      names.forEach(name => contextNames.push(name));
+      if (contextNames.length > 0) {
+        this.contextnames = contextNames;
+      } else {
+        this.contextnames = [];
+      }
+    });
+  }
+
+  close() {
+    this.contextSearchTerm = "";
+    this.contextnames = [];
+  }
+
+  select(term) {
+    this.contextSearchTerm = term.name;
+    this.router.navigate(['/context', term.reference.objectId]);
+    this.contextnames = [];
   }
 }
