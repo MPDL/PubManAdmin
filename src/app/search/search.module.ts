@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../base/shared/shared.module';
 import { SearchService } from './services/search.service';
+import { FcrepoService } from './services/fcrepo.service';
+
 import { ElasticSearchService } from './services/elastic-search.service';
 
 import { SearchRoutingModule } from './search-routing.module';
@@ -11,6 +13,7 @@ import { UserSearchComponent } from './user-search/user-search.component';
 import { OrganizationSearchComponent } from './organization-search/organization-search.component';
 import { ContextSearchComponent } from './context-search/context-search.component';
 import { ItemSearchComponent } from './item-search/item-search.component';
+import { SearchTermComponent } from './search-term/search-term.component';
 
 @NgModule({
   imports: [
@@ -23,11 +26,16 @@ import { ItemSearchComponent } from './item-search/item-search.component';
     UserSearchComponent,
     OrganizationSearchComponent,
     ContextSearchComponent,
-    ItemSearchComponent
+    ItemSearchComponent,
+    SearchTermComponent
+  ],
+  entryComponents: [
+    SearchTermComponent
   ],
   providers: [
     ElasticSearchService,
-    SearchService
+    SearchService,
+    FcrepoService
   ]
 })
 export class SearchModule { }

@@ -1,0 +1,16 @@
+{
+    "bool": {
+        "must": {
+            "match": [
+                {
+                    "owner.title": "boosen"
+                },
+                {
+                    "match": {
+                        "metadata.title": "book"
+                    }
+                }
+            ]
+        }
+    }
+}

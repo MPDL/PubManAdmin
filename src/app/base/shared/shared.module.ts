@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { SelectedColourDirective } from '../directives/selected-colour.directive';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -10,7 +10,8 @@ import { PaginationService } from '../services/pagination.service';
 @NgModule({
   imports: [
     CommonModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReactiveFormsModule
   ],
   declarations: [
     SelectedColourDirective,
@@ -23,7 +24,8 @@ import { PaginationService } from '../services/pagination.service';
     PaginationComponent,
     NgxPaginationModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     PaginationService
