@@ -56,7 +56,22 @@ export class ElasticSearchService extends ElasticService {
         return buckets;
     }
 
-    getMappingFields(alias, type, index): Array<string> {
+    getTheNestedObject(obj, key2find, callback): any {
+        let found;
+        Object.keys(obj).forEach(key => {
+            if (key === key2find) {
+                found = obj[key];
+                callback(found);
+            } else {
+                found = this.getTheNestedObject(obj[key], key2find, callback);
+                if (found) {
+                    callback(found);
+                }
+            }
+        });
+    }
+
+    getMappingFields(alias, type): Array<string> {
         let fields = Array<string>();
         this.client.indices.getFieldMapping({
             index: alias,
@@ -67,7 +82,9 @@ export class ElasticSearchService extends ElasticService {
             if (error) {
                 this.message.error(error);
             } else {
-                let mapping = JSON.parse(JSON.stringify(response[index].mappings[type]));
+                let mapping;
+                this.getTheNestedObject(response, type, found => mapping = found);
+                // let mapping = JSON.parse(JSON.stringify(response[index].mappings[type]));
 
                 JSON.parse(JSON.stringify(mapping), (key, value: string) => {
                     if (key == "full_name") {
@@ -86,9 +103,7 @@ export class ElasticSearchService extends ElasticService {
         return fields;
     }
 
-    // this returns 'undefined' !!!
-    getIndex4Alias(alias): any {
-        let index_name;
+    getIndex4Alias(alias, callback): any {
         this.client.cat.aliases({
             format: "json",
             name: alias
@@ -96,9 +111,10 @@ export class ElasticSearchService extends ElasticService {
             if (err) {
                 this.message.error(err);
             } else {
+                let index_name;
                 index_name = res[0].index;
+                callback(index_name);
             }
         });
-        return index_name;
     }
 }

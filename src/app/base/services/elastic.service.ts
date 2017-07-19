@@ -38,7 +38,7 @@ export class ElasticService {
         if (response) {
           callback(response.hits.total);
         }
-      })
+      });
   }
 
 

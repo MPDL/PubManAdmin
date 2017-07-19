@@ -15,12 +15,14 @@ export class ContextSearchComponent implements OnInit {
   constructor(private fcrepo: FcrepoService) {}
 
   ngOnInit() {
+    /*
     this.resource = this.fcrepo.getResource("collections/ffm")
     .subscribe(data => this.resource = data);
     //this.r2display = JSON.parse(JSON.stringify(this.resource[0]));
     this.r2display = this.resource[0];
     console.log("1 "+this.resource);
     console.log("2 "+JSON.stringify(this.resource[0]));
+    */
   }
   
 }
