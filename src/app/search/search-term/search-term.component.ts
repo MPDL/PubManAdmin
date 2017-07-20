@@ -27,6 +27,7 @@ export class SearchTermComponent {
       this.filteredTerms = [];
     }
   }
+
   select(term) {
     this.searchTermForm.patchValue({field: term});
     this.filteredTerms = [];
@@ -40,9 +41,11 @@ export class SearchTermComponent {
     this.searchTermForm.patchValue({field: ""});
     this.filteredTerms = [];
   }
+
   addSearchTerm() {
     this.notice.emit("add");
   }
+  
   removeSearchTerm() {
     this.notice.emit("remove");
   }
