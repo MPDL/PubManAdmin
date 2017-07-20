@@ -71,7 +71,7 @@ export class ElasticSearchService extends ElasticService {
         });
     }
 
-    getMappingFields(alias, type): Array<string> {
+    getMappingFields(alias, type, index): Array<string> {
         let fields = Array<string>();
         this.client.indices.getFieldMapping({
             index: alias,
@@ -103,7 +103,7 @@ export class ElasticSearchService extends ElasticService {
         return fields;
     }
 
-    getIndex4Alias(alias, callback): any {
+    getIndex4Alias(alias): any {
         this.client.cat.aliases({
             format: "json",
             name: alias
@@ -113,7 +113,7 @@ export class ElasticSearchService extends ElasticService {
             } else {
                 let index_name;
                 index_name = res[0].index;
-                callback(index_name);
+                return index_name;
             }
         });
     }

@@ -75,7 +75,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let agg in aggs) {
       this.aggregationsList.push(agg);
     }
-    this.fields2Select = this.elastic.getMappingFields("db_items", "item");
+    this.fields2Select = this.elastic.getMappingFields("db_items", "item", "db_items_new3");
     this.subscription = this.login.token$.subscribe(token => {
       this.token = token;
     });

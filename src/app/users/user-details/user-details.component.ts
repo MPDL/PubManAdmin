@@ -21,6 +21,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedOu: any;
   isNewUser: boolean = false;
   isNewGrant: boolean = false;
+  isNewOu: boolean = false;
   grants2remove: boolean = false;
   selectedGrant: Grant;
   selectedGrants: Grant[] = [];
@@ -47,6 +48,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected = this.route.snapshot.data['user'];
     if (this.selected.userid == "new user") {
       this.isNewUser = true;
+      this.isNewOu = true;
     }
     this.listOuNames();
 
@@ -63,8 +65,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onChangeOu(val) {
+  onSelectOu(val) {
     this.selectedOu = val;
+  }
+
+  onChangeOu() {
+    this.isNewOu = true;
+    this.selected.affiliations.pop();
   }
 
   selectOuByKey(val) {
@@ -148,7 +155,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         );
 
     } else {
-      this.messageService.success("updating " + this.selected.userid);
+      if (this.isNewOu) {
+        if (this.selectedOu != null) {
+          let ou_id = this.selectedOu.reference.objectId;
+          let aff = new Affiliation();
+          aff.objectId = ou_id;
+          this.selected.affiliations.push(aff);
+        } else {
+          this.messageService.warning("you MUST select an organization");
+          return;
+        }
+      }
       this.usersService.putUser(this.selected, this.token)
         .subscribe(
         data => {
@@ -164,21 +181,21 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-      removeGrants() {
-        this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(user => {
-          this.selected = user;
-            this.messageService.success("removed Grants from " + this.selected.userid);
-            /*
-            this.selectedGrants.forEach((g) => {
-              let i = this.selected.grants.indexOf(g);
-              this.selected.grants.splice(i, 1);
-            });
-            */
-            this.selectedGrants = null;
-            this.grants2remove = false;
-        }, error => {
-            this.messageService.error(error);
-        });
-    }
+  removeGrants() {
+    this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(user => {
+      this.selected = user;
+      this.messageService.success("removed Grants from " + this.selected.userid);
+      /*
+      this.selectedGrants.forEach((g) => {
+        let i = this.selected.grants.indexOf(g);
+        this.selected.grants.splice(i, 1);
+      });
+      */
+      this.selectedGrants = null;
+      this.grants2remove = false;
+    }, error => {
+      this.messageService.error(error);
+    });
+  }
 
 }

@@ -20,7 +20,7 @@ export class UserDetailsResolverService implements Resolve<User> {
             return Observable.of(user);
         } else {
             let token = route.queryParams['token'];
-        return this.userSvc.getUser(id, token).first(); // add first() to ensure observable completion 
+            return this.userSvc.getUser(id, token).first(); // add first() to ensure observable completion 
         }
     }
 }

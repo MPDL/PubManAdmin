@@ -134,6 +134,8 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.messageService.error(error);
       }
       );
+    let index = this.users.indexOf(this.selected);
+    this.users.splice(index, 1);
     this.selected = null;
   }
 
