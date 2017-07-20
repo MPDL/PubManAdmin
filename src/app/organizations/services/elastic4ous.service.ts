@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
+import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
 export class Elastic4ousService extends ElasticService {
@@ -12,7 +13,7 @@ export class Elastic4ousService extends ElasticService {
         let contexts = Array<any>();
         if (term) {
             this.client.search({
-                index: "db_ous_new",
+                index: props.ou_index_name,
                 q: "defaultMetadata.name.auto:" + term,
                 sort: "defaultMetadata.name.sorted:asc"
             }, (error, response) => {
@@ -39,7 +40,7 @@ export class Elastic4ousService extends ElasticService {
 
     if (queryString.length > 0) {
       return this.client.search({
-        index: "ous",
+        index: props.ou_index_name,
         // q: "parentAffiliations.objectId:*" + parent,
         q: queryString,
         _sourceInclude: "reference.objectId, defaultMetadata.name, hasChildren, publicStatus",
@@ -65,7 +66,7 @@ export class Elastic4ousService extends ElasticService {
 
   searchOu(id, callback): any {
     return this.client.search({
-      index: 'ous',
+      index: props.ou_index_name,
       q: `reference.objectId:*${id}`,
     }, (error, response) => {
       if (error) {
@@ -85,8 +86,8 @@ export class Elastic4ousService extends ElasticService {
 
   updateOu(ou) {
     this.client.index({
-      index: "ous",
-      type: "organization",
+      index: props.ou_index_name,
+      type: props.ou_index_type,
       id: ou.reference.objectId,
       body: ou
     }, (error, response) => {

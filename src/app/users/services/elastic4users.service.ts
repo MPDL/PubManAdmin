@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
+import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
 export class Elastic4usersService extends ElasticService {
@@ -11,7 +12,7 @@ export class Elastic4usersService extends ElasticService {
     if (ctxId) {
 
       return this.client.search({
-        index: 'db_contexts_new',
+        index: props.ctx_index_name,
         q: `_id:${ctxId}`,
         _sourceInclude: 'name'
       },
@@ -35,7 +36,7 @@ export class Elastic4usersService extends ElasticService {
 
   listAllContextNames(callback): any {
     return this.client.search({
-      index: "db_contexts_new",
+      index: props.ctx_index_name,
       q: "*",
       _sourceInclude: "name, reference.objectId",
       size: 500,
@@ -61,7 +62,7 @@ export class Elastic4usersService extends ElasticService {
     if (ouId) {
 
       return this.client.search({
-        index: 'db_ous',
+        index: props.ou_index_name,
         q: `_id:${ouId}`,
         _sourceInclude: 'defaultMetadata.name'
       },
@@ -93,7 +94,7 @@ export class Elastic4usersService extends ElasticService {
 
     if (queryString.length > 0) {
       return this.client.search({
-        index: "db_ous",
+        index: props.ou_index_name,
         // q: "parentAffiliations.objectId:*" + parent,
         q: queryString,
         _sourceInclude: "reference.objectId, defaultMetadata.name, hasChildren, publicStatus",
@@ -121,7 +122,7 @@ export class Elastic4usersService extends ElasticService {
         let users = Array<any>();
         if (term) {
             this.client.search({
-                index: "db_users",
+                index: props.user_index_name,
                 q: "name.auto:" + term,
                 sort: "name.sorted:asc"
             }, (error, response) => {

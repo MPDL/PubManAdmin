@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
+import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
 export class Elastic4contextsService extends ElasticService {
@@ -11,7 +12,7 @@ export class Elastic4contextsService extends ElasticService {
         let contexts = Array<any>();
         if (term) {
             this.client.search({
-                index: "db_contexts_new",
+                index: props.ctx_index_name,
                 q: "name.auto:" + term,
                 sort: "name.sorted:asc"
             }, (error, response) => {

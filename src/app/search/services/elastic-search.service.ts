@@ -71,7 +71,7 @@ export class ElasticSearchService extends ElasticService {
         });
     }
 
-    getMappingFields(alias, type, index): Array<string> {
+    getMappingFields(alias, type): Array<string> {
         let fields = Array<string>();
         this.client.indices.getFieldMapping({
             index: alias,

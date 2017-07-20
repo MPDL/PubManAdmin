@@ -81,7 +81,6 @@
         <div class="col-9">
             <div>
                 <span class="text-primary">your query returned {{total}} records</span>
-                <span *ngIf="total > 10000" class="text-primary">(but you can only view 10.000)</span>
                 <div *ngIf="total > 0" class="has-text-centered">
                     <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
                     <pagination-controls class="admin-pagination" previousLabel="prev" nextLabel="next" maxSize=11 autoHide="true" (pageChange)="getPage($event)"

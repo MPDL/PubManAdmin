@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ElasticService } from '../services/elastic.service';
+import { props } from '../common/admintool.properties';
 
 @Component({
   selector: 'app-home',
@@ -16,9 +17,9 @@ export class HomeComponent implements OnInit {
   constructor(private elastic: ElasticService) { }
 
   ngOnInit() {
-    this.elastic.count("pure", (total) => this.items = total);
-    this.elastic.count("contexts", (total) => this.contexts = total);
-    this.elastic.count("ous", (total) => this.ous = total);
+    this.elastic.count(props.item_index_name, (total) => this.items = total);
+    this.elastic.count(props.ctx_index_name, (total) => this.contexts = total);
+    this.elastic.count(props.ou_index_name, (total) => this.ous = total);
   }
 
 }

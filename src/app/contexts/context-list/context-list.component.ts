@@ -9,6 +9,8 @@ import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
 import { Elastic4contextsService } from '../services/elastic4contexts.service';
+import { props } from '../../base/common/admintool.properties';
+
 
 @Component({
   selector: 'app-context-list',
@@ -32,6 +34,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   pageSize: number = 25;
   currentPage: number = 1;
 
+  
   constructor(private ctxSvc: ContextsService,
     private elastic: Elastic4contextsService,
     private router: Router,
@@ -43,7 +46,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
-    this.elastic.count("db_contexts_new", (num) => this.total = num);
+    this.elastic.count(props.ctx_index_name, (num) => this.total = num);
     this.listAllContexts(this.token);
   }
 

@@ -16,6 +16,7 @@ import { ElasticSearchService } from '../services/elastic-search.service';
 import { SearchService } from '../services/search.service';
 import { SearchTermComponent } from '../search-term/search-term.component';
 import { SearchRequest, SearchTerm } from './search.term';
+import { props } from '../../base/common/admintool.properties';
 
 export const aggs = {
   select: {},
@@ -75,7 +76,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let agg in aggs) {
       this.aggregationsList.push(agg);
     }
-    this.fields2Select = this.elastic.getMappingFields("db_items", "item", "db_items_new3");
+    this.fields2Select = this.elastic.getMappingFields(props.item_index_name, props.item_index_type);
     this.subscription = this.login.token$.subscribe(token => {
       this.token = token;
     });
@@ -113,15 +114,15 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedAggregation = aggs[agg];
     switch (agg) {
       case "creationDate":
-        this.years = this.elastic.buckets("db_items", this.selectedAggregation, false);
+        this.years = this.elastic.buckets(props.item_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
       case "genre":
-        this.genres = this.elastic.buckets("db_items", this.selectedAggregation, false);
+        this.genres = this.elastic.buckets(props.item_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
       case "publisher":
-        this.publishers = this.elastic.buckets("db_items", this.selectedAggregation, true);
+        this.publishers = this.elastic.buckets(props.item_index_name, this.selectedAggregation, true);
         this.selected = agg;
         break;
       default:
