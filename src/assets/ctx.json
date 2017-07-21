@@ -1,41 +1,35 @@
 {
-    "reference": {
-        "objectId": "ctx_3000228",
-        "title": "And again and again"
-    },
-    "name": "And again and again",
-    "type": "PubMan",
-    "state": "CREATED",
-    "description": "desc",
-    "creator": {
-        "objectId": "user_user42",
-        "title": "roland"
-    },
-    "creationDate": "2017-06-14T08:01:36.400+0000",
-    "lastModificationDate": "2017-06-14T08:01:36.400+0000",
-    "modifiedBy": {
-        "objectId": "user_user42",
-        "title": "roland"
-    },
-    "validationPoints": [],
-    "responsibleAffiliations": [
-        {
-            "objectId": "ou_1462638",
-            "title": "Bibliotheca Hertziana - Max-Planck-Institut für Kunstgeschichte"
-        }
-    ],
-    "adminDescriptor": {
-        "allowedGenres": [
-            "ARTICLE"
+    "_body": "{\n    \"bool\": {\n        \"must\": {\n            \"match\": [\n                {\n                    \"owner.title\": \"boosen\"\n                },\n                {\n                    \"match\": {\n                        \"metadata.title\": \"book\"\n                    }\n                }\n            ]\n        }\n    }\n}",
+    "status": 200,
+    "ok": true,
+    "statusText": "OK",
+    "headers": {
+        "Date": [
+            "Fri",
+            " 21 Jul 2017 08:12:54 GMT"
         ],
-        "allowedSubjectClassifications": [],
-        "templateItem": {
-            "objectId": "",
-            "versionNumber": 0
-        },
-        "validationSchema": "simple",
-        "visibilityOfReferences": null,
-        "workflow": "SIMPLE",
-        "contactEmail": ""
-    }
+        "X-Powered-By": [
+            "Express"
+        ],
+        "ETag": [
+            "W/\"133-3ZSqGpIa01n755YejXuqmUxMkUM\""
+        ],
+        "Content-Type": [
+            "application/json; charset=UTF-8"
+        ],
+        "Access-Control-Allow-Origin": [
+            "*"
+        ],
+        "Connection": [
+            "keep-alive"
+        ],
+        "Accept-Ranges": [
+            "bytes"
+        ],
+        "Content-Length": [
+            "307"
+        ]
+    },
+    "type": 2,
+    "url": "http://localhost:4200/assets/query.json"
 }

@@ -15,7 +15,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { ElasticSearchService } from '../services/elastic-search.service';
 import { SearchService } from '../services/search.service';
 import { SearchTermComponent } from '../search-term/search-term.component';
-import { SearchRequest, SearchTerm } from './search.term';
+import { SearchRequest, SearchTerm } from '../search-term/search.term';
 import { props } from '../../base/common/admintool.properties';
 
 export const aggs = {
@@ -160,7 +160,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "creationDate", searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.listFilteredItems(this.token, "?q=creationDate:" + year.key + "||/y", 1)
+    this.search.listFilteredItems(this.token, "?q=creationDate:" + year.key + "||/y", 1, props.pubman_rest_url + "/items")
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -173,7 +173,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.genre", searchTerm: genre.key }]);
     this.currentPage = 1;
-    this.search.listFilteredItems(this.token, "?q=metadata.genre:" + genre.key, 1)
+    this.search.listFilteredItems(this.token, "?q=metadata.genre:" + genre.key, 1, props.pubman_rest_url +"/items")
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;

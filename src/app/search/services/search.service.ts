@@ -20,7 +20,7 @@ export class SearchService {
     private message: MessagesService) { }
 
 
-  listFilteredItems(token: string, query: string, limit): Observable<any> {
+  listFilteredItems(token: string, query: string, limit, url): Observable<any> {
     let headers = new Headers();
     if (token != null) {
       headers.set("Authorization", token);
@@ -30,7 +30,7 @@ export class SearchService {
     let options = new RequestOptions({
       headers: headers,
       method: RequestMethod.Get,
-      url: this.items_rest_url + query + '&limit=' + perPage + '&offset=' + offset
+      url: url + query + '&limit=' + perPage + '&offset=' + offset
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {
@@ -77,6 +77,30 @@ export class SearchService {
         return result;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting list 4 ' + JSON.stringify(body)));
+  }
+
+  listFilteredUsers(token: string, query: string, limit, url): Observable<any> {
+    let headers = new Headers();
+    if (token != null) {
+      headers.set("Authorization", token);
+    }
+    const perPage = 25;
+    let offset = (limit -1) * perPage;
+    let options = new RequestOptions({
+      headers: headers,
+      method: RequestMethod.Get,
+      url: url + query + '&limit=' + perPage + '&offset=' + offset
+    });
+    return this.http.request(new Request(options))
+      .map((response: Response) => {
+        let data = response.json();
+        let items = [];
+        data.forEach(element => {
+          items.push(element)
+        });
+        return items;
+      })
+      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting filtered list 4 ' + query));
   }
 
 }
