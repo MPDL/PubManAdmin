@@ -49,20 +49,9 @@
                     <h4 class="card-title">users / organization</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let genre of genres" (click)="onSelectGenre(genre)">
-                        <span class="text-primary mr-2">{{genre.key}}</span>
-                        <span class="badge badge-primary">{{genre.doc_count}}</span>
-                        <li>
-                </ul>
-            </div>
-            <div *ngIf="selected === 'publisher'" class="card card-outline-primary text-right m-1">
-                <div class="card-header">
-                    <h4 class="card-title">items / publisher</h4>
-                </div>
-                <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let publisher of publishers" (click)="onSelectPublisher(publisher)">
-                        <span class="text-primary mr-2">{{publisher.key}}</span>
-                        <span class="badge badge-primary">{{publisher.doc_count}}</span>
+                    <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let ou of ous" (click)="onSelectOu(ou)">
+                        <span class="text-primary mr-2">{{ou.key}}</span>
+                        <span class="badge badge-primary">{{ou.doc_count}}</span>
                         <li>
                 </ul>
             </div>
@@ -76,12 +65,12 @@
                         id="paginator"></pagination-controls>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
-                        (click)="onSelect(item)">
-                        <span class="text-primary">{{item.reference.objectId}}</span>
-                        <span class="text-primary ml-2">{{item.name}}</span>
-                        <span class="text-primary ml-2">({{item.userid}})</span>
-                        <span class="text-primary ml-2">{{item.affiliations[0].title}}</span>
+                    <li silver class="list-group-item text-primary justify-content-start p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
+                        (click)="onSelect(user)">
+                        <span class="text-primary">{{user.reference.objectId}}</span>
+                        <span class="text-primary ml-2">{{user.name}}</span>
+                        <span class="text-primary ml-2">({{user.userid}})</span>
+                        <span class="text-primary ml-2">{{user.affiliations[0].title}}</span>
                     <li>
                 </ul>
             </div>

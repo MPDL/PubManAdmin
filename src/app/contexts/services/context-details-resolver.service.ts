@@ -6,13 +6,16 @@ import 'rxjs/add/observable/of';
 
 import { ContextsService } from './contexts.service';
 import { MessagesService } from '../../base/services/messages.service';
+// import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { template } from '../context-details/context.template';
+import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
 
     constructor(
         private ctxSvc: ContextsService,
+        // private pubman: PubmanRestService,
         private message: MessagesService,
         private router: Router) { }
 
@@ -24,7 +27,8 @@ export class ContextDetailsResolverService implements Resolve<any> {
             return Observable.of(ctx);
         } else {
             let token = route.params['token'];
-            return this.ctxSvc.getContext(id, token).first()
+            // return this.ctxSvc.getContext(id, token).first()
+            return this.ctxSvc.get(props.pubman_rest_url + "/contexts", id, token)
                 .catch((err, obs) => {
                     this.message.error(err);
                     return Observable.throw(err);

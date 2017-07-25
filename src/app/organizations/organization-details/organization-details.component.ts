@@ -76,7 +76,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   listPredecessors(id: string, token) {
     this.ouSvc.listFilteredOus(token, "?q=reference.objectId:" + id)
       .subscribe(ous => {
-        this.predecessors = ous;
+        this.predecessors = ous.list;
       });
   }
 

@@ -19,7 +19,7 @@
             </div>
       </div>
       <ul id="mpg-org-units" class="list-group w-100">
-        <div silver="lightsteelblue" class="list-group-item list-group-item-info text-right d-block w-100 p-1" *ngFor="let mpgOu of mpgOus | async">
+        <div silver="lightsteelblue" class="list-group-item list-group-item-info text-right d-block w-100 p-1" *ngFor="let mpgOu of mpgOus">
           <div class="row">
             <div class="col-sm-11">
               <a (click)="onSelect(mpgOu)">
@@ -70,7 +70,7 @@
             </div>
       </div>
       <ul id="ext-org-units" class="list-group w-100">
-        <div silver="lightsteelblue" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let extOu of extOus | async">
+        <div silver="lightsteelblue" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let extOu of extOus">
           <div class="row">
             <div class="col-sm-11">
               <a (click)="onSelect(extOu)">

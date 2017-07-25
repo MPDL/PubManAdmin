@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ComponentFactoryResolver, ComponentRef, QueryList, ViewContainerRef, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ComponentRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
@@ -8,22 +8,18 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/delay';
 
 import { Subscription } from 'rxjs/Subscription';
-import * as bodyBuilder from 'bodybuilder';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
+import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { ElasticSearchService } from '../services/elastic-search.service';
 import { SearchService } from '../services/search.service';
 import { SearchTermComponent } from '../search-term/search-term.component';
 import { SearchRequest, SearchTerm } from '../search-term/search.term';
+import { item_aggs } from '../search-term/search.aggregations';
+
 import { props } from '../../base/common/admintool.properties';
 
-export const aggs = {
-  select: {},
-  creationDate: { size: 0, aggs: { name1: { date_histogram: { field: "creationDate", interval: "year", min_doc_count: 1 } } } },
-  genre: { size: 0, aggs: { name1: { terms: { field: "metadata.genre", size: 100, order: { _count: "desc" } } } } },
-  publisher: { size: 0, aggs: { name1: { nested: { path: "metadata.sources" }, aggs: { name2: { terms: { field: "metadata.sources.publishingInfo.publisher.sorted", size: 100 } } } } } }
-}
 
 @Component({
   selector: 'app-item-search',
@@ -32,11 +28,9 @@ export const aggs = {
 })
 export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  /*
-  @ViewChild("searchTermContainer", { read: ViewContainerRef }) container;
-  component: ComponentRef<SearchTermComponent>;
-  */
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
+
+  item_rest_url = props.pubman_rest_url + "/items";
 
   searchForm: FormGroup;
   searchRequest: SearchRequest;
@@ -61,10 +55,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private elastic: ElasticSearchService,
     private search: SearchService,
+    private pubman: PubmanRestService,
     private message: MessagesService,
     private login: AuthenticationService,
-    private cfr: ComponentFactoryResolver,
-    private vcf: ViewContainerRef,
     private builder: FormBuilder) { }
 
   get diagnostic() { return JSON.stringify(this.years); }
@@ -73,7 +66,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    for (let agg in aggs) {
+    for (let agg in item_aggs) {
       this.aggregationsList.push(agg);
     }
     this.fields2Select = this.elastic.getMappingFields(props.item_index_name, props.item_index_type);
@@ -111,7 +104,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onAggregationSelect(agg) {
-    this.selectedAggregation = aggs[agg];
+    this.selectedAggregation = item_aggs[agg];
     switch (agg) {
       case "creationDate":
         this.years = this.elastic.buckets(props.item_index_name, this.selectedAggregation, false);
@@ -132,9 +125,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    let body = this.prepareBody(this.searchRequest);
+    // let body = this.search.prepareBody(this.searchRequest);
+    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "metadata.title.sorted", "asc");
     this.loading = true;
-    this.search.listItemsByQuery(this.token, body, page)
+    // this.search.listHitsByQuery(this.token, body, this.item_rest_url)
+    this.pubman.query(this.item_rest_url, this.token, body)
       .subscribe(res => {
         this.total = res.records;
         this.currentPage = page;
@@ -147,7 +142,8 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   searchItems(body) {
     this.currentPage = 1;
-    this.search.listItemsByQuery(this.token, body, 1)
+    // this.search.listHitsByQuery(this.token, body, this.item_rest_url)
+    this.pubman.query(this.item_rest_url, this.token, body)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -160,7 +156,8 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "creationDate", searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.listFilteredItems(this.token, "?q=creationDate:" + year.key + "||/y", 1, props.pubman_rest_url + "/items")
+    // this.search.listFilteredHits(this.token, "?q=creationDate:" + year.key + "||/y", 1, props.pubman_rest_url + "/items")
+    this.pubman.filter(this.item_rest_url, this.token, "?q=creationDate:" + year.key + "||/y", 1)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -173,7 +170,8 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.genre", searchTerm: genre.key }]);
     this.currentPage = 1;
-    this.search.listFilteredItems(this.token, "?q=metadata.genre:" + genre.key, 1, props.pubman_rest_url +"/items")
+    // this.search.listFilteredHits(this.token, "?q=metadata.genre:" + genre.key, 1, props.pubman_rest_url +"/items")
+    this.pubman.filter(this.item_rest_url, this.token, "?q=metadata.genre:" + genre.key, 1)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -184,10 +182,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSelectPublisher(publisher) {
     this.searchForm.reset();
-    let body = { nested: { path: "metadata.sources", query: { bool: { filter: { term: { ["metadata.sources.publishingInfo.publisher.sorted"]: publisher.key } } } } } };
+    let body = { size: 25, from: 0, query: {nested: { path: "metadata.sources", query: { bool: { filter: { term: { ["metadata.sources.publishingInfo.publisher.sorted"]: publisher.key } } } } } } };
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.sources.publishingInfo.publisher.sorted", searchTerm: publisher.key }]);
     this.currentPage = 1;
-    this.search.listItemsByQuery(this.token, body, 1)
+    // this.search.listHitsByQuery(this.token, body, this.item_rest_url)
+    this.pubman.query(this.item_rest_url, this.token, body)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -213,7 +212,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    let preparedBody = this.prepareBody(this.searchRequest);
+    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "metadata.title.sorted", "asc");
     this.searchItems(preparedBody);
   }
 
@@ -226,48 +225,6 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
       searchTerms: searchTerms2Save
     };
     return request;
-  }
-
-  prepareBody(request): any {
-    let must, must_not, filter, should;
-    request.searchTerms.forEach(element => {
-      let field = element.field;
-      let value: string = element.searchTerm;
-      switch (element.type) {
-        case "must":
-          if (must) {
-            must.push({ match: { [field]: value } });
-          } else {
-            must = [{ match: { [field]: value } }];
-          }
-          break;
-        case "must_not":
-          if (must_not) {
-            must_not.push({ term: { [field]: value } });
-          } else {
-            must_not = [{ term: { [field]: value } }];
-          }
-          break;
-        case "filter":
-          if (filter) {
-            filter.push({ term: { [field]: value } });
-          } else {
-            filter = [{ term: { [field]: value } }];
-          }
-          break;
-        case "should":
-          if (should) {
-            should.push({ term: { [field]: value } });
-          } else {
-            should = [{ term: { [field]: value } }];
-          }
-          break;
-        default:
-      }
-    });
-    const body = { bool: { must, must_not, filter, should } };
-    // confirm("BODY: " + JSON.stringify(body));
-    return body;
   }
 
 }

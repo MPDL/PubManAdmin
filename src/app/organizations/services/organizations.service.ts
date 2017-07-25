@@ -19,9 +19,11 @@ export class OrganizationsService {
     constructor(private http: Http,
         private message: MessagesService) { }
 
-    listAllOus(token: string): Observable<any[]> {
+    listAllOus(token: string): Observable<any> {
         let headers = new Headers();
-        // headers.set("Authorization", token);
+        if (token != null) {
+            headers.set("Authorization", token);
+        }
         let options = new RequestOptions({
             headers: headers,
             method: RequestMethod.Get,
@@ -29,24 +31,41 @@ export class OrganizationsService {
         });
         return this.http.request(new Request(options))
             .map((response: Response) => {
-                this.ous = response.json();
-                return this.ous;
+                let result = { list: [], records: "" };
+                let data = response.json();
+                let hits = [];
+                let records = data.numberOfRecords;
+                data.records.forEach(element => {
+                    hits.push(element.data)
+                });
+                result.list = hits;
+                result.records = records;
+                return result;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting ou list'));
     }
 
-    listFilteredOus(token: string, query: string): Observable<any[]> {
+    listFilteredOus(token: string, query: string): Observable<any> {
         let headers = new Headers();
-        // headers.set("Authorization", token);
-        let options = new RequestOptions({
+        if (token != null) {
+            headers.set("Authorization", token);
+        } let options = new RequestOptions({
             headers: headers,
             method: RequestMethod.Get,
             url: this.ous_rest_url + query
         });
         return this.http.request(new Request(options))
             .map((response: Response) => {
-                this.ous = response.json();
-                return this.ous;
+                let result = { list: [], records: "" };
+                let data = response.json();
+                let hits = [];
+                let records = data.numberOfRecords;
+                data.records.forEach(element => {
+                    hits.push(element.data)
+                });
+                result.list = hits;
+                result.records = records;
+                return result;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting ou list 4 ' + query));
     }

@@ -1,16 +1,52 @@
 {
-    "bool": {
-        "must": {
-            "match": [
-                {
-                    "owner.title": "boosen"
-                },
-                {
-                    "match": {
-                        "metadata.title": "book"
-                    }
+    "sort": [
+        {
+            "metadata.genre": {
+                "order": "asc"
+            }
+        },
+        {
+            "metadata.title": {
+                "order": "asc"
+            }
+        }
+    ],
+    "size": 10,
+    "from": 0,
+    "_source": {
+        "includes": [
+            "metadata.title",
+            "metadata.genre"
+        ]
+    },
+    "query": {
+        "bool": {
+            "filter": {
+                "bool": {
+                    "must": {
+                        "term": {
+                            "metadata.sources.publishingInfo.publisher.sorted": "Wiley-VCH"
+                        }
+                    },
+                    "must_not": [
+                        {
+                            "term": {
+                                "metadata.genre": "ARTICLE"
+                            }
+                        },
+                        {
+                            "term": {
+                                "metadata.genre": "BOOK_ITEM"
+                            }
+                        }
+                    ]
                 }
-            ]
+            },
+            "must": {
+                "match": {
+                    "creationDate": "2016-12-05||/y"
+                }
+            }
         }
     }
 }

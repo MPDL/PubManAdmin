@@ -7,6 +7,7 @@ import { PaginationComponent } from '../../base/pagination/pagination.component'
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
+// import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { ContextsService } from '../services/contexts.service';
 import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { props } from '../../base/common/admintool.properties';
@@ -37,6 +38,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   
   constructor(private ctxSvc: ContextsService,
     private elastic: Elastic4contextsService,
+    // private pubman: PubmanRestService,
     private router: Router,
     private route: ActivatedRoute,
     private message: MessagesService,
@@ -46,7 +48,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
-    this.elastic.count(props.ctx_index_name, (num) => this.total = num);
     this.listAllContexts(this.token);
   }
 
@@ -56,9 +57,11 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.loading = true;
-    this.ctxSvc.listAllContexts(this.token, page)
+    // this.ctxSvc.listAllContexts(this.token, page)
+    this.ctxSvc.getAll(props.pubman_rest_url + "/contexts", this.token, page)
       .subscribe(result => {
-        this.ctxs = result;
+        this.ctxs = result.list;
+        this.total = result.records;
       }, (err) => {
         this.message.error(err);
       });
@@ -72,9 +75,11 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   listAllContexts(token) {
-    this.ctxSvc.listAllContexts(token, 1)
+    // this.ctxSvc.listAllContexts(token, 1)
+    this.ctxSvc.getAll(props.pubman_rest_url + "/contexts", this.token, 1)
       .subscribe(ctxs => {
-        this.ctxs = ctxs;
+        this.ctxs = ctxs.list;
+        this.total = ctxs.records;
         // this.paginator.init(1, this.ctxs);
         // this.pagedCtxs = this.paginator.pagedItems;
       });

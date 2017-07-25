@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Request, Response, RequestOptions, RequestMethod, URLSearchParams } from '@angular/http';
+import { Http, Headers, Request, Response, RequestOptions, RequestMethod } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -7,18 +7,20 @@ import 'rxjs/add/operator/catch';
 
 import { props } from '../../base/common/admintool.properties';
 import { MessagesService } from '../../base/services/messages.service';
+import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
 @Injectable()
-export class ContextsService {
+export class ContextsService extends PubmanRestService {
 
     context_url = props.pubman_rest_url + "/contexts"
     ctx;
     ctxs: any[];
 
-    constructor(private http: Http,
-        private message: MessagesService) { }
+    constructor(http: Http, message: MessagesService) {
+        super(http, message);
+    }
 
-    listAllContexts(token: string, page: number): Observable<any[]> {
+    listAllContexts(token: string, page: number): Observable<any> {
         const perPage = 25;
     let offset = (page -1) * perPage;
     let headers = new Headers();
@@ -30,13 +32,16 @@ export class ContextsService {
     });
     return this.http.request(new Request(options))
       .map((response: Response) => {
-        this.ctxs = response.json();
-        this.ctxs.sort((a, b) => {
-          if (a.name < b.name) return -1;
-          else if (a.name > b.name) return 1;
-          else return 0;
+        let result = { list: [], records: "" };
+        let data = response.json();
+        let hits = [];
+        let records = data.numberOfRecords;
+        data.records.forEach(element => {
+          hits.push(element.data)
         });
-        return this.ctxs;
+        result.list = hits;
+        result.records = records;
+        return result;
       })
       .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting context list'));
   }

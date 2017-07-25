@@ -42,8 +42,8 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
-    this.listOuNames4mpg("?q=parentAffiliations.objectId:ou_persistent13", this.token);
-    this.listOuNames4ext("?q=parentAffiliations.objectId:ou_persistent22", this.token);
+    this.listOuNames4mpg("?q=parentAffiliations.objectId:ou_persistent13&limit=111", this.token);
+    this.listOuNames4ext("?q=parentAffiliations.objectId:ou_persistent22&limit=111", this.token);
   }
 
   ngOnDestroy() {
@@ -51,13 +51,19 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   listOuNames4mpg(query: string, token) {
-    this.mpgOus = this.ouSvc.listFilteredOus(token, query);
+    this.ouSvc.listFilteredOus(token, query)
+      .subscribe(result => {
+        this.mpgOus = result.list;
+      });
   }
 
   get diagnostic() { return JSON.stringify(this.mpgOus) };
 
   listOuNames4ext(query: string, token) {
-    this.extOus = this.ouSvc.listFilteredOus(token, query);
+    this.ouSvc.listFilteredOus(token, query)
+      .subscribe(result => {
+        this.extOus = result.list;
+      });
   }
 
   getChildren(id) {

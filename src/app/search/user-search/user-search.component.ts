@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ComponentFactoryResolver, ComponentRef, QueryList, ViewContainerRef, ViewChild, ViewChildren } from '@angular/core';
 import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -16,22 +17,21 @@ import { ElasticSearchService } from '../services/elastic-search.service';
 import { SearchService } from '../services/search.service';
 import { SearchTermComponent } from '../search-term/search-term.component';
 import { SearchRequest, SearchTerm } from '../search-term/search.term';
+import { user_aggs } from '../search-term/search.aggregations';
+
 import { props } from '../../base/common/admintool.properties';
 
-export const aggs = {
-  select: {},
-  creationDate: { size: 0, aggs: { name1: { date_histogram: { field: "creationDate", interval: "year", min_doc_count: 1 } } } },
-  organization: { size: 0, aggs: { name1: { terms: { field: "affiliations.title.sorted", size: 100, order: { _count: "desc" } } } } },
-}
 
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
   styleUrls: ['./user-search.component.scss']
 })
-export class UserSearchComponent implements OnInit {
+export class UserSearchComponent implements OnInit, OnDestroy {
 
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
+
+  user_rest_url = props.pubman_rest_url + "/users";
 
   searchForm: FormGroup;
   searchRequest: SearchRequest;
@@ -42,10 +42,10 @@ export class UserSearchComponent implements OnInit {
   aggregationsList: any[] = [];
   selectedAggregation: any;
   years: any[] = [];
-  genres: Array<any>;
+  ous: Array<any>;
   publishers: Array<any>;
   selected;
-  items: any[];
+  users: any[];
   total: number = 0;
   loading: boolean = false;
   pageSize: number = 25;
@@ -58,7 +58,8 @@ export class UserSearchComponent implements OnInit {
     private search: SearchService,
     private message: MessagesService,
     private login: AuthenticationService,
-    private builder: FormBuilder) { }
+    private builder: FormBuilder,
+    private router: Router) { }
 
   get diagnostic() { return JSON.stringify(this.years); }
 
@@ -66,7 +67,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    for (let agg in aggs) {
+    for (let agg in user_aggs) {
       this.aggregationsList.push(agg);
     }
     this.fields2Select = this.elastic.getMappingFields(props.user_index_name, props.user_index_type);
@@ -104,14 +105,14 @@ export class UserSearchComponent implements OnInit {
   }
 
   onAggregationSelect(agg) {
-    this.selectedAggregation = aggs[agg];
+    this.selectedAggregation = user_aggs[agg];
     switch (agg) {
       case "creationDate":
         this.years = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
       case "organization":
-        this.genres = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
+        this.ous = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
       default:
@@ -121,32 +122,26 @@ export class UserSearchComponent implements OnInit {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    let body = this.prepareBody(this.searchRequest);
-    console.log(JSON.stringify(body))
+    // let body = this.search.prepareBody(this.searchRequest);
+    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "name.sorted", "asc");
     this.loading = true;
-    let field, term;
-    Object.keys(body.bool.filter[0].term).forEach((k) => {
-      field = k;
-      term = body.bool.filter[0].term[k];
-    })
-
-    this.search.listFilteredUsers(this.token, "?q=" + field + ":" + term, page, props.pubman_rest_url + "/users")
-      .subscribe(items => {
-        this.items = items;
-        this.total = 100;
+    this.search.listHitsByQuery(this.token, body, this.user_rest_url)
+      .subscribe(res => {
+        this.total = res.records;
         this.currentPage = page;
+        this.users = res.list
         this.loading = false;
-      }, err => {
+      }, (err) => {
         this.message.error(err);
       });
   }
 
   searchItems(body) {
     this.currentPage = 1;
-    this.search.listItemsByQuery(this.token, body, 1)
-      .subscribe(items => {
-        this.items = items.list;
-        this.total = items.records;
+    this.search.listHitsByQuery(this.token, body, this.user_rest_url)
+      .subscribe(res => {
+        this.users = res.list;
+        this.total = res.records;
       }, err => {
         this.message.error(err);
       });
@@ -156,32 +151,31 @@ export class UserSearchComponent implements OnInit {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "creationDate", searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.listFilteredUsers(this.token, "?q=creationDate:" + year.key + "||/y", 1, props.pubman_rest_url + "/users")
-      .subscribe(items => {
-        this.items = items;
-        this.total = year.doc_count;
+    this.search.listFilteredHits(this.token, "?q=creationDate:" + year.key + "||/y", 1, props.pubman_rest_url + "/users")
+      .subscribe(res => {
+        this.users = res.list;
+        this.total = res.records;
       }, err => {
         this.message.error(err);
       });
   }
 
-  onSelectGenre(genre) {
+  onSelectOu(ou) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "affiliations.title.sorted", searchTerm: genre.key }]);
+    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "affiliations.title.sorted", searchTerm: ou.key }]);
     this.currentPage = 1;
-    this.search.listFilteredUsers(this.token, "?q=affiliations.title.sorted:" + genre.key, 1, props.pubman_rest_url + "/users")
-      .subscribe(items => {
-        this.items = items;
-        this.total = genre.doc_count;
+    this.search.listFilteredHits(this.token, "?q=affiliations.title.sorted:" + ou.key, 1, props.pubman_rest_url + "/users")
+      .subscribe(res => {
+        this.users = res.list;
+        this.total = res.records;
       }, err => {
         this.message.error(err);
       });
   }
 
   onSelect(item) {
-    if (confirm("wanna delete it?")) {
-      let index = this.items.indexOf(item);
-      this.items.splice(index, 1);
+    if (confirm("wanna edit it?")) {
+      this.router.navigate(['/user', item.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
     }
   }
 
@@ -195,7 +189,7 @@ export class UserSearchComponent implements OnInit {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    let preparedBody = this.prepareBody(this.searchRequest);
+    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "name.sorted", "asc");
     this.searchItems(preparedBody);
   }
 
@@ -209,48 +203,5 @@ export class UserSearchComponent implements OnInit {
     };
     return request;
   }
-
-  prepareBody(request): any {
-    let must, must_not, filter, should;
-    request.searchTerms.forEach(element => {
-      let field = element.field;
-      let value: string = element.searchTerm;
-      switch (element.type) {
-        case "must":
-          if (must) {
-            must.push({ match: { [field]: value } });
-          } else {
-            must = [{ match: { [field]: value } }];
-          }
-          break;
-        case "must_not":
-          if (must_not) {
-            must_not.push({ term: { [field]: value } });
-          } else {
-            must_not = [{ term: { [field]: value } }];
-          }
-          break;
-        case "filter":
-          if (filter) {
-            filter.push({ term: { [field]: value } });
-          } else {
-            filter = [{ term: { [field]: value } }];
-          }
-          break;
-        case "should":
-          if (should) {
-            should.push({ term: { [field]: value } });
-          } else {
-            should = [{ term: { [field]: value } }];
-          }
-          break;
-        default:
-      }
-    });
-    const body = { bool: { must, must_not, filter, should } };
-    // confirm("BODY: " + JSON.stringify(body));
-    return body;
-  }
-
 
 }

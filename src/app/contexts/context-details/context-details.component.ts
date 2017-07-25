@@ -7,9 +7,11 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContextsService } from '../services/contexts.service';
 import { OrganizationsService } from '../../organizations/services/organizations.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
+// import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { genres, subjects, workflow } from './context.template';
 import { Affiliation } from '../../base/common/model';
+import { props } from '../../base/common/admintool.properties';
 
 @Component({
   selector: 'app-context-details',
@@ -35,6 +37,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectedWorkflow: string;
 
   constructor(private ctxSvc: ContextsService,
+    // private pubman: PubmanRestService,
     private ouSvc: OrganizationsService,
     private router: Router,
     private route: ActivatedRoute,
@@ -85,7 +88,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedCtx(id) {
-    this.ctxSvc.getContext(id, this.token)
+    // this.ctxSvc.getContext(id, this.token)
+    this.ctxSvc.get(props.pubman_rest_url + "/contexts", id, this.token)
       .subscribe(ctx => {
         this.ctx = ctx;
       },
