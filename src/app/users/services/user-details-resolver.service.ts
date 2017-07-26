@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { UsersService } from './users.service';
-import { User, Grant, Affiliation } from '../../base/common/model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/first';
+
+import { UsersService } from './users.service';
+import { User, Grant, Affiliation } from '../../base/common/model';
+import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {
@@ -20,7 +22,7 @@ export class UserDetailsResolverService implements Resolve<User> {
             return Observable.of(user);
         } else {
             let token = route.queryParams['token'];
-            return this.userSvc.getUser(id, token).first(); // add first() to ensure observable completion 
+            return this.userSvc.get(props.pubman_rest_url_users, id, token).first(); // add first() to ensure observable completion 
         }
     }
 }

@@ -6,7 +6,7 @@ import { props } from '../../base/common/admintool.properties';
 @Injectable()
 export class Elastic4contextsService extends ElasticService {
 
-  constructor(public message: MessagesService) { super(message) }
+  constructor(messages: MessagesService) { super(messages) }
 
   contexts4auto(term, callback) {
         let contexts = Array<any>();
@@ -17,7 +17,7 @@ export class Elastic4contextsService extends ElasticService {
                 sort: "name.sorted:asc"
             }, (error, response) => {
                 if (error) {
-                    this.message.error(error);
+                    this.messages.error(error);
                 } else {
                     response.hits.hits.forEach(hit => {
                         let ctxname = JSON.parse(JSON.stringify(hit._source));

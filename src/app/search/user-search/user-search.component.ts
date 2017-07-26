@@ -31,8 +31,6 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
 
-  user_rest_url = props.pubman_rest_url + "/users";
-
   searchForm: FormGroup;
   searchRequest: SearchRequest;
 
@@ -122,10 +120,9 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    // let body = this.search.prepareBody(this.searchRequest);
     let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "name.sorted", "asc");
     this.loading = true;
-    this.search.listHitsByQuery(this.token, body, this.user_rest_url)
+    this.search.query(props.pubman_rest_url_users, this.token, body)
       .subscribe(res => {
         this.total = res.records;
         this.currentPage = page;
@@ -138,7 +135,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   searchItems(body) {
     this.currentPage = 1;
-    this.search.listHitsByQuery(this.token, body, this.user_rest_url)
+    this.search.query(props.pubman_rest_url_users, this.token, body)
       .subscribe(res => {
         this.users = res.list;
         this.total = res.records;
@@ -151,7 +148,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "creationDate", searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.listFilteredHits(this.token, "?q=creationDate:" + year.key + "||/y", 1, props.pubman_rest_url + "/users")
+    this.search.filter(props.pubman_rest_url_users, this.token, "?q=creationDate:" + year.key + "||/y", 1)
       .subscribe(res => {
         this.users = res.list;
         this.total = res.records;
@@ -164,7 +161,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "affiliations.title.sorted", searchTerm: ou.key }]);
     this.currentPage = 1;
-    this.search.listFilteredHits(this.token, "?q=affiliations.title.sorted:" + ou.key, 1, props.pubman_rest_url + "/users")
+    this.search.filter(props.pubman_rest_url_users, this.token, "?q=affiliations.title.sorted:" + ou.key, 1)
       .subscribe(res => {
         this.users = res.list;
         this.total = res.records;

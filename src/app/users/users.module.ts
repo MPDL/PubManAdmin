@@ -9,7 +9,6 @@ import { UserListComponent } from './user-list/user-list.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { UsersService } from './services/users.service';
 import { Elastic4usersService } from './services/elastic4users.service';
-import { AnotherListComponent } from './another-list/another-list.component';
 import { GrantsComponent } from './grants/grants.component';
 
 @NgModule({
@@ -23,7 +22,6 @@ import { GrantsComponent } from './grants/grants.component';
   declarations: [
     UserListComponent,
     UserDetailsComponent,
-    AnotherListComponent,
     GrantsComponent
   ],
   providers: [

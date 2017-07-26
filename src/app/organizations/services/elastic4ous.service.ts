@@ -7,7 +7,7 @@ import { props } from '../../base/common/admintool.properties';
 @Injectable()
 export class Elastic4ousService extends ElasticService {
 
-  constructor(public messages: MessagesService) { super(messages) }
+  constructor(messages: MessagesService) { super(messages) }
 
   ous4auto(term, callback) {
         let contexts = Array<any>();

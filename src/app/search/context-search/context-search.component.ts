@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FcrepoService } from '../services/fcrepo.service';
 
 @Component({
   selector: 'app-context-search',
@@ -7,7 +8,6 @@ import { Component } from '@angular/core';
 })
 export class ContextSearchComponent {
 
-  constructor() {}
 
 }
 

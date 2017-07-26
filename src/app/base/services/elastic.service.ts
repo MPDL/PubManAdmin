@@ -11,7 +11,7 @@ export class ElasticService {
   public client: Client;
   public uri: string;
 
-  constructor(public messages: MessagesService) {
+  constructor(protected messages: MessagesService) {
     this.uri = props.elastic_http_url;
     if (!this.client) {
       this.connect();

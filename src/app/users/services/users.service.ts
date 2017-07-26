@@ -6,208 +6,68 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { User, Grant } from '../../base/common/model';
+import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { props } from '../../base/common/admintool.properties';
 
 
 @Injectable()
-export class UsersService {
-  constructor(
-    private http: Http
-  ) { }
+export class UsersService extends PubmanRestService {
+  constructor(http: Http) {
+    super(http);
+  }
 
-  usersUrl: string = props.pubman_rest_url + '/users';
+  usersUrl: string = props.pubman_rest_url_users;
 
   users: User[] = [];
   user: User;
 
-  listAllUsers(token: string, page: number): Observable<any> {
-    const perPage = 25;
-    let offset = (page -1) * perPage;
-    let headers = new Headers();
-    headers.set("Authorization", token);
+  activate(user: User, token: string): Observable<User> {
+    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/activate';
+    let body = JSON.stringify(user.lastModificationDate);
     let options = new RequestOptions({
-      headers: headers,
-      method: RequestMethod.Get,
-      url: this.usersUrl + '?limit=' + perPage + '&offset=' + offset
-    });
-
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        let result = {list: [], records: ""};
-        let data = response.json();
-        let users = [];
-        let records = data.numberOfRecords;
-        data.records.forEach(element => {
-          users.push(element.data)
-        });
-        result.list = users;
-        result.records = records;
-        return result;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting user list'));
-  }
-
-  getUser(id: string, token: string): Observable<User> {
-    let headers = new Headers();
-    headers.set("Authorization", token);
-    let userUrl = this.usersUrl + '/' + id;
-    let options = new RequestOptions({
-      headers: headers,
-      method: RequestMethod.Get,
-      url: userUrl
-    });
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        this.user = response.json();
-        return this.user;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting user'));
-  }
-
-  postUser(user: User, token: string): Observable<number> {
-    let headers = new Headers();
-    headers.set("Authorization", token);
-    headers.append('Content-Type', 'application/json');
-    let body = JSON.stringify(user);
-
-    let options = new RequestOptions({
-      headers: headers,
-      method: RequestMethod.Post,
-      url: this.usersUrl,
-      body: body
-    });
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        let status = response.status;
-        return status;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error creating user'));
-  }
-
-  putUser(user: User, token: string): Observable<number> {
-    let headers = new Headers();
-    headers.set("Authorization", token);
-    headers.append('Content-Type', 'application/json');
-    let userUrl = this.usersUrl + '/' + user.reference.objectId;
-    let body = JSON.stringify(user);
-
-    let options = new RequestOptions({
-      headers: headers,
+      headers: this.getHeaders(token, true),
       method: RequestMethod.Put,
       url: userUrl,
       body: body
     });
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        let status = response.status;
-        return status;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error updating user'));
+    return this.getResource(options);
   }
 
-  activate(user: User, token: string): Observable<User> {
-        let headers = new Headers();
-        headers.set("Authorization", token);
-        headers.append('Content-Type', 'application/json');
-        let userUrl = this.usersUrl + '/' + user.reference.objectId + '/activate';
-        let body = JSON.stringify(user.lastModificationDate);
-
-        let options = new RequestOptions({
-            headers: headers,
-            method: RequestMethod.Put,
-            url: userUrl,
-            body: body
-        });
-        return this.http.request(new Request(options))
-            .map((response: Response) => {
-                let user = response.json();
-                return user;
-            })
-            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error activating user with id ' + user.reference.objectId));
-    }
-
-    deactivate(user: User, token: string): Observable<User> {
-        let headers = new Headers();
-        headers.set("Authorization", token);
-        headers.append('Content-Type', 'application/json');
-        let userUrl = this.usersUrl + '/' + user.reference.objectId + '/deactivate';
-        let body = JSON.stringify(user.lastModificationDate);
-
-        let options = new RequestOptions({
-            headers: headers,
-            method: RequestMethod.Put,
-            url: userUrl,
-            body: body
-        });
-        return this.http.request(new Request(options))
-            .map((response: Response) => {
-                let user = response.json();
-                return user;
-            })
-            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error deactivating user with id ' + user.reference.objectId));
-    }
+  deactivate(user: User, token: string): Observable<User> {
+    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/deactivate';
+    let body = JSON.stringify(user.lastModificationDate);
+    let options = new RequestOptions({
+      headers: this.getHeaders(token, true),
+      method: RequestMethod.Put,
+      url: userUrl,
+      body: body
+    });
+    return this.getResource(options);
+  }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    let headers = new Headers();
-    headers.set("Authorization", token);
-    headers.append('Content-Type', 'application/json');
     let userUrl = this.usersUrl + '/' + user.reference.objectId + '/add';
     let body = JSON.stringify(grants);
-
     let options = new RequestOptions({
-      headers: headers,
+      headers: this.getHeaders(token, true),
       method: RequestMethod.Put,
       url: userUrl,
       body: body
     });
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        let user = response.json();
-        return user;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error adding grants'));
+    return this.getResource(options);
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    let headers = new Headers();
-    headers.set("Authorization", token);
-    headers.append('Content-Type', 'application/json');
     let userUrl = this.usersUrl + '/' + user.reference.objectId + '/remove';
     let body = JSON.stringify(grants);
-
     let options = new RequestOptions({
-      headers: headers,
+      headers: this.getHeaders(token, true),
       method: RequestMethod.Put,
       url: userUrl,
       body: body
     });
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        let user = response.json();
-        return user;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error removing grants'));
+    return this.getResource(options);
   }
 
-  delete(user: User, token: string): Observable<number> {
-    let headers = new Headers();
-    headers.set("Authorization", token);
-    headers.append('Content-Type', 'application/json');
-    let userUrl = this.usersUrl + '/' + user.reference.objectId;
-    let body = JSON.stringify(user.lastModificationDate);
-
-    let options = new RequestOptions({
-      headers: headers,
-      method: RequestMethod.Delete,
-      url: userUrl,
-      body: body
-    });
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        let status = response.status;
-        return status;
-      })
-      .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error deleting user'));
-  }
 }
 

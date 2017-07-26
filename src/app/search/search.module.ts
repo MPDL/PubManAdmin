@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../base/shared/shared.module';
 import { SearchService } from './services/search.service';
-import { FcrepoService } from './services/fcrepo.service';
 
 import { ElasticSearchService } from './services/elastic-search.service';
 
@@ -34,8 +33,7 @@ import { SearchTermComponent } from './search-term/search-term.component';
   ],
   providers: [
     ElasticSearchService,
-    SearchService,
-    FcrepoService
+    SearchService
   ]
 })
 export class SearchModule { }

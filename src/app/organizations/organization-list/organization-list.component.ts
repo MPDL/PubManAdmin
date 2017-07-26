@@ -7,6 +7,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '../services/organizations.service';
 import { Elastic4ousService } from '../services/elastic4ous.service';
+import { props } from '../../base/common/admintool.properties';
 
 @Component({
   selector: 'app-organization-list',
@@ -42,28 +43,16 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
-    this.listOuNames4mpg("?q=parentAffiliations.objectId:ou_persistent13&limit=111", this.token);
-    this.listOuNames4ext("?q=parentAffiliations.objectId:ou_persistent22&limit=111", this.token);
+    this.listOuNames(this.token);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  listOuNames4mpg(query: string, token) {
-    this.ouSvc.listFilteredOus(token, query)
-      .subscribe(result => {
-        this.mpgOus = result.list;
-      });
-  }
-
-  get diagnostic() { return JSON.stringify(this.mpgOus) };
-
-  listOuNames4ext(query: string, token) {
-    this.ouSvc.listFilteredOus(token, query)
-      .subscribe(result => {
-        this.extOus = result.list;
-      });
+  listOuNames(token) {
+    this.mpgOus = this.ouSvc.listChildren4Ou("ou_persistent13", token);
+    this.extOus = this.ouSvc.listChildren4Ou("ou_persistent22", token);
   }
 
   getChildren(id) {

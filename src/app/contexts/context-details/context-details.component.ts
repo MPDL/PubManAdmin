@@ -88,8 +88,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedCtx(id) {
-    // this.ctxSvc.getContext(id, this.token)
-    this.ctxSvc.get(props.pubman_rest_url + "/contexts", id, this.token)
+    this.ctxSvc.get(props.pubman_rest_url_ctxs, id, this.token)
       .subscribe(ctx => {
         this.ctx = ctx;
       },
@@ -180,7 +179,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   delete(ctx) {
     this.ctx = ctx;
     let id = this.ctx.reference.objectId;
-    this.ctxSvc.delete(this.ctx, this.token)
+    this.ctxSvc.delete(props.pubman_rest_url_ctxs + "/" + id, this.ctx, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -203,7 +202,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         aff.objectId = ou_id;
         this.ctx.responsibleAffiliations.push(aff);
       }
-      this.ctxSvc.postContext(this.ctx, this.token)
+      this.ctxSvc.post(props.pubman_rest_url_ctxs, this.ctx, this.token)
         .subscribe(
         data => {
           this.message.success('added new context ' + data);
@@ -217,7 +216,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
     } else {
       this.message.success("updating " + this.ctx.reference.objectId);
-      this.ctxSvc.putContext(this.ctx, this.token)
+      this.ctxSvc.put(props.pubman_rest_url_ctxs + "/" + this.ctx.reference.objectId, this.ctx, this.token)
         .subscribe(
         data => {
           this.message.success('updated ' + this.ctx.reference.objectId + ' ' + data);

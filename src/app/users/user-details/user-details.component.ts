@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+
 import { GrantsComponent } from '../grants/grants.component';
 import { User, Grant, Affiliation } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { Elastic4usersService } from '../services/elastic4users.service';
-import { Subscription } from 'rxjs/Subscription';
+import { props } from '../../base/common/admintool.properties';
 
 @Component({
   selector: 'app-user-details',
@@ -74,11 +76,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected.affiliations.pop();
   }
 
-  selectOuByKey(val) {
-    confirm("you pressed " + val);
-    console.log("you pressed " + val);
-  }
-
   ngOnDestroy() {
     this.tokenSubscription.unsubscribe();
   }
@@ -142,7 +139,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         this.messageService.warning("you MUST select an organization");
         return;
       }
-      this.usersService.postUser(this.selected, this.token)
+      this.usersService.post(props.pubman_rest_url_users, this.selected, this.token)
         .subscribe(
         data => {
           this.messageService.success('added new user ' + data);
@@ -166,7 +163,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           return;
         }
       }
-      this.usersService.putUser(this.selected, this.token)
+      this.usersService.put(props.pubman_rest_url_users + "/" + this.selected.reference.objectId, this.selected, this.token)
         .subscribe(
         data => {
           this.messageService.success('updated ' + this.selected.userid + ' ' + data);
@@ -185,12 +182,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(user => {
       this.selected = user;
       this.messageService.success("removed Grants from " + this.selected.userid);
-      /*
-      this.selectedGrants.forEach((g) => {
-        let i = this.selected.grants.indexOf(g);
-        this.selected.grants.splice(i, 1);
-      });
-      */
       this.selectedGrants = null;
       this.grants2remove = false;
     }, error => {

@@ -42,7 +42,7 @@
         <div class="col-10">
           <select id="ou2select" class="select form-control form-control-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)"
             name="selectedOu">
-			<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.defaultMetadata.name}} {{ou.reference.objectId}}</option>
+			<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.defaultMetadata.name}}</option>
 			</select>
         </div>
       </div>

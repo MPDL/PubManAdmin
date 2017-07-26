@@ -6,7 +6,7 @@ import { props } from '../../base/common/admintool.properties';
 @Injectable()
 export class Elastic4usersService extends ElasticService {
 
-  constructor(public message: MessagesService) { super(message) }
+  constructor(messages: MessagesService) { super(messages) }
 
   getContextName(ctxId, callback): any {
     if (ctxId) {
@@ -18,7 +18,7 @@ export class Elastic4usersService extends ElasticService {
       },
         (error, response) => {
           if (error) {
-            this.message.error(error);
+            this.messages.error(error);
           }
           if (response) {
             let hitList = [];
@@ -30,7 +30,7 @@ export class Elastic4usersService extends ElasticService {
         });
 
     } else {
-      this.message.error("missing id");
+      this.messages.error("missing id");
     }
   }
 
@@ -44,7 +44,7 @@ export class Elastic4usersService extends ElasticService {
     },
       (error, response) => {
         if (error) {
-          this.message.error(error);
+          this.messages.error(error);
         }
         if (response) {
           let hitList = Array<any>();
@@ -68,7 +68,7 @@ export class Elastic4usersService extends ElasticService {
       },
         (error, response) => {
           if (error) {
-            this.message.error(error)
+            this.messages.error(error)
           }
           if (response) {
             let hitList = [];
@@ -80,7 +80,7 @@ export class Elastic4usersService extends ElasticService {
         })
 
     } else {
-      this.message.error("missing id");
+      this.messages.error("missing id");
     }
   }
 
@@ -103,7 +103,7 @@ export class Elastic4usersService extends ElasticService {
       },
         (error, response) => {
           if (error) {
-            this.message.error(error);
+            this.messages.error(error);
           }
           if (response) {
             let hitList = Array<any>();
@@ -127,7 +127,7 @@ export class Elastic4usersService extends ElasticService {
                 sort: "name.sorted:asc"
             }, (error, response) => {
                 if (error) {
-                    this.message.error(error);
+                    this.messages.error(error);
                 } else {
                     response.hits.hits.forEach(hit => {
                         let username = JSON.parse(JSON.stringify(hit._source));
