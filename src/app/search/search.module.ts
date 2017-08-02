@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../base/shared/shared.module';
 import { SearchService } from './services/search.service';
-
+import { FedoraRestService } from './services/fedora.rest.service';
 import { ElasticSearchService } from './services/elastic-search.service';
 
 import { SearchRoutingModule } from './search-routing.module';
@@ -33,7 +33,8 @@ import { SearchTermComponent } from './search-term/search-term.component';
   ],
   providers: [
     ElasticSearchService,
-    SearchService
+    SearchService,
+    FedoraRestService
   ]
 })
 export class SearchModule { }

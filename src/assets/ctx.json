@@ -1,35 +1,142 @@
-{
-    "_body": "{\n    \"bool\": {\n        \"must\": {\n            \"match\": [\n                {\n                    \"owner.title\": \"boosen\"\n                },\n                {\n                    \"match\": {\n                        \"metadata.title\": \"book\"\n                    }\n                }\n            ]\n        }\n    }\n}",
-    "status": 200,
-    "ok": true,
-    "statusText": "OK",
-    "headers": {
-        "Date": [
-            "Fri",
-            " 21 Jul 2017 08:12:54 GMT"
-        ],
-        "X-Powered-By": [
-            "Express"
-        ],
-        "ETag": [
-            "W/\"133-3ZSqGpIa01n755YejXuqmUxMkUM\""
-        ],
-        "Content-Type": [
-            "application/json; charset=UTF-8"
-        ],
-        "Access-Control-Allow-Origin": [
-            "*"
-        ],
-        "Connection": [
-            "keep-alive"
-        ],
-        "Accept-Ranges": [
-            "bytes"
-        ],
-        "Content-Length": [
-            "307"
-        ]
+[
+    {
+        "subject": {
+            "type": "uri",
+            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://xmlns.com/foaf/0.1/family_name"
+        },
+        "object": {
+            "type": "literal",
+            "value": "Adam"
+        }
     },
-    "type": 2,
-    "url": "http://localhost:4200/assets/query.json"
-}
+    {
+        "subject": {
+            "type": "uri",
+            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/dc/elements/1.1/title"
+        },
+        "object": {
+            "type": "literal",
+            "value": "Adam, L."
+        }
+    },
+    {
+        "subject": {
+            "type": "uri",
+            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/dc/terms/alternative"
+        },
+        "object": {
+            "type": "literal",
+            "value": "Adam, Lutz"
+        }
+    },
+    {
+        "subject": {
+            "type": "uri",
+            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://xmlns.com/foaf/0.1/givenname"
+        },
+        "object": {
+            "type": "literal",
+            "value": "L."
+        }
+    },
+    {
+        "subject": {
+            "type": "uri",
+            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/escidoc/metadata/terms/0.1/position"
+        },
+        "object": {
+            "type": "bnode",
+            "value": "t46094"
+        }
+    },
+    {
+        "subject": {
+            "type": "bnode",
+            "value": "t46094"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/eprint/terms/affiliatedInstitution"
+        },
+        "object": {
+            "type": "literal",
+            "value": "Department of Spectroscopy and Photochemical Kinetics, MPI for biophysical chemistry, Max Planck Society"
+        }
+    },
+    {
+        "subject": {
+            "type": "bnode",
+            "value": "t46094"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/dc/elements/1.1/identifier"
+        },
+        "object": {
+            "type": "literal",
+            "value": "escidoc:578624"
+        }
+    },
+    {
+        "subject": {
+            "type": "uri",
+            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/escidoc/metadata/terms/0.1/position"
+        },
+        "object": {
+            "type": "bnode",
+            "value": "t47054"
+        }
+    },
+    {
+        "subject": {
+            "type": "bnode",
+            "value": "t47054"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/eprint/terms/affiliatedInstitution"
+        },
+        "object": {
+            "type": "literal",
+            "value": "Department of Spectroscopy and Photochemical Kinetics, MPI for biophysical chemistry, Max Planck Society"
+        }
+    },
+    {
+        "subject": {
+            "type": "bnode",
+            "value": "t47054"
+        },
+        "predicate": {
+            "type": "uri",
+            "value": "http://purl.org/dc/elements/1.1/identifier"
+        },
+        "object": {
+            "type": "literal",
+            "value": "escidoc:578624"
+        }
+    }
+]

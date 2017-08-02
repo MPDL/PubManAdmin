@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FcrepoService } from '../services/fcrepo.service';
 
 @Component({
   selector: 'app-context-search',

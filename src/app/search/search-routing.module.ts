@@ -18,7 +18,8 @@ const routes: Routes = [
         // canActivateChild: [ AuthGuard ],
         children: [
           { path: 'users', component: UserSearchComponent },
-          { path: 'organizations', redirectTo: '/organizations', pathMatch: 'full' },
+        //  { path: 'organizations', redirectTo: '/organizations', pathMatch: 'full' },
+          { path: 'organizations', component: OrganizationSearchComponent },
           { path: 'contexts', redirectTo: '/contexts', pathMatch: 'full' },
           { path: 'items', component: ItemSearchComponent},
           { path: '', component: ContextSearchComponent }

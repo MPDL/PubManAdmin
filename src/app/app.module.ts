@@ -18,6 +18,7 @@ import { UsersModule } from './users/users.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { ContextsModule } from './contexts/contexts.module';
 import { SearchModule } from './search/search.module';
+import { IndicesModule } from './more/indices.module';
 
 import { AuthenticationService } from './base/services/authentication.service';
 import { ElasticService } from './base/services/elastic.service';
@@ -43,6 +44,7 @@ import { AuthGuard } from './base/services/auth-guard.service';
     OrganizationsModule,
     ContextsModule,
     SearchModule,
+    IndicesModule,
     SharedModule,
     AppRoutingModule
   ],

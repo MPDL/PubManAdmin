@@ -1,0 +1,20 @@
+<div class="container-fluid">
+    <h3 class="text-primary">Indices in this cluster</h3>
+<div class="card card-outline-primary text-right">
+  <div class="card-block">
+    <h4 class="card-title">Indices</h4>
+  </div>
+
+  <ul class="list-group list-group-flush h-100">
+
+    <li class="list-group-item text-primary" *ngFor="let index of indices" (click)="goTo(index.index)">
+      {{index.health}}   {{index.docs}}   {{index.index}}
+      <li>
+  </ul>
+
+  <div class="card-footer">
+    <small class="text-muted">Last updated 3 mins ago</small>
+  </div>
+</div>
+</div>
+<pre>{{indices | json}}</pre>
