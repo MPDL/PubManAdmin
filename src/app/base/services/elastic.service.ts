@@ -22,7 +22,7 @@ export class ElasticService {
     this.client = new Client({
       host: this.uri,
       log: ["error", "warning"],
-      apiVersion: "5.0"
+      apiVersion: "5.4"
     });
   }
 
