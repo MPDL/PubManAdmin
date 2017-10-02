@@ -9,10 +9,10 @@ import { Elastic4usersService } from '../services/elastic4users.service';
 import { UsersService } from '../services/users.service';
 
 @Component({
-  selector: 'grants',
-  templateUrl: './grants.component.html',
-  styleUrls: ['./grants.component.scss'],
-  providers: [ ]
+    selector: 'grants',
+    templateUrl: './grants.component.html',
+    styleUrls: ['./grants.component.scss'],
+    providers: []
 })
 
 export class GrantsComponent implements OnInit, OnDestroy {
@@ -24,13 +24,15 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Output() isNewGrantChange = new EventEmitter<boolean>();
 
     grants: Grant[];
-    roles: string[] = ["DEPOSITOR", "MODERATOR", "SYSADMIN"];
+    roles: string[] = ["DEPOSITOR", "MODERATOR", "CONE_OPEN_VOCABULARY_EDITOR", "CONE_CLOSED_VOCABULARY_EDITOR", "REPORTER", "USR_ADMIN", "YEARBOOK-EDITOR", "YEARBOOK-ADMIN"];
     ctxs: Array<any>;
+    ous: Array<any>;
     selectedGrant: Grant;
     selectedGrants: Grant[] = [];
     grantsToAdd: string;
     selectedRole: string;
     selectedCtx: any;
+    selectedOu: any;
     idString: string;
     tokenSubscription: Subscription;
 
@@ -40,7 +42,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
         private elasticService: Elastic4usersService,
         private usersService: UsersService,
         private router: Router
-        ) { }
+    ) { }
 
     ngOnInit() {
         this.tokenSubscription = this.loginService.token$.subscribe(token => {
@@ -57,9 +59,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     getNewGrantSelect() {
         this.elasticService.listAllContextNames((contexts) => {
-        this.ctxs = contexts;
+            this.ctxs = contexts;
         });
-
+        this.elasticService.listOuNames("parent", "persistent13", names => {
+            this.ous = names;
+        });
     }
 
     onChangeRole(val) {
@@ -70,12 +74,47 @@ export class GrantsComponent implements OnInit, OnDestroy {
         this.selectedCtx = val;
     }
 
-    addGrant() {
+    onChangeOu(val) {
+        this.selectedOu = val;
+    }
+
+    validateSelection() {
         let rolename = this.selectedRole;
-        let ctx_id = this.selectedCtx.reference.objectId;
+
+        if (rolename) {
+            if (rolename === "USR_ADMIN") {
+                let ref_id = this.selectedUser.affiliations[0].objectId;
+                this.addGrant(rolename, ref_id);
+            }
+            if (rolename.startsWith("CONE") || rolename === "REPORTER" || rolename === "YEARBOOK-ADMIN") {
+                this.addGrant(rolename, "");
+            }
+            if (rolename === "YEARBOOK-EDITOR") {
+                if (this.selectedOu != null) {
+                    let ref_id = this.selectedOu.reference.objectId;
+                    this.addGrant(rolename, ref_id);
+                } else {
+                    this.messageService.error("you must select an organization!");
+                }
+            }
+            if (rolename === "DEPOSITOR" || rolename === "MODERATOR") {
+                if (this.selectedCtx != null) {
+                    let ref_id = this.selectedCtx.reference.objectId;
+                    this.addGrant(rolename, ref_id);
+                } else {
+                    this.messageService.error("you must select a context!");
+                }
+            }
+        } else {
+            this.messageService.error("ROLE!!!")
+        }
+    }
+
+    addGrant(rolename, ref_id) {
+
         let grant2add = new Grant();
         grant2add.role = rolename;
-        grant2add.objectRef = ctx_id;
+        grant2add.objectRef = ref_id;
         this.selectedGrants.push(grant2add);
         this.grantsToAdd = JSON.stringify(this.selectedGrants);
     }

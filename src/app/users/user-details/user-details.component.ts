@@ -91,6 +91,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.grantsToRemove = JSON.stringify(this.selectedGrants);
   }
 
+  goToRef(grant) {
+    this.selectedGrant = grant;
+    let ref = this.selectedGrant.objectRef;
+    if (ref === undefined) {
+      this.messageService.warning("the reference of the selected grant is undefined!");
+    } else {
+      if (ref.startsWith("ou")) {
+        this.router.navigate(['/organization', ref ]);
+      } else {
+        if (ref.startsWith("ctx")) {
+          this.router.navigate(['/context', ref ]);
+        }
+      }
+    }
+  }
+
   gotoList() {
     let userId = this.selected ? this.selected.userid : null;
     this.router.navigate(['/users', { id: userId }]);

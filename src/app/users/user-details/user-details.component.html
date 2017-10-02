@@ -80,7 +80,7 @@
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-right">
                         <ul class="list-group">
-                            <li class="list-group-item row p-0" *ngFor="let usergrant of selected.grants">
+                            <li silver="lightgray" class="list-group-item row p-0" *ngFor="let usergrant of selected.grants" (click)="goToRef(usergrant)">
                                 <label class="col-3 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
                                 <label class="col-8 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
                                 <span class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()"
@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div *ngIf="isNewGrant" class="form-group row w-100">
-                    <grants [(selectedUser)]="selected" [token]="token" [(isNewGrant)]="isNewGrant"></grants>
+                    <grants class="form-group row offset-2 w-100" [(selectedUser)]="selected" [token]="token" [(isNewGrant)]="isNewGrant"></grants>
                 </div>
                 <div *ngIf="grants2remove" class="form-group row w-100">
                     <div class="form-group row offset-2 w-100">

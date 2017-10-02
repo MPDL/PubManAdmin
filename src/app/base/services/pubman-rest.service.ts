@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Request, Response, RequestOptions, RequestMethod } from '@angular/http';
+import { HttpClient, HttpRequest, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -14,6 +15,7 @@ export class PubmanRestService {
 
   constructor(
     protected http: Http,
+    // protected client: HttpClient
   ) { }
 
   getSearchResults(options: RequestOptions): Observable<any> {
