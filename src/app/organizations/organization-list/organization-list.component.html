@@ -1,11 +1,11 @@
 <div class="container">
   <h3 class="text-info">Organizational Units Administration</h3>
   <div class="card-deck">
-    <div *ngIf="!external" class="card card-inverse card-info text-right">
-      <div class="card-block">
+    <div *ngIf="!external" class="card text-white bg-info text-right">
+      <div class="card-body">
         <h4 class="card-title">Max Planck Society</h4>
         <input type="submit" class="btn btn-info btn-sm" name="add" value="+" (click)="addNewOrganization()" />
-        <input type="button" class="btn-outline-info card-link" (click)="external = true" value="External Organizations">
+        <input type="button" class="card-link btn-outline-info" (click)="external = true" value="External Organizations">
       </div>
       <div class="row">
         <div class="col-4 p-3">
@@ -32,7 +32,7 @@
             </div>
           </div>
           <ul *ngIf="mpgOu.reference.objectId === current" class="list-group w-100">
-            <div silver="lightskyblue" class="list-group-item list-group-item-info bg-faded p-1" *ngFor="let child of children | async"
+            <div silver="lightskyblue" class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async"
               [class.selected]="isSelected(child)">
 
               <a class="col-sm-11" (click)="onSelect(child)">
@@ -53,8 +53,8 @@
         </div>
       </ul>
     </div>
-    <div *ngIf="external" class="card card-inverse card-info text-right">
-      <div class="card-block">
+    <div *ngIf="external" class="card text-white bg-info text-right">
+      <div class="card-body">
         <h4 class="card-title">External Organizations</h4>
         <input type="button" class="btn-outline-info card-link" (click)="external = false" value="Max Planck Society">
       </div>
@@ -83,7 +83,7 @@
             </div>
           </div>
           <ul *ngIf="extOu.reference.objectId === current" class="list-group w-100">
-            <div silver="lightskyblue" class="list-group-item list-group-item-info bg-faded p-1" *ngFor="let child of children | async"
+            <div silver="lightskyblue" class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async"
               [class.selected]="isSelected(child)">
               <a class="col-sm-11" (click)="onSelect(child)">
                 <span class="badge text-info">></span><span class="text-info">{{ child.defaultMetadata.name }}</span>

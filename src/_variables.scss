@@ -1,5 +1,24 @@
-$brand-primary:gray;
-$brand-info:steelblue;
-$brand-success:	mediumseagreen;
+
+$gray-100: #f8f9fa;
+$gray-600: #868e96;
+$gray-800: #343a40;
+$black:  #000;
+$gray:    gray;
+$green:   mediumseagreen;
+$red:     #dc3545;
+$yellow:  #ffc107;
+$steel:    steelblue;
+
+$theme-colors:(
+    primary: $gray,
+    secondary: $gray-600,
+    success: $green,
+    info: $steel,
+    warning: $yellow,
+    danger: $red,
+    light: $gray-100,
+    dark: $gray-800
+);
+
 $list-group-border-width: 0;
 $component-active-bg:lightgray;
