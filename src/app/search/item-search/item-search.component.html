@@ -48,7 +48,7 @@
                     <h4 class="card-title">items / creationDate</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
+                    <li selectedItemColor class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
                         <span class="badge badge-primary">{{year.doc_count}}</span>
                         <span class="text-primary ml-2">{{year.key_as_string.substring(0,4)}}</span>
                         <li>
@@ -59,7 +59,7 @@
                     <h4 class="card-title">items / genre</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let genre of genres" (click)="onSelectGenre(genre)">
+                    <li selectedItemColor class="list-group-item text-primary p-1 justify-content-end" *ngFor="let genre of genres" (click)="onSelectGenre(genre)">
                         <span class="text-primary mr-2">{{genre.key}}</span>
                         <span class="badge badge-primary">{{genre.doc_count}}</span>
                         <li>
@@ -70,7 +70,7 @@
                     <h4 class="card-title">items / publisher</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary p-1 justify-content-end" *ngFor="let publisher of publishers" (click)="onSelectPublisher(publisher)">
+                    <li selectedItemColor class="list-group-item text-primary p-1 justify-content-end" *ngFor="let publisher of publishers" (click)="onSelectPublisher(publisher)">
                         <span class="text-primary mr-2">{{publisher.key}}</span>
                         <span class="badge badge-primary">{{publisher.doc_count}}</span>
                         <li>
@@ -87,7 +87,7 @@
                         id="paginator"></pagination-controls>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li silver class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
+                    <li selectedItemColor class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
                         (click)="onSelect(item)">
                         <span class="text-primary">{{item.version.objectId}}</span>
                         <span class="text-primary ml-2">{{item.metadata.genre}}</span>

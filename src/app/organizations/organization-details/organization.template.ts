@@ -16,9 +16,7 @@ export const template = {
         alternativeNames: [],
         city: "",
         countryCode: "",
-        identifiers: [
-            identifier
-        ],
+        identifiers: [],
         name: "",
         type: "",
         descriptions: []

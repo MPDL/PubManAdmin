@@ -83,10 +83,10 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div silver="lightskyblue" class="list-group-item list-group-item-info p-0" *ngFor="let name of selected.defaultMetadata.alternativeNames"
+                <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let name of selected.defaultMetadata.alternativeNames"
                   [class.selected]="isSelected(name)">
                   <span class="col-11">
-                    <label class="col-form-label-sm">{{name}}</label>
+                    <label class="col-form-label-sm p-0">{{name}}</label>
                   </span>
                   <span class="col-1">
                     <input type="submit" class="btn btn-outline-info btn-sm float-right" (click)="deleteName(name); $event.stopPropagation()"
@@ -118,11 +118,11 @@
           <div class="form-group">
             <!--<div class="col-12">-->
             <ul class="list-group">
-              <div silver="lightskyblue" class="list-group-item list-group-item-info p-0" *ngFor="let desc of selected.defaultMetadata.descriptions"
+              <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let desc of selected.defaultMetadata.descriptions"
                 [class.selected]="isSelected(desc)">
                 <div class="row">
                   <span class="col-11 pt-0 pb-0">
-                    <label class="col-form-label-sm">{{desc}}</label>
+                    <label class="col-form-label-sm p-0">{{desc}}</label>
                   </span>
                   <span class="col-1">
                     <input type="submit" class="btn btn-outline-info btn-sm float-right" (click)="deleteDesc(desc); $event.stopPropagation()"
@@ -140,7 +140,7 @@
         <div class="col-10 text-right">
           <div class="form-group row">
             <div class="col-5">
-              <input class="form-control form-control-sm" type="text" name="ouIdentifierId" [(ngModel)]="ouIdentifierId" id="ouIdentifiers">
+              <input class="form-control form-control-sm" type="text" name="ouIdentifierId" [(ngModel)]="ouIdentifierId" id="ouIdentifierId">
             </div>
             <div class="col-1 justify-content-start">
               <input type="button" class="btn btn-outline-info btn-sm m-1" name="addIdentifiers" value=">>" (click)="addIdentifier(ouIdentifierId)"
@@ -150,10 +150,10 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div silver="lightskyblue" class="list-group-item list-group-item-info p-0" *ngFor="let id of selected.defaultMetadata.identifiers"
+                <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let id of selected.defaultMetadata.identifiers"
                   [class.selected]="isSelected(id)">
                   <span class="col-11">
-                    <label class="col-form-label-sm">{{id.id}}</label>
+                    <label class="col-form-label-sm p-0">{{id.id}}</label>
                   </span>
                   <span class="col-1">
                     <input type="submit" class="btn btn-outline-info btn-sm float-right" (click)="deleteIdentifier(id); $event.stopPropagation()"
@@ -173,16 +173,16 @@
               <div class="col-12">
               -->
           <ul class="list-group">
-            <div silver="lightskyblue" class="list-group-item list-group-item-info pt-0 pb-0" *ngFor="let child of children" (click)="showDetails(child.reference.objectId)">
+            <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info pt-0 pb-0" *ngFor="let child of children" (click)="showDetails(child.reference.objectId)">
               <div class="row">
                 <span class="col-3">
-                  <label class="col-form-label-sm">{{child.reference.objectId}}</label>
+                  <label class="col-form-label-sm p-0">{{child.reference.objectId}}</label>
                 </span>
                 <span class="col-2">
-                  <label class="col-form-label-sm">{{child.publicStatus}}</label>
+                  <label class="col-form-label-sm p-0">{{child.publicStatus}}</label>
                 </span>
                 <span class="col-7">
-                  <label class="col-form-label-sm">{{child.defaultMetadata.name}}</label>
+                  <label class="col-form-label-sm p-0">{{child.defaultMetadata.name}}</label>
                 </span>
               </div>
             </div>
@@ -201,7 +201,7 @@
               <div class="col-12">
               -->
           <ul class="list-group">
-            <div silver="lightskyblue" class="list-group-item list-group-item-info p-0" *ngFor="let predecessor of predecessors" (click)="showDetails(predecessor.reference.objectId)">
+            <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let predecessor of predecessors" (click)="showDetails(predecessor.reference.objectId)">
               <div class="row">
                 <span class="col-3">
                   <label class="col-form-label-sm">{{predecessor.reference.objectId}}</label>

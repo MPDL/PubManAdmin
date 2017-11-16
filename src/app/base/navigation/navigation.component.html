@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-md navbar-light fixed-top">
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top py-0 justify-content-between">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
     aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
   <div class="collapse navbar-collapse row" id="navbarNav">
 
-    <div class="navbar-nav col-sm-8 align-self-center">
+    <div class="navbar-nav align-self-center mr-auto">
       <a [routerLink]="['/home']" class="nav-item nav-link">Home</a>
       <a [routerLink]="['/users']" class="nav-item nav-link">Users</a>
       <a [routerLink]="['/organizations']" class="nav-item nav-link">OUs</a>
@@ -13,7 +13,7 @@
       <a [routerLink]="['/search']" class="nav-item nav-link">Search</a>
       <a [routerLink]="['/more']" class="nav-item nav-link">More ...</a>
     </div>
-    <div class="col-sm-4 align-self-center justify-content-end">
+    <div class="align-self-center">
       <authentication></authentication>
     </div>
   </div>
