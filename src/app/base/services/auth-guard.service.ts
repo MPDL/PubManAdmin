@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, OnDestroy {
         if (this.checked) {
             return true;
         }
-        this.router.navigate(['/home']);
+        // this.router.navigate(['/home']);
         this.message.warning("This site is almost useless without authentication ...")
         return false;
     }

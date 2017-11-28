@@ -110,6 +110,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
         }
     }
 
+    resetGrants() {
+        this.selectedGrants.splice(0, this.selectedGrants.length);
+        this.grantsToAdd = "";
+    }
+
     addGrant(rolename, ref_id) {
 
         let grant2add = new Grant();

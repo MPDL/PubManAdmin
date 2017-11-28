@@ -28,6 +28,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedGrant: Grant;
   selectedGrants: Grant[] = [];
   grantsToRemove: string;
+  ctxTitle: string;
 
   subscription: Subscription;
   token: string;
@@ -107,6 +108,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  viewRefTitle(grant) {
+    this.elasticService.getContextName(grant.objectRef, name => this.ctxTitle = name);
   }
 
   gotoList() {

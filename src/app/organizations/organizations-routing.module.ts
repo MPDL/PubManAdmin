@@ -13,8 +13,8 @@ const routes: Routes = [
   },
   {
     path: 'organization/:id',
-    component: OrganizationDetailsComponent
-    // canActivate: [AuthGuard]
+    component: OrganizationDetailsComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

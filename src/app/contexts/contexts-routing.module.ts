@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ContextListComponent } from './context-list/context-list.component';
 import { ContextDetailsComponent } from './context-details/context-details.component';
 import { ContextDetailsResolverService } from './services/context-details-resolver.service';
+import { AuthGuard } from '../base/services/auth-guard.service';
 
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
   {
     path: 'context/:id',
     component: ContextDetailsComponent,
+    canActivate: [AuthGuard],
     resolve: {ctx: ContextDetailsResolverService}
   }
 ];

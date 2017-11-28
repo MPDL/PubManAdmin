@@ -82,8 +82,8 @@
                     <div class="col-10 text-right">
                         <ul class="list-group">
                             <li selectedItemColor="lightgray" class="list-group-item row p-0" *ngFor="let usergrant of selected.grants" (click)="goToRef(usergrant)">
-                                <label class="col-3 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
-                                <label class="col-8 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
+                                <label class="col-6 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
+                                <label class="col-5 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
                                 <span class="col-1">
                                     <input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()" name="deleteGrant"
                                         value="x" />
