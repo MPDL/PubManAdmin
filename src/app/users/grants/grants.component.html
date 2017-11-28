@@ -30,7 +30,7 @@
 
 	<div class="form-group row w-100">
 		<div class="col-9">
-			<textarea class="form-control form-control-sm" rows="3" id="selectedGrants" [(ngModel)]="grantsToAdd"></textarea>
+			<textarea class="form-control form-control-sm" rows="3" id="selectedGrants" [(ngModel)]="grantsToAdd" readonly></textarea>
 		</div>
 		<div class="col-3">
 			<input type="button" class="btn btn-outline-primary btn-sm float-left" name="addGrants" value="add grants" (click)="addGrants()"

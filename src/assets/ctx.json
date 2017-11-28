@@ -1,142 +1,39 @@
-[
-    {
-        "subject": {
-            "type": "uri",
-            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://xmlns.com/foaf/0.1/family_name"
-        },
-        "object": {
-            "type": "literal",
-            "value": "Adam"
-        }
+{
+    "reference": {
+        "objectId": "ctx_3003636",
+        "title": "111"
     },
-    {
-        "subject": {
-            "type": "uri",
-            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/dc/elements/1.1/title"
-        },
-        "object": {
-            "type": "literal",
-            "value": "Adam, L."
-        }
+    "name": "111",
+    "state": "CREATED",
+    "description": "111",
+    "creator": {
+        "objectId": "user_user42",
+        "title": "roland"
     },
-    {
-        "subject": {
-            "type": "uri",
-            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/dc/terms/alternative"
-        },
-        "object": {
-            "type": "literal",
-            "value": "Adam, Lutz"
-        }
+    "creationDate": "2017-11-28T10:52:34.968+0000",
+    "lastModificationDate": "2017-11-28T11:22:23.655+0000",
+    "modifiedBy": {
+        "objectId": "user_user42",
+        "title": "roland"
     },
-    {
-        "subject": {
-            "type": "uri",
-            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://xmlns.com/foaf/0.1/givenname"
-        },
-        "object": {
-            "type": "literal",
-            "value": "L."
+    "responsibleAffiliations": [
+        {
+            "objectId": "ou_persistent25",
+            "title": "Max Planck Digital Library"
         }
-    },
-    {
-        "subject": {
-            "type": "uri",
-            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/escidoc/metadata/terms/0.1/position"
-        },
-        "object": {
-            "type": "bnode",
-            "value": "t46094"
-        }
-    },
-    {
-        "subject": {
-            "type": "bnode",
-            "value": "t46094"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/eprint/terms/affiliatedInstitution"
-        },
-        "object": {
-            "type": "literal",
-            "value": "Department of Spectroscopy and Photochemical Kinetics, MPI for biophysical chemistry, Max Planck Society"
-        }
-    },
-    {
-        "subject": {
-            "type": "bnode",
-            "value": "t46094"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/dc/elements/1.1/identifier"
-        },
-        "object": {
-            "type": "literal",
-            "value": "escidoc:578624"
-        }
-    },
-    {
-        "subject": {
-            "type": "uri",
-            "value": "http://pubman.mpdl.mpg.de/cone/persons/resource/persons14760"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/escidoc/metadata/terms/0.1/position"
-        },
-        "object": {
-            "type": "bnode",
-            "value": "t47054"
-        }
-    },
-    {
-        "subject": {
-            "type": "bnode",
-            "value": "t47054"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/eprint/terms/affiliatedInstitution"
-        },
-        "object": {
-            "type": "literal",
-            "value": "Department of Spectroscopy and Photochemical Kinetics, MPI for biophysical chemistry, Max Planck Society"
-        }
-    },
-    {
-        "subject": {
-            "type": "bnode",
-            "value": "t47054"
-        },
-        "predicate": {
-            "type": "uri",
-            "value": "http://purl.org/dc/elements/1.1/identifier"
-        },
-        "object": {
-            "type": "literal",
-            "value": "escidoc:578624"
-        }
+    ],
+    "adminDescriptor": {
+        "allowedGenres": [
+            "ARTICLE",
+            "CONFERENCE_PAPER"
+        ],
+        "allowedSubjectClassifications": [
+            "ISO639_3"
+        ],
+        "templateItem": null,
+        "validationSchema": "publication",
+        "visibilityOfReferences": null,
+        "workflow": "SIMPLE",
+        "contactEmail": "frank@mpdl.mpg.de"
     }
-]
+}

@@ -5,6 +5,7 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
+import { Context } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
@@ -12,14 +13,12 @@ import { PubmanRestService } from '../../base/services/pubman-rest.service';
 export class ContextsService extends PubmanRestService {
 
     context_url = props.pubman_rest_url + "/contexts"
-    ctx;
-    ctxs: any[];
 
     constructor(http: Http) {
         super(http);
     }
 
-    openContext(ctx: any, token: string): Observable<number> {
+    openContext(ctx: Context, token: string): Observable<number> {
         let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/open';
         let body = JSON.stringify(ctx.lastModificationDate);
         let options = new RequestOptions({
@@ -31,7 +30,7 @@ export class ContextsService extends PubmanRestService {
         return this.getHttpStatus(options);
     }
 
-    closeContext(ctx: any, token: string): Observable<number> {
+    closeContext(ctx: Context, token: string): Observable<number> {
         let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/close';
         let body = JSON.stringify(ctx.lastModificationDate);
         let options = new RequestOptions({

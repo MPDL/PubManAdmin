@@ -115,29 +115,30 @@ export class GrantsComponent implements OnInit, OnDestroy {
         let grant2add = new Grant();
         grant2add.role = rolename;
         grant2add.objectRef = ref_id;
-        this.selectedGrants.push(grant2add);
-        this.grantsToAdd = JSON.stringify(this.selectedGrants);
-    }
 
-    deleteGrant(grant) {
-        this.selectedGrant = grant;
-        this.selectedGrants.push(grant);
+        if (!this.selectedGrants.some(grant => (grant2add.objectRef === grant.objectRef && grant2add.role === grant.role))) {
+            this.selectedGrants.push(grant2add);
+        }
         this.grantsToAdd = JSON.stringify(this.selectedGrants);
     }
 
     addGrants() {
-        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(user => {
-            this.selectedUser = user;
-            this.selectedUserChange.emit(this.selectedUser);
-            this.messageService.success("added Grants to " + this.selectedUser.userid);
-            // this.selectedGrants.forEach(g => this.selectedUser.grants.push(g));
-            // this.selectedGrants.slice(0, this.selectedGrants.length);
-            this.selectedGrants = null;
-            this.grantsToAdd = "";
-            this.isNewGrantChange.emit(false);
-        }, error => {
-            this.messageService.error(error);
-        });
+        if (this.selectedGrants.length > 0) {
+            this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(user => {
+                this.selectedUser = user;
+                this.selectedUserChange.emit(this.selectedUser);
+                this.messageService.success("added Grants to " + this.selectedUser.userid);
+                // this.selectedGrants.forEach(g => this.selectedUser.grants.push(g));
+                // this.selectedGrants.slice(0, this.selectedGrants.length);
+                this.selectedGrants = null;
+                this.grantsToAdd = "";
+                this.isNewGrantChange.emit(false);
+            }, error => {
+                this.messageService.error(error);
+            });
+        } else {
+            this.messageService.warning("no grant(s) selected !");
+        }
     }
 }
 

@@ -6,7 +6,7 @@ import 'rxjs/add/observable/of';
 
 import { ContextsService } from './contexts.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { template } from '../context-details/context.template';
+import { Context, AdminDescriptor } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
@@ -17,11 +17,17 @@ export class ContextDetailsResolverService implements Resolve<any> {
         private message: MessagesService,
         private router: Router) { }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
         let id = route.params['id'];
         if (id == 'new ctx') {
-            let ctx = template;
+            let ctx = new Context();
             ctx.name = "new ctx";
+            ctx.responsibleAffiliations = [];
+            let admin = new AdminDescriptor();
+            admin.allowedGenres = [];
+            admin.allowedSubjectClassifications = [];
+            admin.workflow = "SIMPLE";
+            ctx.adminDescriptor = admin;
             return Observable.of(ctx);
         } else {
             let token = route.params['token'];

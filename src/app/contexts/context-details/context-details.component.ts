@@ -7,10 +7,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { ContextsService } from '../services/contexts.service';
 import { OrganizationsService } from '../../organizations/services/organizations.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-// import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { genres, subjects, workflow } from './context.template';
-import { Affiliation } from '../../base/common/model';
+import { Affiliation, Context, genres, subjects, workflow } from '../../base/common/model';
+
 import { props } from '../../base/common/admintool.properties';
 
 @Component({
@@ -21,7 +20,7 @@ import { props } from '../../base/common/admintool.properties';
 export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   token: string;
-  ctx: any;
+  ctx: Context;
   isNewCtx: boolean = false;
   ous: any[];
   selectedOu: any;
@@ -37,7 +36,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectedWorkflow: string;
 
   constructor(private ctxSvc: ContextsService,
-    // private pubman: PubmanRestService,
     private ouSvc: OrganizationsService,
     private router: Router,
     private route: ActivatedRoute,
@@ -45,7 +43,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     private message: MessagesService) { }
 
   ngOnInit() {
-    this.ctx = this.route.snapshot.data["ctx"];
+    this.ctx = this.route.snapshot.data['ctx'];
     if (this.ctx.name == "new ctx") {
       this.isNewCtx = true;
       this.listOuNames();
@@ -195,6 +193,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   save(ctx2save) {
     this.ctx = ctx2save;
+    
     if (this.isNewCtx) {
       if (this.selectedOu != null) {
         let ou_id = this.selectedOu.reference.objectId;
@@ -206,8 +205,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe(
         data => {
           this.message.success('added new context ' + data);
-          this.gotoList();
           this.ctx = null;
+          this.gotoList();
         },
         error => {
           this.message.error(error);
@@ -215,6 +214,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         );
 
     } else {
+     
       this.message.success("updating " + this.ctx.reference.objectId);
       this.ctxSvc.put(props.pubman_rest_url_ctxs + "/" + this.ctx.reference.objectId, this.ctx, this.token)
         .subscribe(

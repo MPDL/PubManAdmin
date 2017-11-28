@@ -84,10 +84,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.isNewGrant = true;
   }
 
-  deleteGrant(grant) {
+  deleteGrant(grant2delete) {
     this.grants2remove = true;
-    this.selectedGrant = grant;
-    this.selectedGrants.push(grant);
+    this.selectedGrant = grant2delete;
+    if (!this.selectedGrants.some(grant => (grant2delete.objectRef === grant.objectRef && grant2delete.role === grant.role))) {
+      this.selectedGrants.push(grant2delete);
+    }
     this.grantsToRemove = JSON.stringify(this.selectedGrants);
   }
 
@@ -98,10 +100,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.messageService.warning("the reference of the selected grant is undefined!");
     } else {
       if (ref.startsWith("ou")) {
-        this.router.navigate(['/organization', ref ]);
+        this.router.navigate(['/organization', ref]);
       } else {
         if (ref.startsWith("ctx")) {
-          this.router.navigate(['/context', ref ]);
+          this.router.navigate(['/context', ref]);
         }
       }
     }
