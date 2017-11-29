@@ -26,7 +26,8 @@ import { ElasticService } from './base/services/elastic.service';
 import { MessagesService } from './base/services/messages.service';
 import { NavigationService } from './base/services/navigation.service';
 import { PubmanRestService } from './base/services/pubman-rest.service';
-import { AuthGuard } from './base/services/auth-guard.service';
+import { AdminGuard } from './base/services/admin-guard.service';
+import { LoginGuard } from './base/services/login-guard.service';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { AuthGuard } from './base/services/auth-guard.service';
     MessagesService,
     NavigationService,
     PubmanRestService,
-    AuthGuard
+    AdminGuard,
+    LoginGuard
   ],
   bootstrap: [AppComponent]
 })

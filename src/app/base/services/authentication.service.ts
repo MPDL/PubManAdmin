@@ -6,6 +6,7 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/shareReplay';
 
 import { User } from '../common/model';
 import { MessagesService } from "../services/messages.service";
@@ -22,7 +23,7 @@ export class AuthenticationService {
   token$ = this.token.asObservable().share();
   user$ = this.user.asObservable().share();
   isLoggedIn$ = this.isLoggedIn.asObservable().share();
-  isAdmin$ = this.isAdmin.asObservable().share();
+  isAdmin$ = this.isAdmin.asObservable().shareReplay(1);
 
   setToken(token) {
     this.token.next(token);

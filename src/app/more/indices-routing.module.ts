@@ -15,7 +15,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        // canActivateChild: [ AuthGuard ],
+        // canActivateChild: [ AdminGuard ],
         children: [
           { path: 'list', component: IndicesListComponent },
           { path: 'list/:name', component: IndicesDetailComponent },

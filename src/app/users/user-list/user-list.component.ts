@@ -62,6 +62,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.adminSubscription = this.loginService.isAdmin$.subscribe(admin => {
       this.isAdmin = admin;
     });
+    
     if (this.token != null) {
       if (this.isAdmin) {
         this.getAllUsersAsObservable(this.token, this.currentPage);

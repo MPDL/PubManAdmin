@@ -6,7 +6,7 @@ import { AuthenticationService } from './authentication.service';
 import { MessagesService } from './messages.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate, CanActivateChild, OnDestroy {
+export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
 
     checked: boolean = false;
     subscription: Subscription;
@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, OnDestroy {
     }
 
     checkLogin(url: string): boolean {
-        this.subscription = this.authentication.isLoggedIn$.subscribe(bool => {
+        this.subscription = this.authentication.isAdmin$.subscribe(bool => {
             this.checked = bool;
         });
         if (this.checked) {

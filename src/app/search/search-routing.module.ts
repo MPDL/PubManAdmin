@@ -11,11 +11,11 @@ const routes: Routes = [
   {
     path: 'search',
     component: SearchComponent,
-    // canActivate: [ AuthGuard ],
+    // canActivate: [ AdminGuard ],
     children: [
       {
         path: '',
-        // canActivateChild: [ AuthGuard ],
+        // canActivateChild: [ AdminGuard ],
         children: [
           { path: 'users', component: UserSearchComponent },
         //  { path: 'organizations', redirectTo: '/organizations', pathMatch: 'full' },

@@ -3,11 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { UserDetailsResolverService } from './services/user-details-resolver.service';
-import { AuthGuard } from '../base/services/auth-guard.service';
+import { AdminGuard } from '../base/services/admin-guard.service';
+import { LoginGuard } from '../base/services/login-guard.service';
 
 const routes: Routes = [
   { path: 'users',  component: UserListComponent },
-  { path: 'user/:id', component: UserDetailsComponent, canActivate: [AuthGuard], resolve: {user: UserDetailsResolverService} }
+  { path: 'user/:id', component: UserDetailsComponent, canActivate: [LoginGuard], resolve: {user: UserDetailsResolverService} }
 ];
 
 @NgModule({
