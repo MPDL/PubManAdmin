@@ -87,7 +87,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
                 this.addGrant(rolename, ref_id);
             }
             if (rolename.startsWith("CONE") || rolename === "REPORTER" || rolename === "YEARBOOK-ADMIN") {
-                this.addGrant(rolename, "");
+                let ref_id = this.selectedUser.affiliations[0].objectId;
+                this.addGrant(rolename, ref_id);
             }
             if (rolename === "YEARBOOK-EDITOR") {
                 if (this.selectedOu != null) {

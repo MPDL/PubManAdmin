@@ -5,12 +5,12 @@
       </select>
   </div>
   <div class="col-8">
-    <input class="form-control form-control-sm" type="text" name="uri2insert" [(ngModel)]="uri2insert" (keyup.enter)="insertURI(uri2insert, insertGrapgIRI)"
+    <input class="form-control form-control-sm" type="text" name="uri2insert" [(ngModel)]="uri2insert" (keyup.enter)="insertURI(uri2insert, insertGraphIRI)"
       id="uri2insert">
   </div>
 
   <div class="col-2">
-    <input type="submit" class="btn btn-primary btn-sm float-right" name="insert" value="insert" (click)="insertURI(uri2insert, insertGrapgIRI)" />
+    <input type="submit" class="btn btn-primary btn-sm float-right" name="insert" value="insert" (click)="insertURI(uri2insert, insertGraphIRI)" />
   </div>
   <p *ngIf="insertResult">{{insertResult}}</p>
 
