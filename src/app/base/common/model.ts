@@ -6,12 +6,12 @@ interface ro {
 class AbstractEntity {
     creationDate: Date;
     lastModificationDate: Date;
-    creator: ro;
-    modifiedBy: ro;
-    reference: ro;
+    creator: RO;
+    modifiedBy: RO;
+    reference: RO;
 }
 
-export class Affiliation implements ro {
+export class RO implements ro {
     objectId: string;
     title: string;
 }
@@ -26,9 +26,34 @@ export class User extends AbstractEntity {
     password: string;
     name: string;
     email: string;
-    affiliations: Affiliation[];
+    affiliations: RO[];
     active: boolean;
     grants: Grant[];
+}
+
+export class OU extends AbstractEntity {
+    predecessorAffiliations: RO[];
+    hasChildren: boolean = false;
+    childAffiliations: RO[];
+    hasPredecessors: boolean = false;
+    parentAffiliations: RO[];
+    publicStatus: string;
+    defaultMetadata: OUMetadata;
+}
+
+export class OUMetadata {
+    alternativeNames: string[];
+    city: string;
+    countryCode: string;
+    identifiers: Identifier[];
+    name: string;
+    type: string;
+    descriptions: string[];
+}
+
+export class Identifier {
+    typeString: string;
+    id: string;
 }
 
 export class Context extends AbstractEntity {
@@ -37,7 +62,7 @@ export class Context extends AbstractEntity {
     state: string;
     description: string;
     validationPoints: any[];
-    responsibleAffiliations: Affiliation[];
+    responsibleAffiliations: RO[];
     adminDescriptor: AdminDescriptor;
 }
 

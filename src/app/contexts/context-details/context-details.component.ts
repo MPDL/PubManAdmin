@@ -8,7 +8,7 @@ import { ContextsService } from '../services/contexts.service';
 import { OrganizationsService } from '../../organizations/services/organizations.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { Affiliation, Context, genres, subjects, workflow } from '../../base/common/model';
+import { RO, Context, genres, subjects, workflow } from '../../base/common/model';
 
 import { props } from '../../base/common/admintool.properties';
 
@@ -65,7 +65,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctx.adminDescriptor.allowedSubjectClassifications = [];
       this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications;
     }
-    
+
     this.workflows2display = Object.keys(workflow).filter(val => val.match(/^[A-Z]/));
     this.selectedWorkflow = this.ctx.adminDescriptor.workflow;
   }
@@ -75,10 +75,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    this.ouSvc.listChildren4Ou("ou_persistent13" ,this.token)
-    .subscribe(ous => {
-      this.ous = ous;
-    });
+    this.ouSvc.listChildren4Ou("ou_persistent13", this.token)
+      .subscribe(ous => {
+        this.ous = ous;
+      });
   }
 
   onChangeOu(val) {
@@ -158,19 +158,21 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   activateContext(ctx) {
     this.ctx = ctx;
     if (this.ctx.state == 'CREATED' || this.ctx.state == 'CLOSED') {
-          this.ctxSvc.openContext(this.ctx, this.token)
-          .subscribe(httpStatus => {
-            this.message.success("Opened " + ctx.reference.objectId + " " + httpStatus);
-          }, error => {
-            this.message.error(error);
-          });
+      this.ctxSvc.openContext(this.ctx, this.token)
+        .subscribe(httpStatus => {
+          this.getSelectedCtx(this.ctx.reference.objectId);
+          this.message.success("Opened " + ctx.reference.objectId + " " + httpStatus);
+        }, error => {
+          this.message.error(error);
+        });
     } else {
       this.ctxSvc.closeContext(this.ctx, this.token)
-      .subscribe(httpStatus => {
-            this.message.success("Closed " + ctx.reference.objectId + " " + httpStatus);
-          }, error => {
-            this.message.error(error);
-          });
+        .subscribe(httpStatus => {
+          this.getSelectedCtx(this.ctx.reference.objectId);
+          this.message.success("Closed " + ctx.reference.objectId + " " + httpStatus);
+        }, error => {
+          this.message.error(error);
+        });
     }
   }
 
@@ -193,11 +195,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   save(ctx2save) {
     this.ctx = ctx2save;
-    
+
     if (this.isNewCtx) {
       if (this.selectedOu != null) {
         let ou_id = this.selectedOu.reference.objectId;
-        let aff = new Affiliation();
+        let aff = new RO();
         aff.objectId = ou_id;
         this.ctx.responsibleAffiliations.push(aff);
       }
@@ -214,7 +216,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         );
 
     } else {
-     
+
       this.message.success("updating " + this.ctx.reference.objectId);
       this.ctxSvc.put(props.pubman_rest_url_ctxs + "/" + this.ctx.reference.objectId, this.ctx, this.token)
         .subscribe(

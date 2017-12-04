@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '../services/organizations.service';
-import { template, identifier } from './organization.template';
+import { OU, Identifier, RO, OUMetadata } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
 @Component({
@@ -16,13 +16,12 @@ import { props } from '../../base/common/admintool.properties';
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   token: string;
-  selected: any;
-  children: any[];
-  predecessors: any[] = [];
+  selected: OU;
+  children: OU[];
+  predecessors: OU[] = [];
   alternativeName;
   description;
   ouIdentifierId;
-  ouIdentifier = identifier;
 
   subscription: Subscription;
   loginSubscription: Subscription;
@@ -45,8 +44,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         let id = params['id'];
         if (id == 'new org') {
           this.isNewOrganization = true;
-          this.selected = template;
-          template.reference.objectId = id;
+          this.selected = this.prepareNewOU(id);
+
         } else {
           this.getSelectedOu(id, this.token);
           this.listChildren(id);
@@ -91,9 +90,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   openClose(ou) {
     this.selected = ou;
-    if (this.selected.publicStatus == 'CREATED' || this.selected.state == 'CLOSED') {
+    if (this.selected.publicStatus == 'CREATED' || this.selected.publicStatus == 'CLOSED') {
       this.ouSvc.openOu(this.selected, this.token)
         .subscribe(httpStatus => {
+          this.getSelectedOu(this.selected.reference.objectId, this.token);
           this.message.success("Opened " + this.selected.reference.objectId + " " + httpStatus);
         }, error => {
           this.message.error(error);
@@ -101,6 +101,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.ouSvc.closeOu(this.selected, this.token)
         .subscribe(httpStatus => {
+          this.getSelectedOu(this.selected.reference.objectId, this.token);
           this.message.success("Closed " + this.selected.reference.objectId + " " + httpStatus);
         }, error => {
           this.message.error(error);
@@ -121,7 +122,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.selected.defaultMetadata.alternativeNames = [];
       this.selected.defaultMetadata.alternativeNames.push(selected);
     }
-    
+
     this.alternativeName = "";
   }
 
@@ -143,7 +144,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.selected.defaultMetadata.descriptions = [];
       this.selected.defaultMetadata.descriptions.push(selected);
     }
-    
+
     this.description = "";
   }
 
@@ -157,7 +158,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addIdentifier(selected) {
-    let ouid = {id:selected};
+    let ouid = new Identifier();
+    ouid.id = selected;
     if (this.selected.defaultMetadata.identifiers) {
       if (!this.selected.defaultMetadata.identifiers.some(id => (id.id == selected))) {
         this.selected.defaultMetadata.identifiers.push(ouid);
@@ -166,7 +168,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.selected.defaultMetadata.identifiers = [];
       this.selected.defaultMetadata.identifiers.push(ouid);
     }
-    
+
     this.ouIdentifierId = "";
   }
 
@@ -236,5 +238,26 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
 
   get diagnostic() { return JSON.stringify(this.selected); }
+
+  prepareNewOU(id): OU {
+    let template = new OU();
+    let ref = new RO();
+    ref.objectId = id;
+    template.reference = ref;
+    let creator = new RO();
+    creator.objectId = "";
+    template.creator = creator;
+    let parent = new RO();
+    parent.objectId = "";
+    let parents = [];
+    parents.push(parent);
+    template.parentAffiliations = parents;
+    let meta = new OUMetadata();
+    meta.name = "";
+    template.defaultMetadata = meta;
+    template.publicStatus = "";
+    return template;
+
+  }
 
 }

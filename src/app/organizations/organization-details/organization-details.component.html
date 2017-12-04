@@ -12,10 +12,10 @@
         </div>
         <label for="selected-parent-id" class="col-1 col-form-label col-form-label-sm">parentid</label>
         <div class="col-3">
-          <input *ngIf="selected.parentAffiliations.length > 0; else other_content" class="form-control form-control-sm" type="text"
+          <input *ngIf="selected?.parentAffiliations?.length > 0; else no_parent_id" class="form-control form-control-sm" type="text"
             name="parentid" [(ngModel)]="selected.parentAffiliations[0].objectId" id="selected-parent-id">
-          <ng-template #other_content>
-            <input class="form-control form-control-sm" type="text" readonly>
+          <ng-template #no_parent_id>
+            <input class="form-control form-control-sm" type="text" [readonly]="!isNewOrganization">
           </ng-template>
         </div>
         <label for="selected-creator-id" class="col-1 col-form-label col-form-label-sm">creator</label>

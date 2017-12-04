@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { GrantsComponent } from '../grants/grants.component';
-import { User, Grant, Affiliation } from '../../base/common/model';
+import { User, Grant, RO } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
@@ -155,7 +155,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.isNewUser) {
       if (this.selectedOu != null) {
         let ou_id = this.selectedOu.reference.objectId;
-        let aff = new Affiliation();
+        let aff = new RO();
         aff.objectId = ou_id;
         this.selected.affiliations.push(aff);
       } else {
@@ -178,7 +178,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       if (this.isNewOu) {
         if (this.selectedOu != null) {
           let ou_id = this.selectedOu.reference.objectId;
-          let aff = new Affiliation();
+          let aff = new RO();
           aff.objectId = ou_id;
           this.selected.affiliations.push(aff);
         } else {

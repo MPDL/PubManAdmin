@@ -29,7 +29,7 @@ export class OrganizationsService extends PubmanRestService {
                 this.ous = response;
                 return this.ous;
             })
-            .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting children 4 ' + id));
+            .catch((error: any) => Observable.throw(JSON.stringify(error) || 'Error getting children 4 ' + id));
     }
 
     openOu(ou: any, token: string): Observable<number> {
