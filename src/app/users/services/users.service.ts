@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Request, Response, RequestOptions, RequestMethod } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -12,8 +12,8 @@ import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
 export class UsersService extends PubmanRestService {
-  constructor(http: Http) {
-    super(http);
+  constructor(httpc: HttpClient) {
+    super(httpc);
   }
 
   usersUrl: string = props.pubman_rest_url_users;
@@ -24,49 +24,29 @@ export class UsersService extends PubmanRestService {
   activate(user: User, token: string): Observable<User> {
     let userUrl = this.usersUrl + '/' + user.reference.objectId + '/activate';
     let body = JSON.stringify(user.lastModificationDate);
-    let options = new RequestOptions({
-      headers: this.getHeaders(token, true),
-      method: RequestMethod.Put,
-      url: userUrl,
-      body: body
-    });
-    return this.getResource(options);
+    let headers = this.addHeaders(token, true);
+    return this.getResource('PUT', userUrl, headers, body);
   }
 
   deactivate(user: User, token: string): Observable<User> {
     let userUrl = this.usersUrl + '/' + user.reference.objectId + '/deactivate';
     let body = JSON.stringify(user.lastModificationDate);
-    let options = new RequestOptions({
-      headers: this.getHeaders(token, true),
-      method: RequestMethod.Put,
-      url: userUrl,
-      body: body
-    });
-    return this.getResource(options);
+    let headers = this.addHeaders(token, true);
+    return this.getResource('PUT', userUrl, headers, body);
   }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<User> {
     let userUrl = this.usersUrl + '/' + user.reference.objectId + '/add';
     let body = JSON.stringify(grants);
-    let options = new RequestOptions({
-      headers: this.getHeaders(token, true),
-      method: RequestMethod.Put,
-      url: userUrl,
-      body: body
-    });
-    return this.getResource(options);
+    let headers = this.addHeaders(token, true);
+    return this.getResource('PUT', userUrl, headers, body);
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
     let userUrl = this.usersUrl + '/' + user.reference.objectId + '/remove';
     let body = JSON.stringify(grants);
-    let options = new RequestOptions({
-      headers: this.getHeaders(token, true),
-      method: RequestMethod.Put,
-      url: userUrl,
-      body: body
-    });
-    return this.getResource(options);
+    let headers = this.addHeaders(token, true);
+    return this.getResource('PUT', userUrl, headers, body);
   }
 
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Request, Response, RequestOptions, RequestMethod } from '@angular/http';
+import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import 'rxjs/add/observable/throw';
@@ -44,35 +44,28 @@ export class AuthenticationService {
   private tokenUrl: string = props.pubman_rest_url + "/login";
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private messages: MessagesService
   ) { }
 
   login(username, password) {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-
+    let headers = new HttpHeaders().set('Content-Type', 'application/json');
     let body = '"' + username + ":" + password + '"';
-
-    let options = new RequestOptions({
-      method: RequestMethod.Post,
-      url: this.tokenUrl,
+    return this.http.request('POST', this.tokenUrl, {
+      body: body,
       headers: headers,
-      body: body
-    });
-
-    return this.http.request(new Request(options))
-
-      .map((response: Response) => {
-        let token = response.headers.get('Token');
-        if (token != null) {
-          this.setToken(token);
-          this.setIsLoggedIn(true);
-          return token;
-        } else {
-          this.messages.error(response.statusText);
-        }
-      });
+      observe: 'response',
+      responseType: 'text'
+    }).map((response) => {
+      let token = response.headers.get('Token');
+      if (token != null) {
+        this.setToken(token);
+        this.setIsLoggedIn(true);
+        return token;
+      } else {
+        this.messages.error(response.status + " " + response.statusText);
+      }
+    }).catch(err => Observable.throw(JSON.stringify(err) || "UNKNOWN ERROR!"));
   }
 
   logout() {
@@ -83,24 +76,20 @@ export class AuthenticationService {
   }
 
   who(token): Observable<User> {
-    let headers = new Headers();
-    headers.append('Authorization', token);
+    let headers = new HttpHeaders().set('Authorization', token);
     let whoUrl = this.tokenUrl + '/who';
-    let options = new RequestOptions({
-      method: RequestMethod.Get,
-      url: whoUrl,
-      headers: headers
-    });
     let user: User;
-    return this.http.request(new Request(options))
-      .map((response: Response) => {
-        user = response.json();
+    return this.http.request<User>('GET', whoUrl, {
+      headers: headers,
+      observe: 'body'
+    }).map((response) => {
+        user = response;
         this.setUser(user);
         if (user.grants.find(grant => grant.role == "SYSADMIN")) {
           this.setIsAdmin(true);
         }
         return user;
-      });
+      }).catch(err => Observable.throw(JSON.stringify(err) || "UNKNOWN ERROR!"));
   }
 
 }

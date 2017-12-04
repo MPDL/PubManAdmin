@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers, Request, Response, RequestOptions, RequestMethod, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -11,26 +11,21 @@ import { MessagesService } from '../../base/services/messages.service';
 @Injectable()
 export class BlazegraphService {
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
         private messages: MessagesService) {}
 
     getNamedGraphs(): Observable<any[]> {
         let blazegraphURI: string = props.blazegraph_sparql_url;
         let results: any[] = [];
-        let headers = new Headers();
-        let params = new URLSearchParams();
-        params.set('query', 'select $g {graph $g{}}');
-        params.set('format', 'json');
-        headers.set('Content-Type', 'application/rdf+xml');
-        let options = new RequestOptions({
-            method: RequestMethod.Post,
-            headers: headers,
-            url: blazegraphURI,
-            params: params
-        });
-        return this.http.request(new Request(options))
-            .map((response) => {
-                response.json().results.bindings.forEach(resource => {
+        let headers = new HttpHeaders().set('Content-Type', 'application/rdf+xml');
+        let params = new HttpParams().set('query', 'select $g {graph $g{}}')
+            .set('format', 'json');
+        return this.http.request('GET', blazegraphURI, {
+            headers:headers,
+            params:params
+        })
+            .map((response : any) => {
+                response.results.bindings.forEach(resource => {
                     results.push(resource);
                 });
                 return results;
@@ -41,22 +36,17 @@ export class BlazegraphService {
         //let blazegraphURI: string = "http://b253.demo/blazegraph/namespace/inge/sparql";
         let blazegraphURI: string = props.blazegraph_sparql_url;
         let results: any[] = [];
-        let headers = new Headers();
-        let params = new URLSearchParams();
+        let headers = new HttpHeaders().set('Content-Type', 'application/rdf+xml');
+        let params = new HttpParams().set('query', 'CONSTRUCT { <' + resourceIRI + '> ?p ?o . ?o ?op ?oo } { <' + resourceIRI + '> ?p ?o OPTIONAL { ?o ?op ?oo . FILTER ( isBlank(?o) ) } }')
+            .set('format', 'json');
         //params.set('query', 'describe <' + resourceIRI + '> $o {<' + resourceIRI + '> $p $o}');
-        params.set('query', 'CONSTRUCT { <' + resourceIRI + '> ?p ?o . ?o ?op ?oo } { <' + resourceIRI + '> ?p ?o OPTIONAL { ?o ?op ?oo . FILTER ( isBlank(?o) ) } }')
         // params.set('query', 'select * {graph <' + graphIRI +'>{<' + resourceIRI + '> $p $o . filter (!isBlank(?o))}}');
-        params.set('format', 'json');
-        headers.set('Content-Type', 'application/rdf+xml');
-        let options = new RequestOptions({
-            method: RequestMethod.Post,
-            headers: headers,
-            url: blazegraphURI,
-            params: params
-        });
-        return this.http.request(new Request(options))
-            .map((response) => {
-                response.json().results.bindings.forEach(resource => {
+        return this.http.request('POST', blazegraphURI, {
+            headers:headers,
+            params:params
+        })
+            .map((response: any) => {
+                response.results.bindings.forEach(resource => {
                     results.push(resource);
                 });
                 return results;
@@ -67,20 +57,13 @@ export class BlazegraphService {
 
         // let blazegraphURI: string = "http://b253.demo/blazegraph/namespace/inge/sparql";
         let blazegraphURI: string = props.blazegraph_sparql_url;
-        let headers = new Headers();
-        let params = new URLSearchParams();
-        params.set('context-uri', graphIRI);
-        params.set('uri', uri);
-        headers.set('Content-Type', 'application/rdf+xml');
-        // headers.set('Content-Type', 'application/ld+json');
-        let options = new RequestOptions({
-            method: RequestMethod.Post,
-            headers: headers,
-            url: blazegraphURI,
-            params: params
-        });
-        return this.http.request(new Request(options))
-            .map(response => {
+        let headers = new HttpHeaders().set('Content-Type', 'application/rdf+xml');
+        let params = new HttpParams().set('context-uri', graphIRI).set('uri', uri);
+        return this.http.request('POST', blazegraphURI, {
+            headers:headers,
+            params:params
+        })
+            .map((response: any) => {
                 return response.text();
             })
             .catch(error => {
@@ -88,6 +71,5 @@ export class BlazegraphService {
                 return Observable.throw(error.text() || ' error'); 
             });
     }
-
 
 }

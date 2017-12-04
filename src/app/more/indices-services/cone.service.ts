@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Jsonp, Headers, Request, Response, RequestOptions, RequestMethod, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -13,26 +13,21 @@ export class ConeService {
     answer;
     results: any[] = [];
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
         private messages: MessagesService) {
     }
 
     getAllJournals(): Observable<any[]> {
 
         let journalUrl: string = "http://b253.demo/blazegraph/namespace/inge/sparql";
-        let headers = new Headers();
-        let params = new URLSearchParams();
-        params.set('query', 'select * {graph $g {$s $p $o}}');
-        headers.set('Accept', 'application/sparql-results+json, application/json');
-        let options = new RequestOptions({
+        let headers = new HttpHeaders().set('Accept', 'application/sparql-results+json, application/json');
+        let params = new HttpParams().set('query', 'select * {graph $g {$s $p $o}}');
+        return this.http.request('GET', journalUrl, {
             headers: headers,
-            method: RequestMethod.Get,
-            url: journalUrl,
             params: params
-        });
-        return this.http.request(new Request(options))
-            .map((response) => {
-                response.json().results.bindings.forEach(resource => {
+        })
+            .map((response: any) => {
+                response.results.bindings.forEach(resource => {
                     this.results.push(resource);
                 });
                 

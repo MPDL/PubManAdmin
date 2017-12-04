@@ -59,9 +59,9 @@ export class TemplateItem {
 export enum workflow {
     SIMPLE,
     STANDARD
-  }
-  
-  export enum subjects {
+}
+
+export enum subjects {
     DDC,
     ISO639_3,
     JEL,
@@ -71,9 +71,9 @@ export enum workflow {
     MPIS_GROUPS,
     MPIS_PROJECTS,
     MPIWG_PROJECTS
-  }
-  
-  export enum genres {
+}
+
+export enum genres {
     ARTICLE,
     CONFERENCE_PAPER,
     BOOK_ITEM,
@@ -114,4 +114,11 @@ export enum workflow {
     MANUAL,
     MULTI_VOLUME,
     NEWSPAPER
-  }
+}
+
+export class SearchResult {
+    version: number;
+    numberOfRecords: number;
+    records: any[];
+    originalResponse: any;
+}

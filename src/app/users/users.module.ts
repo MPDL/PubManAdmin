@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../base/shared/shared.module';
@@ -14,7 +13,6 @@ import { GrantsComponent } from './grants/grants.component';
 @NgModule({
   imports: [
     FormsModule,
-    HttpModule,
     CommonModule,
     SharedModule,
     UsersRoutingModule

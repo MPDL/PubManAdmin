@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Request, Response, RequestOptions, RequestMethod } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -12,17 +12,14 @@ export class FedoraRestService {
 
   fcrepo_rest_url = "http://localhost:8888/fcrepo/rest";
 
-  constructor(protected http: Http) { }
+  constructor(protected http: HttpClient) { }
 
   getResource(): Observable<any> {
-    let headers = new Headers();
-    headers.append("Accept", "application/ld+json");
-    let options = new RequestOptions({
-      headers: headers,
-      method: RequestMethod.Get,
-      url: this.fcrepo_rest_url +"/objects/raven"
-    });
-    return this.http.request(new Request(options))
+    let headers = new HttpHeaders().set("Accept", "application/ld+json");
+    let url = this.fcrepo_rest_url +"/objects/raven";
+    return this.http.request('GET', url, {
+      headers: headers
+    })
       .map((response: Response) => {
         let data = response.json();
         return data;

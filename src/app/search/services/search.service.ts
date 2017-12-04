@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Request, Response, RequestOptions, RequestMethod, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -13,8 +13,8 @@ import { PubmanRestService } from '../../base/services/pubman-rest.service';
 @Injectable()
 export class SearchService extends PubmanRestService {
 
-  constructor(http: Http) {
-    super(http);
+  constructor(httpc: HttpClient) {
+    super(httpc);
    }
 
   buildQueryOnly(request): any {

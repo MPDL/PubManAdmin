@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../base/shared/shared.module';
@@ -15,7 +14,6 @@ import { Elastic4contextsService } from './services/elastic4contexts.service';
 @NgModule({
   imports: [
     FormsModule,
-    HttpModule,
     CommonModule,
     SharedModule,
     ContextsRoutingModule

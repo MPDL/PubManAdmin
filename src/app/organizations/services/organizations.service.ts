@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Request, Response, RequestOptions, RequestMethod, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
@@ -13,21 +13,20 @@ export class OrganizationsService extends PubmanRestService {
 
     ous_rest_url = props.pubman_rest_url + '/ous';
     ou;
-    ous: any[];
+    ous: any;
 
-    constructor(http: Http) {
-        super(http);
+    constructor(protected httpc: HttpClient) {
+        super(httpc);
     }
 
     listChildren4Ou(id: string, token: string): Observable<any[]> {
-        let options = new RequestOptions({
-            headers: this.getHeaders(token, false),
-            method: RequestMethod.Get,
-            url: this.ous_rest_url + '/' + id + '/children'
-        });
-        return this.http.request(new Request(options))
-            .map((response: Response) => {
-                this.ous = response.json();
+        let headers = this.addHeaders(token, false);
+        let url =  this.ous_rest_url + '/' + id + '/children';
+        return this.httpc.request('GET', url, {
+            headers: headers
+        })
+            .map((response: HttpResponse<any>) => {
+                this.ous = response;
                 return this.ous;
             })
             .catch((error: any) => Observable.throw(JSON.stringify(error.json()) || 'Error getting children 4 ' + id));
@@ -36,25 +35,15 @@ export class OrganizationsService extends PubmanRestService {
     openOu(ou: any, token: string): Observable<number> {
         let ouUrl = this.ous_rest_url + '/' + ou.reference.objectId + '/open';
         let body = JSON.stringify(ou.lastModificationDate);
-        let options = new RequestOptions({
-            headers: this.getHeaders(token, true),
-            method: RequestMethod.Put,
-            url: ouUrl,
-            body: body
-        });
-        return this.getHttpStatus(options);
+        let headers = this.addHeaders(token, true);
+        return this.getHttpStatus('PUT', ouUrl, headers, body);
     }
 
     closeOu(ou: any, token: string): Observable<number> {
         let ouUrl = this.ous_rest_url + '/' + ou.reference.objectId + '/close';
         let body = JSON.stringify(ou.lastModificationDate);
-        let options = new RequestOptions({
-            headers: this.getHeaders(token, true),
-            method: RequestMethod.Put,
-            url: ouUrl,
-            body: body
-        });
-        return this.getHttpStatus(options);
+        let headers = this.addHeaders(token, true);
+        return this.getHttpStatus('PUT', ouUrl, headers, body);
     }
 
 }
