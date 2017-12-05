@@ -24,6 +24,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   isNewUser: boolean = false;
   isNewGrant: boolean = false;
   isNewOu: boolean = false;
+  isAdmin: boolean = true;
   grants2remove: boolean = false;
   selectedGrant: Grant;
   selectedGrants: Grant[] = [];
@@ -49,6 +50,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.selected = this.route.snapshot.data['user'];
+    if (this.route.snapshot.queryParams['admin']) {
+      this.isAdmin = this.route.snapshot.queryParams['admin'];
+    }
+    console.log("admin? " + this.isAdmin)
     if (this.selected.userid == "new user") {
       this.isNewUser = true;
       this.isNewOu = true;
@@ -121,14 +126,26 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/users', { id: userId }]);
   }
 
+  notAllowed(whatthehackever) {
+    this.messageService.warning("you're not authorized !" )
+  }
+
   resetPassword(user) {
     this.selected = user;
+    /*
     if (this.selected.name && this.selected.name != "") {
       this.selected.password = this.selected.name.split('').reverse().join('');
     } else {
       this.selected.password = this.resettedPassword;
       this.messageService.warning("password was reset to: " + this.resettedPassword);
     }
+    */
+    this.selected.password = this.resettedPassword;
+    this.messageService.warning("password was reset to: " + this.resettedPassword);
+  }
+
+  changePassword(user) {
+    alert('Currently not implemented!')
   }
 
   activateUser(user) {

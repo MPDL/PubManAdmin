@@ -31,7 +31,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
             return true;
         }
         // this.router.navigate(['/home']);
-        this.message.warning("This site is almost useless without authentication ...")
+        this.message.warning("This site requires admin authorization ...")
         return false;
     }
 
