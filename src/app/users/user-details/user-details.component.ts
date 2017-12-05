@@ -60,11 +60,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   listOuNames() {
     this.elasticService.listOuNames("parent", "persistent13", (names) => {
       this.ous = names;
+      /*
       this.ous.sort((a, b) => {
         if (a < b) return -1;
         else if (a > b) return 1;
         else return 0;
       });
+      */
     });
   }
 

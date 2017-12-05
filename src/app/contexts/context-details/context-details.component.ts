@@ -5,7 +5,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { ContextsService } from '../services/contexts.service';
-import { OrganizationsService } from '../../organizations/services/organizations.service';
+import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { RO, Context, genres, subjects, workflow } from '../../base/common/model';
@@ -36,7 +36,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectedWorkflow: string;
 
   constructor(private ctxSvc: ContextsService,
-    private ouSvc: OrganizationsService,
+    private ouSvc: Elastic4contextsService,
     private router: Router,
     private route: ActivatedRoute,
     private login: AuthenticationService,
@@ -75,10 +75,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    this.ouSvc.listChildren4Ou("ou_persistent13", this.token)
-      .subscribe(ous => {
-        this.ous = ous;
-      });
+    this.ouSvc.listOuNames("parent", "persistent13", (names) => {
+      this.ous = names;
+    });
   }
 
   onChangeOu(val) {
