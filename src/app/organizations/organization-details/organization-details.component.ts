@@ -114,13 +114,17 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addName(selected) {
-    if (this.selected.defaultMetadata.alternativeNames) {
-      if (!this.selected.defaultMetadata.alternativeNames.includes(selected)) {
+
+    if (selected != null && selected !== "") {
+
+      if (this.selected.defaultMetadata.alternativeNames) {
+        if (!this.selected.defaultMetadata.alternativeNames.includes(selected)) {
+          this.selected.defaultMetadata.alternativeNames.push(selected);
+        }
+      } else {
+        this.selected.defaultMetadata.alternativeNames = [];
         this.selected.defaultMetadata.alternativeNames.push(selected);
       }
-    } else {
-      this.selected.defaultMetadata.alternativeNames = [];
-      this.selected.defaultMetadata.alternativeNames.push(selected);
     }
 
     this.alternativeName = "";
@@ -136,13 +140,16 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addDesc(selected) {
-    if (this.selected.defaultMetadata.descriptions) {
-      if (!this.selected.defaultMetadata.descriptions.includes(selected)) {
+    if (selected != null && selected !== "") {
+
+      if (this.selected.defaultMetadata.descriptions) {
+        if (!this.selected.defaultMetadata.descriptions.includes(selected)) {
+          this.selected.defaultMetadata.descriptions.push(selected);
+        }
+      } else {
+        this.selected.defaultMetadata.descriptions = [];
         this.selected.defaultMetadata.descriptions.push(selected);
       }
-    } else {
-      this.selected.defaultMetadata.descriptions = [];
-      this.selected.defaultMetadata.descriptions.push(selected);
     }
 
     this.description = "";
@@ -158,17 +165,19 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addIdentifier(selected) {
-    let ouid = new Identifier();
-    ouid.id = selected;
-    if (this.selected.defaultMetadata.identifiers) {
-      if (!this.selected.defaultMetadata.identifiers.some(id => (id.id == selected))) {
+    if (selected != null && selected !== "") {
+
+      let ouid = new Identifier();
+      ouid.id = selected;
+      if (this.selected.defaultMetadata.identifiers) {
+        if (!this.selected.defaultMetadata.identifiers.some(id => (id.id == selected))) {
+          this.selected.defaultMetadata.identifiers.push(ouid);
+        }
+      } else {
+        this.selected.defaultMetadata.identifiers = [];
         this.selected.defaultMetadata.identifiers.push(ouid);
       }
-    } else {
-      this.selected.defaultMetadata.identifiers = [];
-      this.selected.defaultMetadata.identifiers.push(ouid);
     }
-
     this.ouIdentifierId = "";
   }
 
