@@ -5,7 +5,7 @@
       <div class="card-body">
         <h4 class="card-title">Max Planck Society</h4>
         <input type="submit" class="btn btn-info btn-sm" name="add" value="+" (click)="addNewOrganization()" />
-        <input type="button" class="card-link btn-outline-info text-light" (click)="external = true" value="External Organizations">
+        <input type="button" class="card-link btn-outline-info text-light" (click)="external = true; getRidOfChildren(dummy)" value="External Organizations">
       </div>
       <div class="row">
         <div class="col-4 p-3">
@@ -61,7 +61,7 @@
     <div *ngIf="external" class="card text-white bg-info text-right">
       <div class="card-body">
         <h4 class="card-title">External Organizations</h4>
-        <input type="button" class="btn-outline-info card-link text-light" (click)="external = false" value="Max Planck Society">
+        <input type="button" class="btn-outline-info card-link text-light" (click)="external = false; getRidOfChildren(dummy)" value="Max Planck Society">
       </div>
       <div class="row">
         <div class="col-4 p-3">

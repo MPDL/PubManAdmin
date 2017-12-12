@@ -63,7 +63,7 @@ export class PubmanRestService {
         let status = response.status;
         return status;
       })
-      .catch((error: HttpErrorResponse) => Observable.throw(JSON.stringify(error.message) || "Error getting status " + url));
+      .catch((error: any) => Observable.throw(JSON.stringify(error) || "Error getting status " + url));
   }
 
   addHeaders(token, ct: boolean): HttpHeaders {

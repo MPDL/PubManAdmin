@@ -53,7 +53,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.queryParams['admin']) {
       this.isAdmin = this.route.snapshot.queryParams['admin'];
     }
-    console.log("admin? " + this.isAdmin)
     if (this.selected.userid == "new user") {
       this.isNewUser = true;
       this.isNewOu = true;
@@ -141,11 +140,21 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
     */
     this.selected.password = this.resettedPassword;
-    this.messageService.warning("password was reset to: " + this.resettedPassword);
+    this.usersService.changePassword(this.selected, this.token)
+      .subscribe(status => {
+        this.messageService.warning(status + "  password was reset to: " + this.resettedPassword);
+      }, error => {
+        this.messageService.error(error);
+      });
   }
 
   changePassword(user) {
-    alert('Currently not implemented!')
+    this.usersService.changePassword(user, this.token)
+    .subscribe(status => {
+      this.messageService.warning(status + "  password has changed to: " + user.password);
+    }, error => {
+      this.messageService.error(error);
+    });
   }
 
   activateUser(user) {

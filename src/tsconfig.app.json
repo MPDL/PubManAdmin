@@ -5,7 +5,8 @@
     "module": "es2015",
     "baseUrl": "",
     "types": [
-      "elasticsearch"
+      "elasticsearch",
+      "node"
     ]
   },
   "exclude": [

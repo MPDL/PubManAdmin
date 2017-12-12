@@ -27,6 +27,7 @@ import { NavigationService } from './base/services/navigation.service';
 import { PubmanRestService } from './base/services/pubman-rest.service';
 import { AdminGuard } from './base/services/admin-guard.service';
 import { LoginGuard } from './base/services/login-guard.service';
+import { FooterComponent } from './base/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { LoginGuard } from './base/services/login-guard.service';
     MessagesComponent,
     NavigationComponent,
     HomeComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

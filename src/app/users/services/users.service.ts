@@ -49,5 +49,12 @@ export class UsersService extends PubmanRestService {
     return this.getResource('PUT', userUrl, headers, body);
   }
 
+  changePassword(user: User, token: string): Observable<number> {
+    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/password';
+    let body = user.lastModificationDate + "#" + user.password;
+    let headers = this.addHeaders(token, false);
+    return this.getHttpStatus('PUT', userUrl, headers, body);     
+  } 
+
 }
 

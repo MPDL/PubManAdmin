@@ -85,13 +85,15 @@
               <ul class="list-group">
                 <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let name of selected.defaultMetadata.alternativeNames"
                   [class.selected]="isSelected(name)">
-                  <span class="col-11">
-                    <label class="col-form-label-sm p-0">{{name}}</label>
-                  </span>
-                  <span class="col-1">
-                    <input type="button" class="btn btn-outline-info btn-sm float-right" (click)="deleteName(name); $event.stopPropagation()"
-                      name="deleteName" value="x" />
-                  </span>
+                  <div class="row">
+                    <span class="col-11">
+                      <label class="col-form-label-sm p-0">{{name}}</label>
+                    </span>
+                    <span class="col-1">
+                      <input type="button" class="btn btn-outline-info btn-sm float-right" (click)="deleteName(name); $event.stopPropagation()"
+                        name="deleteName" value="x" />
+                    </span>
+                  </div>
                 </div>
               </ul>
             </div>
@@ -152,13 +154,15 @@
               <ul class="list-group">
                 <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let id of selected.defaultMetadata.identifiers"
                   [class.selected]="isSelected(id)">
-                  <span class="col-11">
-                    <label class="col-form-label-sm p-0">{{id.id}}</label>
-                  </span>
-                  <span class="col-1">
-                    <input type="button" class="btn btn-outline-info btn-sm float-right" (click)="deleteIdentifier(id); $event.stopPropagation()"
-                      name="deleteIdentifier" value="x" />
-                  </span>
+                  <div class="row">
+                    <span class="col-11">
+                      <label class="col-form-label p-0">{{id.id}}</label>
+                    </span>
+                    <span class="col-1">
+                      <input type="button" class="btn btn-outline-info btn-sm float-right" (click)="deleteIdentifier(id); $event.stopPropagation()"
+                        name="deleteIdentifier" value="x" />
+                    </span>
+                  </div>
                 </div>
               </ul>
             </div>
@@ -201,7 +205,8 @@
               <div class="col-12">
               -->
           <ul class="list-group">
-            <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let predecessor of predecessors" (click)="showDetails(predecessor.reference.objectId)">
+            <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let predecessor of predecessors"
+              (click)="showDetails(predecessor.reference.objectId)">
               <div class="row">
                 <span class="col-3">
                   <label class="col-form-label-sm">{{predecessor.reference.objectId}}</label>
