@@ -130,19 +130,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   resetPassword(user) {
-    this.selected = user;
-    /*
-    if (this.selected.name && this.selected.name != "") {
-      this.selected.password = this.selected.name.split('').reverse().join('');
-    } else {
-      this.selected.password = this.resettedPassword;
-      this.messageService.warning("password was reset to: " + this.resettedPassword);
-    }
-    */
-    this.selected.password = this.resettedPassword;
-    this.usersService.changePassword(this.selected, this.token)
-      .subscribe(status => {
-        this.messageService.warning(status + "  password was reset to: " + this.resettedPassword);
+    user.password = this.resettedPassword;
+    this.usersService.changePassword(user, this.token)
+      .subscribe(u => {
+        this.selected = u;
+        this.messageService.warning(u.userid + ":  password was reset to: " + user.password);
       }, error => {
         this.messageService.error(error);
       });
@@ -150,8 +142,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   changePassword(user) {
     this.usersService.changePassword(user, this.token)
-    .subscribe(status => {
-      this.messageService.warning(status + "  password has changed to: " + user.password);
+    .subscribe(u => {
+      this.selected = u;
+      this.messageService.warning(u.userid + ":  password has changed to: " + user.password);
     }, error => {
       this.messageService.error(error);
     });
