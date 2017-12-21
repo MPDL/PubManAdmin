@@ -192,6 +192,14 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   save(ou) {
     this.selected = ou;
+    if (this.selected.parentAffiliations[0].objectId === "") {
+      this.message.warning("parent id MUST NOT be empty");
+      return;
+    }
+    if (this.selected.defaultMetadata.name.includes("new ou")) {
+      this.message.warning("name MUST NOT be new ou");
+      return;
+    }
     if (this.isNewOrganization) {
       this.ouSvc.post(props.pubman_rest_url_ous, this.selected, this.token)
         .subscribe(
@@ -251,7 +259,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   prepareNewOU(id): OU {
     let template = new OU();
     let ref = new RO();
-    ref.objectId = id;
+    ref.objectId = "";
     template.reference = ref;
     let creator = new RO();
     creator.objectId = "";
@@ -262,7 +270,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     parents.push(parent);
     template.parentAffiliations = parents;
     let meta = new OUMetadata();
-    meta.name = "";
+    meta.name = "new ou";
     template.defaultMetadata = meta;
     template.publicStatus = "";
     return template;

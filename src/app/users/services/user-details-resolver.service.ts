@@ -16,6 +16,7 @@ export class UserDetailsResolverService implements Resolve<User> {
         if (id == 'new user') {
             let user = new User();
             user.userid = "new user";
+            user.password = "hard2Remember";
             user.grants = new Array<Grant>();
             user.affiliations = new Array<RO>();
             user.active = false;

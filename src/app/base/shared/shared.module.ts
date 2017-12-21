@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { SelectedItemColourDirective } from '../directives/selected-item-colour.directive';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
+import { ValueNotAllowedDirective } from '../directives/value-not-allowed.directive';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { PaginationService } from '../services/pagination.service';
@@ -16,11 +17,13 @@ import { PaginationService } from '../services/pagination.service';
   declarations: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
+    ValueNotAllowedDirective,
     PaginationComponent
   ],
   exports: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
+    ValueNotAllowedDirective,
     PaginationComponent,
     NgxPaginationModule,
     CommonModule,

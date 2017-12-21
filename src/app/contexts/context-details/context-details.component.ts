@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -18,6 +18,8 @@ import { props } from '../../base/common/admintool.properties';
   styleUrls: ['./context-details.component.scss']
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
+
+  @ViewChild('f') form: any;
 
   token: string;
   ctx: Context;
@@ -195,12 +197,20 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   save(ctx2save) {
     this.ctx = ctx2save;
 
+    if (this.ctx.name.includes("new ctx")) {
+      this.message.warning("name MUST NOT be new ctx");
+      return;
+    }
+
     if (this.isNewCtx) {
       if (this.selectedOu != null) {
         let ou_id = this.selectedOu.reference.objectId;
         let aff = new RO();
         aff.objectId = ou_id;
         this.ctx.responsibleAffiliations.push(aff);
+      } else {
+        this.message.warning("you MUST select an organization");
+        return;
       }
       this.ctxSvc.post(props.pubman_rest_url_ctxs, this.ctx, this.token)
         .subscribe(

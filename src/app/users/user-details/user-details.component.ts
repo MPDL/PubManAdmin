@@ -173,6 +173,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   save(user2save) {
     this.selected = user2save;
+    if (this.selected.userid.includes("new user")) {
+      this.messageService.warning("userid MUST NOT be new user");
+      return;
+    }
+    if (this.selected.name == null) {
+      this.messageService.warning("name MUST NOT be empty");
+      return;
+    }
     if (this.isNewUser) {
       if (this.selectedOu != null) {
         let ou_id = this.selectedOu.reference.objectId;
