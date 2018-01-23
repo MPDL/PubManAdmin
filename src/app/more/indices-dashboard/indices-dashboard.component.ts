@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { IndicesService } from '../indices-services/indices.service';
+
 @Component({
   // selector: 'app-indices-dashboard',
   templateUrl: './indices-dashboard.component.html',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IndicesDashboardComponent implements OnInit {
 
-  constructor() { }
+  info: any;
+  constructor(private svc: IndicesService) { }
 
   ngOnInit() {
+    this.svc.localNodeInfo(info => {
+      this.info = info;
+    });
   }
 
 }

@@ -3,13 +3,16 @@
 <div class="card border-primary text-right">
   <div class="card-body">
     <h4 class="card-title">Indices</h4>
+    <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewIndex()" />
   </div>
 
-  <ul class="list-group list-group-flush h-100">
+  <ul class="list-group">
 
-    <li class="list-group-item text-primary" *ngFor="let index of indices" (click)="goTo(index.index)">
-      {{index.health}}   {{index.docs}}   {{index.index}}
-      <li>
+    <div selectedItemColor class="list-group-item text-primary p-1" *ngFor="let index of indices" (click)="goTo(index.index)">
+      <span class="col-sm-11">{{index.health}}   {{index['docs.count']}}   ({{index.index}})</span>
+      <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(index); $event.stopPropagation()"
+                name="delete" value="x" /></span>
+    </div>
   </ul>
 
   <div class="card-footer">

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { SharedModule } from '../base/shared/shared.module';
 import { IndicesRoutingModule } from './indices-routing.module';
 import { IndicesService } from './indices-services/indices.service';
 import { ConeService } from './indices-services/cone.service';
@@ -16,6 +17,7 @@ import { ConeListComponent } from './cone-list/cone-list.component';
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule,
     IndicesRoutingModule
   ],
   declarations: [IndicesComponent, IndicesDashboardComponent, IndicesListComponent, IndicesDetailComponent, ConeListComponent],

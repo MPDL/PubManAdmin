@@ -21,8 +21,7 @@ export class ElasticService {
   private connect() {
     this.client = new Client({
       host: this.uri,
-      log: ["error", "warning"],
-      apiVersion: "5.4"
+      log: ["error", "warning"]
     });
   }
 

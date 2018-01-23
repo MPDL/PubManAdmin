@@ -10,10 +10,34 @@ export class IndicesService extends ElasticService {
 
     constructor(messages: MessagesService) {super(messages)}
 
+    create(name, body, callback) {
+        this.client.indices.create({
+            index: name,
+            body: body
+        }, (err, res) => {
+            if (err) {
+                this.messages.error(err);
+            } else {
+                callback(res);
+            }
+        });
+    }
+
+    delete(name, callback) {
+        this.client.indices.delete({
+            index: name
+        }, (err, res) => {
+            if (err) {
+                this.messages.error(err);
+            } else {
+                callback(res);
+            }
+        });
+    }
+
     listAllIndices(callback) {
         this.client.cat.indices({
-            format: "json",
-            v: true
+            format: "json"
         }, (err, res) => {
             if (err) {
                 this.messages.error(err);
@@ -40,6 +64,17 @@ export class IndicesService extends ElasticService {
         this.client.indices.getSettings({
             index: index
         }, (err, res) => {
+            if (err) {
+                this.messages.error(err);
+            } else {
+                callback(res);
+            }
+        });
+    }
+
+    localNodeInfo(callback) {
+        this.client.cluster.state({metric:['master_node', 'nodes']},
+        (err, res) => {
             if (err) {
                 this.messages.error(err);
             } else {
