@@ -1,7 +1,7 @@
 export const user_aggs = {
   select: {},
   creationDate: { size: 0, aggs: { name1: { date_histogram: { field: "creationDate", interval: "year", min_doc_count: 1 } } } },
-  organization: { size: 0, aggs: { name1: { terms: { field: "affiliations.title.keyword", size: 100, order: { _count: "desc" } } } } },
+  organization: { size: 0, aggs: { name1: { terms: { field: "affiliation.name.keyword", size: 100, order: { _count: "desc" } } } } },
 }
 
 export const item_aggs = {

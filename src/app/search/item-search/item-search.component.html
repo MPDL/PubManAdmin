@@ -89,7 +89,7 @@
                 <ul class="list-group list-group-flush h-100">
                     <li selectedItemColor class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
                         (click)="onSelect(item)">
-                        <span class="text-primary">{{item.version.objectId}}</span>
+                        <span class="text-primary">{{item.objectId}}</span>
                         <span class="text-primary ml-2">{{item.metadata.genre}}</span>
 
                         <span class="text-primary ml-2">{{item.metadata.title}}</span>
