@@ -14,7 +14,7 @@ export class Elastic4contextsService extends ElasticService {
             this.client.search({
                 index: props.ctx_index_name,
                 q: "name.auto:" + term,
-                sort: "name.sorted:asc"
+                sort: "name.keyword:asc"
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);

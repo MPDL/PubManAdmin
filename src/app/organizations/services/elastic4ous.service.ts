@@ -14,8 +14,8 @@ export class Elastic4ousService extends ElasticService {
         if (term) {
             this.client.search({
                 index: props.ou_index_name,
-                q: "defaultMetadata.name.auto:" + term,
-                sort: "defaultMetadata.name.sorted:asc"
+                q: "metadata.name.auto:" + term,
+                sort: "metadata.name.keyword:asc"
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);
@@ -33,19 +33,19 @@ export class Elastic4ousService extends ElasticService {
   listOuNames(parent: string, id: string, callback): any {
     let queryString: string;
     if (parent.match("parent")) {
-      queryString = "parentAffiliations.objectId:*" + id;
+      queryString = "parentAffiliation.objectId:*" + id;
     } else if (parent.match("predecessor")) {
-      queryString = "reference.objectId:*" + id;
+      queryString = "objectId:*" + id;
     }
 
     if (queryString.length > 0) {
       return this.client.search({
         index: props.ou_index_name,
-        // q: "parentAffiliations.objectId:*" + parent,
+        // q: "parentAffiliation.objectId:*" + parent,
         q: queryString,
-        _sourceInclude: "reference.objectId, defaultMetadata.name, hasChildren, publicStatus",
+        _sourceInclude: "objectId, metadata.name, hasChildren, publicStatus",
         size: 100,
-        sort: 'defaultMetadata.name.sorted:asc'
+        sort: 'metadata.name.keyword:asc'
       },
         (error, response) => {
           if (error) {
@@ -67,7 +67,7 @@ export class Elastic4ousService extends ElasticService {
   searchOu(id, callback): any {
     return this.client.search({
       index: props.ou_index_name,
-      q: `reference.objectId:*${id}`,
+      q: `objectId:*${id}`,
     }, (error, response) => {
       if (error) {
         this.messages.error(error)
@@ -88,7 +88,7 @@ export class Elastic4ousService extends ElasticService {
     this.client.index({
       index: props.ou_index_name,
       type: props.ou_index_type,
-      id: ou.reference.objectId,
+      id: ou.objectId,
       body: ou
     }, (error, response) => {
       if (error) {

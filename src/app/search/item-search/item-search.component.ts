@@ -123,7 +123,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "metadata.title.sorted", "asc");
+    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "metadata.title.keyword", "asc");
     this.loading = true;
     this.search.query(this.item_rest_url, this.token, body)
       .subscribe(res => {
@@ -175,8 +175,8 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSelectPublisher(publisher) {
     this.searchForm.reset();
-    let body = { size: 25, from: 0, query: {nested: { path: "metadata.sources", query: { bool: { filter: { term: { ["metadata.sources.publishingInfo.publisher.sorted"]: publisher.key } } } } } } };
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.sources.publishingInfo.publisher.sorted", searchTerm: publisher.key }]);
+    let body = { size: 25, from: 0, query: {nested: { path: "metadata.sources", query: { bool: { filter: { term: { ["metadata.sources.publishingInfo.publisher.keyword"]: publisher.key } } } } } } };
+    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.sources.publishingInfo.publisher.keyword", searchTerm: publisher.key }]);
     this.currentPage = 1;
     this.search.query(this.item_rest_url, this.token, body)
       .subscribe(items => {
@@ -204,7 +204,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "metadata.title.sorted", "asc");
+    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "metadata.title.keyword", "asc");
     this.searchItems(preparedBody);
   }
 

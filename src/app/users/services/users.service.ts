@@ -22,35 +22,35 @@ export class UsersService extends PubmanRestService {
   user: User;
 
   activate(user: User, token: string): Observable<User> {
-    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/activate';
+    let userUrl = this.usersUrl + '/' + user.objectId + '/activate';
     let body = JSON.stringify(user.lastModificationDate);
     let headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
 
   deactivate(user: User, token: string): Observable<User> {
-    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/deactivate';
+    let userUrl = this.usersUrl + '/' + user.objectId + '/deactivate';
     let body = JSON.stringify(user.lastModificationDate);
     let headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/add';
+    let userUrl = this.usersUrl + '/' + user.objectId + '/add';
     let body = JSON.stringify(grants);
     let headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/remove';
+    let userUrl = this.usersUrl + '/' + user.objectId + '/remove';
     let body = JSON.stringify(grants);
     let headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
 
   changePassword(user: User, token: string): Observable<User> {
-    let userUrl = this.usersUrl + '/' + user.reference.objectId + '/password';
+    let userUrl = this.usersUrl + '/' + user.objectId + '/password';
     let body = user.password;
     let headers = this.addHeaders(token, false);
     return this.getResource('PUT', userUrl, headers, body);     

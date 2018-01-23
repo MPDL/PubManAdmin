@@ -19,14 +19,14 @@ export class ContextsService extends PubmanRestService {
     }
 
     openContext(ctx: Context, token: string): Observable<number> {
-        let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/open';
+        let ctxUrl = this.context_url + '/' + ctx.objectId + '/open';
         let body = JSON.stringify(ctx.lastModificationDate);
         let headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ctxUrl, headers, body);
     }
 
     closeContext(ctx: Context, token: string): Observable<number> {
-        let ctxUrl = this.context_url + '/' + ctx.reference.objectId + '/close';
+        let ctxUrl = this.context_url + '/' + ctx.objectId + '/close';
         let body = JSON.stringify(ctx.lastModificationDate);
         let headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ctxUrl, headers, body);

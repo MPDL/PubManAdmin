@@ -67,10 +67,10 @@
                 <ul class="list-group list-group-flush h-100">
                     <li selectedItemColor class="list-group-item text-primary justify-content-start p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
                         (click)="onSelect(user)">
-                        <span class="text-primary">{{user.reference.objectId}}</span>
+                        <span class="text-primary">{{user.objectId}}</span>
                         <span class="text-primary ml-2">{{user.name}}</span>
-                        <span class="text-primary ml-2">({{user.userid}})</span>
-                        <span class="text-primary ml-2">{{user.affiliations?.title}}</span>
+                        <span class="text-primary ml-2">({{user.loginname}})</span>
+                        <span class="text-primary ml-2">{{user.affiliation?.name}}</span>
                     <li>
                 </ul>
             </div>

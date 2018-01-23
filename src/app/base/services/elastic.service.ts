@@ -43,19 +43,19 @@ export class ElasticService {
   listOuNames(parent: string, id: string, callback): any {
     let queryString: string;
     if (parent.match("parent")) {
-      queryString = "parentAffiliations.objectId:*" + id + " AND publicStatus:OPENED";
+      queryString = "parentAffiliation.objectId:*" + id + " AND publicStatus:OPENED";
     } else if (parent.match("predecessor")) {
-      queryString = "reference.objectId:*" + id;
+      queryString = "objectId:*" + id;
     }
 
     if (queryString.length > 0) {
       return this.client.search({
         index: props.ou_index_name,
-        // q: "parentAffiliations.objectId:*" + parent,
+        // q: "parentAffiliation.objectId:*" + parent,
         q: queryString,
-        _sourceInclude: "reference.objectId, defaultMetadata.name, hasChildren, publicStatus",
+        _sourceInclude: "objectId, metadata.name, hasChildren, publicStatus",
         size: 100,
-        sort: 'defaultMetadata.name.sorted:asc'
+        sort: 'metadata.name.keyword:asc'
       },
         (error, response) => {
           if (error) {

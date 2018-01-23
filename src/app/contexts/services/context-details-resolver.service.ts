@@ -6,7 +6,7 @@ import 'rxjs/add/observable/of';
 
 import { ContextsService } from './contexts.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { Context, AdminDescriptor } from '../../base/common/model';
+import { Context } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
@@ -23,11 +23,9 @@ export class ContextDetailsResolverService implements Resolve<any> {
             let ctx = new Context();
             ctx.name = "new ctx";
             ctx.responsibleAffiliations = [];
-            let admin = new AdminDescriptor();
-            admin.allowedGenres = [];
-            admin.allowedSubjectClassifications = [];
-            admin.workflow = "SIMPLE";
-            ctx.adminDescriptor = admin;
+            ctx.allowedGenres = [];
+            ctx.allowedSubjectClassifications = [];
+            ctx.workflow = "SIMPLE";
             return Observable.of(ctx);
         } else {
             let token = route.params['token'];

@@ -13,36 +13,36 @@
                       placeholder="search by name" id="searchTerm">
                 <div *ngIf="ounames.length > 0">
                     <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-                        <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.defaultMetadata.name}}</small></li>
+                        <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.metadata.name}}</small></li>
                     </ul>
                 </div>
             </div>
       </div>
       <div id="dynamic_accordion">
         <div class="card bg-info" *ngFor="let mpgOu of mpgOus | async">
-              <a class="collapsed text-white" data-toggle="collapse" [attr.href]="'#'+mpgOu.reference.objectId" (click)="getChildren(mpgOu.reference.objectId)">
-                {{mpgOu.defaultMetadata.name}}
+              <a class="collapsed text-white" data-toggle="collapse" [attr.href]="'#'+mpgOu.objectId" (click)="getChildren(mpgOu.objectId)">
+                {{mpgOu.metadata.name}}
               </a>
     
-          <div [attr.id]="mpgOu.reference.objectId" class="collapse" data-parenz="#dynamic_accordion">
+          <div [attr.id]="mpgOu.objectId" class="collapse" data-parenz="#dynamic_accordion">
             <div class="card-body">
               <div id="dynamic_child_accordion">
                 children
                 <div class="card" *ngFor="let child of children | async">
-                      <a class="collapsed" data-toggle="collapse" [attr.href]="'#'+child.reference.objectId" (click)="getChildren(child.reference.objectId)">
-                        {{child.defaultMetadata.name}}
+                      <a class="collapsed" data-toggle="collapse" [attr.href]="'#'+child.objectId" (click)="getChildren(child.objectId)">
+                        {{child.metadata.name}}
                       </a>
             
-                  <div [attr.id]="child.reference.objectId" class="collapse" data-parenz="#dynamic_child_accordion">
+                  <div [attr.id]="child.objectId" class="collapse" data-parenz="#dynamic_child_accordion">
                     <div class="card-body">
                       <div id="dynamic_grandchild_accordion">
                           grand children
                         <div class="card" *ngFor="let grandchild of grandChildren | async">
-                              <a class="collapsed" data-toggle="collapse" [attr.href]="'#'+grandchild.reference.objectId" (click)="getChildren(grandchild.reference.objectId)">
-                                {{grandchild.defaultMetadata.objectId}}
+                              <a class="collapsed" data-toggle="collapse" [attr.href]="'#'+grandchild.objectId" (click)="getChildren(grandchild.objectId)">
+                                {{grandchild.metadata.objectId}}
                               </a>
                     
-                          <div [attr.id]="grandchild.reference.objectId" class="collapse" data-parenz="#dynamic_grandchild_accordion">
+                          <div [attr.id]="grandchild.objectId" class="collapse" data-parenz="#dynamic_grandchild_accordion">
                             <div class="card-body">
                               Dynamic GrandChild Body
                             </div>
@@ -69,7 +69,7 @@
                      placeholder="search by name" id="searchTerm">
                 <div *ngIf="ounames.length > 0">
                     <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-                        <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.defaultMetadata.name}}</small></li>
+                        <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.metadata.name}}</small></li>
                     </ul>
                 </div>
             </div>
@@ -79,26 +79,26 @@
           <div class="row">
             <div class="col-sm-11">
               <a (click)="onSelect(extOu)">
-          <span class="text-info"> {{extOu.defaultMetadata.name}}</span>
+          <span class="text-info"> {{extOu.metadata.name}}</span>
         </a>
             </div>
             <div class="col-sm-1">
-              <input *ngIf="extOu.hasChildren && current === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildren(extOu.reference.objectId)" value="more">
-              <input *ngIf="extOu.reference.objectId === current" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildren(extOu.reference.objectId)" value="less">
+              <input *ngIf="extOu.hasChildren && current === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildren(extOu.objectId)" value="more">
+              <input *ngIf="extOu.objectId === current" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildren(extOu.objectId)" value="less">
             </div>
           </div>
-          <ul *ngIf="extOu.reference.objectId === current" class="list-group w-100">
+          <ul *ngIf="extOu.objectId === current" class="list-group w-100">
             <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async"
               [class.selected]="isSelected(child)">
               <a class="col-sm-11" (click)="onSelect(child)">
-                <span class="badge text-info">></span><span class="text-info">{{ child.defaultMetadata.name }}</span>
+                <span class="badge text-info">></span><span class="text-info">{{ child.metadata.name }}</span>
               </a>
-              <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.reference.objectId)" value="more">
-              <input *ngIf="child.reference.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.reference.objectId)" value="less">
-              <ul *ngIf="child.reference.objectId === currentChild" class="list-group w-100">
+              <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.objectId)" value="more">
+              <input *ngIf="child.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.objectId)" value="less">
+              <ul *ngIf="child.objectId === currentChild" class="list-group w-100">
                 <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
                   <a class="col-sm-11" (click)=onSelect(grandChild)>
-                  <span class="badge text-info">>></span><span class="text-info"> {{ grandChild.defaultMetadata.name}}</span>
+                  <span class="badge text-info">>></span><span class="text-info"> {{ grandChild.metadata.name}}</span>
                   </a>
                 </div>
               </ul>

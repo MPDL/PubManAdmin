@@ -1,54 +1,53 @@
-interface ro {
+export class UserRO {
     objectId: string;
-    title: string;
+    name: string;
 }
 
-class AbstractEntity {
+export class BasicRO {
+    objectId: string;
+    name: string;
     creationDate: Date;
     lastModificationDate: Date;
-    creator: RO;
-    modifiedBy: RO;
-    reference: RO;
-}
-
-export class RO implements ro {
-    objectId: string;
-    title: string;
+    creator: UserRO;
+    modifier: UserRO;
 }
 
 export class Grant {
     role: string;
+    grantType: string;
     objectRef: string;
 }
 
-export class User extends AbstractEntity {
-    userid: string;
+export class User extends BasicRO {
+    loginname: string;
     password: string;
-    name: string;
     email: string;
-    affiliations: RO[];
+    affiliation: BasicRO;
     active: boolean;
-    grants: Grant[];
+    grantList: Grant[];
 }
 
-export class OU extends AbstractEntity {
-    predecessorAffiliations: RO[];
+export class OU extends BasicRO {
+    predecessorAffiliations: BasicRO[];
     hasChildren: boolean = false;
-    childAffiliations: RO[];
+    childAffiliations: BasicRO[];
     hasPredecessors: boolean = false;
-    parentAffiliations: RO[];
+    parentAffiliation: BasicRO;
     publicStatus: string;
-    defaultMetadata: OUMetadata;
+    metadata: OUMetadata;
 }
 
 export class OUMetadata {
     alternativeNames: string[];
     city: string;
     countryCode: string;
+    coordinates: Coordinates;
     identifiers: Identifier[];
     name: string;
     type: string;
     descriptions: string[];
+    startDate: string;
+    endDate: string;
 }
 
 export class Identifier {
@@ -56,29 +55,21 @@ export class Identifier {
     id: string;
 }
 
-export class Context extends AbstractEntity {
-    name: string;
-    type: string;
+export class Coordinates {
+    altitude: number;
+    latitude: number;
+    longitude: number;
+
+}
+
+export class Context extends BasicRO {
     state: string;
     description: string;
-    validationPoints: any[];
-    responsibleAffiliations: RO[];
-    adminDescriptor: AdminDescriptor;
-}
-
-export class AdminDescriptor {
+    responsibleAffiliations: BasicRO[];
     allowedGenres: string[];
     allowedSubjectClassifications: string[];
-    templateItem: TemplateItem;
-    validationSchema: string = "publication";
-    visibilityOfReferences: null;
     workflow: string;
     contactEmail: string;
-}
-
-export class TemplateItem {
-    objectId: string;
-    versionNumber: number;
 }
 
 export enum workflow {
@@ -142,8 +133,6 @@ export enum genres {
 }
 
 export class SearchResult {
-    version: number;
     numberOfRecords: number;
     records: any[];
-    originalResponse: any;
 }

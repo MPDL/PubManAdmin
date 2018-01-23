@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '../services/organizations.service';
-import { OU, Identifier, RO, OUMetadata } from '../../base/common/model';
+import { OU, Identifier, BasicRO, UserRO, OUMetadata } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
 @Component({
@@ -74,7 +74,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   listPredecessors(id: string, token) {
-    let query = "?q=reference.objectId:" + id;
+    let query = "?q=objectId:" + id;
     this.ouSvc.filter(props.pubman_rest_url_ous, token, query, 1)
       .subscribe(ous => {
         this.predecessors = ous.list;
@@ -93,16 +93,16 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     if (this.selected.publicStatus == 'CREATED' || this.selected.publicStatus == 'CLOSED') {
       this.ouSvc.openOu(this.selected, this.token)
         .subscribe(httpStatus => {
-          this.getSelectedOu(this.selected.reference.objectId, this.token);
-          this.message.success("Opened " + this.selected.reference.objectId + " " + httpStatus);
+          this.getSelectedOu(this.selected.objectId, this.token);
+          this.message.success("Opened " + this.selected.objectId + " " + httpStatus);
         }, error => {
           this.message.error(error);
         });
     } else {
       this.ouSvc.closeOu(this.selected, this.token)
         .subscribe(httpStatus => {
-          this.getSelectedOu(this.selected.reference.objectId, this.token);
-          this.message.success("Closed " + this.selected.reference.objectId + " " + httpStatus);
+          this.getSelectedOu(this.selected.objectId, this.token);
+          this.message.success("Closed " + this.selected.objectId + " " + httpStatus);
         }, error => {
           this.message.error(error);
         });
@@ -117,13 +117,13 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
     if (selected != null && selected !== "") {
 
-      if (this.selected.defaultMetadata.alternativeNames) {
-        if (!this.selected.defaultMetadata.alternativeNames.includes(selected)) {
-          this.selected.defaultMetadata.alternativeNames.push(selected);
+      if (this.selected.metadata.alternativeNames) {
+        if (!this.selected.metadata.alternativeNames.includes(selected)) {
+          this.selected.metadata.alternativeNames.push(selected);
         }
       } else {
-        this.selected.defaultMetadata.alternativeNames = [];
-        this.selected.defaultMetadata.alternativeNames.push(selected);
+        this.selected.metadata.alternativeNames = [];
+        this.selected.metadata.alternativeNames.push(selected);
       }
     }
 
@@ -131,24 +131,24 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteName(selected) {
-    let index = this.selected.defaultMetadata.alternativeNames.indexOf(selected);
-    this.selected.defaultMetadata.alternativeNames.splice(index, 1);
+    let index = this.selected.metadata.alternativeNames.indexOf(selected);
+    this.selected.metadata.alternativeNames.splice(index, 1);
   }
 
   clearNames() {
-    this.selected.defaultMetadata.alternativeNames.splice(0, this.selected.defaultMetadata.alternativeNames.length);
+    this.selected.metadata.alternativeNames.splice(0, this.selected.metadata.alternativeNames.length);
   }
 
   addDesc(selected) {
     if (selected != null && selected !== "") {
 
-      if (this.selected.defaultMetadata.descriptions) {
-        if (!this.selected.defaultMetadata.descriptions.includes(selected)) {
-          this.selected.defaultMetadata.descriptions.push(selected);
+      if (this.selected.metadata.descriptions) {
+        if (!this.selected.metadata.descriptions.includes(selected)) {
+          this.selected.metadata.descriptions.push(selected);
         }
       } else {
-        this.selected.defaultMetadata.descriptions = [];
-        this.selected.defaultMetadata.descriptions.push(selected);
+        this.selected.metadata.descriptions = [];
+        this.selected.metadata.descriptions.push(selected);
       }
     }
 
@@ -156,12 +156,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteDesc(selected) {
-    let index = this.selected.defaultMetadata.descriptions.indexOf(selected);
-    this.selected.defaultMetadata.descriptions.splice(index, 1);
+    let index = this.selected.metadata.descriptions.indexOf(selected);
+    this.selected.metadata.descriptions.splice(index, 1);
   }
 
   clearDescs() {
-    this.selected.defaultMetadata.descriptions.splice(0, this.selected.defaultMetadata.descriptions.length);
+    this.selected.metadata.descriptions.splice(0, this.selected.metadata.descriptions.length);
   }
 
   addIdentifier(selected) {
@@ -169,34 +169,34 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
       let ouid = new Identifier();
       ouid.id = selected;
-      if (this.selected.defaultMetadata.identifiers) {
-        if (!this.selected.defaultMetadata.identifiers.some(id => (id.id == selected))) {
-          this.selected.defaultMetadata.identifiers.push(ouid);
+      if (this.selected.metadata.identifiers) {
+        if (!this.selected.metadata.identifiers.some(id => (id.id == selected))) {
+          this.selected.metadata.identifiers.push(ouid);
         }
       } else {
-        this.selected.defaultMetadata.identifiers = [];
-        this.selected.defaultMetadata.identifiers.push(ouid);
+        this.selected.metadata.identifiers = [];
+        this.selected.metadata.identifiers.push(ouid);
       }
     }
     this.ouIdentifierId = "";
   }
 
   deleteIdentifier(selected) {
-    let index = this.selected.defaultMetadata.identifiers.indexOf(selected);
-    this.selected.defaultMetadata.identifiers.splice(index, 1);
+    let index = this.selected.metadata.identifiers.indexOf(selected);
+    this.selected.metadata.identifiers.splice(index, 1);
   }
 
   clearIdentifiers() {
-    this.selected.defaultMetadata.identifiers.splice(0, this.selected.defaultMetadata.identifiers.length);
+    this.selected.metadata.identifiers.splice(0, this.selected.metadata.identifiers.length);
   }
 
   save(ou) {
     this.selected = ou;
-    if (this.selected.parentAffiliations[0].objectId === "") {
+    if (this.selected.parentAffiliation.objectId === "") {
       this.message.warning("parent id MUST NOT be empty");
       return;
     }
-    if (this.selected.defaultMetadata.name.includes("new ou")) {
+    if (this.selected.metadata.name.includes("new ou")) {
       this.message.warning("name MUST NOT be new ou");
       return;
     }
@@ -213,11 +213,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         });
 
     } else {
-      this.message.success("updating " + this.selected.reference.objectId);
-      this.ouSvc.put(props.pubman_rest_url_ous + "/" + this.selected.reference.objectId, this.selected, this.token)
+      this.message.success("updating " + this.selected.objectId);
+      this.ouSvc.put(props.pubman_rest_url_ous + "/" + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {
-          this.message.success('updated ' + this.selected.reference.objectId + ' ' + data);
+          this.message.success('updated ' + this.selected.objectId + ' ' + data);
           this.gotoList();
           this.selected = null;
         },
@@ -230,8 +230,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   delete(ou) {
     this.selected = ou;
-    let id = this.selected.reference.objectId;
-    this.ouSvc.delete(props.pubman_rest_url_ous + "/" + this.selected.reference.objectId, this.selected, this.token)
+    let id = this.selected.objectId;
+    this.ouSvc.delete(props.pubman_rest_url_ous + "/" + this.selected.objectId, this.selected, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -250,28 +250,20 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/organizations']);
   }
 
-  lists = ['childAffiliations', 'predecessorAffiliations',
-    'successorAffiliations', 'parentAffiliations'];
-
-
   get diagnostic() { return JSON.stringify(this.selected); }
 
   prepareNewOU(id): OU {
     let template = new OU();
-    let ref = new RO();
-    ref.objectId = "";
-    template.reference = ref;
-    let creator = new RO();
+    template.objectId = "";
+    let creator = new UserRO();
     creator.objectId = "";
     template.creator = creator;
-    let parent = new RO();
+    let parent = new BasicRO();
     parent.objectId = "";
-    let parents = [];
-    parents.push(parent);
-    template.parentAffiliations = parents;
+    template.parentAffiliation = parent;
     let meta = new OUMetadata();
     meta.name = "new ou";
-    template.defaultMetadata = meta;
+    template.metadata = meta;
     template.publicStatus = "";
     return template;
 

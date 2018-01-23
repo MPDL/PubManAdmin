@@ -38,9 +38,9 @@ export class Elastic4usersService extends ElasticService {
     return this.client.search({
       index: props.ctx_index_name,
       q: "state:OPENED",
-      _sourceInclude: "name, reference.objectId",
+      _sourceInclude: "name, objectId",
       size: 500,
-      sort: 'name.sorted:asc'
+      sort: 'name.keyword:asc'
     },
       (error, response) => {
         if (error) {
@@ -64,7 +64,7 @@ export class Elastic4usersService extends ElasticService {
       return this.client.search({
         index: props.ou_index_name,
         q: `_id:${ouId}`,
-        _sourceInclude: 'defaultMetadata.name'
+        _sourceInclude: 'metadata.name'
       },
         (error, response) => {
           if (error) {
@@ -75,7 +75,7 @@ export class Elastic4usersService extends ElasticService {
             response.hits.hits.forEach(hit => hitList.push(hit._source));
             let result = JSON.stringify(hitList);
             let name = JSON.parse(result);
-            callback(name[0].defaultMetadata.name);
+            callback(name[0].metadata.name);
           }
         })
 
@@ -90,7 +90,7 @@ export class Elastic4usersService extends ElasticService {
             this.client.search({
                 index: props.user_index_name,
                 q: "name.auto:" + term,
-                sort: "name.sorted:asc"
+                sort: "name.keyword:asc"
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);

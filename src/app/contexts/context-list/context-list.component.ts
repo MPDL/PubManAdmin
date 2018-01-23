@@ -80,13 +80,13 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   goTo(ctx) {
-    let id = ctx.reference.objectId;
+    let id = ctx.objectId;
     this.router.navigate(["/context", id]);
   }
 
   isSelected(ctx) {
     this.selected = ctx;
-    return ctx.reference.objectId === this.selected.reference.objectId;
+    return ctx.objectId === this.selected.objectId;
   }
 
   addNewContext() {
@@ -113,7 +113,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   select(term) {
     this.contextSearchTerm = term.name;
-    this.router.navigate(['/context', term.reference.objectId]);
+    this.router.navigate(['/context', term.objectId]);
     this.contextnames = [];
   }
 }

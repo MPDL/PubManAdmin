@@ -85,7 +85,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   onSelect(ou: any) {
-    let id: string = ou.reference.objectId;
+    let id: string = ou.objectId;
     this.router.navigate(["/organization", id]);
   }
 
@@ -111,8 +111,8 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   select(term) {
-    this.searchTerm = term.defaultMetadata.name;
-    this.router.navigate(['/organization', term.reference.objectId]);
+    this.searchTerm = term.metadata.name;
+    this.router.navigate(['/organization', term.objectId]);
     this.ounames = [];
   }
 

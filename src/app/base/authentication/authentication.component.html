@@ -2,7 +2,7 @@
   novalidate>
   <div class="form-group align-self-center" [ngClass]="{ 'has-danger': f1.submitted && !username.valid }">
     <input type="text" class="form-control form-control-sm" name="username" [(ngModel)]="credentials.username" #username="ngModel"
-      placeholder="userid" required />
+      placeholder="loginname" required />
     <div *ngIf="f1.submitted && !username.valid" class="form-text text-danger">Username is required</div>
   </div>
   <div class="form-group align-self-center" [ngClass]="{ 'has-danger': f1.submitted && !password.valid }">

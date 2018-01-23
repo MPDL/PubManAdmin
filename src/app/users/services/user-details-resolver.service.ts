@@ -5,7 +5,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/first';
 
 import { UsersService } from './users.service';
-import { User, Grant, RO } from '../../base/common/model';
+import { User, Grant, BasicRO } from '../../base/common/model';
 import { props } from '../../base/common/admintool.properties';
 
 @Injectable()
@@ -15,10 +15,10 @@ export class UserDetailsResolverService implements Resolve<User> {
         let id = route.params['id'];
         if (id == 'new user') {
             let user = new User();
-            user.userid = "new user";
+            user.loginname = "new user";
             user.password = "hard2Remember";
-            user.grants = new Array<Grant>();
-            user.affiliations = new Array<RO>();
+            user.grantList = new Array<Grant>();
+            user.affiliation = new BasicRO();
             user.active = false;
             return Observable.of(user);
         } else {

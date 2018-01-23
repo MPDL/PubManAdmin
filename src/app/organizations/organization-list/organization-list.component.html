@@ -14,7 +14,7 @@
           <div *ngIf="ounames.length > 0">
             <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
               <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)">
-                <small>{{name.defaultMetadata.name}}</small>
+                <small>{{name.metadata.name}}</small>
               </li>
             </ul>
           </div>
@@ -24,32 +24,32 @@
         <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info text-right w-100 p-1" *ngFor="let mpgOu of mpgOus | async">
           <div class="row">
             <div class="col-sm-11" (click)="onSelect(mpgOu)">
-              <span class="text-info h-100"> {{mpgOu.defaultMetadata.name}}</span>
+              <span class="text-info h-100"> {{mpgOu.metadata.name}}</span>
             </div>
             <div class="col-sm-1">
-              <input *ngIf="mpgOu.hasChildren && current === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildren(mpgOu.reference.objectId)"
+              <input *ngIf="mpgOu.hasChildren && current === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildren(mpgOu.objectId)"
                 value="more">
-              <input *ngIf="mpgOu.reference.objectId === current" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildren(mpgOu.reference.objectId)"
+              <input *ngIf="mpgOu.objectId === current" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildren(mpgOu.objectId)"
                 value="less">
             </div>
           </div>
-          <ul *ngIf="mpgOu.reference.objectId === current" class="list-group w-100">
+          <ul *ngIf="mpgOu.objectId === current" class="list-group w-100">
             <div class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async" [class.selected]="isSelected(child)">
               <div selectedItemColor="#8ee4f1" class="row m-0">
                 <div class="col-sm-11" (click)="onSelect(child)">
                   <span class="badge text-info">></span>
-                  <span class="text-info">{{ child.defaultMetadata.name }}</span>
+                  <span class="text-info">{{ child.metadata.name }}</span>
                 </div>
                 <div class="col-sm-1">
-                  <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.reference.objectId)"
+                  <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.objectId)"
                     value="more">
-                  <input *ngIf="child.reference.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.reference.objectId)"
+                  <input *ngIf="child.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.objectId)"
                     value="less">
                 </div>
-                <ul *ngIf="child.reference.objectId === currentChild" class="list-group w-100">
+                <ul *ngIf="child.objectId === currentChild" class="list-group w-100">
                   <div selectedItemColor="#8ee4f1" (click)=onSelect(grandChild) class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
                     <span class="badge text-info">>></span>
-                    <span class="text-info">{{ grandChild.defaultMetadata.name}}</span>
+                    <span class="text-info">{{ grandChild.metadata.name}}</span>
                   </div>
                 </ul>
               </div>
@@ -70,7 +70,7 @@
           <div *ngIf="ounames.length > 0">
             <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
               <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)">
-                <small>{{name.defaultMetadata.name}}</small>
+                <small>{{name.metadata.name}}</small>
               </li>
             </ul>
           </div>
@@ -80,32 +80,32 @@
         <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let extOu of extOus | async">
           <div class="row">
             <div class="col-sm-11" (click)="onSelect(extOu)">
-              <span class="text-info"> {{extOu.defaultMetadata.name}}</span>
+              <span class="text-info"> {{extOu.metadata.name}}</span>
             </div>
             <div class="col-sm-1">
-              <input *ngIf="extOu.hasChildren && current === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildren(extOu.reference.objectId)"
+              <input *ngIf="extOu.hasChildren && current === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildren(extOu.objectId)"
                 value="more">
-              <input *ngIf="extOu.reference.objectId === current" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildren(extOu.reference.objectId)"
+              <input *ngIf="extOu.objectId === current" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildren(extOu.objectId)"
                 value="less">
             </div>
           </div>
-          <ul *ngIf="extOu.reference.objectId === current" class="list-group w-100">
+          <ul *ngIf="extOu.objectId === current" class="list-group w-100">
             <div class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async" [class.selected]="isSelected(child)">
               <div selectedItemColor="#8ee4f1" class="row m-0">
                 <div class="col-sm-11" (click)="onSelect(child)">
                   <span class="badge text-info">></span>
-                  <span class="text-info">{{ child.defaultMetadata.name }}</span>
+                  <span class="text-info">{{ child.metadata.name }}</span>
                 </div>
                 <div class="col-sm-1">
-                  <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.reference.objectId)"
+                  <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.objectId)"
                     value="more">
-                  <input *ngIf="child.reference.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.reference.objectId)"
+                  <input *ngIf="child.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.objectId)"
                     value="less">
                 </div>
-                <ul *ngIf="child.reference.objectId === currentChild" class="list-group w-100">
+                <ul *ngIf="child.objectId === currentChild" class="list-group w-100">
                   <div selectedItemColor="#8ee4f1" (click)="onSelect(grandChild)" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
                     <span class="badge text-info">>></span>
-                    <span class="text-info"> {{ grandChild.defaultMetadata.name}}</span>
+                    <span class="text-info"> {{ grandChild.metadata.name}}</span>
                   </div>
                 </ul>
               </div>

@@ -68,7 +68,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
         this.messageService.warning("Only administartors are allowed to view this list");
-        this.router.navigate(['/user', this.loggedInUser.reference.objectId], { queryParams: { token: this.token, admin: false }, skipLocationChange: true });
+        this.router.navigate(['/user', this.loggedInUser.objectId], { queryParams: { token: this.token, admin: false }, skipLocationChange: true });
       }
     }
     this.comingFrom = this.route.snapshot.params["id"];
@@ -107,7 +107,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   isSelected(user) {
     if (this.comingFrom != null) {
-      return this.comingFrom === user.userid;
+      return this.comingFrom === user.loginname;
     } else {
       return false;
     }
@@ -116,7 +116,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   onSelect(user: User) {
     this.isNewUser = false;
     this.selected = user;
-    this.router.navigate(['/user', user.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
+    this.router.navigate(['/user', user.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
   }
 
   addNewUser() {
@@ -126,8 +126,8 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   delete(user) {
     this.selected = user;
-    let id = this.selected.userid;
-    this.usersService.delete(props.pubman_rest_url_users + "/" + this.selected.reference.objectId, this.selected, this.token)
+    let id = this.selected.loginname;
+    this.usersService.delete(props.pubman_rest_url_users + "/" + this.selected.objectId, this.selected, this.token)
       .subscribe(
       data => {
         this.messageService.success('deleted ' + id + ' ' + data);
@@ -161,7 +161,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   select(term) {
     this.userSearchTerm = term.name;
     if (this.token != null) {
-          this.router.navigate(['/user', term.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
+          this.router.navigate(['/user', term.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
 
     } else {
       this.messageService.warning("no login, no user !!!");
@@ -170,7 +170,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   isSelectedName(user: User) {
-    return this.selectedUserName ? this.selectedUserName.userid === user.userid : false;
+    return this.selectedUserName ? this.selectedUserName.loginname === user.loginname : false;
   }
   scrollDown(event) {
     event.preventDefault();

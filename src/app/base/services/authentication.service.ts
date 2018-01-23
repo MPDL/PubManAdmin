@@ -85,7 +85,7 @@ export class AuthenticationService {
     }).map((response) => {
         user = response;
         this.setUser(user);
-        if (user.grants.find(grant => grant.role == "SYSADMIN")) {
+        if (user.grantList.find(grant => grant.role == "SYSADMIN")) {
           this.setIsAdmin(true);
         }
         return user;

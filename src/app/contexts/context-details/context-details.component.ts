@@ -8,7 +8,7 @@ import { ContextsService } from '../services/contexts.service';
 import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { RO, Context, genres, subjects, workflow } from '../../base/common/model';
+import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model';
 
 import { props } from '../../base/common/admintool.properties';
 
@@ -54,22 +54,22 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.token = token;
     });
     this.genres2display = Object.keys(genres).filter(val => val.match(/^[A-Z]/));
-    if (this.ctx.adminDescriptor.allowedGenres != null) {
-      this.allowedGenres = this.ctx.adminDescriptor.allowedGenres || [];
+    if (this.ctx.allowedGenres != null) {
+      this.allowedGenres = this.ctx.allowedGenres || [];
     } else {
-      this.ctx.adminDescriptor.allowedGenres = [];
-      this.allowedGenres = this.ctx.adminDescriptor.allowedGenres;
+      this.ctx.allowedGenres = [];
+      this.allowedGenres = this.ctx.allowedGenres;
     }
     this.subjects2display = Object.keys(subjects).filter(val => val.match(/^[A-Z]/));
-    if (this.ctx.adminDescriptor.allowedSubjectClassifications != null) {
-      this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications || [];
+    if (this.ctx.allowedSubjectClassifications != null) {
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
     } else {
-      this.ctx.adminDescriptor.allowedSubjectClassifications = [];
-      this.allowedSubjects = this.ctx.adminDescriptor.allowedSubjectClassifications;
+      this.ctx.allowedSubjectClassifications = [];
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
     }
 
     this.workflows2display = Object.keys(workflow).filter(val => val.match(/^[A-Z]/));
-    this.selectedWorkflow = this.ctx.adminDescriptor.workflow;
+    this.selectedWorkflow = this.ctx.workflow;
   }
 
   ngOnDestroy() {
@@ -153,7 +153,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   onChangedWorkflow(value) {
-    this.ctx.adminDescriptor.workflow = value;
+    this.ctx.workflow = value;
   }
 
   activateContext(ctx) {
@@ -161,16 +161,16 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     if (this.ctx.state == 'CREATED' || this.ctx.state == 'CLOSED') {
       this.ctxSvc.openContext(this.ctx, this.token)
         .subscribe(httpStatus => {
-          this.getSelectedCtx(this.ctx.reference.objectId);
-          this.message.success("Opened " + ctx.reference.objectId + " " + httpStatus);
+          this.getSelectedCtx(this.ctx.objectId);
+          this.message.success("Opened " + ctx.objectId + " " + httpStatus);
         }, error => {
           this.message.error(error);
         });
     } else {
       this.ctxSvc.closeContext(this.ctx, this.token)
         .subscribe(httpStatus => {
-          this.getSelectedCtx(this.ctx.reference.objectId);
-          this.message.success("Closed " + ctx.reference.objectId + " " + httpStatus);
+          this.getSelectedCtx(this.ctx.objectId);
+          this.message.success("Closed " + ctx.objectId + " " + httpStatus);
         }, error => {
           this.message.error(error);
         });
@@ -179,7 +179,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   delete(ctx) {
     this.ctx = ctx;
-    let id = this.ctx.reference.objectId;
+    let id = this.ctx.objectId;
     this.ctxSvc.delete(props.pubman_rest_url_ctxs + "/" + id, this.ctx, this.token)
       .subscribe(
       data => {
@@ -204,8 +204,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
     if (this.isNewCtx) {
       if (this.selectedOu != null) {
-        let ou_id = this.selectedOu.reference.objectId;
-        let aff = new RO();
+        let ou_id = this.selectedOu.objectId;
+        let aff = new BasicRO();
         aff.objectId = ou_id;
         this.ctx.responsibleAffiliations.push(aff);
       } else {
@@ -226,11 +226,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
     } else {
 
-      this.message.success("updating " + this.ctx.reference.objectId);
-      this.ctxSvc.put(props.pubman_rest_url_ctxs + "/" + this.ctx.reference.objectId, this.ctx, this.token)
+      this.message.success("updating " + this.ctx.objectId);
+      this.ctxSvc.put(props.pubman_rest_url_ctxs + "/" + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
         data => {
-          this.message.success('updated ' + this.ctx.reference.objectId + ' ' + data);
+          this.message.success('updated ' + this.ctx.objectId + ' ' + data);
           this.gotoList();
           this.ctx = null;
         },

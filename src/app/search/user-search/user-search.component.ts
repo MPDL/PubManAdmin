@@ -120,7 +120,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "name.sorted", "asc");
+    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "name.keyword", "asc");
     this.loading = true;
     this.search.query(props.pubman_rest_url_users, this.token, body)
       .subscribe(res => {
@@ -159,9 +159,9 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   onSelectOu(ou) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "affiliations.title.sorted", searchTerm: ou.key }]);
+    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "affiliations.title.keyword", searchTerm: ou.key }]);
     this.currentPage = 1;
-    this.search.filter(props.pubman_rest_url_users, this.token, "?q=affiliations.title.sorted:" + ou.key, 1)
+    this.search.filter(props.pubman_rest_url_users, this.token, "?q=affiliations.title.keyword:" + ou.key, 1)
       .subscribe(res => {
         this.users = res.list;
         this.total = res.records;
@@ -172,7 +172,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   onSelect(item) {
     if (confirm("wanna edit it?")) {
-      this.router.navigate(['/user', item.reference.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
+      this.router.navigate(['/user', item.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
     }
   }
 
@@ -186,7 +186,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "name.sorted", "asc");
+    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "name.keyword", "asc");
     this.searchItems(preparedBody);
   }
 

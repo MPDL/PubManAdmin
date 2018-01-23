@@ -83,16 +83,16 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
         if (rolename) {
             if (rolename === "USR_ADMIN") {
-                let ref_id = this.selectedUser.affiliations[0].objectId;
+                let ref_id = this.selectedUser.affiliation.objectId;
                 this.addGrant(rolename, ref_id);
             }
             if (rolename.startsWith("CONE") || rolename === "REPORTER" || rolename === "YEARBOOK-ADMIN") {
-                let ref_id = this.selectedUser.affiliations[0].objectId;
+                let ref_id = this.selectedUser.affiliation.objectId;
                 this.addGrant(rolename, ref_id);
             }
             if (rolename === "YEARBOOK-EDITOR") {
                 if (this.selectedOu != null) {
-                    let ref_id = this.selectedOu.reference.objectId;
+                    let ref_id = this.selectedOu.objectId;
                     this.addGrant(rolename, ref_id);
                 } else {
                     this.messageService.error("you must select an organization!");
@@ -100,7 +100,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
             }
             if (rolename === "DEPOSITOR" || rolename === "MODERATOR") {
                 if (this.selectedCtx != null) {
-                    let ref_id = this.selectedCtx.reference.objectId;
+                    let ref_id = this.selectedCtx.objectId;
                     this.addGrant(rolename, ref_id);
                 } else {
                     this.messageService.error("you must select a context!");
@@ -133,8 +133,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
             this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(user => {
                 this.selectedUser = user;
                 this.selectedUserChange.emit(this.selectedUser);
-                this.messageService.success("added Grants to " + this.selectedUser.userid);
-                // this.selectedGrants.forEach(g => this.selectedUser.grants.push(g));
+                this.messageService.success("added Grants to " + this.selectedUser.loginname);
+                // this.selectedGrants.forEach(g => this.selected.user.grantList.push(g));
                 // this.selectedGrants.slice(0, this.selectedGrants.length);
                 this.selectedGrants = null;
                 this.grantsToAdd = "";

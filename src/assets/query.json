@@ -25,7 +25,7 @@
                 "bool": {
                     "must": {
                         "term": {
-                            "metadata.sources.publishingInfo.publisher.sorted": "Wiley-VCH"
+                            "metadata.sources.publishingInfo.publisher.keyword": "Wiley-VCH"
                         }
                     },
                     "must_not": [
