@@ -201,6 +201,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.isNewOrganization) {
+      console.log(JSON.stringify(this.selected))
       this.ouSvc.post(props.pubman_rest_url_ous, this.selected, this.token)
         .subscribe(
         data => {
@@ -254,17 +255,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   prepareNewOU(id): OU {
     let template = new OU();
-    template.objectId = "";
     let creator = new UserRO();
     creator.objectId = "";
     template.creator = creator;
-    let parent = new BasicRO();
+    let parent = new BasicRO(); 
     parent.objectId = "";
     template.parentAffiliation = parent;
     let meta = new OUMetadata();
     meta.name = "new ou";
     template.metadata = meta;
-    template.publicStatus = "";
     return template;
 
   }
