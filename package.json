@@ -28,6 +28,7 @@
     "jquery": "^3.3.1",
     "jsonwebtoken": "^8.1.1",
     "ngx-pagination": "^3.0.3",
+    "npm": "^5.7.1",
     "popper": "^1.0.0",
     "popper.js": "^1.12.8",
     "rxjs": "^5.5.6",

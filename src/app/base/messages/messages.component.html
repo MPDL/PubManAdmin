@@ -4,7 +4,7 @@
         <span><small>{{message.text}}</small></span>
         </div>
         <div class="col-sm-1">
-        <input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(message); $event.stopPropagation()"
+        <input type="submit" class="btn btn-sm float-right" [ngClass]="{ 'btn-outline-primary': message, 'btn-outline-success': message.type === 'success', 'btn-outline-warning': message.type === 'warning', 'btn-outline-danger': message.type === 'error' }" (click)="delete(message); $event.stopPropagation()"
             name="delete" value="x" />
         </div>
     </div>

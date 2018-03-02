@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +28,7 @@ import { PubmanRestService } from './base/services/pubman-rest.service';
 import { AdminGuard } from './base/services/admin-guard.service';
 import { LoginGuard } from './base/services/login-guard.service';
 import { FooterComponent } from './base/footer/footer.component';
+import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,12 @@ import { FooterComponent } from './base/footer/footer.component';
     NavigationService,
     PubmanRestService,
     AdminGuard,
-    LoginGuard
+    LoginGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    } 
   ],
   bootstrap: [AppComponent]
 })

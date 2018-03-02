@@ -27,6 +27,7 @@ export class AuthenticationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+   
   }
 
   login() {
