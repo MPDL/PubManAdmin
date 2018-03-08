@@ -64,7 +64,7 @@ import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true
-    } 
+    }
   ],
   bootstrap: [AppComponent]
 })

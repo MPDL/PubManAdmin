@@ -21,6 +21,11 @@ export class MessagesService {
     });
   }
 
+  info(message: string, keepMessage = false) {
+    this.keepMessage = keepMessage;
+    this.subject.next({ text: message });
+  }
+
   success(message: string, keepMessage = false) {
     this.keepMessage = keepMessage;
     this.subject.next({ type: 'success', text: message });
