@@ -34,14 +34,14 @@ export class OrganizationsService extends PubmanRestService {
 
     openOu(ou: any, token: string): Observable<number> {
         let ouUrl = this.ous_rest_url + '/' + ou.objectId + '/open';
-        let body = JSON.stringify(ou.lastModificationDate);
+        let body = ou.lastModificationDate;
         let headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ouUrl, headers, body);
     }
 
     closeOu(ou: any, token: string): Observable<number> {
         let ouUrl = this.ous_rest_url + '/' + ou.objectId + '/close';
-        let body = JSON.stringify(ou.lastModificationDate);
+        let body = ou.lastModificationDate;
         let headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ouUrl, headers, body);
     }

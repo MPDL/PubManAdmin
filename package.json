@@ -1,6 +1,6 @@
 {
   "name": "admintool",
-  "version": "0.10.2",
+  "version": "0.10.4",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

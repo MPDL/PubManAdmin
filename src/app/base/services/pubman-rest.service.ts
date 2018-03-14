@@ -120,7 +120,6 @@ export class PubmanRestService {
   }
 
   delete(url, resource, token): Observable<number> {
-    let body = JSON.stringify(resource.lastModificationDate);
     let headers = this.addHeaders(token, true);
     return this.getHttpStatus('DELETE', url, headers, null);
   }

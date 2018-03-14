@@ -23,14 +23,14 @@ export class UsersService extends PubmanRestService {
 
   activate(user: User, token: string): Observable<User> {
     let userUrl = this.usersUrl + '/' + user.objectId + '/activate';
-    let body = JSON.stringify(user.lastModificationDate);
+    let body = user.lastModificationDate;
     let headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
 
   deactivate(user: User, token: string): Observable<User> {
     let userUrl = this.usersUrl + '/' + user.objectId + '/deactivate';
-    let body = JSON.stringify(user.lastModificationDate);
+    let body = user.lastModificationDate;
     let headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
