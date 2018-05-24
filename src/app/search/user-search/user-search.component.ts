@@ -2,13 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, ComponentFactoryResolver, 
 import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/delay';
-
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import * as bodyBuilder from 'bodybuilder';
 
 import { MessagesService } from '../../base/services/messages.service';

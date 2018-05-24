@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Client, SearchResponse, GetResponse } from 'elasticsearch';
 import { props } from '../common/admintool.properties';
 import { MessagesService } from '../services/messages.service';

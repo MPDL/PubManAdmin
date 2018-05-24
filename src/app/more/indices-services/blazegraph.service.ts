@@ -1,9 +1,11 @@
+
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
+
 
 import { props } from '../../base/common/admintool.properties';
 import { MessagesService } from '../../base/services/messages.service';
@@ -23,13 +25,14 @@ export class BlazegraphService {
         return this.http.request('GET', blazegraphURI, {
             headers:headers,
             params:params
-        })
-            .map((response : any) => {
+        }).pipe(
+            map((response : any) => {
                 response.results.bindings.forEach(resource => {
                     results.push(resource);
                 });
                 return results;
-            });
+            })
+        );
     } 
 
     describeResource(resourceIRI, graphIRI): Observable<any[]> {
@@ -44,13 +47,14 @@ export class BlazegraphService {
         return this.http.request('POST', blazegraphURI, {
             headers:headers,
             params:params
-        })
-            .map((response: any) => {
+        }).pipe(
+            map((response: any) => {
                 response.results.bindings.forEach(resource => {
                     results.push(resource);
                 });
                 return results;
-            });
+            })
+        );
     }
 
     insertResourceFromURI(uri: string, graphIRI) {
@@ -62,14 +66,14 @@ export class BlazegraphService {
         return this.http.request('POST', blazegraphURI, {
             headers:headers,
             params:params
-        })
-            .map((response: any) => {
+        }).pipe(
+            map((response: any) => {
                 return response.text();
-            })
-            .catch(error => {
+            }),
+            catchError((error) => {
                 this.messages.error(error);
-                return Observable.throw(error.text() || ' error'); 
-            });
+                return observableThrowError(error.text() || ' error'); 
+            })
+        );
     }
-
 }

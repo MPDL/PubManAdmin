@@ -136,3 +136,23 @@ export class SearchResult {
     numberOfRecords: number;
     records: any[];
 }
+
+export class Properties {
+    elastic_http_url: string;
+    pubman_rest_url: string;
+    pubman_rest_url_users: string;
+    pubman_rest_url_ous: string;
+    pubman_rest_url_ctxs: string;
+    pubman_rest_url_items: string;
+    blazegraph_sparql_url: string;
+    blazegraph_gnd_graph: string;
+    cone_journals_graph: string;
+    item_index_name: string;
+    item_index_type: string;
+    user_index_name: string;
+    user_index_type: string;
+    ou_index_name: string;
+    ou_index_type: string;
+    ctx_index_name: string;
+    ctx_index_type: string;
+}

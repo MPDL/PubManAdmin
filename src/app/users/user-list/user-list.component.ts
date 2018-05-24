@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/observable/of';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+
+
+import { Observable ,  Subscription } from 'rxjs';
 
 import { User, Grant } from '../../base/common/model';
 import { UsersService } from '../services/users.service';

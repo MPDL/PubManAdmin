@@ -1,8 +1,9 @@
+
+import { throwError as observableThrowError, Observable, of } from 'rxjs';
+import { first, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 
 import { ContextsService } from './contexts.service';
 import { MessagesService } from '../../base/services/messages.service';
@@ -26,15 +27,17 @@ export class ContextDetailsResolverService implements Resolve<any> {
             ctx.allowedGenres = [];
             ctx.allowedSubjectClassifications = [];
             ctx.workflow = "SIMPLE";
-            return Observable.of(ctx);
+            return of(ctx);
         } else {
             let token = route.params['token'];
             return this.ctxSvc.get(props.pubman_rest_url_ctxs, id, token)
-                .first()
-                .catch((err, obs) => {
-                    this.message.error(err);
-                    return Observable.throw(err);
-                }); // add first() to ensure observable completion 
+                .pipe(
+                    first(),
+                    catchError((err, obs) => {
+                        this.message.error(err);
+                        return observableThrowError(err);
+                    })
+                );
         }
     }
 

@@ -1,12 +1,8 @@
+import { throwError as observableThrowError, Observable, BehaviorSubject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { share, shareReplay } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/shareReplay';
 
 import { User } from '../common/model';
 import { MessagesService } from "../services/messages.service";
@@ -20,10 +16,10 @@ export class AuthenticationService {
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private isAdmin = new BehaviorSubject<boolean>(false);
 
-  token$ = this.token.asObservable().share();
-  user$ = this.user.asObservable().share();
-  isLoggedIn$ = this.isLoggedIn.asObservable().share();
-  isAdmin$ = this.isAdmin.asObservable().shareReplay(1);
+  token$ = this.token.asObservable().pipe(share());
+  user$ = this.user.asObservable().pipe(share());
+  isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
+  isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
 
   setToken(token) {
     this.token.next(token);
@@ -58,16 +54,21 @@ export class AuthenticationService {
       headers: headers,
       observe: 'response',
       responseType: 'text'
-    }).map((response) => {
-      let token = response.headers.get('Token');
-      if (token != null) {
-        this.setToken(token);
-        this.setIsLoggedIn(true);
-        return token;
-      } else {
-        this.messages.error(response.status + " " + response.statusText);
-      }
-    }).catch(err => Observable.throw(JSON.stringify(err) || "UNKNOWN ERROR!"));
+    }).pipe(
+      map((response) => {
+        let token = response.headers.get('Token');
+        if (token != null) {
+          this.setToken(token);
+          this.setIsLoggedIn(true);
+          return token;
+        } else {
+          this.messages.error(response.status + " " + response.statusText);
+        }
+      }),
+      catchError((err) => {
+        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
+      })
+    )
   }
 
   logout() {
@@ -84,14 +85,18 @@ export class AuthenticationService {
     return this.http.request<User>('GET', whoUrl, {
       headers: headers,
       observe: 'body'
-    }).map((response) => {
+    }).pipe(
+      map((response) => {
         user = response;
         this.setUser(user);
         if (user.grantList.find(grant => grant.role == "SYSADMIN")) {
           this.setIsAdmin(true);
         }
         return user;
-      }).catch(err => Observable.throw(JSON.stringify(err) || "UNKNOWN ERROR!"));
+      }),
+      catchError((err) => {
+        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
+      })
+    )
   }
-
 }

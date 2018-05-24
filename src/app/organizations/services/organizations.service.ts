@@ -1,9 +1,11 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { map, catchError } from "rxjs/operators";
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
+
 
 import { props } from '../../base/common/admintool.properties';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
@@ -24,12 +26,15 @@ export class OrganizationsService extends PubmanRestService {
         let url =  this.ous_rest_url + '/' + id + '/children';
         return this.httpc.request('GET', url, {
             headers: headers
-        })
-            .map((response: HttpResponse<any>) => {
+        }).pipe(
+            map((response: HttpResponse<any>) => {
                 this.ous = response;
                 return this.ous;
+            }),
+            catchError((error) => {
+                return observableThrowError(JSON.stringify(error) || 'Error getting children 4 ' + id);
             })
-            .catch((error: any) => Observable.throw(JSON.stringify(error) || 'Error getting children 4 ' + id));
+        )
     }
 
     openOu(ou: any, token: string): Observable<number> {

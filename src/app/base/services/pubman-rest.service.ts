@@ -1,9 +1,8 @@
+
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 
 import { props } from '../../base/common/admintool.properties';
 import { SearchResult } from 'app/base/common/model';
@@ -24,8 +23,8 @@ export class PubmanRestService {
       observe: 'body',
       responseType: 'json',
       body: body
-    })
-      .map((response: SearchResult) => {
+    }).pipe(
+      map((response: SearchResult) => {
         let result = { list: [], records: 0 };
         let data = response;
         let hits = [];
@@ -36,20 +35,26 @@ export class PubmanRestService {
         result.list = hits;
         result.records = records;
         return result;
+      }),
+      catchError((err) => {
+        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
       })
-      .catch((error: any) => Observable.throw(JSON.stringify(error) || 'Error getting results from ' + url));
+    )
   }
 
   getResource(method, url, headers, body): Observable<any> {
     return this.client.request(method, url, {
       headers: headers,
       body: body
-    })
-      .map((response: HttpResponse<any>) => {
+    }).pipe(
+      map((response: HttpResponse<any>) => {
         let resource = response;
         return resource;
+      }),
+      catchError((err) => {
+        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
       })
-      .catch((error: any) => Observable.throw(JSON.stringify(error) || "Error getting resource " + url));
+    )
   }
 
   getHttpStatus(method, url, headers, body): Observable<any> {
@@ -58,12 +63,15 @@ export class PubmanRestService {
       body: body,
       observe: 'response',
       responseType: 'text'
-    })
-      .map((response) => {
+    }).pipe(
+      map((response) => {
         let status = response.status;
         return status;
+      }),
+      catchError((err) => {
+        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
       })
-      .catch((error: any) => Observable.throw(JSON.stringify(error) || "Error getting status " + url));
+    )
   }
 
   addHeaders(token, ct: boolean): HttpHeaders {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { ConeService } from '../indices-services/cone.service';
 import { BlazegraphService } from '../indices-services/blazegraph.service';

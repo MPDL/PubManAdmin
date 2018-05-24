@@ -1,9 +1,11 @@
+
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+
+
 
 import { props } from '../../base/common/admintool.properties';
 
@@ -19,12 +21,12 @@ export class FedoraRestService {
     let url = this.fcrepo_rest_url +"/objects/raven";
     return this.http.request('GET', url, {
       headers: headers
-    })
-      .map((response: Response) => {
+    }).pipe(
+      map((response: Response) => {
         let data = response.json();
         return data;
-      })
-      .catch((error: any) => Observable.throw(error));
+      }),
+      catchError((error: any) => observableThrowError(error))
+    );
   }
-
 }
