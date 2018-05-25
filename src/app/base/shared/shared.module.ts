@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectedItemColourDirective } from '../directives/selected-item-colour.directive';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
 import { ValueNotAllowedDirective } from '../directives/value-not-allowed.directive';

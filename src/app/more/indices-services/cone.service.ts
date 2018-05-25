@@ -18,9 +18,9 @@ export class ConeService {
 
     getAllJournals(): Observable<any[]> {
 
-        let journalUrl: string = "http://b253.demo/blazegraph/namespace/inge/sparql";
-        let headers = new HttpHeaders().set('Accept', 'application/sparql-results+json, application/json');
-        let params = new HttpParams().set('query', 'select * {graph $g {$s $p $o}}');
+        const journalUrl: string = 'http://b253.demo/blazegraph/namespace/inge/sparql';
+        const headers = new HttpHeaders().set('Accept', 'application/sparql-results+json, application/json');
+        const params = new HttpParams().set('query', 'select * {graph $g {$s $p $o}}');
         return this.http.request('GET', journalUrl, {
             headers: headers,
             params: params
@@ -34,7 +34,6 @@ export class ConeService {
         );
     }
 
-    
     private handleError(error: any) {
     console.error(error);
     return observableThrowError(error.json().error || ' error');

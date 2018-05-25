@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PaginationService } from '../services/pagination.service';
 
 @Component({
-  selector: 'pagination',
+  selector: 'pagination-component',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })

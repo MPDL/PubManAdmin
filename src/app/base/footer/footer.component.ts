@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-const {version: appVersion} = require('../../../../package.json'); 
-const {homepage: appHome} = require('../../../../package.json'); 
+const { version: appVersion } = require('../../../../package.json');
+const { homepage: appHome } = require('../../../../package.json');
 
 @Component({
   selector: 'app-footer',
@@ -10,7 +10,7 @@ const {homepage: appHome} = require('../../../../package.json');
 export class FooterComponent implements OnInit {
 
   appVersion;
-  appName = "Pubman Administration";
+  appName = 'Pubman Administration';
   appHome;
 
   constructor() { }

@@ -7,7 +7,7 @@ import { IndicesService } from '../indices-services/indices.service';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  //selector: 'app-indices-detail',
+  // selector: 'app-indices-detail',
   templateUrl: './indices-detail.component.html',
   styleUrls: ['./indices-detail.component.scss']
 })
@@ -15,12 +15,12 @@ export class IndicesDetailComponent implements OnInit {
 
   @ViewChild('f') form: NgForm;
   index_name;
-  isNewIndex:boolean = false;
+  isNewIndex: boolean = false;
   settings;
-  settings2selectFrom:string[] = ['default', 'minimal','with_auto_suggest'];
+  settings2selectFrom: string[] = ['default', 'minimal', 'with_auto_suggest'];
   selectedSettings;
   mapping;
-  mappings2selectFrom:string[] = ['none', 'eins', 'zwei','drei', 'vier'];
+  mappings2selectFrom: string[] = ['none', 'eins', 'zwei', 'drei', 'vier'];
   selectedMapping;
   subscription: Subscription;
 
@@ -32,14 +32,14 @@ export class IndicesDetailComponent implements OnInit {
   ngOnInit() {
     this.subscription = this.route.params
       .subscribe(params => {
-        let name = params["name"];
+        const name = params['name'];
         this.index_name = name;
       });
     if (this.index_name !== 'new') {
       this.service.getSettings4Index(this.index_name, settings => {
         this.settings = settings;
       });
-      this.service.getMapping4Index(this.index_name, "item", mapping => {
+      this.service.getMapping4Index(this.index_name, 'item', mapping => {
         this.mapping = mapping;
       });
     } else {
@@ -58,12 +58,12 @@ export class IndicesDetailComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(["more/list"]);
+    this.router.navigate(['more/list']);
   }
 
   save() {
     if (this.form.valid) {
-    if (confirm('saving ' +this.index_name)) {
+    if (confirm('saving ' + this.index_name)) {
       this.service.create(this.index_name, null, index => {
         this.message.success('created index ' + index.index + '   ' + index.acknowledged);
       });

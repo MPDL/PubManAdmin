@@ -21,24 +21,24 @@ export class Elastic4usersService extends ElasticService {
             this.messages.error(error);
           }
           if (response) {
-            let hitList = [];
+            const hitList = [];
             response.hits.hits.forEach(hit => hitList.push(hit._source));
-            let result = JSON.stringify(hitList);
-            let name = JSON.parse(result);
+            const result = JSON.stringify(hitList);
+            const name = JSON.parse(result);
             callback(name[0].name);
           }
         });
 
     } else {
-      this.messages.error("missing id");
+      this.messages.error('missing id');
     }
   }
 
   listAllContextNames(callback): any {
     return this.client.search({
       index: props.ctx_index_name,
-      q: "state:OPENED",
-      _sourceInclude: "name, objectId",
+      q: 'state:OPENED',
+      _sourceInclude: 'name, objectId',
       size: 500,
       sort: 'name.keyword:asc'
     },
@@ -47,10 +47,10 @@ export class Elastic4usersService extends ElasticService {
           this.messages.error(error);
         }
         if (response) {
-          let hitList = Array<any>();
+          const hitList = Array<any>();
           response.hits.hits.forEach((hit) => {
-            let source = JSON.stringify(hit._source);
-            let json = JSON.parse(source);
+            const source = JSON.stringify(hit._source);
+            const json = JSON.parse(source);
             hitList.push(json);
           });
           callback(hitList)
@@ -71,32 +71,32 @@ export class Elastic4usersService extends ElasticService {
             this.messages.error(error)
           }
           if (response) {
-            let hitList = [];
+            const hitList = [];
             response.hits.hits.forEach(hit => hitList.push(hit._source));
-            let result = JSON.stringify(hitList);
-            let name = JSON.parse(result);
+            const result = JSON.stringify(hitList);
+            const name = JSON.parse(result);
             callback(name[0].metadata.name);
           }
         })
 
     } else {
-      this.messages.error("missing id");
+      this.messages.error('missing id');
     }
   }
 
   users4auto(term, callback) {
-        let users = Array<any>();
+        const users = Array<any>();
         if (term) {
             this.client.search({
                 index: props.user_index_name,
-                q: "name.auto:" + term,
-                sort: "name.keyword:asc"
+                q: 'name.auto:' + term,
+                sort: 'name.keyword:asc'
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);
                 } else {
                     response.hits.hits.forEach(hit => {
-                        let username = JSON.parse(JSON.stringify(hit._source));
+                        const username = JSON.parse(JSON.stringify(hit._source));
                         users.push(username);
                     });
                     callback(users);

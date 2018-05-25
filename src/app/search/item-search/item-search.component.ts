@@ -23,7 +23,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
 
-  item_rest_url = props.pubman_rest_url + "/items";
+  item_rest_url = props.pubman_rest_url + '/items';
 
   searchForm: FormGroup;
   searchRequest: SearchRequest;
@@ -44,7 +44,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   currentPage: number = 1;
   subscription: Subscription;
   token;
-  index: string = "default";
+  index: string = 'default';
 
   constructor(private elastic: ElasticSearchService,
     private search: SearchService,
@@ -58,7 +58,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    for (let agg in item_aggs) {
+    for (const agg in item_aggs) {
       this.aggregationsList.push(agg);
     }
     this.fields2Select = this.elastic.getMappingFields(props.item_index_name, props.item_index_type);
@@ -76,9 +76,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initSearchTerm() {
     return this.builder.group({
-      type: "",
-      field: "",
-      searchTerm: "",
+      type: '',
+      field: '',
+      searchTerm: '',
       fields: []
     });
   }
@@ -98,15 +98,15 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   onAggregationSelect(agg) {
     this.selectedAggregation = item_aggs[agg];
     switch (agg) {
-      case "creationDate":
+      case 'creationDate':
         this.years = this.elastic.buckets(props.item_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
-      case "genre":
+      case 'genre':
         this.genres = this.elastic.buckets(props.item_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
-      case "publisher":
+      case 'publisher':
         this.publishers = this.elastic.buckets(props.item_index_name, this.selectedAggregation, true);
         this.selected = agg;
         break;
@@ -117,7 +117,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "metadata.title.keyword", "asc");
+    const body = this.search.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.title.keyword', 'asc');
     this.loading = true;
     this.search.query(this.item_rest_url, this.token, body)
       .subscribe(res => {
@@ -143,9 +143,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSelectYear(year) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "creationDate", searchTerm: year.key_as_string + '||/y' }]);
+    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.filter(this.item_rest_url, this.token, "?q=creationDate:" + year.key + "||/y", 1)
+    this.search.filter(this.item_rest_url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -156,9 +156,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSelectGenre(genre) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.genre", searchTerm: genre.key }]);
+    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'metadata.genre', searchTerm: genre.key }]);
     this.currentPage = 1;
-    this.search.filter(this.item_rest_url, this.token, "?q=metadata.genre:" + genre.key, 1)
+    this.search.filter(this.item_rest_url, this.token, '?q=metadata.genre:' + genre.key, 1)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;
@@ -169,8 +169,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSelectPublisher(publisher) {
     this.searchForm.reset();
-    let body = { size: 25, from: 0, query: {nested: { path: "metadata.sources", query: { bool: { filter: { term: { ["metadata.sources.publishingInfo.publisher.keyword"]: publisher.key } } } } } } };
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "metadata.sources.publishingInfo.publisher.keyword", searchTerm: publisher.key }]);
+    const body = { size: 25, from: 0,
+       query: { nested: { path: 'metadata.sources',
+       query: { bool: { filter: { term: { ['metadata.sources.publishingInfo.publisher.keyword']: publisher.key } } } } } } };
+    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter',
+       field: 'metadata.sources.publishingInfo.publisher.keyword', searchTerm: publisher.key }]);
     this.currentPage = 1;
     this.search.query(this.item_rest_url, this.token, body)
       .subscribe(items => {
@@ -182,23 +185,23 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSelect(item) {
-    if (confirm("wanna delete it?")) {
-      let index = this.items.indexOf(item);
+    if (confirm('wanna delete it?')) {
+      const index = this.items.indexOf(item);
       this.items.splice(index, 1);
     }
   }
 
   handleNotification(event: string, index) {
-    if (event === "add") {
+    if (event === 'add') {
       this.addSearchTerm();
-    } else if (event === "remove") {
+    } else if (event === 'remove') {
       this.removeSearchTerm(index);
     }
   }
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "metadata.title.keyword", "asc");
+    const preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, 'metadata.title.keyword', 'asc');
     this.searchItems(preparedBody);
   }
 

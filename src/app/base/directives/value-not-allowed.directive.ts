@@ -4,22 +4,22 @@ import { NG_VALIDATORS, Validator, Validators, ValidatorFn, AbstractControl } fr
 export function valueValidator(regex: RegExp): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} => {
     const notAllowed = regex.test(control.value);
-    return notAllowed ? {'valueNotAllowed': {value: control.value}} : null;
+    return notAllowed ? {'value-not-allowed': {value: control.value}} : null;
   };
 }
 
 @Directive({
-  selector: '[valueNotAllowed]',
+  selector: '[value-not-allowed]',
   providers: [{provide: NG_VALIDATORS, useExisting: ValueNotAllowedDirective, multi: true}]
 })
 export class ValueNotAllowedDirective implements Validator {
 
-  @Input() valueNotAllowed: string;
+  @Input() valuenotallowed: string;
 
   constructor() { }
 
   validate(c: AbstractControl): {[key: string]: any} {
-    return this.valueNotAllowed ? valueValidator(new RegExp(this.valueNotAllowed, 'i'))(c) : null;
+    return this.valuenotallowed ? valueValidator(new RegExp(this.valuenotallowed, 'i'))(c) : null;
   }
 
 }

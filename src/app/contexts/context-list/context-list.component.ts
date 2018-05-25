@@ -33,7 +33,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
   pageSize: number = 25;
   currentPage: number = 1;
 
-  
   constructor(private ctxSvc: ContextsService,
     private elastic: Elastic4contextsService,
     private router: Router,
@@ -79,8 +78,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   goTo(ctx) {
-    let id = ctx.objectId;
-    this.router.navigate(["/context", id]);
+    const id = ctx.objectId;
+    this.router.navigate(['/context', id]);
   }
 
   isSelected(ctx) {
@@ -89,12 +88,12 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   addNewContext() {
-    let ctxid = "new ctx";
+    const ctxid = 'new ctx';
     this.router.navigate(['/context', ctxid]);
   }
 
   getContextNames(a) {
-    let contextNames: any[] = [];
+    const contextNames: any[] = [];
     this.elastic.contexts4auto(a, (names) => {
       names.forEach(name => contextNames.push(name));
       if (contextNames.length > 0) {
@@ -106,7 +105,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.contextSearchTerm = "";
+    this.contextSearchTerm = '';
     this.contextnames = [];
   }
 

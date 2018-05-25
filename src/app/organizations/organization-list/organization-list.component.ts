@@ -16,8 +16,8 @@ import { props } from '../../base/common/admintool.properties';
 export class OrganizationListComponent implements OnInit, OnDestroy {
 
   external: boolean = false;
-  current: string = "";
-  currentChild = "";
+  current: string = '';
+  currentChild = '';
   selected: any;
   searchTerm;
   ounames: any[] = [];
@@ -50,8 +50,8 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   listOuNames(token) {
-    this.mpgOus = this.ouSvc.listChildren4Ou("ou_persistent13", token);
-    this.extOus = this.ouSvc.listChildren4Ou("ou_persistent22", token);
+    this.mpgOus = this.ouSvc.listChildren4Ou('ou_persistent13', token);
+    this.extOus = this.ouSvc.listChildren4Ou('ou_persistent22', token);
   }
 
   getChildren(id) {
@@ -60,10 +60,10 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   getRidOfChildren(id) {
-    this.current = "";
+    this.current = '';
     this.children = null;
     if (this.currentChild.length > 0) {
-      this.currentChild = "";
+      this.currentChild = '';
       this.grandChildren = null;
     }
   }
@@ -74,18 +74,18 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   getRidOfChildrenOfChild(id) {
-    this.currentChild = "";
+    this.currentChild = '';
     this.grandChildren = null;
   }
 
   addNewOrganization() {
-    let id = "new org";
+    const id = 'new org';
     this.router.navigate(['/organization', id]);
   }
 
   onSelect(ou: any) {
-    let id: string = ou.objectId;
-    this.router.navigate(["/organization", id]);
+    const id: string = ou.objectId;
+    this.router.navigate(['/organization', id]);
   }
 
   isSelected(ou) {
@@ -93,7 +93,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   getNames(a) {
-    let ouNames: any[] = [];
+    const ouNames: any[] = [];
     this.elastic.ous4auto(a, (names) => {
       names.forEach(name => ouNames.push(name));
       if (ouNames.length > 0) {
@@ -105,7 +105,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.searchTerm = "";
+    this.searchTerm = '';
     this.ounames = [];
   }
 

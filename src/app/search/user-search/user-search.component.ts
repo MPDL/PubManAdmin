@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ComponentFactoryResolver, ComponentRef, QueryList, ViewContainerRef, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
@@ -44,7 +44,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   subscription: Subscription;
   token;
-  index: string = "default";
+  index: string = 'default';
 
   constructor(private elastic: ElasticSearchService,
     private search: SearchService,
@@ -55,11 +55,8 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   get diagnostic() { return JSON.stringify(this.years); }
 
-  ngAfterViewInit() {
-  }
-
   ngOnInit() {
-    for (let agg in user_aggs) {
+    for (const agg in user_aggs) {
       this.aggregationsList.push(agg);
     }
     this.fields2Select = this.elastic.getMappingFields(props.user_index_name, props.user_index_type);
@@ -77,9 +74,9 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   initSearchTerm() {
     return this.builder.group({
-      type: "",
-      field: "",
-      searchTerm: "",
+      type: '',
+      field: '',
+      searchTerm: '',
       fields: []
     });
   }
@@ -99,11 +96,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   onAggregationSelect(agg) {
     this.selectedAggregation = user_aggs[agg];
     switch (agg) {
-      case "creationDate":
+      case 'creationDate':
         this.years = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
-      case "organization":
+      case 'organization':
         this.ous = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
         this.selected = agg;
         break;
@@ -114,7 +111,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    let body = this.search.buildQuery(this.searchRequest, 25, ((page -1) * 25), "name.keyword", "asc");
+    const body = this.search.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
     this.loading = true;
     this.search.query(props.pubman_rest_url_users, this.token, body)
       .subscribe(res => {
@@ -140,9 +137,9 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   onSelectYear(year) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "creationDate", searchTerm: year.key_as_string + '||/y' }]);
+    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.filter(props.pubman_rest_url_users, this.token, "?q=creationDate:" + year.key + "||/y", 1)
+    this.search.filter(props.pubman_rest_url_users, this.token, '?q=creationDate:' + year.key + '||/y', 1)
       .subscribe(res => {
         this.users = res.list;
         this.total = res.records;
@@ -153,9 +150,9 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   onSelectOu(ou) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: "filter", field: "affiliation.name.keyword", searchTerm: ou.key }]);
+    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key }]);
     this.currentPage = 1;
-    this.search.filter(props.pubman_rest_url_users, this.token, "?q=affiliation.name.keyword:" + ou.key, 1)
+    this.search.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + ou.key, 1)
       .subscribe(res => {
         this.users = res.list;
         this.total = res.records;
@@ -165,22 +162,22 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   onSelect(item) {
-    if (confirm("wanna edit it?")) {
+    if (confirm('wanna edit it?')) {
       this.router.navigate(['/user', item.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
     }
   }
 
   handleNotification(event: string, index) {
-    if (event === "add") {
+    if (event === 'add') {
       this.addSearchTerm();
-    } else if (event === "remove") {
+    } else if (event === 'remove') {
       this.removeSearchTerm(index);
     }
   }
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    let preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, "name.keyword", "asc");
+    const preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, 'name.keyword', 'asc');
     this.searchItems(preparedBody);
   }
 

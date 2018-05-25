@@ -1,5 +1,5 @@
 export class SearchRequest {
-    searchTerms: SearchTerm[]; 
+    searchTerms: SearchTerm[];
 }
 
 export class SearchTerm {

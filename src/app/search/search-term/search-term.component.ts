@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-export const queryTypes = ["must", "must_not", "filter", "should"];
+export const queryTypes = ['must', 'must_not', 'filter', 'should'];
 
 @Component({
   selector: 'search-term',
@@ -13,13 +13,13 @@ export class SearchTermComponent {
   filteredTerms: string[] = [];
   types: string[] = queryTypes;
 
-  @Input('searchTermGroup') searchTermForm: FormGroup;
-  @Input('fields') fields: string[];
+  @Input() searchTermForm: FormGroup;
+  @Input() fields: string[];
   @Output('notice') notice = new EventEmitter<string>();
 
   filter() {
-    let selectedField = this.searchTermForm.get("field") as FormGroup;
-    if (selectedField.value !== "") {
+    const selectedField = this.searchTermForm.get('field') as FormGroup;
+    if (selectedField.value !== '') {
       this.filteredTerms = this.fields.filter((el) => {
         return el.toLowerCase().indexOf(selectedField.value.toLowerCase()) > -1;
       });
@@ -38,21 +38,21 @@ export class SearchTermComponent {
   }
 
   close() {
-    this.searchTermForm.patchValue({field: ""});
+    this.searchTermForm.patchValue({field: ''});
     this.filteredTerms = [];
   }
 
   addSearchTerm() {
-    this.notice.emit("add");
+    this.notice.emit('add');
   }
-  
+
   removeSearchTerm() {
-    this.notice.emit("remove");
+    this.notice.emit('remove');
   }
   /*
   searchItems(f,t) {
-    console.log("sending notification from child: " + t);
-    this.notice.emit(f+":"+t);
+    console.log('sending notification from child: ' + t);
+    this.notice.emit(f+':'+t);
   }
   */
 }

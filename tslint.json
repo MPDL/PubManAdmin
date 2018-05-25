@@ -1,6 +1,7 @@
 {
   "rulesDirectory": [
-    "node_modules/codelyzer"
+    "node_modules/codelyzer",
+    "/home/frank/.npm-global/lib/node_modules/rxjs-tslint"
   ],
   "rules": {
     "callable-types": true,
@@ -48,7 +49,7 @@
     "no-empty-interface": true,
     "no-eval": true,
     "no-inferrable-types": [
-      true,
+      false,
       "ignore-params"
     ],
     "no-shadowed-variable": true,
@@ -90,7 +91,6 @@
         "variable-declaration": "nospace"
       }
     ],
-    "typeof-compare": true,
     "unified-signatures": true,
     "variable-name": false,
     "whitespace": [
@@ -104,13 +104,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
-      "camelCase"
+      [],
+      "kebab-case"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      [],
       "kebab-case"
     ],
     "use-input-property-decorator": true,
@@ -122,8 +122,9 @@
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true,
-    "no-access-missing-member": true,
-    "templates-use-public": true,
-    "invoke-injectable": true
+    "rxjs-collapse-imports": true,
+    "rxjs-pipeable-operators-only": true,
+    "rxjs-no-static-observable-methods": true,
+    "rxjs-proper-imports": true
   }
 }

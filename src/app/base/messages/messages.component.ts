@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MessagesService } from '../services/messages.service';
 
 @Component({
-  selector: 'messages',
+  selector: 'messages-component',
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.scss']
 })

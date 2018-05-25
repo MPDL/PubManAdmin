@@ -8,7 +8,7 @@
         </div>
         <!--
         <div class="row w-100 justify-content-center">
-            <pagination (click)="updatePaginator()"></pagination>
+            <pagination-component (click)="updatePaginator()"></pagination-component>
         </div>
         -->
         <div class="row">
@@ -16,8 +16,8 @@
                 <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="contextSearchTerm" (keyup)="getContextNames(contextSearchTerm)"
                      placeholder="search by name" id="contextSearchTerm">
                 <div *ngIf="contextnames.length > 0">
-                    <ul class="list-group" *ngFor="let contextname of contextnames" (clickOutside)="close()">
-                        <li selectedItemColor="#91eed2" class="list-group-item-success text-left" (click)="select(contextname)"><small>{{contextname.name}}</small></li>
+                    <ul class="list-group" *ngFor="let contextname of contextnames" (click-outside)="close()">
+                        <li selected-item-color="#91eed2" class="list-group-item-success text-left" (click)="select(contextname)"><small>{{contextname.name}}</small></li>
                     </ul>
                 </div>
             </div>
@@ -28,7 +28,7 @@
             </div>
         </div>
         <ul class="list-group">
-            <div selectedItemColor="#91eed2" class="list-group-item list-group-item-success p-1" *ngFor="let ctx of ctxs | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" [class.selected]="isSelected(ctx)"
+            <div selected-item-color="#91eed2" class="list-group-item list-group-item-success p-1" *ngFor="let ctx of ctxs | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" [class.selected]="isSelected(ctx)"
                 (click)="goTo(ctx)">
                 <!--<span class="col-sm-1">{{ctx.objectId}}</span>-->
                 <span class="col-sm-12">{{ctx.name}}</span>

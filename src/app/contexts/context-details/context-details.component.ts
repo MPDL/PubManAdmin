@@ -46,7 +46,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.ctx = this.route.snapshot.data['ctx'];
-    if (this.ctx.name == "new ctx") {
+    if (this.ctx.name === 'new ctx') {
       this.isNewCtx = true;
       this.listOuNames();
     }
@@ -77,7 +77,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    this.ouSvc.listOuNames("parent", "persistent13", (names) => {
+    this.ouSvc.listOuNames('parent', 'persistent13', (names) => {
       this.ous = names;
     });
   }
@@ -101,12 +101,12 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteGenre(genre) {
-    let index = this.allowedGenres.indexOf(genre);
+    const index = this.allowedGenres.indexOf(genre);
     this.allowedGenres.splice(index, 1);
   }
 
   deleteSubject(subject) {
-    let index = this.allowedSubjects.indexOf(subject);
+    const index = this.allowedSubjects.indexOf(subject);
     this.allowedSubjects.splice(index, 1);
   }
 
@@ -158,11 +158,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   activateContext(ctx) {
     this.ctx = ctx;
-    if (this.ctx.state == 'CREATED' || this.ctx.state == 'CLOSED') {
+    if (this.ctx.state === 'CREATED' || this.ctx.state === 'CLOSED') {
       this.ctxSvc.openContext(this.ctx, this.token)
         .subscribe(httpStatus => {
           this.getSelectedCtx(this.ctx.objectId);
-          this.message.success("Opened " + ctx.objectId + " " + httpStatus);
+          this.message.success('Opened ' + ctx.objectId + ' ' + httpStatus);
         }, error => {
           this.message.error(error);
         });
@@ -170,7 +170,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctxSvc.closeContext(this.ctx, this.token)
         .subscribe(httpStatus => {
           this.getSelectedCtx(this.ctx.objectId);
-          this.message.success("Closed " + ctx.objectId + " " + httpStatus);
+          this.message.success('Closed ' + ctx.objectId + ' ' + httpStatus);
         }, error => {
           this.message.error(error);
         });
@@ -179,8 +179,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   delete(ctx) {
     this.ctx = ctx;
-    let id = this.ctx.objectId;
-    this.ctxSvc.delete(props.pubman_rest_url_ctxs + "/" + id, this.ctx, this.token)
+    const id = this.ctx.objectId;
+    this.ctxSvc.delete(props.pubman_rest_url_ctxs + '/' + id, this.ctx, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -197,19 +197,19 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   save(ctx2save) {
     this.ctx = ctx2save;
 
-    if (this.ctx.name.includes("new ctx")) {
-      this.message.warning("name MUST NOT be new ctx");
+    if (this.ctx.name.includes('new ctx')) {
+      this.message.warning('name MUST NOT be new ctx');
       return;
     }
 
     if (this.isNewCtx) {
       if (this.selectedOu != null) {
-        let ou_id = this.selectedOu.objectId;
-        let aff = new BasicRO();
+        const ou_id = this.selectedOu.objectId;
+        const aff = new BasicRO();
         aff.objectId = ou_id;
         this.ctx.responsibleAffiliations.push(aff);
       } else {
-        this.message.warning("you MUST select an organization");
+        this.message.warning('you MUST select an organization');
         return;
       }
       this.ctxSvc.post(props.pubman_rest_url_ctxs, this.ctx, this.token)
@@ -225,9 +225,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         );
 
     } else {
-
-      this.message.success("updating " + this.ctx.objectId);
-      this.ctxSvc.put(props.pubman_rest_url_ctxs + "/" + this.ctx.objectId, this.ctx, this.token)
+      this.message.success('updating ' + this.ctx.objectId);
+      this.ctxSvc.put(props.pubman_rest_url_ctxs + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
         data => {
           this.message.success('updated ' + this.ctx.objectId + ' ' + data);

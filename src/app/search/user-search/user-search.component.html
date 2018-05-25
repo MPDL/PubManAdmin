@@ -38,7 +38,7 @@
                     <h4 class="card-title">users / creationDate</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li selectedItemColor class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
+                    <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
                         <span class="badge badge-primary">{{year.doc_count}}</span>
                         <span class="text-primary ml-2">{{year.key_as_string.substring(0,4)}}</span>
                         <li>
@@ -49,7 +49,7 @@
                     <h4 class="card-title">users / organization</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li selectedItemColor class="list-group-item text-primary p-1 justify-content-end" *ngFor="let ou of ous" (click)="onSelectOu(ou)">
+                    <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let ou of ous" (click)="onSelectOu(ou)">
                         <span class="text-primary mr-2">{{ou.key}}</span>
                         <span class="badge badge-primary">{{ou.doc_count}}</span>
                         <li>
@@ -65,7 +65,7 @@
                         id="paginator"></pagination-controls>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li selectedItemColor class="list-group-item text-primary justify-content-start p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
+                    <li selected-item-color class="list-group-item text-primary justify-content-start p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
                         (click)="onSelect(user)">
                         <span class="text-primary">{{user.objectId}}</span>
                         <span class="text-primary ml-2">{{user.name}}</span>

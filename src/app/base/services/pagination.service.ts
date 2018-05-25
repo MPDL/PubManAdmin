@@ -6,7 +6,7 @@ export class PaginationService {
   constructor() { }
 
   getPaginator(totalItems: number, currentPage: number = 1, pageSize: number = 25) {
-    let totalPages = Math.ceil(totalItems / pageSize);
+    const totalPages = Math.ceil(totalItems / pageSize);
 
     let startPage: number, endPage: number;
     if (totalPages <= 10) {
@@ -25,10 +25,10 @@ export class PaginationService {
       }
     }
 
-    let startIndex = (currentPage - 1) * pageSize;
-    let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
 
-    let pages = this.getPages(startPage, endPage + 1, 1);
+    const pages = this.getPages(startPage, endPage + 1, 1);
 
     return {
       totalItems: totalItems,
@@ -50,8 +50,8 @@ export class PaginationService {
     }
     step = step || 1;
 
-    let length = Math.max(Math.ceil((stop - start) / step), 0);
-    let range = Array(length);
+    const length = Math.max(Math.ceil((stop - start) / step), 0);
+    const range = Array(length);
 
     for (let idx = 0; idx < length; idx++ , start += step) {
       range[idx] = start;

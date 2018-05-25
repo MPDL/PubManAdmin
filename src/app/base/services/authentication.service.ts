@@ -5,11 +5,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { User } from '../common/model';
-import { MessagesService } from "../services/messages.service";
+import { MessagesService } from '../services/messages.service';
 import { props } from '../common/admintool.properties';
 
 @Injectable()
 export class AuthenticationService {
+
+  private tokenUrl: string = props.pubman_rest_url + '/login';
 
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
@@ -37,17 +39,15 @@ export class AuthenticationService {
     this.isAdmin.next(isAdmin);
   }
 
-  private tokenUrl: string = props.pubman_rest_url + "/login";
-
   constructor(
     private http: HttpClient,
     private messages: MessagesService
   ) { }
 
   login(username, password) {
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    // let body = '"' + username + ":" + password + '"';
-    let body = username + ":" + password;
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    // let body = ''' + username + ':' + password + ''';
+    const body = username + ':' + password;
 
     return this.http.request('POST', this.tokenUrl, {
       body: body,
@@ -56,17 +56,17 @@ export class AuthenticationService {
       responseType: 'text'
     }).pipe(
       map((response) => {
-        let token = response.headers.get('Token');
+        const token = response.headers.get('Token');
         if (token != null) {
           this.setToken(token);
           this.setIsLoggedIn(true);
           return token;
         } else {
-          this.messages.error(response.status + " " + response.statusText);
+          this.messages.error(response.status + ' ' + response.statusText);
         }
       }),
       catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
+        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
     )
   }
@@ -79,8 +79,8 @@ export class AuthenticationService {
   }
 
   who(token): Observable<User> {
-    let headers = new HttpHeaders().set('Authorization', token);
-    let whoUrl = this.tokenUrl + '/who';
+    const headers = new HttpHeaders().set('Authorization', token);
+    const whoUrl = this.tokenUrl + '/who';
     let user: User;
     return this.http.request<User>('GET', whoUrl, {
       headers: headers,
@@ -89,13 +89,13 @@ export class AuthenticationService {
       map((response) => {
         user = response;
         this.setUser(user);
-        if (user.grantList.find(grant => grant.role == "SYSADMIN")) {
+        if (user.grantList.find(grant => grant.role === 'SYSADMIN')) {
           this.setIsAdmin(true);
         }
         return user;
       }),
       catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || "UNKNOWN ERROR!");
+        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
     )
   }

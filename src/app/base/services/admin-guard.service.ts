@@ -15,7 +15,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
         private router: Router, private message: MessagesService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        let url: string = state.url;
+        const url: string = state.url;
         return this.checkLogin(url);
     }
 
@@ -31,7 +31,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
             return true;
         }
         // this.router.navigate(['/home']);
-        this.message.warning("This site requires admin authorization ...")
+        this.message.warning('This site requires admin authorization ...')
         return false;
     }
 

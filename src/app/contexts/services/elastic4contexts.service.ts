@@ -9,18 +9,18 @@ export class Elastic4contextsService extends ElasticService {
   constructor(messages: MessagesService) { super(messages) }
 
   contexts4auto(term, callback) {
-        let contexts = Array<any>();
+        const contexts = Array<any>();
         if (term) {
             this.client.search({
                 index: props.ctx_index_name,
-                q: "name.auto:" + term,
-                sort: "name.keyword:asc"
+                q: 'name.auto:' + term,
+                sort: 'name.keyword:asc'
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);
                 } else {
                     response.hits.hits.forEach(hit => {
-                        let ctxname = JSON.parse(JSON.stringify(hit._source));
+                        const ctxname = JSON.parse(JSON.stringify(hit._source));
                         contexts.push(ctxname);
                     });
                     callback(contexts);

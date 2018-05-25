@@ -41,8 +41,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.loginSubscription = this.login.token$.subscribe(token => {
           this.token = token;
         });
-        let id = params['id'];
-        if (id == 'new org') {
+        const id = params['id'];
+        if (id === 'new org') {
           this.isNewOrganization = true;
           this.selected = this.prepareNewOU(id);
 
@@ -62,8 +62,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.ouSvc.get(props.pubman_rest_url_ous, id, token)
       .subscribe(ou => {
         this.selected = ou;
-        if (this.selected.hasPredecessors == true) {
-          let pre_id = this.selected.predecessorAffiliations[0].objectId;
+        if (this.selected.hasPredecessors === true) {
+          const pre_id = this.selected.predecessorAffiliations[0].objectId;
           this.listPredecessors(pre_id, token);
         } else {
           this.predecessors = [];
@@ -74,7 +74,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   listPredecessors(id: string, token) {
-    let query = "?q=objectId:" + id;
+    const query = '?q=objectId:' + id;
     this.ouSvc.filter(props.pubman_rest_url_ous, token, query, 1)
       .subscribe(ous => {
         this.predecessors = ous.list;
@@ -90,11 +90,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   openClose(ou) {
     this.selected = ou;
-    if (this.selected.publicStatus == 'CREATED' || this.selected.publicStatus == 'CLOSED') {
+    if (this.selected.publicStatus === 'CREATED' || this.selected.publicStatus === 'CLOSED') {
       this.ouSvc.openOu(this.selected, this.token)
         .subscribe(httpStatus => {
           this.getSelectedOu(this.selected.objectId, this.token);
-          this.message.success("Opened " + this.selected.objectId + " " + httpStatus);
+          this.message.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
         }, error => {
           this.message.error(error);
         });
@@ -102,7 +102,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ouSvc.closeOu(this.selected, this.token)
         .subscribe(httpStatus => {
           this.getSelectedOu(this.selected.objectId, this.token);
-          this.message.success("Closed " + this.selected.objectId + " " + httpStatus);
+          this.message.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
         }, error => {
           this.message.error(error);
         });
@@ -115,7 +115,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   addName(selected) {
 
-    if (selected != null && selected !== "") {
+    if (selected != null && selected !== '') {
 
       if (this.selected.metadata.alternativeNames) {
         if (!this.selected.metadata.alternativeNames.includes(selected)) {
@@ -127,11 +127,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.alternativeName = "";
+    this.alternativeName = '';
   }
 
   deleteName(selected) {
-    let index = this.selected.metadata.alternativeNames.indexOf(selected);
+    const index = this.selected.metadata.alternativeNames.indexOf(selected);
     this.selected.metadata.alternativeNames.splice(index, 1);
   }
 
@@ -140,7 +140,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addDesc(selected) {
-    if (selected != null && selected !== "") {
+    if (selected != null && selected !== '') {
 
       if (this.selected.metadata.descriptions) {
         if (!this.selected.metadata.descriptions.includes(selected)) {
@@ -152,11 +152,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.description = "";
+    this.description = '';
   }
 
   deleteDesc(selected) {
-    let index = this.selected.metadata.descriptions.indexOf(selected);
+    const index = this.selected.metadata.descriptions.indexOf(selected);
     this.selected.metadata.descriptions.splice(index, 1);
   }
 
@@ -165,12 +165,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addIdentifier(selected) {
-    if (selected != null && selected !== "") {
+    if (selected != null && selected !== '') {
 
-      let ouid = new Identifier();
+      const ouid = new Identifier();
       ouid.id = selected;
       if (this.selected.metadata.identifiers) {
-        if (!this.selected.metadata.identifiers.some(id => (id.id == selected))) {
+        if (!this.selected.metadata.identifiers.some(id => (id.id === selected))) {
           this.selected.metadata.identifiers.push(ouid);
         }
       } else {
@@ -178,11 +178,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.selected.metadata.identifiers.push(ouid);
       }
     }
-    this.ouIdentifierId = "";
+    this.ouIdentifierId = '';
   }
 
   deleteIdentifier(selected) {
-    let index = this.selected.metadata.identifiers.indexOf(selected);
+    const index = this.selected.metadata.identifiers.indexOf(selected);
     this.selected.metadata.identifiers.splice(index, 1);
   }
 
@@ -192,12 +192,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   save(ou) {
     this.selected = ou;
-    if (this.selected.parentAffiliation.objectId === "") {
-      this.message.warning("parent id MUST NOT be empty");
+    if (this.selected.parentAffiliation.objectId === '') {
+      this.message.warning('parent id MUST NOT be empty');
       return;
     }
-    if (this.selected.metadata.name.includes("new ou")) {
-      this.message.warning("name MUST NOT be new ou");
+    if (this.selected.metadata.name.includes('new ou')) {
+      this.message.warning('name MUST NOT be new ou');
       return;
     }
     if (this.isNewOrganization) {
@@ -213,8 +213,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         });
 
     } else {
-      this.message.success("updating " + this.selected.objectId);
-      this.ouSvc.put(props.pubman_rest_url_ous + "/" + this.selected.objectId, this.selected, this.token)
+      this.message.success('updating ' + this.selected.objectId);
+      this.ouSvc.put(props.pubman_rest_url_ous + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {
           this.message.success('updated ' + this.selected.objectId + ' ' + data);
@@ -230,8 +230,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   delete(ou) {
     this.selected = ou;
-    let id = this.selected.objectId;
-    this.ouSvc.delete(props.pubman_rest_url_ous + "/" + this.selected.objectId, this.selected, this.token)
+    const id = this.selected.objectId;
+    this.ouSvc.delete(props.pubman_rest_url_ous + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -253,15 +253,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   get diagnostic() { return JSON.stringify(this.selected); }
 
   prepareNewOU(id): OU {
-    let template = new OU();
-    let creator = new UserRO();
-    creator.objectId = "";
+    const template = new OU();
+    const creator = new UserRO();
+    creator.objectId = '';
     template.creator = creator;
-    let parent = new BasicRO(); 
-    parent.objectId = "";
+    const parent = new BasicRO();
+    parent.objectId = '';
     template.parentAffiliation = parent;
-    let meta = new OUMetadata();
-    meta.name = "new ou";
+    const meta = new OUMetadata();
+    meta.name = 'new ou';
     template.metadata = meta;
     return template;
 

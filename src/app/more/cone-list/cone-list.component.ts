@@ -33,7 +33,7 @@ export class ConeListComponent implements OnInit {
 
   search4URI(uri, graphIRI) {
     console.log(JSON.stringify(graphIRI))
-    //this.fromGraphIRI = graphIRI.g.value;
+    // this.fromGraphIRI = graphIRI.g.value;
     this.blz.describeResource(uri, graphIRI).subscribe(data => {
       this.answer = data;
       console.log(JSON.stringify(this.answer))

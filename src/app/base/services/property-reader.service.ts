@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class PropertyReaderService {
 
-  propertyFileUrl: string = './assets/properties.json';
+  propertyFileUrl = './assets/properties.json';
   public props: Object;
   private propSubject: BehaviorSubject<Object> = new BehaviorSubject<Object>(null);
 

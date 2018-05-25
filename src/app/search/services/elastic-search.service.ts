@@ -18,7 +18,7 @@ export class ElasticSearchService extends ElasticService {
             if (err) {
                 this.messages.error(err);
             } else {
-                let buckets = Array<any>();
+                const buckets = Array<any>();
                 if (nested) {
                     res.aggregations.name1.name2.buckets.forEach((bucket) => {
                         buckets.push(bucket);
@@ -34,7 +34,7 @@ export class ElasticSearchService extends ElasticService {
     }
 
     buckets(index, body, nested): any[] {
-        let buckets = Array<any>();
+        const buckets = Array<any>();
         this.client.search({
             index: index,
             body: body
@@ -72,11 +72,11 @@ export class ElasticSearchService extends ElasticService {
     }
 
     getMappingFields(alias, type): Array<string> {
-        let fields = Array<string>();
+        const fields = Array<string>();
         this.client.indices.getFieldMapping({
             index: alias,
             type: type,
-            fields: "*",
+            fields: '*',
             includeDefaults: false
         }, (error, response) => {
             if (error) {
@@ -87,16 +87,20 @@ export class ElasticSearchService extends ElasticService {
                 // let mapping = JSON.parse(JSON.stringify(response[index].mappings[type]));
 
                 JSON.parse(JSON.stringify(mapping), (key, value: string) => {
-                    if (key == "full_name") {
-                        if (!value.startsWith("_")) {
+                    if (key === 'full_name') {
+                        if (!value.startsWith('_')) {
                             fields.push(value);
                         }
                     }
                 });
                 fields.sort((a, b) => {
-                    if (a < b) return -1;
-                    else if (a > b) return 1;
-                    else return 0;
+                    if (a < b) {
+                        return -1;
+                    } else if (a > b) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
                 });
             }
         });
@@ -105,7 +109,7 @@ export class ElasticSearchService extends ElasticService {
 
     getIndex4Alias(alias): any {
         this.client.cat.aliases({
-            format: "json",
+            format: 'json',
             name: alias
         }, (err, res) => {
             if (err) {

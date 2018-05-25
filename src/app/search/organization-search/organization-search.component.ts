@@ -17,9 +17,11 @@ export class OrganizationSearchComponent implements OnInit {
 
   ngOnInit() {
     this.fedora.getResource()
-      .subscribe(response => {this.result = response;
-      this.id = this.result[0]['@id'];
-    this.mems = this.result[0]["http://www.w3.org/ns/ldp#contains"][0]['@id'];}, error => console.log(error));
-       }
+      .subscribe(response => {
+      this.result = response;
+        this.id = this.result[0]['@id'];
+        this.mems = this.result[0]['http://www.w3.org/ns/ldp#contains'][0]['@id'];
+      }, error => console.log(error));
+  }
 
 }

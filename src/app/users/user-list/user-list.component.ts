@@ -66,11 +66,12 @@ export class UserListComponent implements OnInit, OnDestroy {
       if (this.isAdmin) {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
-        this.messageService.warning("Only administartors are allowed to view this list");
-        this.router.navigate(['/user', this.loggedInUser.objectId], { queryParams: { token: this.token, admin: false }, skipLocationChange: true });
+        this.messageService.warning('Only administartors are allowed to view this list');
+        this.router.navigate(['/user', this.loggedInUser.objectId],
+          { queryParams: { token: this.token, admin: false }, skipLocationChange: true });
       }
     }
-    this.comingFrom = this.route.snapshot.params["id"];
+    this.comingFrom = this.route.snapshot.params['id'];
   }
 
   ngOnDestroy() {
@@ -119,14 +120,14 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   addNewUser() {
-    let userid = "new user";
+    const userid = 'new user';
     this.router.navigate(['/user', userid], { queryParams: { token: 'new' }, skipLocationChange: true });
   }
 
   delete(user) {
     this.selected = user;
-    let id = this.selected.loginname;
-    this.usersService.delete(props.pubman_rest_url_users + "/" + this.selected.objectId, this.selected, this.token)
+    const id = this.selected.loginname;
+    this.usersService.delete(props.pubman_rest_url_users + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
         data => {
           this.messageService.success('deleted ' + id + ' ' + data);
@@ -135,16 +136,16 @@ export class UserListComponent implements OnInit, OnDestroy {
           this.messageService.error(error);
         }
       );
-    let index = this.users.indexOf(this.selected);
+    const index = this.users.indexOf(this.selected);
     this.users.splice(index, 1);
     this.selected = null;
   }
 
   getUserNames(a: string) {
-    if (a.includes("\"")) {
-      this.messageService.warning("NO QUOTES!!!")
+    if (a.includes('\'')) {
+      this.messageService.warning('NO QUOTES!!!')
     } else {
-      let userNames: User[] = [];
+      const userNames: User[] = [];
       this.elastic.users4auto(a, (names) => {
         names.forEach(name => userNames.push(name));
         if (userNames.length > 0) {
@@ -157,7 +158,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.userSearchTerm = "";
+    this.userSearchTerm = '';
     this.usernames = [];
   }
 
@@ -167,7 +168,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.router.navigate(['/user', term.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
 
     } else {
-      this.messageService.warning("no login, no user !!!");
+      this.messageService.warning('no login, no user !!!');
     }
     this.usernames = [];
   }
@@ -181,7 +182,8 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.selectedUserName = this.usernames[++this.selectedNameIndex];
     } else if (event.keyCode === 38) {
       this.selectedUserName = this.usernames[--this.selectedNameIndex];
-    } else return;
+    } else {
+      return;
+    }
   }
-
 }

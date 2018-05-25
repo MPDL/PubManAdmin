@@ -12,8 +12,8 @@
                 <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)"
                       placeholder="search by name" id="searchTerm">
                 <div *ngIf="ounames.length > 0">
-                    <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-                        <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.metadata.name}}</small></li>
+                    <ul class="list-group" *ngFor="let name of ounames" (click-outside)="close()">
+                        <li selected-item-color="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.metadata.name}}</small></li>
                     </ul>
                 </div>
             </div>
@@ -68,14 +68,14 @@
                 <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)"
                      placeholder="search by name" id="searchTerm">
                 <div *ngIf="ounames.length > 0">
-                    <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-                        <li selectedItemColor="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.metadata.name}}</small></li>
+                    <ul class="list-group" *ngFor="let name of ounames" (click-outside)="close()">
+                        <li selected-item-color="#8ee4f1" class="list-group-item-info text-left" (click)="select(name)"><small>{{name.metadata.name}}</small></li>
                     </ul>
                 </div>
             </div>
       </div>
       <ul id="ext-org-units" class="list-group w-100">
-        <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let extOu of extOus | async">
+        <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info text-right d-inline-block w-100 p-1" *ngFor="let extOu of extOus | async">
           <div class="row">
             <div class="col-sm-11">
               <a (click)="onSelect(extOu)">
@@ -88,7 +88,7 @@
             </div>
           </div>
           <ul *ngIf="extOu.objectId === current" class="list-group w-100">
-            <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async"
+            <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info bg-light p-1" *ngFor="let child of children | async"
               [class.selected]="isSelected(child)">
               <a class="col-sm-11" (click)="onSelect(child)">
                 <span class="badge text-info">></span><span class="text-info">{{ child.metadata.name }}</span>
@@ -96,7 +96,7 @@
               <input *ngIf="child.hasChildren && currentChild === ''" type="button" class="btn btn-outline-info btn-sm" (click)="getChildrenOfChild(child.objectId)" value="more">
               <input *ngIf="child.objectId === currentChild" type="button" class="btn btn-outline-info btn-sm" (click)="getRidOfChildrenOfChild(child.objectId)" value="less">
               <ul *ngIf="child.objectId === currentChild" class="list-group w-100">
-                <div selectedItemColor="#8ee4f1" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
+                <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info p-1" *ngFor="let grandChild of grandChildren | async">
                   <a class="col-sm-11" (click)=onSelect(grandChild)>
                   <span class="badge text-info">>></span><span class="text-info"> {{ grandChild.metadata.name}}</span>
                   </a>

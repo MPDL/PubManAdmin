@@ -20,31 +20,31 @@ export class SearchService extends PubmanRestService {
   buildQueryOnly(request): any {
     let must, must_not, filter, should;
     request.searchTerms.forEach(element => {
-      let field = element.field;
-      let value: string = element.searchTerm;
+      const field = element.field;
+      const value: string = element.searchTerm;
       switch (element.type) {
-        case "must":
+        case 'must':
           if (must) {
             must.push({ match: { [field]: value } });
           } else {
             must = [{ match: { [field]: value } }];
           }
           break;
-        case "must_not":
+        case 'must_not':
           if (must_not) {
             must_not.push({ term: { [field]: value } });
           } else {
             must_not = [{ term: { [field]: value } }];
           }
           break;
-        case "filter":
+        case 'filter':
           if (filter) {
             filter.push({ term: { [field]: value } });
           } else {
             filter = [{ term: { [field]: value } }];
           }
           break;
-        case "should":
+        case 'should':
           if (should) {
             should.push({ term: { [field]: value } });
           } else {
@@ -62,20 +62,20 @@ export class SearchService extends PubmanRestService {
     let query = bodyBuilder();
 
     request.searchTerms.forEach(element => {
-      let field = element.field;
-      let value: string = element.searchTerm;
+      const field = element.field;
+      const value: string = element.searchTerm;
       switch (element.type) {
-        case "must":
-          query = query.query("match", field, value);
+        case 'must':
+          query = query.query('match', field, value);
           break;
-        case "must_not":
-          query = query.notFilter("term", field, value);
+        case 'must_not':
+          query = query.notFilter('term', field, value);
           break;
-        case "filter":
-          query = query.filter("term", field, value);
+        case 'filter':
+          query = query.filter('term', field, value);
           break;
-        case "should":
-          query = query.orFilter("term", field, value);
+        case 'should':
+          query = query.orFilter('term', field, value);
           break;
         default:
       }

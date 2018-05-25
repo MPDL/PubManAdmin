@@ -5,7 +5,7 @@ import { IndicesComponent } from './indices.component';
 import { IndicesDashboardComponent } from './indices-dashboard/indices-dashboard.component';
 import { IndicesListComponent } from './indices-list/indices-list.component';
 import { IndicesDetailComponent } from './indices-detail/indices-detail.component';
-import { ConeListComponent } from './cone-list/cone-list.component'; 
+import { ConeListComponent } from './cone-list/cone-list.component';
 
 
 const routes: Routes = [

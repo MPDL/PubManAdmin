@@ -7,7 +7,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../common/model';
 
 @Component({
-  selector: 'authentication',
+  selector: 'authentication-component',
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.scss']
 })
@@ -17,7 +17,7 @@ export class AuthenticationComponent implements OnInit {
   loggedIn = false;
   hasToken = false;
   empty = true;
-  token: string = '';
+  token = '';
   user: User;
 
   constructor(
@@ -27,7 +27,7 @@ export class AuthenticationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-   
+
   }
 
   login() {
@@ -47,8 +47,8 @@ export class AuthenticationComponent implements OnInit {
 
   logout() {
     this.authentication.logout();
-    this.credentials.username = "";
-    this.credentials.password = "";
+    this.credentials.username = '';
+    this.credentials.password = '';
     this.loggedIn = false;
     // required because ngForm cannot be reset.
     // restore 'pristine' class state.
@@ -57,7 +57,7 @@ export class AuthenticationComponent implements OnInit {
   }
 
   who() {
-    if (this.token != '') {
+    if (this.token !== '') {
       this.authentication.who(this.token)
         .subscribe(
         data => {

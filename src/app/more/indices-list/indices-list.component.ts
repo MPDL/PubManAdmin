@@ -14,9 +14,9 @@ export class IndicesListComponent implements OnInit {
   indices: any[];
 
   constructor(private service: IndicesService,
-      private route: ActivatedRoute,
-      private router: Router,
-      private message: MessagesService) { }
+    private route: ActivatedRoute,
+    private router: Router,
+    private message: MessagesService) { }
 
   ngOnInit() {
     this.service.listAllIndices(indices => {
@@ -24,23 +24,23 @@ export class IndicesListComponent implements OnInit {
     });
   }
 
-goTo(destination) {
-      this.router.navigate(["more/list", destination]);
+  goTo(destination) {
+    this.router.navigate(['more/list', destination]);
 
-}
-
-delete(index) {
-  if (confirm("you're about 2 delete " + index.index)) {
-    this.service.delete(index.index, deleted => {
-      let pos = this.indices.indexOf(index);
-      this.indices.splice(pos, 1);
-      this.message.success('deleted ' + JSON.stringify(deleted));
-    });
   }
-}
 
-addNewIndex() {
-  this.goTo('new');
-}
+  delete(index) {
+    if (confirm('you\'re about 2 delete ' + index.index)) {
+      this.service.delete(index.index, deleted => {
+        const pos = this.indices.indexOf(index);
+        this.indices.splice(pos, 1);
+        this.message.success('deleted ' + JSON.stringify(deleted));
+      });
+    }
+  }
+
+  addNewIndex() {
+    this.goTo('new');
+  }
 
 }

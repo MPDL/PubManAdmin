@@ -19,17 +19,17 @@ export class ContextDetailsResolverService implements Resolve<any> {
         private router: Router) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
-        let id = route.params['id'];
-        if (id == 'new ctx') {
-            let ctx = new Context();
-            ctx.name = "new ctx";
+        const id = route.params['id'];
+        if (id === 'new ctx') {
+            const ctx = new Context();
+            ctx.name = 'new ctx';
             ctx.responsibleAffiliations = [];
             ctx.allowedGenres = [];
             ctx.allowedSubjectClassifications = [];
-            ctx.workflow = "SIMPLE";
+            ctx.workflow = 'SIMPLE';
             return of(ctx);
         } else {
-            let token = route.params['token'];
+            const token = route.params['token'];
             return this.ctxSvc.get(props.pubman_rest_url_ctxs, id, token)
                 .pipe(
                     first(),

@@ -1,6 +1,6 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
-import { map, catchError } from "rxjs/operators";
+import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
@@ -22,8 +22,8 @@ export class OrganizationsService extends PubmanRestService {
     }
 
     listChildren4Ou(id: string, token: string): Observable<any[]> {
-        let headers = this.addHeaders(token, false);
-        let url =  this.ous_rest_url + '/' + id + '/children';
+        const headers = this.addHeaders(token, false);
+        const url =  this.ous_rest_url + '/' + id + '/children';
         return this.httpc.request('GET', url, {
             headers: headers
         }).pipe(
@@ -38,16 +38,16 @@ export class OrganizationsService extends PubmanRestService {
     }
 
     openOu(ou: any, token: string): Observable<number> {
-        let ouUrl = this.ous_rest_url + '/' + ou.objectId + '/open';
-        let body = ou.lastModificationDate;
-        let headers = this.addHeaders(token, true);
+        const ouUrl = this.ous_rest_url + '/' + ou.objectId + '/open';
+        const body = ou.lastModificationDate;
+        const headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ouUrl, headers, body);
     }
 
     closeOu(ou: any, token: string): Observable<number> {
-        let ouUrl = this.ous_rest_url + '/' + ou.objectId + '/close';
-        let body = ou.lastModificationDate;
-        let headers = this.addHeaders(token, true);
+        const ouUrl = this.ous_rest_url + '/' + ou.objectId + '/close';
+        const body = ou.lastModificationDate;
+        const headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ouUrl, headers, body);
     }
 

@@ -17,7 +17,7 @@ import { props } from '../../base/common/admintool.properties';
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
 
-  resettedPassword: string = "hard2Remember";
+  resettedPassword: string = 'hard2Remember';
   selected: User;
   ous: any[];
   selectedOu: any;
@@ -53,7 +53,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.queryParams['admin']) {
       this.isAdmin = this.route.snapshot.queryParams['admin'];
     }
-    if (this.selected.loginname == "new user") {
+    if (this.selected.loginname === 'new user') {
       this.isNewUser = true;
       this.isNewOu = true;
     }
@@ -62,7 +62,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    this.elasticService.listOuNames("parent", "persistent13", (names) => {
+    this.elasticService.listOuNames('parent', 'persistent13', (names) => {
       this.ous = names;
       /*
       this.ous.sort((a, b) => {
@@ -102,14 +102,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   goToRef(grant) {
     this.selectedGrant = grant;
-    let ref = this.selectedGrant.objectRef;
+    const ref = this.selectedGrant.objectRef;
     if (ref === undefined) {
-      this.messageService.warning("the reference of the selected grant is undefined!");
+      this.messageService.warning('the reference of the selected grant is undefined!');
     } else {
-      if (ref.startsWith("ou")) {
+      if (ref.startsWith('ou')) {
         this.router.navigate(['/organization', ref]);
       } else {
-        if (ref.startsWith("ctx")) {
+        if (ref.startsWith('ctx')) {
           this.router.navigate(['/context', ref]);
         }
       }
@@ -121,12 +121,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   gotoList() {
-    let userId = this.selected ? this.selected.loginname : null;
+    const userId = this.selected ? this.selected.loginname : null;
     this.router.navigate(['/users', { id: userId }]);
   }
 
   notAllowed(whatthehackever) {
-    this.messageService.warning("you're not authorized !" )
+    this.messageService.warning('you\'re not authorized !' )
   }
 
   resetPassword(user) {
@@ -134,7 +134,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.usersService.changePassword(user, this.token)
       .subscribe(u => {
         this.selected = u;
-        this.messageService.warning(u.loginname + ":  password was reset to: " + user.password);
+        this.messageService.warning(u.loginname + ':  password was reset to: ' + user.password);
       }, error => {
         this.messageService.error(error);
       });
@@ -144,7 +144,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.usersService.changePassword(user, this.token)
     .subscribe(u => {
       this.selected = u;
-      this.messageService.warning(u.loginname + ":  password has changed to: " + user.password);
+      this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
     }, error => {
       this.messageService.error(error);
     });
@@ -152,19 +152,19 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   activateUser(user) {
     this.selected = user;
-    if (this.selected.active == true) {
+    if (this.selected.active === true) {
       this.usersService.deactivate(this.selected, this.token)
-        .subscribe(user => {
-          this.selected = user;
-          this.messageService.success("Deactivated " + this.selected.objectId);
+        .subscribe(user2deactivate => {
+          this.selected = user2deactivate;
+          this.messageService.success('Deactivated ' + this.selected.objectId);
         }, error => {
           this.messageService.error(error);
         });
     } else {
       this.usersService.activate(this.selected, this.token)
-        .subscribe(user => {
-          this.selected = user;
-          this.messageService.success("Activated " + this.selected.objectId);
+        .subscribe(user2activate => {
+          this.selected = user2activate;
+          this.messageService.success('Activated ' + this.selected.objectId);
         }, error => {
           this.messageService.error(error);
         });
@@ -173,22 +173,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   save(user2save) {
     this.selected = user2save;
-    if (this.selected.loginname.includes("new user")) {
-      this.messageService.warning("userid MUST NOT be new user");
+    if (this.selected.loginname.includes('new user')) {
+      this.messageService.warning('userid MUST NOT be new user');
       return;
     }
     if (this.selected.name == null) {
-      this.messageService.warning("name MUST NOT be empty");
+      this.messageService.warning('name MUST NOT be empty');
       return;
     }
     if (this.isNewUser) {
       if (this.selectedOu != null) {
-        let ou_id = this.selectedOu.objectId;
-        let aff = new BasicRO();
+        const ou_id = this.selectedOu.objectId;
+        const aff = new BasicRO();
         aff.objectId = ou_id;
         this.selected.affiliation = aff;
       } else {
-        this.messageService.warning("you MUST select an organization");
+        this.messageService.warning('you MUST select an organization');
         return;
       }
       this.usersService.post(props.pubman_rest_url_users, this.selected, this.token)
@@ -206,16 +206,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     } else {
       if (this.isNewOu) {
         if (this.selectedOu != null) {
-          let ou_id = this.selectedOu.objectId;
-          let aff = new BasicRO();
+          const ou_id = this.selectedOu.objectId;
+          const aff = new BasicRO();
           aff.objectId = ou_id;
           this.selected.affiliation = aff;
         } else {
-          this.messageService.warning("you MUST select an organization");
+          this.messageService.warning('you MUST select an organization');
           return;
         }
       }
-      this.usersService.put(props.pubman_rest_url_users + "/" + this.selected.objectId, this.selected, this.token)
+      this.usersService.put(props.pubman_rest_url_users + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {
           this.messageService.success('updated ' + this.selected.loginname + ' ' + data);
@@ -233,7 +233,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   removeGrants() {
     this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(user => {
       this.selected = user;
-      this.messageService.success("removed Grants from " + this.selected.loginname);
+      this.messageService.success('removed Grants from ' + this.selected.loginname);
       this.selectedGrants = null;
       this.grants2remove = false;
     }, error => {

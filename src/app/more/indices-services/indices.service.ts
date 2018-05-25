@@ -37,7 +37,7 @@ export class IndicesService extends ElasticService {
 
     listAllIndices(callback) {
         this.client.cat.indices({
-            format: "json"
+            format: 'json'
         }, (err, res) => {
             if (err) {
                 this.messages.error(err);
@@ -50,7 +50,7 @@ export class IndicesService extends ElasticService {
     getMapping4Index(index: string, type: string, callback) {
         this.client.indices.getMapping({
             index: index,
-            //type: type,
+            // type: type,
         }, (err, res) => {
             if (err) {
                 this.messages.error(err);
@@ -73,7 +73,7 @@ export class IndicesService extends ElasticService {
     }
 
     localNodeInfo(callback) {
-        this.client.cluster.state({metric:['master_node', 'nodes']},
+        this.client.cluster.state({metric: ['master_node', 'nodes']},
         (err, res) => {
             if (err) {
                 this.messages.error(err);
@@ -82,4 +82,4 @@ export class IndicesService extends ElasticService {
             }
         });
     }
-} 
+}

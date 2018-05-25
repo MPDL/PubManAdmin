@@ -10,18 +10,18 @@ export class Elastic4ousService extends ElasticService {
   constructor(messages: MessagesService) { super(messages) }
 
   ous4auto(term, callback) {
-        let contexts = Array<any>();
+        const contexts = Array<any>();
         if (term) {
             this.client.search({
                 index: props.ou_index_name,
-                q: "metadata.name.auto:" + term,
-                sort: "metadata.name.keyword:asc"
+                q: 'metadata.name.auto:' + term,
+                sort: 'metadata.name.keyword:asc'
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);
                 } else {
                     response.hits.hits.forEach(hit => {
-                        let ctxname = JSON.parse(JSON.stringify(hit._source));
+                        const ctxname = JSON.parse(JSON.stringify(hit._source));
                         contexts.push(ctxname);
                     });
                     callback(contexts);
@@ -32,18 +32,18 @@ export class Elastic4ousService extends ElasticService {
 
   listOuNames(parent: string, id: string, callback): any {
     let queryString: string;
-    if (parent.match("parent")) {
-      queryString = "parentAffiliation.objectId:*" + id;
-    } else if (parent.match("predecessor")) {
-      queryString = "objectId:*" + id;
+    if (parent.match('parent')) {
+      queryString = 'parentAffiliation.objectId:*' + id;
+    } else if (parent.match('predecessor')) {
+      queryString = 'objectId:*' + id;
     }
 
     if (queryString.length > 0) {
       return this.client.search({
         index: props.ou_index_name,
-        // q: "parentAffiliation.objectId:*" + parent,
+        // q: 'parentAffiliation.objectId:*' + parent,
         q: queryString,
-        _sourceInclude: "objectId, metadata.name, hasChildren, publicStatus",
+        _sourceInclude: 'objectId, metadata.name, hasChildren, publicStatus',
         size: 100,
         sort: 'metadata.name.keyword:asc'
       },
@@ -52,10 +52,10 @@ export class Elastic4ousService extends ElasticService {
             this.messages.error(error);
           }
           if (response) {
-            let hitList = Array<any>();
+            const hitList = Array<any>();
             response.hits.hits.forEach((hit) => {
-              let source = JSON.stringify(hit._source);
-              let json = JSON.parse(source);
+              const source = JSON.stringify(hit._source);
+              const json = JSON.parse(source);
               hitList.push(json);
             });
             callback(hitList)
@@ -73,10 +73,10 @@ export class Elastic4ousService extends ElasticService {
         this.messages.error(error)
       }
       if (response) {
-        let hitList = Array<any>();
+        const hitList = Array<any>();
         response.hits.hits.forEach((hit) => {
-          let source = JSON.stringify(hit._source);
-          let json = JSON.parse(source);
+          const source = JSON.stringify(hit._source);
+          const json = JSON.parse(source);
           hitList.push(json);
         })
         callback(hitList)
