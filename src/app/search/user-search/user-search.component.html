@@ -8,7 +8,7 @@
                 <div formArrayName="searchTerms">
                     <div *ngFor="let searchTerm of searchTerms.controls; let i=index">
                         <div [formGroupName]="i">
-                            <search-term [searchTermGroup]="searchTerms.controls[i]" [fields]="fields2Select" (notice)="handleNotification($event, i)"></search-term>
+                            <search-term [searchTermForm]="searchTerms.controls[i]" [fields]="fields2Select" (notice)="handleNotification($event, i)"></search-term>
                         </div>
                     </div>
                 </div>
