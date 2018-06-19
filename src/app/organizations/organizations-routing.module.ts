@@ -3,13 +3,15 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminGuard } from '../base/services/admin-guard.service';
 import { OrganizationListComponent } from './organization-list/organization-list.component';
+import { OrganizationTreeComponent } from './organization-tree/organization-tree.component';
+
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { OrganizationDetailsResolverService } from './services/organization-details-resolver.service';
 
 const routes: Routes = [
   {
     path: 'organizations',
-    component: OrganizationListComponent
+    component: OrganizationTreeComponent
   },
   {
     path: 'organization/:id',

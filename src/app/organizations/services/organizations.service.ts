@@ -4,9 +4,6 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
-
-
-
 import { props } from '../../base/common/admintool.properties';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
@@ -19,6 +16,22 @@ export class OrganizationsService extends PubmanRestService {
 
     constructor(protected httpc: HttpClient) {
         super(httpc);
+    }
+
+    getOuById(id: string, token: string): Observable<any> {
+        const headers = this.addHeaders(token, false);
+        const url =  this.ous_rest_url + '/' + id;
+        return this.httpc.request('GET', url, {
+            headers: headers
+        }).pipe(
+            map((response: HttpResponse<any>) => {
+                this.ou = response;
+                return this.ou;
+            }),
+            catchError((error) => {
+                return observableThrowError(JSON.stringify(error) || 'Error getting children 4 ' + id);
+            })
+        )
     }
 
     listChildren4Ou(id: string, token: string): Observable<any[]> {

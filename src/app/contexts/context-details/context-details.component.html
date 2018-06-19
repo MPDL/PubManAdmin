@@ -86,7 +86,7 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div selected-item-color="#91eed2" class="list-group-item list-group-item-success p-0" *ngFor="let genre of allowedGenres"
+                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let genre of allowedGenres"
                   [class.selected]="isSelected(genre)">
                   <span class="col-11">
                     <label class="col-form-label-sm p-0">{{genre}}</label>
@@ -121,7 +121,7 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div selected-item-color="#91eed2" class="list-group-item list-group-item-success p-0" *ngFor="let subject of allowedSubjects"
+                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let subject of allowedSubjects"
                   [class.selected]="isSelected(subject)">
                   <span class="col-sm-11">
                     <label class="col-form-label-sm p-0">{{subject}}</label>
@@ -172,5 +172,5 @@
       </div>
     </form>
   </div>
-  <pre>{{f.value | json}}</pre>
+  <!--<pre>{{f.value | json}}</pre>-->
 </div>

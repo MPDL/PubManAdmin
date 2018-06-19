@@ -114,4 +114,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/context', term.objectId]);
     this.contextnames = [];
   }
+
+  delete(ctx) {
+    alert('deleting '+ctx.name+' not yet implemented');
+  }
 }

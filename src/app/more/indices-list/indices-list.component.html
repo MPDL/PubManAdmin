@@ -8,7 +8,7 @@
 
   <ul class="list-group">
 
-    <div selected-item-color class="list-group-item text-primary p-1" *ngFor="let index of indices" (click)="goTo(index.index)">
+    <div class="list-group-item list-group-item-action text-primary py-0" *ngFor="let index of indices" (click)="goTo(index.index)">
       <span class="col-sm-11">{{index.health}}   {{index['docs.count']}}   ({{index.index}})</span>
       <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(index); $event.stopPropagation()"
                 name="delete" value="x" /></span>

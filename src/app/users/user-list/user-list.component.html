@@ -12,7 +12,7 @@
           placeholder="search by name" id="searchTerm">
         <div *ngIf="usernames.length > 0">
           <ul class="list-group" *ngFor="let username of usernames" (click-outside)="close()">
-            <li selected-item-color="lightgray" class="list-group-item-primary text-left" (class.selected)="isSelectedName(username)" (keydown)="scrollDown($event)"
+            <li class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(username)" (keydown)="scrollDown($event)"
               (click)="select(username)"><small>{{username.name}}</small></li>
           </ul>
         </div>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <ul class="list-group">
-      <div selected-item-color="lightgray" class="list-group-item list-group-item-primary text-primary p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
+      <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
         [class.active]="isSelected(user)" (click)="onSelect(user)">
         <!--<span class="col-sm-1">{{user.objectId}}</span>-->
         <span class="col-sm-11">{{user.name}} ({{user.loginname}})</span>

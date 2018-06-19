@@ -17,7 +17,7 @@
                      placeholder="search by name" id="contextSearchTerm">
                 <div *ngIf="contextnames.length > 0">
                     <ul class="list-group" *ngFor="let contextname of contextnames" (click-outside)="close()">
-                        <li selected-item-color="#91eed2" class="list-group-item-success text-left" (click)="select(contextname)"><small>{{contextname.name}}</small></li>
+                        <li class="list-group-item-success list-group-item-action py-0 text-left" (click)="select(contextname)"><small>{{contextname.name}}</small></li>
                     </ul>
                 </div>
             </div>
@@ -28,14 +28,12 @@
             </div>
         </div>
         <ul class="list-group">
-            <div selected-item-color="#91eed2" class="list-group-item list-group-item-success p-1" *ngFor="let ctx of ctxs | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" [class.selected]="isSelected(ctx)"
+            <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let ctx of ctxs | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" [class.selected]="isSelected(ctx)"
                 (click)="goTo(ctx)">
                 <!--<span class="col-sm-1">{{ctx.objectId}}</span>-->
-                <span class="col-sm-12">{{ctx.name}}</span>
-                <!--
+                <span class="col-sm-11">{{ctx.name}}</span>
                         <span class="col-sm-1"> <input type="submit" class="btn btn-outline-success btn-sm float-right" (click)="delete(ctx); $event.stopPropagation()"
                                 name="delete" value="x" /></span>
-                        -->
             </div>
         </ul>
     </div>

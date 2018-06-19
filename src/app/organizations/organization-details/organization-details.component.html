@@ -95,7 +95,7 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let name of selected.metadata.alternativeNames"
+                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let name of selected.metadata.alternativeNames"
                   [class.selected]="isSelected(name)">
                   <div class="row">
                     <span class="col-11">
@@ -132,7 +132,7 @@
           <div class="form-group">
             <!--<div class="col-12">-->
             <ul class="list-group">
-              <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let desc of selected.metadata.descriptions"
+              <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let desc of selected.metadata.descriptions"
                 [class.selected]="isSelected(desc)">
                 <div class="row">
                   <span class="col-11 pt-0 pb-0">
@@ -164,7 +164,7 @@
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let id of selected.metadata.identifiers"
+                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let id of selected.metadata.identifiers"
                   [class.selected]="isSelected(id)">
                   <div class="row">
                     <span class="col-11">
@@ -189,7 +189,7 @@
               <div class="col-12">
               -->
           <ul class="list-group">
-            <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info pt-0 pb-0" *ngFor="let child of children" (click)="showDetails(child.objectId)">
+            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let child of children" (click)="showDetails(child.objectId)">
               <div class="row">
                 <span class="col-3">
                   <label class="col-form-label-sm p-0">{{child.objectId}}</label>
@@ -217,7 +217,7 @@
               <div class="col-12">
               -->
           <ul class="list-group">
-            <div selected-item-color="#8ee4f1" class="list-group-item list-group-item-info p-0" *ngFor="let predecessor of predecessors"
+            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let predecessor of predecessors"
               (click)="showDetails(predecessor.objectId)">
               <div class="row">
                 <span class="col-3">
