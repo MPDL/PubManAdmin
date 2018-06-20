@@ -22,7 +22,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                     if (err.error instanceof Error) {
                         this.messages.error(`${err.status}, ` + err.error.message);
                     } else {
-                        this.messages.error(`${err.status}, ERROR: ${err.error}`);
+                        this.messages.error(`${err.status}, ERROR: `+JSON.stringify(err.error));
                     }
                     return empty();
                 })

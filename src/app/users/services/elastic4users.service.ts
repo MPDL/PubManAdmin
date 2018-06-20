@@ -111,11 +111,12 @@ export class Elastic4usersService extends ElasticService {
     }
 
     ous4auto(term, callback) {
-      const contexts = Array<any>();
+      const ous = Array<any>();
       if (term) {
           this.client.search({
               index: props.ou_index_name,
-              q: 'metadata.name.auto:' + term,
+              // q: 'metadata.name.auto:' + term,
+              body: term,
               sort: 'metadata.name.keyword:asc',
               size: 25
           }, (error, response) => {
@@ -123,10 +124,10 @@ export class Elastic4usersService extends ElasticService {
                   this.messages.error(error);
               } else {
                   response.hits.hits.forEach(hit => {
-                      const ctxname = JSON.parse(JSON.stringify(hit._source));
-                      contexts.push(ctxname);
+                      const ouname = JSON.parse(JSON.stringify(hit._source));
+                      ous.push(ouname);
                   });
-                  callback(contexts);
+                  callback(ous);
               }
           });
       }

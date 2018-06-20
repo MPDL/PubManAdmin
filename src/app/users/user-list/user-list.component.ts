@@ -21,6 +21,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   users: User[];
   selected: User;
   selectedUserName: User;
+  selectedOUName: OU;
   selectedNameIndex = 0;
 
   loggedInUser: User;
@@ -32,7 +33,6 @@ export class UserListComponent implements OnInit, OnDestroy {
   adminSubscription: Subscription;
   comingFrom;
   total: number;
-  loading: boolean = false;
   pageSize: number = 25;
   currentPage: number = 1;
   usernames: User[] = [];
@@ -90,16 +90,25 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     if (this.token != null) {
-      this.loading = true;
-      this.usersService.getAll(props.pubman_rest_url_users, this.token, page)
-        .subscribe(result => {
-          this.users = result.list;
-          this.total = result.records;
-        }, (err) => {
-          this.messageService.error(err);
-        });
-      this.currentPage = page;
-      this.loading = false;
+      if (this.selectedOUName === undefined) {
+        this.usersService.getAll(props.pubman_rest_url_users, this.token, page)
+          .subscribe(result => {
+            this.users = result.list;
+            this.total = result.records;
+          }, (err) => {
+            this.messageService.error(err);
+          });
+        this.currentPage = page;
+      } else {
+        this.usersService.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + this.selectedOUName.name, page)
+          .subscribe(result => {
+            this.users = result.list;
+            this.total = result.records;
+          }, (err) => {
+            this.messageService.error(err);
+          });
+        this.currentPage = page;
+      }
     }
   }
 
@@ -159,8 +168,25 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (a.includes('\'')) {
       this.messageService.warning('NO QUOTES!!!')
     } else {
+      let body = {
+        "query": {
+          "bool": {
+            "filter": {
+              "term": {
+                "parentAffiliation.objectId": "ou_persistent13"
+              }
+            },
+            "must": {
+              "term": {
+                "metadata.name.auto": a
+              }
+            }
+          }
+        }
+      };
+
       const ouNames: OU[] = [];
-      this.elastic.ous4auto(a, (names) => {
+      this.elastic.ous4auto(body, (names) => {
         names.forEach(name => ouNames.push(name));
         if (ouNames.length > 0) {
           this.ounames = ouNames;
@@ -172,8 +198,19 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   filter(ou) {
-    alert('implementing filter 4 '+ou.name)
-
+    this.selectedOUName = ou;
+    if (this.token != null) {
+      this.currentPage = 1;
+      this.usersService.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + ou.name, 1)
+        .subscribe(res => {
+          this.users = res.list;
+          this.total = res.records;
+        }, err => {
+          this.messageService.error(err);
+        });
+    } else {
+      this.messageService.warning('no token, no users!')
+    }
   }
 
   closeUserNames() {
@@ -200,5 +237,5 @@ export class UserListComponent implements OnInit, OnDestroy {
   isSelectedName(user: User) {
     return this.selectedUserName ? this.selectedUserName.loginname === user.loginname : false;
   }
-  
+
 }
