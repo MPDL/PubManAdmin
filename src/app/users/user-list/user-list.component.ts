@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-
-
-import { Observable ,  Subscription } from 'rxjs';
-
-import { User, Grant } from '../../base/common/model';
+import { User, OU } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { Elastic4usersService } from '../services/elastic4users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
@@ -39,8 +36,9 @@ export class UserListComponent implements OnInit, OnDestroy {
   pageSize: number = 25;
   currentPage: number = 1;
   usernames: User[] = [];
+  ounames: OU[] = [];
   userSearchTerm;
-
+  ouSearchTerm;
 
   constructor(
     private usersService: UsersService,
@@ -157,9 +155,35 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  close() {
+  getOUNames(a: string) {
+    if (a.includes('\'')) {
+      this.messageService.warning('NO QUOTES!!!')
+    } else {
+      const ouNames: OU[] = [];
+      this.elastic.ous4auto(a, (names) => {
+        names.forEach(name => ouNames.push(name));
+        if (ouNames.length > 0) {
+          this.ounames = ouNames;
+        } else {
+          this.ounames = [];
+        }
+      });
+    }
+  }
+
+  filter(ou) {
+    alert('implementing filter 4 '+ou.name)
+
+  }
+
+  closeUserNames() {
     this.userSearchTerm = '';
     this.usernames = [];
+  }
+
+  closeOUNames() {
+    this.ouSearchTerm = '';
+    this.ounames = [];
   }
 
   select(term) {
@@ -176,14 +200,5 @@ export class UserListComponent implements OnInit, OnDestroy {
   isSelectedName(user: User) {
     return this.selectedUserName ? this.selectedUserName.loginname === user.loginname : false;
   }
-  scrollDown(event) {
-    event.preventDefault();
-    if (event.keyCode === 40) {
-      this.selectedUserName = this.usernames[++this.selectedNameIndex];
-    } else if (event.keyCode === 38) {
-      this.selectedUserName = this.usernames[--this.selectedNameIndex];
-    } else {
-      return;
-    }
-  }
+  
 }

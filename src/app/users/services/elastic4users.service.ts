@@ -25,7 +25,11 @@ export class Elastic4usersService extends ElasticService {
             response.hits.hits.forEach(hit => hitList.push(hit._source));
             const result = JSON.stringify(hitList);
             const name = JSON.parse(result);
-            callback(name[0].name);
+            if (name === undefined) {
+              callback('undefined');
+            } else {
+              callback(name[0].name);
+            }
           }
         });
 
@@ -90,7 +94,8 @@ export class Elastic4usersService extends ElasticService {
             this.client.search({
                 index: props.user_index_name,
                 q: 'name.auto:' + term,
-                sort: 'name.keyword:asc'
+                sort: 'name.keyword:asc',
+                size: 25
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);
@@ -104,4 +109,26 @@ export class Elastic4usersService extends ElasticService {
             });
         }
     }
+
+    ous4auto(term, callback) {
+      const contexts = Array<any>();
+      if (term) {
+          this.client.search({
+              index: props.ou_index_name,
+              q: 'metadata.name.auto:' + term,
+              sort: 'metadata.name.keyword:asc',
+              size: 25
+          }, (error, response) => {
+              if (error) {
+                  this.messages.error(error);
+              } else {
+                  response.hits.hits.forEach(hit => {
+                      const ctxname = JSON.parse(JSON.stringify(hit._source));
+                      contexts.push(ctxname);
+                  });
+                  callback(contexts);
+              }
+          });
+      }
+  }
 }

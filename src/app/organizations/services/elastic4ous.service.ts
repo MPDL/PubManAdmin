@@ -15,7 +15,8 @@ export class Elastic4ousService extends ElasticService {
             this.client.search({
                 index: props.ou_index_name,
                 q: 'metadata.name.auto:' + term,
-                sort: 'metadata.name.keyword:asc'
+                sort: 'metadata.name.keyword:asc',
+                size: 25
             }, (error, response) => {
                 if (error) {
                     this.messages.error(error);

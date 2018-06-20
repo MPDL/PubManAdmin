@@ -2,7 +2,7 @@
   <h3 class="text-info">Organizational Units Administration</h3>
   <div class="card text-white bg-info text-right">
     <div class="card-body">
-      <h4 class="card-title">Max Planck Society</h4>
+      <h4 class="card-title">Organizations</h4>
       <input type="submit" class="btn btn-info btn-sm" name="add" value="+" (click)="addNewOrganization()" />
     </div>
     <div class="row">
@@ -10,7 +10,7 @@
         <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)"
           placeholder="search by name" id="searchTerm">
         <div *ngIf="ounames.length > 0">
-          <ul class="list-group" *ngFor="let name of ounames" (click-outside)="close()">
+          <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
             <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-left" (click)="select(name)">
               <small>{{name.metadata.name}}</small>
             </li>
@@ -20,11 +20,11 @@
     </div>
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
-        <span class="mr-3"></span>
+        <span class="mr-3 boldandlarger">-</span>
         {{node.ouName}}
       </cdk-tree-node>
       <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
-        <span class="mr-2" cdkTreeNodeToggle (click)="loadChildren(node)">
+        <span class="mr-2 boldandlarger" cdkTreeNodeToggle (click)="loadChildren(node)">
           {{treeControl.isExpanded(node) ? '--' : '>'}}
         </span>
         {{node.ouName}}

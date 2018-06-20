@@ -9,22 +9,21 @@
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="loginname" [(ngModel)]="selected.loginname" id="selected-loginname"
                         required minlength="4" value-not-allowed="new user" #loginname="ngModel" [readonly]="!isNewUser">
-                        <div *ngIf="loginname.invalid && (loginname.dirty || loginname.touched)" class="text-danger">
-                            <div *ngIf="loginname.errors.required">
-                                loginname is required.
-                            </div>
-                            <div *ngIf="loginname.errors.minlength">
-                                loginname must be at least 4 characters long.
-                            </div>
-                            <div *ngIf="loginname.errors.value-not-allowed">
-                                loginname MUST NOT be new user.
-                            </div>
-                          </div>
+                    <div *ngIf="loginname.invalid && (loginname.dirty || loginname.touched)" class="text-danger">
+                        <div *ngIf="loginname.errors.required">
+                            loginname is required.
+                        </div>
+                        <div *ngIf="loginname.errors.minlength">
+                            loginname must be at least 4 characters long.
+                        </div>
+                        <div *ngIf="loginname.errors.value-not-allowed">
+                            loginname MUST NOT be new user.
+                        </div>
+                    </div>
                 </div>
                 <label *ngIf="!isNewUser" for="selected-id" class="col-1 col-form-label col-form-label-sm">id</label>
                 <div *ngIf="!isNewUser" class="col-3">
-                    <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="selected.objectId" id="selected-id"
-                        readonly>
+                    <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="selected.objectId" id="selected-id" readonly>
                 </div>
             </div>
             <div class="form-group row w-100">
@@ -52,12 +51,13 @@
             <div class="form-group row w-100">
                 <label for="selected-name" class="col-2 col-form-label col-form-label-sm">name</label>
                 <div class="col-10">
-                    <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="selected.name" id="selected-name" required #name="ngModel">
+                    <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="selected.name" id="selected-name" required
+                        #name="ngModel">
                     <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
                         <div *ngIf="name.errors.required">
                             name is required.
                         </div>
-                      </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group row w-100">
@@ -97,13 +97,19 @@
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-right">
                         <ul class="list-group">
-                            <li class="list-group-item-primary list-group-item-action row py-0" *ngFor="let usergrant of selected.grantList" (click)="goToRef(usergrant)">
-                                <label class="col-6 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
-                                <label class="col-5 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
-                                <span class="col-1">
-                                    <input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()" name="deleteGrant"
-                                        value="x" />
-                                </span>
+                            <li class="list-group-item-primary list-group-item-action py-0" *ngFor="let usergrant of selected.grantList" (click)="goToRef(usergrant)">
+                                <div class="row">
+                                    <span class="col-6 text-left">
+                                        <label class="col-form-label-sm p-0">   {{usergrant.role}}</label>
+                                    </span>
+                                    <span class="col-5 text-left">
+                                        <label class="col-form-label-sm p-0" (mouseover)="viewRefTitle(usergrant)" data-toggle="tooltip" data-placement="right" title="{{ctxTitle}}">{{usergrant.objectRef}}</label>
+                                    </span>
+                                    <span class="col-1">
+                                        <input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()" name="deleteGrant"
+                                            value="x" />
+                                    </span>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -152,8 +158,7 @@
                     </div>
                     <label *ngIf="!isNewUser" for="selected-id" class="col-1 col-form-label col-form-label-sm">id</label>
                     <div *ngIf="!isNewUser" class="col-3">
-                        <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="selected.objectId" id="selected-id"
-                            readonly>
+                        <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="selected.objectId" id="selected-id" readonly>
                     </div>
                 </div>
                 <div class="form-group row w-100">
@@ -196,8 +201,8 @@
                             readonly>
                     </div>
                     <div class="col-4">
-                        <input type="button" class="btn btn-outline-primary btn-sm disabled float-right" (click)="notAllowed()" name="changeou"
-                            value="change" />
+                        <input type="button" class="btn btn-outline-primary btn-sm disabled float-right" (click)="notAllowed()" name="changeou" value="change"
+                        />
                     </div>
                 </div>
                 <div *ngIf="isNewUser || isNewOu" class="form-group row w-100">
@@ -222,13 +227,15 @@
                         <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                         <div class="col-10 text-right">
                             <ul class="list-group">
-                                <li selected-item-color="lightgray" class="list-group-item row p-0" *ngFor="let usergrant of selected.grantList" (click)="goToRef(usergrant)">
-                                    <label class="col-6 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
-                                    <label class="col-5 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
-                                    <span class="col-1">
-                                        <input type="button" class="btn btn-outline-primary btn-sm disabled" (click)="notAllowed(usergrant); $event.stopPropagation()"
-                                            name="deleteGrant" value="x" />
-                                    </span>
+                                <li selected-item-color="lightgray" class="list-group-item p-0" *ngFor="let usergrant of selected.grantList" (click)="goToRef(usergrant)">
+                                    <div class="row">
+                                        <label class="col-6 col-form-label-sm my-auto text-left">{{usergrant.role}}</label>
+                                        <label class="col-5 col-form-label-sm my-auto text-left">{{usergrant.objectRef}}</label>
+                                        <span class="col-1">
+                                            <input type="button" class="btn btn-outline-primary btn-sm disabled" (click)="notAllowed(usergrant); $event.stopPropagation()"
+                                                name="deleteGrant" value="x" />
+                                        </span>
+                                    </div>
                                 </li>
                             </ul>
                         </div>

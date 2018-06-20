@@ -117,7 +117,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   viewRefTitle(grant) {
-    this.elasticService.getContextName(grant.objectRef, name => this.ctxTitle = name);
+    const ref = grant.objectRef;
+    if (ref === undefined) {
+      this.ctxTitle = 'whay do you point here?';
+    } else {
+      if (ref.startsWith('ou')) {
+        this.elasticService.getOUName(grant.objectRef, name => this.ctxTitle = name);
+      } else {
+        if (ref.startsWith('ctx')) {
+          this.elasticService.getContextName(grant.objectRef, name => this.ctxTitle = name);
+        }
+      }
+    }
   }
 
   gotoList() {
