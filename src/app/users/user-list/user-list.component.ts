@@ -18,6 +18,7 @@ import { props } from '../../base/common/admintool.properties';
 
 export class UserListComponent implements OnInit, OnDestroy {
 
+  title: string = 'Users';
   users: User[];
   selected: User;
   selectedUserName: User;
@@ -211,6 +212,8 @@ export class UserListComponent implements OnInit, OnDestroy {
     } else {
       this.messageService.warning('no token, no users!')
     }
+    this.title = 'Users of ' + this.selectedOUName.name;
+    this.closeOUNames();
   }
 
   closeUserNames() {

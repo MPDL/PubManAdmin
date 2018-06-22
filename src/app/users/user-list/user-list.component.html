@@ -3,7 +3,7 @@
 
   <div class="card text-white bg-primary text-right">
     <div class="card-body">
-      <h4 class="card-title">Users</h4>
+      <h4 class="card-title">{{title}}</h4>
       <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewUser()" />
     </div>
     <div class="row">
@@ -11,8 +11,8 @@
         <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOUNames(ouSearchTerm)"
           placeholder="filter by organization" id="ouSearchTerm">
         <div *ngIf="ounames.length > 0">
-          <ul id="ou_suggestions" class="list-group" *ngFor="let ouname of ounames" (clickOutside)="closeOUNames()">
-            <li class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(ouname)"
+          <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOUNames()">
+            <li *ngFor="let ouname of ounames" class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(ouname)"
               (click)="filter(ouname)"><small>{{ouname.name}}</small></li>
           </ul>
         </div>
@@ -23,8 +23,8 @@
         <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="userSearchTerm" (keyup)="getUserNames(userSearchTerm)"
           placeholder="search by name" id="searchTerm">
         <div *ngIf="usernames.length > 0">
-          <ul id="user_suggestions" class="list-group" *ngFor="let username of usernames" (clickOutside)="closeUserNames()">
-            <li class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(username)"
+          <ul id="user_suggestions" class="list-group" (clickOutside)="closeUserNames()">
+            <li *ngFor="let username of usernames" class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(username)"
               (click)="select(username)"><small>{{username.name}}</small></li>
           </ul>
         </div>
@@ -39,7 +39,6 @@
     <ul class="list-group">
       <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
         (click)="onSelect(user)">
-        <!--<span class="col-sm-1">{{user.objectId}}</span>-->
         <span class="col-sm-11">{{user.name}} ({{user.loginname}})</span>
         <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
                 name="delete" value="x" /></span>

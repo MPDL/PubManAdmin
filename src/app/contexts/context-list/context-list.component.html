@@ -3,21 +3,28 @@
 
     <div class="card text-white bg-success text-right">
         <div class="card-body">
-            <h4 class="card-title">Contexts</h4>
+            <h4 class="card-title">{{title}}</h4>
             <input type="submit" class="btn btn-success btn-sm" name="add" value="+" (click)="addNewContext()" />
         </div>
-        <!--
-        <div class="row w-100 justify-content-center">
-            <pagination-component (click)="updatePaginator()"></pagination-component>
-        </div>
-        -->
+        <div class="row">
+            <div class="col-4">
+              <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOUNames(ouSearchTerm)"
+                placeholder="filter by organization" id="ouSearchTerm">
+              <div *ngIf="ounames.length > 0">
+                <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOUNames()">
+                  <li *ngFor="let ouname of ounames" class="list-group-item-success list-group-item-action py-0 text-left" (class.selected)="isSelectedName(ouname)"
+                    (click)="filter(ouname)"><small>{{ouname.name}}</small></li>
+                </ul>
+              </div>
+            </div>
+          </div>
         <div class="row">
             <div class="col-4">
                 <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="contextSearchTerm" (keyup)="getContextNames(contextSearchTerm)"
                      placeholder="search by name" id="contextSearchTerm">
                 <div *ngIf="contextnames.length > 0">
-                    <ul class="list-group" *ngFor="let contextname of contextnames" (clickOutside)="close()">
-                        <li class="list-group-item-success list-group-item-action py-0 text-left" (click)="select(contextname)"><small>{{contextname.name}}</small></li>
+                    <ul class="list-group" (clickOutside)="close()">
+                        <li *ngFor="let contextname of contextnames" class="list-group-item-success list-group-item-action py-0 text-left" (click)="select(contextname)"><small>{{contextname.name}}</small></li>
                     </ul>
                 </div>
             </div>

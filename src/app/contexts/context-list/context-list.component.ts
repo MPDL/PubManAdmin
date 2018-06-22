@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { PaginationComponent } from '../../base/pagination/pagination.component';
 
@@ -21,9 +21,13 @@ export class ContextListComponent implements OnInit, OnDestroy {
   @ViewChild(PaginationComponent)
   private paginator: PaginationComponent;
 
+  title: string = 'Contexts';
   ctxs: any[];
   contextnames: any[] = [];
   contextSearchTerm;
+  ounames: any[] = [];
+  ouSearchTerm;
+  selectedOUName;
   selected;
   token;
   subscription: Subscription;
@@ -104,9 +108,61 @@ export class ContextListComponent implements OnInit, OnDestroy {
     });
   }
 
+  getOUNames(a: string) {
+    if (a.includes('\'')) {
+      this.message.warning('NO QUOTES!!!')
+    } else {
+      let body = {
+        "query": {
+          "bool": {
+            "filter": {
+              "term": {
+                "parentAffiliation.objectId": "ou_persistent13"
+              }
+            },
+            "must": {
+              "term": {
+                "metadata.name.auto": a
+              }
+            }
+          }
+        }
+      };
+
+      const ouNames: any[] = [];
+      this.elastic.ous4auto(body, (names) => {
+        names.forEach(name => ouNames.push(name));
+        if (ouNames.length > 0) {
+          this.ounames = ouNames;
+        } else {
+          this.ounames = [];
+        }
+      });
+    }
+  }
+
+  filter(ou) {
+    this.selectedOUName = ou;
+    this.currentPage = 1;
+    this.ctxSvc.filter(props.pubman_rest_url_ctxs, null, '?q=responsibleAffiliations.name.keyword:' + ou.name, 1)
+      .subscribe(res => {
+        this.ctxs = res.list;
+        this.total = res.records;
+      }, err => {
+        this.message.error(err);
+      });
+    this.title = 'Contexts for ' + this.selectedOUName.name;
+    this.closeOUNames();
+  }
+
   close() {
     this.contextSearchTerm = '';
     this.contextnames = [];
+  }
+
+  closeOUNames() {
+    this.ouSearchTerm = '';
+    this.ounames = [];
   }
 
   select(term) {
@@ -116,6 +172,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   delete(ctx) {
-    alert('deleting '+ctx.name+' not yet implemented');
+    alert('deleting ' + ctx.name + ' not yet implemented');
   }
 }

@@ -29,4 +29,27 @@ export class Elastic4contextsService extends ElasticService {
             });
         }
     }
+
+    ous4auto(term, callback) {
+        const ous = Array<any>();
+        if (term) {
+            this.client.search({
+                index: props.ou_index_name,
+                // q: 'metadata.name.auto:' + term,
+                body: term,
+                sort: 'metadata.name.keyword:asc',
+                size: 25
+            }, (error, response) => {
+                if (error) {
+                    this.messages.error(error);
+                } else {
+                    response.hits.hits.forEach(hit => {
+                        const ouname = JSON.parse(JSON.stringify(hit._source));
+                        ous.push(ouname);
+                    });
+                    callback(ous);
+                }
+            });
+        }
+    }
 }
