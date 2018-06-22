@@ -103,7 +103,7 @@ export class Elastic4ousService extends ElasticService {
 
   getOuById(id) {
     return this.client.get({
-      index: 'new_model_ous',
+      index: props.ou_index_name,
       type: 'organization',
       id: id
     });
@@ -111,7 +111,7 @@ export class Elastic4ousService extends ElasticService {
 
   getChildren4OU(id: string) {
     return this.client.search({
-      index: 'new_model_ous',
+      index: props.ou_index_name,
       body: '{"query": {"term": {"parentAffiliation.objectId":"' + id + '"}}}',
       size: 100,
       sort: 'name.keyword'
