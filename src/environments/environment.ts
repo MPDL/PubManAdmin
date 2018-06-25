@@ -1,8 +1,21 @@
-// The file contents for the current environment will overwrite these during build.
-// The build system defaults to the dev environment which uses `environment.ts`, but if you do
-// `ng build --env=prod` then `environment.prod.ts` will be used instead.
-// The list of which env maps to which file can be found in `.angular-cli.json`.
-
 export const environment = {
-  production: false
+  production: false,
+  dev: {
+    base_url: 'https://dev.inge.mpdl.mpg.de',
+    elastic_url: '/inge',
+    rest_url: '/rest',
+    rest_users: '/users',
+    rest_ous: '/ous',
+    rest_contexts: '/contexts',
+    rest_items: '/items',
+    item_index_name: 'new_model_items',
+    item_index_type: 'item',
+    user_index_name: 'new_model_users',
+    user_index_type: 'user',
+    ou_index_name: 'new_model_ous',
+    ou_index_type: 'organization',
+    ctx_index_name: 'new_model_contexts',
+    ctx_index_type: 'context',
+  },
+  elastic_admin: 'wilhelm',
 };

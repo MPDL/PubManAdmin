@@ -31,7 +31,7 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
           return true;
       }
       // this.router.navigate(['/home']);
-      this.message.warning('This site requires admin authorization ...')
+      this.message.warning('This site requires you to login ...')
       return false;
   }
 

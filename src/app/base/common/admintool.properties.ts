@@ -1,4 +1,5 @@
 export const props = {
+    host_base_url: 'https://dev.inge.mpdl.mpg.de',
     elastic_http_url: 'https://dev.inge.mpdl.mpg.de/inge',
     pubman_rest_url: 'https://dev.inge.mpdl.mpg.de/rest',
     pubman_rest_url_users: 'https://dev.inge.mpdl.mpg.de/rest/users',

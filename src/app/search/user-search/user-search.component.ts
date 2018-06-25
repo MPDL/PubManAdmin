@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChild, View
 import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import * as bodyBuilder from 'bodybuilder';
 
 import { MessagesService } from '../../base/services/messages.service';
@@ -125,40 +125,52 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   searchItems(body) {
-    this.currentPage = 1;
-    this.search.query(props.pubman_rest_url_users, this.token, body)
-      .subscribe(res => {
-        this.users = res.list;
-        this.total = res.records;
-      }, err => {
-        this.message.error(err);
-      });
+    if (this.token !== null) {
+      this.currentPage = 1;
+      this.search.query(props.pubman_rest_url_users, this.token, body)
+        .subscribe(res => {
+          this.users = res.list;
+          this.total = res.records;
+        }, err => {
+          this.message.error(err);
+        });
+    } else {
+      this.message.warning('no login, no users!');
+    }
   }
 
   onSelectYear(year) {
-    this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
-    this.currentPage = 1;
-    this.search.filter(props.pubman_rest_url_users, this.token, '?q=creationDate:' + year.key + '||/y', 1)
-      .subscribe(res => {
-        this.users = res.list;
-        this.total = res.records;
-      }, err => {
-        this.message.error(err);
-      });
+    if (this.token !== null) {
+      this.searchForm.reset();
+      this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
+      this.currentPage = 1;
+      this.search.filter(props.pubman_rest_url_users, this.token, '?q=creationDate:' + year.key + '||/y', 1)
+        .subscribe(res => {
+          this.users = res.list;
+          this.total = res.records;
+        }, err => {
+          this.message.error(err);
+        });
+    } else {
+      this.message.warning('no login, no users!');
+    }
   }
 
   onSelectOu(ou) {
-    this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key }]);
-    this.currentPage = 1;
-    this.search.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + ou.key, 1)
-      .subscribe(res => {
-        this.users = res.list;
-        this.total = res.records;
-      }, err => {
-        this.message.error(err);
-      });
+    if (this.token !== null) {
+      this.searchForm.reset();
+      this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key }]);
+      this.currentPage = 1;
+      this.search.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + ou.key, 1)
+        .subscribe(res => {
+          this.users = res.list;
+          this.total = res.records;
+        }, err => {
+          this.message.error(err);
+        });
+    } else {
+      this.message.warning('no login, no users!');
+    }
   }
 
   onSelect(item) {
