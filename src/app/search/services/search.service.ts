@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-
-
 
 import * as bodyBuilder from 'bodybuilder';
-
-import { props } from '../../base/common/admintool.properties';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
 @Injectable()

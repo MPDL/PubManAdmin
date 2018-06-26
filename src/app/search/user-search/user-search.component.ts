@@ -13,7 +13,7 @@ import { SearchTermComponent } from '../search-term/search-term.component';
 import { SearchRequest, SearchTerm } from '../search-term/search.term';
 import { user_aggs } from '../search-term/search.aggregations';
 
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -24,7 +24,7 @@ import { props } from '../../base/common/admintool.properties';
 export class UserSearchComponent implements OnInit, OnDestroy {
 
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
-
+  url = environment.rest_url + environment.rest_users;
   searchForm: FormGroup;
   searchRequest: SearchRequest;
 
@@ -59,7 +59,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     for (const agg in user_aggs) {
       this.aggregationsList.push(agg);
     }
-    this.fields2Select = this.elastic.getMappingFields(props.user_index_name, props.user_index_type);
+    this.fields2Select = this.elastic.getMappingFields(environment.user_index.name, environment.user_index.type);
     this.subscription = this.login.token$.subscribe(token => {
       this.token = token;
     });
@@ -97,11 +97,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.selectedAggregation = user_aggs[agg];
     switch (agg) {
       case 'creationDate':
-        this.years = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
+        this.years = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
         this.selected = agg;
         break;
       case 'organization':
-        this.ous = this.elastic.buckets(props.user_index_name, this.selectedAggregation, false);
+        this.ous = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
         this.selected = agg;
         break;
       default:
@@ -113,7 +113,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.searchRequest = this.prepareRequest();
     const body = this.search.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
     this.loading = true;
-    this.search.query(props.pubman_rest_url_users, this.token, body)
+    this.search.query(this.url, this.token, body)
       .subscribe(res => {
         this.total = res.records;
         this.currentPage = page;
@@ -127,7 +127,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   searchItems(body) {
     if (this.token !== null) {
       this.currentPage = 1;
-      this.search.query(props.pubman_rest_url_users, this.token, body)
+      this.search.query(this.url, this.token, body)
         .subscribe(res => {
           this.users = res.list;
           this.total = res.records;
@@ -144,7 +144,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       this.searchForm.reset();
       this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
       this.currentPage = 1;
-      this.search.filter(props.pubman_rest_url_users, this.token, '?q=creationDate:' + year.key + '||/y', 1)
+      this.search.filter(this.url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
         .subscribe(res => {
           this.users = res.list;
           this.total = res.records;
@@ -161,7 +161,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       this.searchForm.reset();
       this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key }]);
       this.currentPage = 1;
-      this.search.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + ou.key, 1)
+      this.search.filter(this.url, this.token, '?q=affiliation.name.keyword:' + ou.key, 1)
         .subscribe(res => {
           this.users = res.list;
           this.total = res.records;

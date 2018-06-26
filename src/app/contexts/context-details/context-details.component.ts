@@ -10,7 +10,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { MessagesService } from '../../base/services/messages.service';
 import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model';
 
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-context-details',
@@ -18,6 +18,8 @@ import { props } from '../../base/common/admintool.properties';
   styleUrls: ['./context-details.component.scss']
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
+
+  url = environment.rest_url + environment.rest_contexts;
 
   @ViewChild('f') form: any;
 
@@ -87,7 +89,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedCtx(id) {
-    this.ctxSvc.get(props.pubman_rest_url_ctxs, id, this.token)
+    this.ctxSvc.get(this.url, id, this.token)
       .subscribe(ctx => {
         this.ctx = ctx;
       },
@@ -180,7 +182,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   delete(ctx) {
     this.ctx = ctx;
     const id = this.ctx.objectId;
-    this.ctxSvc.delete(props.pubman_rest_url_ctxs + '/' + id, this.ctx, this.token)
+    this.ctxSvc.delete(this.url + '/' + id, this.ctx, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -196,7 +198,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   save(ctx2save) {
     this.ctx = ctx2save;
-
     if (this.ctx.name.includes('new ctx')) {
       this.message.warning('name MUST NOT be new ctx');
       return;
@@ -212,7 +213,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         this.message.warning('you MUST select an organization');
         return;
       }
-      this.ctxSvc.post(props.pubman_rest_url_ctxs, this.ctx, this.token)
+      this.ctxSvc.post(this.url, this.ctx, this.token)
         .subscribe(
         data => {
           this.message.success('added new context ' + data);
@@ -226,7 +227,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
     } else {
       this.message.success('updating ' + this.ctx.objectId);
-      this.ctxSvc.put(props.pubman_rest_url_ctxs + '/' + this.ctx.objectId, this.ctx, this.token)
+      this.ctxSvc.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
         data => {
           this.message.success('updated ' + this.ctx.objectId + ' ' + data);

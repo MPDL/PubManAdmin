@@ -7,7 +7,7 @@ import { UsersService } from '../services/users.service';
 import { Elastic4usersService } from '../services/elastic4users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'user-list',
@@ -18,6 +18,7 @@ import { props } from '../../base/common/admintool.properties';
 
 export class UserListComponent implements OnInit, OnDestroy {
 
+  url = environment.rest_url + environment.rest_users;
   title: string = 'Users';
   users: User[];
   selected: User;
@@ -80,7 +81,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getAllUsersAsObservable(token, page) {
-    this.usersService.getAll(props.pubman_rest_url_users, token, page)
+    this.usersService.getAll(this.url, token, page)
       .subscribe(result => {
         this.users = result.list;
         this.total = result.records;
@@ -92,7 +93,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   getPage(page: number) {
     if (this.token != null) {
       if (this.selectedOUName === undefined) {
-        this.usersService.getAll(props.pubman_rest_url_users, this.token, page)
+        this.usersService.getAll(this.url, this.token, page)
           .subscribe(result => {
             this.users = result.list;
             this.total = result.records;
@@ -101,7 +102,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           });
         this.currentPage = page;
       } else {
-        this.usersService.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + this.selectedOUName.name, page)
+        this.usersService.filter(this.url, this.token, '?q=affiliation.name.keyword:' + this.selectedOUName.name, page)
           .subscribe(result => {
             this.users = result.list;
             this.total = result.records;
@@ -135,7 +136,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   delete(user) {
     this.selected = user;
     const id = this.selected.loginname;
-    this.usersService.delete(props.pubman_rest_url_users + '/' + this.selected.objectId, this.selected, this.token)
+    this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
         data => {
           this.messageService.success('deleted ' + id + ' ' + data);
@@ -202,7 +203,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.selectedOUName = ou;
     if (this.token != null) {
       this.currentPage = 1;
-      this.usersService.filter(props.pubman_rest_url_users, this.token, '?q=affiliation.name.keyword:' + ou.name, 1)
+      this.usersService.filter(this.url, this.token, '?q=affiliation.name.keyword:' + ou.name, 1)
         .subscribe(res => {
           this.users = res.list;
           this.total = res.records;

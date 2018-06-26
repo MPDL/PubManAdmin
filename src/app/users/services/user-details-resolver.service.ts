@@ -5,12 +5,14 @@ import { first } from 'rxjs/operators';
 
 import { UsersService } from './users.service';
 import { User, Grant, BasicRO } from '../../base/common/model';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {
+
     constructor(private userSvc: UsersService, private router: Router) { }
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User> {
+        const url = environment.rest_url + environment.rest_users;
         const id = route.params['id'];
         if (id === 'new user') {
             const user = new User();
@@ -22,7 +24,7 @@ export class UserDetailsResolverService implements Resolve<User> {
             return of(user);
         } else {
             const token = route.queryParams['token'];
-            return this.userSvc.get(props.pubman_rest_url_users, id, token)
+            return this.userSvc.get(url, id, token)
                 .pipe(
                     first()
                 );

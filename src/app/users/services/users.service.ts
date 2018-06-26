@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 
 import { User, Grant } from '../../base/common/model';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable()
 export class UsersService extends PubmanRestService {
 
-  usersUrl: string = props.pubman_rest_url_users;
+  usersUrl: string = environment.rest_url + environment.rest_users;
   users: User[] = [];
   user: User;
 

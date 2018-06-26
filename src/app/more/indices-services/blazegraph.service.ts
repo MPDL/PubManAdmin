@@ -4,25 +4,23 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpParams } from '@angular/common/http';
 
-
-
-
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 import { MessagesService } from '../../base/services/messages.service';
 
 @Injectable()
 export class BlazegraphService {
 
+    blazegraphURI: string = environment.blazegraph_sparql_url;
+
     constructor(private http: HttpClient,
         private messages: MessagesService) {}
 
     getNamedGraphs(): Observable<any[]> {
-        const blazegraphURI: string = props.blazegraph_sparql_url;
         const results: any[] = [];
         const headers = new HttpHeaders().set('Content-Type', 'application/rdf+xml');
         const params = new HttpParams().set('query', 'select $g {graph $g{}}')
             .set('format', 'json');
-        return this.http.request('GET', blazegraphURI, {
+        return this.http.request('GET', this.blazegraphURI, {
             headers: headers,
             params: params
         }).pipe(
@@ -36,8 +34,6 @@ export class BlazegraphService {
     }
 
     describeResource(resourceIRI, graphIRI): Observable<any[]> {
-        // const blazegraphURI: string = 'http://b253.demo/blazegraph/namespace/inge/sparql';
-        const blazegraphURI: string = props.blazegraph_sparql_url;
         const results: any[] = [];
         const headers = new HttpHeaders().set('Content-Type', 'application/rdf+xml');
         const params = new HttpParams()
@@ -46,7 +42,7 @@ export class BlazegraphService {
             .set('format', 'json');
         // params.set('query', 'describe <' + resourceIRI + '> $o {<' + resourceIRI + '> $p $o}');
         // params.set('query', 'select * {graph <' + graphIRI +'>{<' + resourceIRI + '> $p $o . filter (!isBlank(?o))}}');
-        return this.http.request('POST', blazegraphURI, {
+        return this.http.request('POST', this.blazegraphURI, {
             headers: headers,
             params: params
         }).pipe(
@@ -61,11 +57,9 @@ export class BlazegraphService {
 
     insertResourceFromURI(uri: string, graphIRI) {
 
-        // const blazegraphURI: string = 'http://b253.demo/blazegraph/namespace/inge/sparql';
-        const blazegraphURI: string = props.blazegraph_sparql_url;
         const headers = new HttpHeaders().set('Content-Type', 'application/rdf+xml');
         const params = new HttpParams().set('context-uri', graphIRI).set('uri', uri);
-        return this.http.request('POST', blazegraphURI, {
+        return this.http.request('POST', this.blazegraphURI, {
             headers: headers,
             params: params
         }).pipe(

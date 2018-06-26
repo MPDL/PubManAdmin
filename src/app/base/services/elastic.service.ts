@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Client, SearchResponse, GetResponse } from 'elasticsearch';
-import { props } from '../common/admintool.properties';
+import { environment } from '../../../environments/environment';
 import { MessagesService } from '../services/messages.service';
 
 
@@ -9,10 +9,9 @@ import { MessagesService } from '../services/messages.service';
 export class ElasticService {
 
   public client: Client;
-  public uri: string;
+  public uri: string = environment.elastic_url;;
 
   constructor(protected messages: MessagesService) {
-    this.uri = props.elastic_http_url;
     if (!this.client) {
       this.connect();
     }
@@ -50,7 +49,7 @@ export class ElasticService {
 
     if (queryString.length > 0) {
       return this.client.search({
-        index: props.ou_index_name,
+        index: environment.ou_index.name,
         // q: 'parentAffiliation.objectId:*' + parent,
         q: queryString,
         _sourceInclude: 'objectId, metadata.name, hasChildren, publicStatus',

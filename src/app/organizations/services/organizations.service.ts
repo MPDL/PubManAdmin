@@ -4,13 +4,13 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
 
-    ous_rest_url = props.pubman_rest_url + '/ous';
+    ous_rest_url = environment.rest_url + environment.rest_ous;
     ou;
     ous: any;
 

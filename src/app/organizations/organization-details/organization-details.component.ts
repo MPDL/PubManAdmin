@@ -6,7 +6,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '../services/organizations.service';
 import { OU, Identifier, BasicRO, UserRO, OUMetadata } from '../../base/common/model';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-organization-details',
@@ -15,6 +15,7 @@ import { props } from '../../base/common/admintool.properties';
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
+  ou_rest_url = environment.rest_url + environment.rest_ous;
   token: string;
   selected: OU;
   children: OU[];
@@ -59,7 +60,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedOu(id, token) {
-    this.ouSvc.get(props.pubman_rest_url_ous, id, token)
+    this.ouSvc.get(this.ou_rest_url, id, token)
       .subscribe(ou => {
         this.selected = ou;
         if (this.selected.hasPredecessors === true) {
@@ -75,7 +76,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   listPredecessors(id: string, token) {
     const query = '?q=objectId:' + id;
-    this.ouSvc.filter(props.pubman_rest_url_ous, token, query, 1)
+    this.ouSvc.filter(this.ou_rest_url, token, query, 1)
       .subscribe(ous => {
         this.predecessors = ous.list;
       });
@@ -201,7 +202,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.isNewOrganization) {
-      this.ouSvc.post(props.pubman_rest_url_ous, this.selected, this.token)
+      this.ouSvc.post(this.ou_rest_url, this.selected, this.token)
         .subscribe(
         data => {
           this.message.success('added new organization ' + data);
@@ -214,7 +215,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
     } else {
       this.message.success('updating ' + this.selected.objectId);
-      this.ouSvc.put(props.pubman_rest_url_ous + '/' + this.selected.objectId, this.selected, this.token)
+      this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {
           this.message.success('updated ' + this.selected.objectId + ' ' + data);
@@ -231,7 +232,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   delete(ou) {
     this.selected = ou;
     const id = this.selected.objectId;
-    this.ouSvc.delete(props.pubman_rest_url_ous + '/' + this.selected.objectId, this.selected, this.token)
+    this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);

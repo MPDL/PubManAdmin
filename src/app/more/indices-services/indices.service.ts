@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Client, SearchResponse, GetResponse, Cat } from 'elasticsearch';
-import { props } from '../../base/common/admintool.properties';
 import { MessagesService } from '../../base/services/messages.service';
 import { ElasticService } from '../../base/services/elastic.service';
 

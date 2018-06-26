@@ -4,8 +4,6 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
-import { props } from '../../base/common/admintool.properties';
-
 @Injectable()
 export class FedoraRestService {
 

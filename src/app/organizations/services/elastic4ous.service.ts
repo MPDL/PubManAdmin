@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class Elastic4ousService extends ElasticService {
@@ -13,7 +13,7 @@ export class Elastic4ousService extends ElasticService {
         const contexts = Array<any>();
         if (term) {
             this.client.search({
-                index: props.ou_index_name,
+                index: environment.ou_index.name,
                 q: 'metadata.name.auto:' + term,
                 sort: 'metadata.name.keyword:asc',
                 size: 25
@@ -41,7 +41,7 @@ export class Elastic4ousService extends ElasticService {
 
     if (queryString.length > 0) {
       return this.client.search({
-        index: props.ou_index_name,
+        index: environment.ou_index.name,
         // q: 'parentAffiliation.objectId:*' + parent,
         q: queryString,
         _sourceInclude: 'objectId, metadata.name, hasChildren, publicStatus',
@@ -67,7 +67,7 @@ export class Elastic4ousService extends ElasticService {
 
   searchOu(id, callback): any {
     return this.client.search({
-      index: props.ou_index_name,
+      index: environment.ou_index.name,
       q: `objectId:*${id}`,
     }, (error, response) => {
       if (error) {
@@ -87,8 +87,8 @@ export class Elastic4ousService extends ElasticService {
 
   updateOu(ou) {
     this.client.index({
-      index: props.ou_index_name,
-      type: props.ou_index_type,
+      index: environment.ou_index.name,
+      type: environment.ou_index.type,
       id: ou.objectId,
       body: ou
     }, (error, response) => {
@@ -103,7 +103,7 @@ export class Elastic4ousService extends ElasticService {
 
   getOuById(id) {
     return this.client.get({
-      index: props.ou_index_name,
+      index: environment.ou_index.name,
       type: 'organization',
       id: id
     });
@@ -111,7 +111,7 @@ export class Elastic4ousService extends ElasticService {
 
   getChildren4OU(id: string) {
     return this.client.search({
-      index: props.ou_index_name,
+      index: environment.ou_index.name,
       body: '{"query": {"term": {"parentAffiliation.objectId":"' + id + '"}}}',
       size: 100,
       sort: 'name.keyword'

@@ -2,17 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-
-
-
 import { Context } from '../../base/common/model';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class ContextsService extends PubmanRestService {
 
-    context_url = props.pubman_rest_url + '/contexts'
+    context_url = environment.base_url + environment.rest_url + environment.rest_contexts;
 
     constructor(httpc: HttpClient) {
         super(httpc);

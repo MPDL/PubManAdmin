@@ -4,9 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 
-import { props } from '../../base/common/admintool.properties';
 import { SearchResult } from 'app/base/common/model';
-import { HttpHeaderResponse, HttpResponseBase } from '@angular/common/http/src/response';
 
 @Injectable()
 export class PubmanRestService {

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Client } from 'elasticsearch';
 
 import { MessagesService } from '../../base/services/messages.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class ElasticService {
@@ -21,8 +21,9 @@ export class ElasticService {
   }
 
   private connect() {
+    const url = environment.elastic_url;
     this.client = new Client({
-      host: props.elastic_http_url,
+      host: url,
       log: ['error', 'warning']
     });
   }

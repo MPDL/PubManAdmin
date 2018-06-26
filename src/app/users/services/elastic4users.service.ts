@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class Elastic4usersService extends ElasticService {
@@ -12,7 +12,7 @@ export class Elastic4usersService extends ElasticService {
     if (ctxId) {
 
       return this.client.search({
-        index: props.ctx_index_name,
+        index: environment.ctx_index.name,
         q: `_id:${ctxId}`,
         _sourceInclude: 'name'
       },
@@ -40,7 +40,7 @@ export class Elastic4usersService extends ElasticService {
 
   listAllContextNames(callback): any {
     return this.client.search({
-      index: props.ctx_index_name,
+      index: environment.ctx_index.name,
       q: 'state:OPENED',
       _sourceInclude: 'name, objectId',
       size: 500,
@@ -66,7 +66,7 @@ export class Elastic4usersService extends ElasticService {
     if (ouId) {
 
       return this.client.search({
-        index: props.ou_index_name,
+        index: environment.ou_index.name,
         q: `_id:${ouId}`,
         _sourceInclude: 'metadata.name'
       },
@@ -92,7 +92,7 @@ export class Elastic4usersService extends ElasticService {
         const users = Array<any>();
         if (term) {
             this.client.search({
-                index: props.user_index_name,
+                index: environment.user_index.name,
                 q: 'name.auto:' + term,
                 sort: 'name.keyword:asc',
                 size: 25
@@ -114,7 +114,7 @@ export class Elastic4usersService extends ElasticService {
       const ous = Array<any>();
       if (term) {
           this.client.search({
-              index: props.ou_index_name,
+              index: environment.ou_index.name,
               // q: 'metadata.name.auto:' + term,
               body: term,
               sort: 'metadata.name.keyword:asc',

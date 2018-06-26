@@ -8,7 +8,7 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 import { ContextsService } from './contexts.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { Context } from '../../base/common/model';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
@@ -19,6 +19,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
         private router: Router) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
+        const url = environment.rest_url + environment.rest_contexts;
         const id = route.params['id'];
         if (id === 'new ctx') {
             const ctx = new Context();
@@ -30,7 +31,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
             return of(ctx);
         } else {
             const token = route.params['token'];
-            return this.ctxSvc.get(props.pubman_rest_url_ctxs, id, token)
+            return this.ctxSvc.get(url, id, token)
                 .pipe(
                     first(),
                     catchError((err, obs) => {

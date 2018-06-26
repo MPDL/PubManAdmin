@@ -6,7 +6,6 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '../services/organizations.service';
 import { Elastic4ousService } from '../services/elastic4ous.service';
-import { props } from '../../base/common/admintool.properties';
 
 @Component({
   selector: 'app-organization-list',

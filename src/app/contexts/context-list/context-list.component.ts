@@ -8,7 +8,7 @@ import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
 import { Elastic4contextsService } from '../services/elastic4contexts.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -20,7 +20,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   @ViewChild(PaginationComponent)
   private paginator: PaginationComponent;
-
+  url = environment.rest_url + environment.rest_contexts;
   title: string = 'Contexts';
   ctxs: any[];
   contextnames: any[] = [];
@@ -57,7 +57,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.loading = true;
-    this.ctxSvc.getAll(props.pubman_rest_url_ctxs, this.token, page)
+    this.ctxSvc.getAll(this.url, this.token, page)
       .subscribe(result => {
         this.ctxs = result.list;
         this.total = result.records;
@@ -74,7 +74,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   listAllContexts(token) {
-    this.ctxSvc.getAll(props.pubman_rest_url_ctxs, this.token, 1)
+    this.ctxSvc.getAll(this.url, this.token, 1)
       .subscribe(ctxs => {
         this.ctxs = ctxs.list;
         this.total = ctxs.records;
@@ -144,7 +144,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   filter(ou) {
     this.selectedOUName = ou;
     this.currentPage = 1;
-    this.ctxSvc.filter(props.pubman_rest_url_ctxs, null, '?q=responsibleAffiliations.name.keyword:' + ou.name, 1)
+    this.ctxSvc.filter(this.url, null, '?q=responsibleAffiliations.name.keyword:' + ou.name, 1)
       .subscribe(res => {
         this.ctxs = res.list;
         this.total = res.records;

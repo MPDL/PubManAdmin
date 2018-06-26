@@ -2,13 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { GrantsComponent } from '../grants/grants.component';
 import { User, Grant, BasicRO } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { Elastic4usersService } from '../services/elastic4users.service';
-import { props } from '../../base/common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-details',
@@ -17,6 +16,7 @@ import { props } from '../../base/common/admintool.properties';
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
 
+  url = environment.rest_url + environment.rest_users;
   resettedPassword: string = 'hard2Remember';
   selected: User;
   ous: any[];
@@ -202,7 +202,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         this.messageService.warning('you MUST select an organization');
         return;
       }
-      this.usersService.post(props.pubman_rest_url_users, this.selected, this.token)
+      this.usersService.post(this.url, this.selected, this.token)
         .subscribe(
         data => {
           this.messageService.success('added new user ' + data);
@@ -226,7 +226,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           return;
         }
       }
-      this.usersService.put(props.pubman_rest_url_users + '/' + this.selected.objectId, this.selected, this.token)
+      this.usersService.put(this.url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {
           this.messageService.success('updated ' + this.selected.loginname + ' ' + data);

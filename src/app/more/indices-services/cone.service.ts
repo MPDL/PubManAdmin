@@ -4,7 +4,6 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 
-import { props } from '../../base/common/admintool.properties';
 import { MessagesService } from '../../base/services/messages.service';
 @Injectable()
 export class ConeService {

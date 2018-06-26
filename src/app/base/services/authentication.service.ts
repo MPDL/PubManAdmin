@@ -6,12 +6,12 @@ import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, 
 
 import { User } from '../common/model';
 import { MessagesService } from '../services/messages.service';
-import { props } from '../common/admintool.properties';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthenticationService {
 
-  private tokenUrl: string = props.pubman_rest_url + '/login';
+  private tokenUrl: string = environment.rest_url + '/login';
 
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
