@@ -15,9 +15,12 @@
 				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.metadata.name}} {{ou.objectId}}</option>
 			</select>
 		</div>
-		<div class="col-7" *ngIf="selectedRole && (selectedRole.endsWith('ADMIN') || selectedRole === 'REPORTER' || selectedRole.startsWith('CONE'))">
+		<div class="col-7" *ngIf="selectedRole && (selectedRole.endsWith('ADMIN') || selectedRole === 'REPORTER')">
 			<input class="form-control form-control-sm" type="text" name="placeholder1" [(ngModel)]="selectedUser.affiliation.objectId"
 			 id="placeholder1" readonly/>
+		</div>
+		<div class="col-7" *ngIf="selectedRole && selectedRole.startsWith('CONE')">
+			<input class="form-control form-control-sm" type="text" name="placeholder1" id="placeholder1" readonly/>
 		</div>
 		<div *ngIf="!selectedRole" class="col-7">
 			<input class="form-control form-control-sm" type="text" name="placeholder2" id="placeholder2" value="select a role ..." readonly/>
