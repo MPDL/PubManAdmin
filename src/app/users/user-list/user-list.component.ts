@@ -203,7 +203,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.selectedOUName = ou;
     if (this.token != null) {
       this.currentPage = 1;
-      this.usersService.filter(this.url, this.token, '?q=affiliation.name.keyword:' + ou.name, 1)
+      this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
         .subscribe(res => {
           this.users = res.list;
           this.total = res.records;

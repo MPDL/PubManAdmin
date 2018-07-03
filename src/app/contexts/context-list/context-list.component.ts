@@ -144,7 +144,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   filter(ou) {
     this.selectedOUName = ou;
     this.currentPage = 1;
-    this.ctxSvc.filter(this.url, null, '?q=responsibleAffiliations.name.keyword:' + ou.name, 1)
+    this.ctxSvc.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe(res => {
         this.ctxs = res.list;
         if (res.records > 0) {
