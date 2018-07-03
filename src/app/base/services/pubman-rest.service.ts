@@ -27,11 +27,13 @@ export class PubmanRestService {
         const data = response;
         const hits = [];
         const records = data.numberOfRecords;
-        data.records.forEach(element => {
-          hits.push(element.data)
-        });
-        result.list = hits;
-        result.records = records;
+        if (records > 0) {
+          data.records.forEach(element => {
+            hits.push(element.data)
+          });
+          result.list = hits;
+          result.records = records;
+        }
         return result;
       }),
       catchError((err) => {

@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   }
 
   theDeveloperSays() {
-    alert('do ya think I\'m as stpid?');
+    alert('Your suggestion will be sent ...');
   }
 
   info() {

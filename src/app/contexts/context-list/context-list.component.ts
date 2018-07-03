@@ -147,9 +147,13 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.ctxSvc.filter(this.url, null, '?q=responsibleAffiliations.name.keyword:' + ou.name, 1)
       .subscribe(res => {
         this.ctxs = res.list;
-        this.total = res.records;
+        if (res.records > 0) {
+          this.total = res.records;
+        } else {
+          this.message.info('query did not return any results.')
+        }
       }, err => {
-        this.message.error(err);
+        this.message.error(JSON.stringify(err));
       });
     this.title = 'Contexts for ' + this.selectedOUName.name;
     this.closeOUNames();
