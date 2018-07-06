@@ -20,12 +20,13 @@
     </div>
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
-        <span class="mr-3 boldandlarger">-</span>
+        <!-- &#8288; is &NoBreak; it is invisible, but required for padding-->
+        <span class="mr-3 boldandlarger">&#8288;</span>
         {{node.ouName}}
       </cdk-tree-node>
       <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
         <span class="mr-2 boldandlarger" cdkTreeNodeToggle (click)="loadChildren(node)">
-          {{treeControl.isExpanded(node) ? '--' : '>'}}
+          {{treeControl.isExpanded(node) ? '&#8213;' : '>'}}
         </span>
         {{node.ouName}}
       </cdk-tree-node>

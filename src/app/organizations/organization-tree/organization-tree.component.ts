@@ -1,99 +1,23 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-import { Component, Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Elastic4ousService } from '../services/elastic4ous.service';
+import { Observable, Subscription } from 'rxjs';
+import { OrganizationsService } from '../services/organizations.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-
-
-export class OUTreeNode {
-  childrenChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
-
-  get children(): OUTreeNode[] {
-    return this.childrenChange.value;
-  }
-
-  constructor(public ouName: string,
-    public ouId: string,
-    public hasChildren: boolean = false,
-    public parentOUId: string | null = null) { }
-}
-
-export class OUTreeFlatNode {
-  constructor(public ouName: string,
-    public ouId: string,
-    public level: number = 1,
-    public expandable: boolean = false,
-    public parentOUId: string | null = null) { }
-}
-
-@Injectable()
-export class OUDB {
-  dataChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
-  nodeMap: Map<string, OUTreeNode> = new Map<string, OUTreeNode>();
-
-  get data(): OUTreeNode[] { return this.dataChange.value; }
-
-  constructor(private elastic: Elastic4ousService) {
-    // this.initialize();
-  }
-
-  async initialize() {
-    let data: any[] = [];
-    let mpg = await this.elastic.getOuById('ou_persistent13');
-    let ext = await this.elastic.getOuById('ou_persistent22');
-
-    data.push(this.generateNode(mpg._source));
-    data.push(this.generateNode(ext._source));
-    this.dataChange.next(data);
-  }
-
-  getChildren4OU(id) {
-    let resp = this.elastic.getChildren4OU(id);
-    return resp;
-  }
-
-  loadChildren(ouName: string, ouId: string) {
-    if (!this.nodeMap.has(ouName)) {
-      return;
-    }
-    const parent = this.nodeMap.get(ouName)!;
-    let children = [];
-    this.getChildren4OU(ouId)
-      .then(resp => {
-        children = resp.hits.hits;
-        let nodes = children.map(child => this.generateNode(child._source));
-        parent.childrenChange.next(nodes);
-        this.dataChange.next(this.dataChange.value);
-      });
-  }
-
-  private generateNode(ou: any): OUTreeNode {
-    if (this.nodeMap.has(ou.name)) {
-      return this.nodeMap.get(ou.name)!;
-    }
-    const result = new OUTreeNode(ou.name, ou.objectId, ou.hasChildren);
-    this.nodeMap.set(ou.name, result);
-    return result;
-  }
-}
+import { MessagesService } from '../../base/services/messages.service';
+import { environment } from '../../../environments/environment';
+// import { OrganizationTreeService, OUTreeFlatNode, OUTreeNode } from '../services/organization-tree.service';
+import { OrganizationTree2Service, OUTreeNode, OUTreeFlatNode } from '../services/organization-tree2.service';
 
 @Component({
   selector: 'app-organization-tree',
   templateUrl: 'organization-tree.component.html',
   styleUrls: ['organization-tree.component.scss'],
-  providers: [OUDB]
+  providers: [OrganizationTree2Service]
 })
-export class OrganizationTreeComponent implements OnInit, OnDestroy{
+export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ounames: any[] = [];
   subscription: Subscription;
   token;
@@ -104,8 +28,16 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy{
   treeFlattener: MatTreeFlattener<OUTreeNode, OUTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<OUTreeNode, OUTreeFlatNode>;
 
-  constructor(private database: OUDB, private router: Router, private loginService: AuthenticationService,
-      private elastic: Elastic4ousService) {
+  constructor(private database: OrganizationTree2Service,
+    private router: Router,
+    private loginService: AuthenticationService,
+    private service: OrganizationsService,
+    private message: MessagesService) { }
+
+  ngOnInit() {
+    this.subscription = this.loginService.token$.subscribe(token => {
+      this.token = token;
+    });
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
 
@@ -113,17 +45,11 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy{
 
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-    database.dataChange.subscribe(data => {
+    this.database.dataChange.subscribe(data => {
       this.dataSource.data = data;
     });
 
-    database.initialize();
-  }
-
-  ngOnInit() {
-    this.subscription = this.loginService.token$.subscribe(token => {
-      this.token = token;
-    });
+    this.database.initialize();
   }
 
   ngOnDestroy() {
@@ -170,16 +96,25 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy{
     return true;
   }
 
-  getNames(a) {
+  getNames(term) {
     const ouNames: any[] = [];
-    this.elastic.ous4auto(a, (names) => {
-      names.forEach(name => ouNames.push(name));
-      if (ouNames.length > 0) {
-        this.ounames = ouNames;
-      } else {
-        this.ounames = [];
-      }
-    });
+    if (term.length > 0) {
+    const url = environment.rest_url + environment.rest_ous;
+    const queryString = '?q=metadata.name.auto:'+term;
+    this.service.filter(url, null, queryString, 1)
+      .subscribe(res => {
+        res.list.forEach(ou => {
+          ouNames.push(ou);
+        });
+        if (ouNames.length > 0) {
+          this.ounames = ouNames;
+        } else {
+          this.ounames = [];
+        }
+      }, err => {
+        this.message.error(err);
+      });
+    }
   }
 
   close() {
