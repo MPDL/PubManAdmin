@@ -13,8 +13,7 @@ export class ElasticService {
   uri: string;
 
   constructor(private message: MessagesService,
-      private http: HttpClient) {
-    
+    private http: HttpClient) {
     if (!this.client) {
       this.connect();
     }
@@ -40,7 +39,7 @@ export class ElasticService {
   }
 
   listAllIndices() {
-    return this.client.cat.indices({format: 'json'});
+    return this.client.cat.indices({ format: 'json' });
   }
 
   listAliases() {

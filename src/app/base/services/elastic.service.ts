@@ -9,7 +9,7 @@ import { MessagesService } from '../services/messages.service';
 export class ElasticService {
 
   public client: Client;
-  public uri: string = environment.elastic_url;;
+  public uri: string = environment.elastic_url;
 
   constructor(protected messages: MessagesService) {
     if (!this.client) {

@@ -15,7 +15,7 @@ export class SearchTermComponent {
 
   @Input() searchTermForm: FormGroup;
   @Input() fields: string[];
-  @Output('notice') notice = new EventEmitter<string>();
+  @Output() notice = new EventEmitter<string>();
 
   filter() {
     const selectedField = this.searchTermForm.get('field') as FormGroup;

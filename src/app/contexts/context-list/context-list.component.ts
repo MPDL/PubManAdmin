@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { PaginationComponent } from '../../base/pagination/pagination.component';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
-import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { environment } from '../../../environments/environment';
 
 
@@ -38,9 +37,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
 
   constructor(private ctxSvc: ContextsService,
-    private elastic: Elastic4contextsService,
     private router: Router,
-    private route: ActivatedRoute,
     private message: MessagesService,
     private loginService: AuthenticationService) { }
 
@@ -96,48 +93,59 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/context', ctxid]);
   }
 
-  getContextNames(a) {
+  getContextNames(term: string) {
     const contextNames: any[] = [];
-    this.elastic.contexts4auto(a, (names) => {
-      names.forEach(name => contextNames.push(name));
-      if (contextNames.length > 0) {
-        this.contextnames = contextNames;
-      } else {
-        this.contextnames = [];
-      }
-    });
+    if (term.length > 0) {
+      const queryString = '?q=name.auto:' + term;
+      this.ctxSvc.filter(this.url, null, queryString, 1)
+        .subscribe(res => {
+          res.list.forEach(ctx => {
+            contextNames.push(ctx);
+          });
+          if (contextNames.length > 0) {
+            this.contextnames = contextNames;
+          } else {
+            this.contextnames = [];
+          }
+        }, err => {
+          this.message.error(err);
+        });
+    }
   }
 
-  getOUNames(a: string) {
-    if (a.includes('\'')) {
-      this.message.warning('NO QUOTES!!!')
-    } else {
-      let body = {
-        "query": {
-          "bool": {
-            "filter": {
-              "term": {
-                "parentAffiliation.objectId": "ou_persistent13"
+  getOUNames(term: string) {
+    const ouNames: any[] = [];
+    if (term.length > 0) {
+      const body = {
+        'query': {
+          'bool': {
+            'filter': {
+              'term': {
+                'parentAffiliation.objectId': 'ou_persistent13'
               }
             },
-            "must": {
-              "term": {
-                "metadata.name.auto": a
+            'must': {
+              'term': {
+                'metadata.name.auto': term
               }
             }
           }
         }
       };
-
-      const ouNames: any[] = [];
-      this.elastic.ous4auto(body, (names) => {
-        names.forEach(name => ouNames.push(name));
-        if (ouNames.length > 0) {
-          this.ounames = ouNames;
-        } else {
-          this.ounames = [];
-        }
-      });
+      const url = environment.rest_url + environment.rest_ous;
+      this.ctxSvc.query(url, null, body)
+        .subscribe(res => {
+          res.list.forEach(ou => {
+            ouNames.push(ou);
+          });
+          if (ouNames.length > 0) {
+            this.ounames = ouNames;
+          } else {
+            this.ounames = [];
+          }
+        }, err => {
+          this.message.error(err);
+        });
     }
   }
 

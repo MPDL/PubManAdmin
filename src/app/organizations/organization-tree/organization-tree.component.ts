@@ -62,7 +62,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     if (this.nodeMap.has(node.ouName)) {
       return this.nodeMap.get(node.ouName)!;
     }
-    let newNode = new OUTreeFlatNode(node.ouName, node.ouId, level, node.hasChildren, node.parentOUId);
+    const newNode = new OUTreeFlatNode(node.ouName, node.ouId, level, node.hasChildren, node.parentOUId);
     this.nodeMap.set(node.ouName, newNode);
     return newNode;
   }
@@ -100,7 +100,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     const ouNames: any[] = [];
     if (term.length > 0) {
     const url = environment.rest_url + environment.rest_ous;
-    const queryString = '?q=metadata.name.auto:'+term;
+    const queryString = '?q=metadata.name.auto:' + term;
     this.service.filter(url, null, queryString, 1)
       .subscribe(res => {
         res.list.forEach(ou => {

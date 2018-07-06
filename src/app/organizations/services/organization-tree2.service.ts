@@ -42,10 +42,10 @@ export class OrganizationTree2Service {
   }
 
   async initialize() {
-    let data: any[] = [];
+    const data: any[] = [];
     try {
-      let mpg = await this.service.getOuById('ou_persistent13', null).toPromise();
-      let ext = await this.service.getOuById('ou_persistent22', null).toPromise();
+      const mpg = await this.service.getOuById('ou_persistent13', null).toPromise();
+      const ext = await this.service.getOuById('ou_persistent22', null).toPromise();
       data.push(this.generateNode(mpg));
       data.push(this.generateNode(ext));
       this.dataChange.next(data);
@@ -56,7 +56,7 @@ export class OrganizationTree2Service {
   }
 
   getChildren4OU(id) {
-    let resp = this.service.listChildren4Ou(id, null).toPromise();
+    const resp = this.service.listChildren4Ou(id, null).toPromise();
     return resp;
   }
 
@@ -69,7 +69,7 @@ export class OrganizationTree2Service {
     this.getChildren4OU(ouId)
       .then(resp => {
         children = resp;
-        let nodes = children.map(child => this.generateNode(child));
+        const nodes = children.map(child => this.generateNode(child));
         parent.childrenChange.next(nodes);
         this.dataChange.next(this.dataChange.value);
       }).catch(err => {

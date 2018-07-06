@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 
 import { User, OU } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
-import { Elastic4usersService } from '../services/elastic4users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { environment } from '../../../environments/environment';
@@ -44,7 +43,6 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   constructor(
     private usersService: UsersService,
-    private elastic: Elastic4usersService,
     private loginService: AuthenticationService,
     private messageService: MessagesService,
     private route: ActivatedRoute,
@@ -150,53 +148,63 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.selected = null;
   }
 
-  getUserNames(a: string) {
-    if (a.includes('\'')) {
-      this.messageService.warning('NO QUOTES!!!')
+  getUserNames(term: string) {
+
+    const userNames: any[] = [];
+    if (this.token != null) {
+      if (term.length > 0) {
+        const queryString = '?q=name.auto:' + term;
+        this.usersService.filter(this.url, this.token, queryString, 1)
+          .subscribe(res => {
+            res.list.forEach(user => {
+              userNames.push(user);
+            });
+            if (userNames.length > 0) {
+              this.usernames = userNames;
+            } else {
+              this.usernames = [];
+            }
+          }, err => {
+            this.messageService.error(err);
+          });
+      }
     } else {
-      const userNames: User[] = [];
-      this.elastic.users4auto(a, (names) => {
-        names.forEach(name => userNames.push(name));
-        if (userNames.length > 0) {
-          this.usernames = userNames;
-        } else {
-          this.usernames = [];
-        }
-      });
+      this.messageService.warning('no token, no users!')
     }
   }
 
-  getOUNames(a: string) {
-    if (a.includes('\'')) {
-      this.messageService.warning('NO QUOTES!!!')
-    } else {
-      let body = {
-        "query": {
-          "bool": {
-            "filter": {
-              "term": {
-                "parentAffiliation.objectId": "ou_persistent13"
-              }
-            },
-            "must": {
-              "term": {
-                "metadata.name.auto": a
-              }
+  getOUNames(term: string) {
+    const ouNames: OU[] = [];
+    const body = {
+      'query': {
+        'bool': {
+          'filter': {
+            'term': {
+              'parentAffiliation.objectId': 'ou_persistent13'
+            }
+          },
+          'must': {
+            'term': {
+              'metadata.name.auto': term
             }
           }
         }
-      };
-
-      const ouNames: OU[] = [];
-      this.elastic.ous4auto(body, (names) => {
-        names.forEach(name => ouNames.push(name));
+      }
+    };
+    const url = environment.rest_url + environment.rest_ous;
+    this.usersService.query(url, null, body)
+      .subscribe(res => {
+        res.list.forEach(ou => {
+          ouNames.push(ou);
+        });
         if (ouNames.length > 0) {
           this.ounames = ouNames;
         } else {
           this.ounames = [];
         }
+      }, err => {
+        this.messageService.error(err);
       });
-    }
   }
 
   filter(ou) {

@@ -41,10 +41,10 @@ export class OrganizationTreeService {
   }
 
   async initialize() {
-    let data: any[] = [];
+    const data: any[] = [];
     try {
-      let mpg = await this.elastic.getOuById('ou_persistent13');
-      let ext = await this.elastic.getOuById('ou_persistent22');
+      const mpg = await this.elastic.getOuById('ou_persistent13');
+      const ext = await this.elastic.getOuById('ou_persistent22');
 
       data.push(this.generateNode(mpg._source));
       data.push(this.generateNode(ext._source));
@@ -56,7 +56,7 @@ export class OrganizationTreeService {
   }
 
   getChildren4OU(id) {
-    let resp = this.elastic.getChildren4OU(id);
+    const resp = this.elastic.getChildren4OU(id);
     return resp;
   }
 
@@ -69,7 +69,7 @@ export class OrganizationTreeService {
     this.getChildren4OU(ouId)
       .then(resp => {
         children = resp.hits.hits;
-        let nodes = children.map(child => this.generateNode(child._source));
+        const nodes = children.map(child => this.generateNode(child._source));
         parent.childrenChange.next(nodes);
         this.dataChange.next(this.dataChange.value);
       })

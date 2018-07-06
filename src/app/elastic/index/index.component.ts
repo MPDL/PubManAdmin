@@ -14,7 +14,7 @@ export class IndexComponent implements OnInit {
 
   indices: any[];
   aliases: any;
-  
+
   constructor(private elastic: ElasticService,
     private message: MessagesService,
     private route: ActivatedRoute,
