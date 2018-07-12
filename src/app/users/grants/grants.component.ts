@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { Grant, User } from '../../base/common/model';
-import { Elastic4usersService } from '../services/elastic4users.service';
 import { UsersService } from '../services/users.service';
+import { environment } from '../../../environments/environment';
+import { allOpenedMPIs } from '../../base/common/query-bodies';
 
 @Component({
     selector: 'grants-component',
@@ -23,9 +23,12 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Input() isNewGrant: boolean;
     @Output() isNewGrantChange = new EventEmitter<boolean>();
 
+    ous_url = environment.rest_url + environment.rest_ous;
+    ctx_url = environment.rest_url + environment.rest_contexts;
+
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR',
-         'REPORTER', 'USR_ADMIN', 'YEARBOOK-EDITOR', 'YEARBOOK-ADMIN'];
+        'REPORTER', 'USR_ADMIN', 'YEARBOOK-EDITOR', 'YEARBOOK-ADMIN'];
     ctxs: Array<any>;
     ous: Array<any>;
     selectedGrant: Grant;
@@ -40,9 +43,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     constructor(
         private messageService: MessagesService,
         private loginService: AuthenticationService,
-        private elasticService: Elastic4usersService,
         private usersService: UsersService,
-        private router: Router
     ) { }
 
     ngOnInit() {
@@ -59,12 +60,16 @@ export class GrantsComponent implements OnInit, OnDestroy {
     }
 
     getNewGrantSelect() {
-        this.elasticService.listAllContextNames((contexts) => {
-            this.ctxs = contexts;
-        });
-        this.elasticService.listOuNames('parent', 'persistent13', names => {
-            this.ous = names;
-        });
+        let ous_body = allOpenedMPIs;
+        this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&limit=300', 1)
+            .subscribe(ctxs => {
+                this.ctxs = ctxs.list;
+            });
+
+        this.usersService.query(this.ous_url, null, ous_body)
+            .subscribe(ous => {
+                this.ous = ous.list;
+            });
     }
 
     onChangeRole(val) {
@@ -138,8 +143,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
                 this.selectedUser = user;
                 this.selectedUserChange.emit(this.selectedUser);
                 this.messageService.success('added Grants to ' + this.selectedUser.loginname);
-                // this.selectedGrants.forEach(g => this.selected.user.grantList.push(g));
-                // this.selectedGrants.slice(0, this.selectedGrants.length);
                 this.selectedGrants = null;
                 this.grantsToAdd = '';
                 this.isNewGrantChange.emit(false);

@@ -6,8 +6,8 @@ import { User, Grant, BasicRO } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-import { Elastic4usersService } from '../services/elastic4users.service';
 import { environment } from '../../../environments/environment';
+import { allOpenedMPIs } from '../../base/common/query-bodies';
 
 @Component({
   selector: 'app-user-details',
@@ -17,6 +17,9 @@ import { environment } from '../../../environments/environment';
 export class UserDetailsComponent implements OnInit, OnDestroy {
 
   url = environment.rest_url + environment.rest_users;
+  ous_url = environment.rest_url + environment.rest_ous;
+  ctxs_url = environment.rest_url + environment.rest_contexts;
+
   resettedPassword: string = 'hard2Remember';
   selected: User;
   ous: any[];
@@ -41,7 +44,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private usersService: UsersService,
     private messageService: MessagesService,
     private loginService: AuthenticationService,
-    private elasticService: Elastic4usersService
   ) { }
 
   ngOnInit() {
@@ -62,16 +64,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    this.elasticService.listOuNames('parent', 'persistent13', (names) => {
-      this.ous = names;
-      /*
-      this.ous.sort((a, b) => {
-        if (a < b) return -1;
-        else if (a > b) return 1;
-        else return 0;
+    const body = allOpenedMPIs;
+    this.usersService.query(this.ous_url, null, body)
+      .subscribe(ous => {
+        this.ous = ous.list;
       });
-      */
-    });
   }
 
   onSelectOu(val) {
@@ -119,13 +116,19 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   viewRefTitle(grant) {
     const ref = grant.objectRef;
     if (ref === undefined) {
-      this.ctxTitle = 'whay do you point here?';
+      this.ctxTitle = 'why do you point here?';
     } else {
       if (ref.startsWith('ou')) {
-        this.elasticService.getOUName(grant.objectRef, name => this.ctxTitle = name);
+        this.usersService.get(this.ous_url, ref, null)
+          .subscribe(ou => {
+            this.ctxTitle = ou.metadata.name;
+          });
       } else {
         if (ref.startsWith('ctx')) {
-          this.elasticService.getContextName(grant.objectRef, name => this.ctxTitle = name);
+          this.usersService.get(this.ctxs_url, ref, null)
+          .subscribe(ctx => {
+            this.ctxTitle = ctx.name;
+          });
         }
       }
     }
@@ -137,7 +140,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   notAllowed(whatthehackever) {
-    this.messageService.warning('you\'re not authorized !' )
+    this.messageService.warning('you\'re not authorized !')
   }
 
   resetPassword(user) {
@@ -153,12 +156,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   changePassword(user) {
     this.usersService.changePassword(user, this.token)
-    .subscribe(u => {
-      this.selected = u;
-      this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
-    }, error => {
-      this.messageService.error(error);
-    });
+      .subscribe(u => {
+        this.selected = u;
+        this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
+      }, error => {
+        this.messageService.error(error);
+      });
   }
 
   activateUser(user) {
@@ -204,14 +207,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       }
       this.usersService.post(this.url, this.selected, this.token)
         .subscribe(
-        data => {
-          this.messageService.success('added new user ' + data);
-          this.gotoList();
-          this.selected = null;
-        },
-        error => {
-          this.messageService.error(error);
-        }
+          data => {
+            this.messageService.success('added new user ' + data);
+            this.gotoList();
+            this.selected = null;
+          },
+          error => {
+            this.messageService.error(error);
+          }
         );
 
     } else {
@@ -228,15 +231,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       }
       this.usersService.put(this.url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
-        data => {
-          this.messageService.success('updated ' + this.selected.loginname + ' ' + data);
-          this.gotoList();
-          this.selected = null;
-          this.isNewGrant = false;
-        },
-        error => {
-          this.messageService.error(error);
-        }
+          data => {
+            this.messageService.success('updated ' + this.selected.loginname + ' ' + data);
+            this.gotoList();
+            this.selected = null;
+            this.isNewGrant = false;
+          },
+          error => {
+            this.messageService.error(error);
+          }
         );
     }
   }

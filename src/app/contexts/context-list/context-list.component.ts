@@ -8,7 +8,7 @@ import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
 import { environment } from '../../../environments/environment';
-
+import { mpgOus4auto } from '../../base/common/query-bodies';
 
 @Component({
   selector: 'app-context-list',
@@ -116,22 +116,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
   getOUNames(term: string) {
     const ouNames: any[] = [];
     if (term.length > 0) {
-      const body = {
-        'query': {
-          'bool': {
-            'filter': {
-              'term': {
-                'parentAffiliation.objectId': 'ou_persistent13'
-              }
-            },
-            'must': {
-              'term': {
-                'metadata.name.auto': term
-              }
-            }
-          }
-        }
-      };
+      const body = mpgOus4auto;
+      body.query.bool.must.term["metadata.name.auto"] = term;
       const url = environment.rest_url + environment.rest_ous;
       this.ctxSvc.query(url, null, body)
         .subscribe(res => {

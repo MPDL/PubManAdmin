@@ -7,6 +7,7 @@ import { UsersService } from '../services/users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { environment } from '../../../environments/environment';
+import { mpgOus4auto } from '../../base/common/query-bodies';
 
 @Component({
   selector: 'user-list',
@@ -175,22 +176,8 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   getOUNames(term: string) {
     const ouNames: OU[] = [];
-    const body = {
-      'query': {
-        'bool': {
-          'filter': {
-            'term': {
-              'parentAffiliation.objectId': 'ou_persistent13'
-            }
-          },
-          'must': {
-            'term': {
-              'metadata.name.auto': term
-            }
-          }
-        }
-      }
-    };
+    const body = mpgOus4auto;
+    body.query.bool.must.term["metadata.name.auto"] = term;
     const url = environment.rest_url + environment.rest_ous;
     this.usersService.query(url, null, body)
       .subscribe(res => {

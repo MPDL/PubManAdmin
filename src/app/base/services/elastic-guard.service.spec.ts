@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { ElasticGuardService } from './elastic-guard.service';
+import { ElasticGuard } from './elastic-guard.service';
 
 describe('ElasticGuardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ElasticGuardService]
+      providers: [ElasticGuard]
     });
   });
 
-  it('should be created', inject([ElasticGuardService], (service: ElasticGuardService) => {
+  it('should be created', inject([ElasticGuard], (service: ElasticGuard) => {
     expect(service).toBeTruthy();
   }));
 });

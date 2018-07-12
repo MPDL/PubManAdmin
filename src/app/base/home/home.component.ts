@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ElasticService } from '../services/elastic.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -12,7 +11,7 @@ export class HomeComponent implements OnInit {
 
   host: string = environment.base_url;
 
-  constructor(private elastic: ElasticService) { }
+  constructor() { }
 
   ngOnInit() {
   }
