@@ -155,13 +155,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   changePassword(user) {
-    this.usersService.changePassword(user, this.token)
+    if (user.password != null) {
+      this.usersService.changePassword(user, this.token)
       .subscribe(u => {
         this.selected = u;
         this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
       }, error => {
         this.messageService.error(error);
       });
+    } else {
+      this.messageService.error('password must not be empty!');
+    }
   }
 
   activateUser(user) {

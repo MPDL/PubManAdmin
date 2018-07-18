@@ -151,10 +151,20 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   getUserNames(term: string) {
 
-    const userNames: any[] = [];
     if (this.token != null) {
-      if (term.length > 0) {
-        const queryString = '?q=name.auto:' + term;
+      if (term.length > 0 && !term.startsWith('"')) {
+        this.returnSuggestedUsers(term);
+      } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+        this.returnSuggestedUsers(term);
+      }
+    } else {
+      this.messageService.warning('no token, no users!')
+    }
+  }
+
+  returnSuggestedUsers(term) {
+    const userNames: any[] = [];
+    const queryString = '?q=name.auto:' + term;
         this.usersService.filter(this.url, this.token, queryString, 1)
           .subscribe(res => {
             res.list.forEach(user => {
@@ -168,10 +178,6 @@ export class UserListComponent implements OnInit, OnDestroy {
           }, err => {
             this.messageService.error(err);
           });
-      }
-    } else {
-      this.messageService.warning('no token, no users!')
-    }
   }
 
   getOUNames(term: string) {

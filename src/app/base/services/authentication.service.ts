@@ -89,8 +89,10 @@ export class AuthenticationService {
       map((response) => {
         user = response;
         this.setUser(user);
-        if (user.grantList.find(grant => grant.role === 'SYSADMIN')) {
-          this.setIsAdmin(true);
+        if (user.grantList != null) {
+          if (user.grantList.find(grant => grant.role === 'SYSADMIN')) {
+            this.setIsAdmin(true);
+          }
         }
         return user;
       }),

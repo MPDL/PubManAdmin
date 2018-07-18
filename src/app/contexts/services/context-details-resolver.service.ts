@@ -27,7 +27,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
             ctx.responsibleAffiliations = [];
             ctx.allowedGenres = [];
             ctx.allowedSubjectClassifications = [];
-            ctx.workflow = 'SIMPLE';
+            ctx.workflow = 'STANDARD';
             return of(ctx);
         } else {
             const token = route.params['token'];

@@ -94,23 +94,29 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   getContextNames(term: string) {
-    const contextNames: any[] = [];
-    if (term.length > 0) {
-      const queryString = '?q=name.auto:' + term;
-      this.ctxSvc.filter(this.url, null, queryString, 1)
-        .subscribe(res => {
-          res.list.forEach(ctx => {
-            contextNames.push(ctx);
-          });
-          if (contextNames.length > 0) {
-            this.contextnames = contextNames;
-          } else {
-            this.contextnames = [];
-          }
-        }, err => {
-          this.message.error(err);
-        });
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedContexts(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedContexts(term);
     }
+  }
+
+  returnSuggestedContexts(term) {
+    const contextNames: any[] = [];
+    const queryString = '?q=name.auto:' + term;
+    this.ctxSvc.filter(this.url, null, queryString, 1)
+      .subscribe(res => {
+        res.list.forEach(ctx => {
+          contextNames.push(ctx);
+        });
+        if (contextNames.length > 0) {
+          this.contextnames = contextNames;
+        } else {
+          this.contextnames = [];
+        }
+      }, err => {
+        this.message.error(err);
+      });
   }
 
   getOUNames(term: string) {

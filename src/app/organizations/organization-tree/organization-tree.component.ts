@@ -97,8 +97,15 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   }
 
   getNames(term) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedOUs(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedOUs(term);
+    }
+  }
+
+  returnSuggestedOUs(term) {
     const ouNames: any[] = [];
-    if (term.length > 0) {
     const url = environment.rest_url + environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.service.filter(url, null, queryString, 1)
@@ -114,7 +121,6 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
       }, err => {
         this.message.error(err);
       });
-    }
   }
 
   close() {
