@@ -3,8 +3,8 @@ export const mpgOus4auto = {
     'query': {
         'bool': {
             'filter': {
-                'term': {
-                    'parentAffiliation.objectId': 'ou_persistent13'
+                'terms': {
+                    'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
                 }
             },
             'must': {
@@ -13,24 +13,32 @@ export const mpgOus4auto = {
                 }
             }
         }
-    }
+    },
+    'sort': [
+        { 'metadata.name.keyword': { 'order': 'asc' } }
+    ]
 };
-export const allOpenedMPIs = {
+export const allOpenedOUs = {
     'size': 300,
     'query': {
         'bool': {
-            'filter': {
-                'term': {
-                    'parentAffiliation.objectId': 'ou_persistent13'
-                }
-            },
+            'filter': 
+                {
+                    'terms': {
+                        'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
+                    }
+                },
             'must': {
                 'term': {
                     'publicStatus.keyword': 'OPENED'
                 }
             }
         }
-    }
+    },
+    'sort': [
+        { 'parentAffiliation.objectId': { 'order': 'asc'} },
+        { 'metadata.name.keyword': { 'order': 'asc' } }
+    ]
 };
 
 

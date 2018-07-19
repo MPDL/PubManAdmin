@@ -13,7 +13,9 @@
         <div *ngIf="ounames.length > 0">
           <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOUNames()">
             <li *ngFor="let ouname of ounames" class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(ouname)"
-              (click)="filter(ouname)"><small>{{ouname.name}}</small></li>
+              (click)="filter(ouname)">
+              <small>{{ouname.name}}</small>
+            </li>
           </ul>
         </div>
       </div>
@@ -25,7 +27,9 @@
         <div *ngIf="usernames.length > 0">
           <ul id="user_suggestions" class="list-group" (clickOutside)="closeUserNames()">
             <li *ngFor="let username of usernames" class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(username)"
-              (click)="select(username)"><small>{{username.name}}</small></li>
+              (click)="select(username)">
+              <small>{{username.name}}</small>
+            </li>
           </ul>
         </div>
       </div>
@@ -40,8 +44,12 @@
       <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
         (click)="onSelect(user)">
         <span class="col-sm-11">{{user.name}} ({{user.loginname}})</span>
-        <span class="col-sm-1"><input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
-                name="delete" value="x" /></span>
+        <span class="col-sm-1">
+          <!--
+          <input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
+            name="delete" value="x" />
+          -->
+        </span>
       </div>
     </ul>
   </div>

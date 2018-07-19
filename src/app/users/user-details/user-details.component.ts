@@ -7,7 +7,7 @@ import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { environment } from '../../../environments/environment';
-import { allOpenedMPIs } from '../../base/common/query-bodies';
+import { allOpenedOUs } from '../../base/common/query-bodies';
 
 @Component({
   selector: 'app-user-details',
@@ -64,7 +64,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    const body = allOpenedMPIs;
+    const body = allOpenedOUs;
     this.usersService.query(this.ous_url, null, body)
       .subscribe(ous => {
         this.ous = ous.list;

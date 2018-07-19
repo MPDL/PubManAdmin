@@ -6,7 +6,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { Grant, User } from '../../base/common/model';
 import { UsersService } from '../services/users.service';
 import { environment } from '../../../environments/environment';
-import { allOpenedMPIs } from '../../base/common/query-bodies';
+import { allOpenedOUs } from '../../base/common/query-bodies';
 
 @Component({
     selector: 'grants-component',
@@ -60,7 +60,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     }
 
     getNewGrantSelect() {
-        let ous_body = allOpenedMPIs;
+        let ous_body = allOpenedOUs;
         this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&limit=300', 1)
             .subscribe(ctxs => {
                 this.ctxs = ctxs.list;
