@@ -9,6 +9,7 @@ import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model';
+import { allOpenedOUs } from '../../base/common/query-bodies';
 
 import { environment } from '../../../environments/environment';
 
@@ -20,6 +21,7 @@ import { environment } from '../../../environments/environment';
 export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   url = environment.rest_url + environment.rest_contexts;
+  ous_url = environment.rest_url + environment.rest_ous;
 
   @ViewChild('f') form: any;
 
@@ -79,9 +81,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   listOuNames() {
-    this.ouSvc.listOuNames('parent', 'persistent13', (names) => {
-      this.ous = names;
-    });
+    const body = allOpenedOUs;
+    this.ctxSvc.query(this.ous_url, null, body)
+      .subscribe(ous => {
+        this.ous = ous.list;
+      });
   }
 
   onChangeOu(val) {
