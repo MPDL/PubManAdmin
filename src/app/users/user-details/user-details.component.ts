@@ -52,6 +52,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.selected = this.route.snapshot.data['user'];
+    if (this.selected.grantList) {
+      this.selected.grantList.forEach(grant => this.addTitles2GrantRefs(grant));
+    }
     if (this.route.snapshot.queryParams['admin']) {
       this.isAdmin = this.route.snapshot.queryParams['admin'];
     }
@@ -113,6 +116,32 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  addTitles2GrantRefs(grant) {
+    const ref = grant.objectRef;
+    if (ref === undefined) {
+    } else {
+      if (ref.startsWith('ou')) {
+        this.usersService.get(this.ous_url, ref, null)
+          .subscribe(ou => {
+            grant.ctxTitle = ou.metadata.name;
+          },
+          (err) => {
+            this.messageService.error(JSON.stringify(err));
+          });
+      } else {
+        if (ref.startsWith('ctx')) {
+          this.usersService.get(this.ctxs_url, ref, null)
+            .subscribe(ctx => {
+              grant.ctxTitle = ctx.name;
+            },
+            (err) => {
+              this.messageService.error(JSON.stringify(err));
+            });
+        }
+      }
+    }
+  }
+
   viewRefTitle(grant) {
     const ref = grant.objectRef;
     if (ref === undefined) {
@@ -126,9 +155,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       } else {
         if (ref.startsWith('ctx')) {
           this.usersService.get(this.ctxs_url, ref, null)
-          .subscribe(ctx => {
-            this.ctxTitle = ctx.name;
-          });
+            .subscribe(ctx => {
+              this.ctxTitle = ctx.name;
+            });
         }
       }
     }
@@ -157,12 +186,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   changePassword(user) {
     if (user.password != null) {
       this.usersService.changePassword(user, this.token)
-      .subscribe(u => {
-        this.selected = u;
-        this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
-      }, error => {
-        this.messageService.error(error);
-      });
+        .subscribe(u => {
+          this.selected = u;
+          this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
+        }, error => {
+          this.messageService.error(error);
+        });
     } else {
       this.messageService.error('password must not be empty!');
     }
@@ -191,8 +220,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   save(user2save) {
     this.selected = user2save;
-    if (this.selected.loginname.includes('new user')) {
-      this.messageService.warning('userid MUST NOT be new user');
+    if (this.selected.loginname.startsWith('new ')) {
+      this.messageService.warning('loginname MUST NOT be new <something>');
       return;
     }
     if (this.selected.name == null) {

@@ -20,7 +20,11 @@ export class ElasticStartComponent implements OnInit {
   }
 
   async getInfo() {
-    this.info = await this.elastic.info_api();
+    try {
+      this.info = await this.elastic.info_api();
+    } catch (e) {
+      this.message.error(e);
+    }
   }
 
   connect2(server) {
@@ -28,5 +32,4 @@ export class ElasticStartComponent implements OnInit {
     this.elastic.connect2(this.host);
     this.getInfo();
   }
-
 }
