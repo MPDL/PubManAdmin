@@ -3,6 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { User, Grant } from '../../base/common/model';
+import { MessagesService } from '../../base/services/messages.service';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 import { environment } from '../../../environments/environment';
 
@@ -11,10 +12,14 @@ import { environment } from '../../../environments/environment';
 export class UsersService extends PubmanRestService {
 
   usersUrl: string = environment.rest_url + environment.rest_users;
+  ous_url = environment.rest_url + environment.rest_ous;
+  ctxs_url = environment.rest_url + environment.rest_contexts;
+
   users: User[] = [];
   user: User;
 
-  constructor(httpc: HttpClient) {
+  constructor(httpc: HttpClient,
+    private messageService: MessagesService) {
     super(httpc);
   }
 
@@ -53,4 +58,23 @@ export class UsersService extends PubmanRestService {
     return this.getResource('PUT', userUrl, headers, body);
   }
 
+  addNamesOfGrantRefs(grant) {
+    const ref = grant.objectRef;
+    if (ref === undefined) {
+    } else {
+      if (ref.startsWith('ou')) {
+        this.get(this.ous_url, ref, null)
+          .subscribe(ou => {
+            grant.ctxTitle = ou.metadata.name;
+          });
+      } else {
+        if (ref.startsWith('ctx')) {
+          this.get(this.ctxs_url, ref, null)
+            .subscribe(ctx => {
+              grant.ctxTitle = ctx.name;
+            });
+        }
+      }
+    }
+  }
 }

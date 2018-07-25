@@ -141,6 +141,9 @@ export class GrantsComponent implements OnInit, OnDestroy {
         if (this.selectedGrants.length > 0) {
             this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(user => {
                 this.selectedUser = user;
+                if (this.selectedUser.grantList) {
+                    this.selectedUser.grantList.forEach(grant => this.usersService.addNamesOfGrantRefs(grant));
+                  }
                 this.selectedUserChange.emit(this.selectedUser);
                 this.messageService.success('added Grants to ' + this.selectedUser.loginname);
                 this.selectedGrants = null;

@@ -14,8 +14,9 @@ export class ElasticGuard implements CanActivate {
   }
 
   getThePermission(): boolean {
-    const phrase = prompt('not even roland is allowd 2 do that!');
-    if (phrase === environment.elastic_admin) {
+    const phrase = prompt('not even roland is allowd 2 do that !\nwho do you think you are ?');
+    const answer = prompt('you think you\'re ' + phrase + ' ?\nbut can you guess my name ?')
+    if (answer === environment.elastic_admin) {
       return true;
     } else {
       return false;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 
 import { UsersService } from './users.service';
 import { User, Grant, BasicRO } from '../../base/common/model';
@@ -24,9 +24,17 @@ export class UserDetailsResolverService implements Resolve<User> {
             return of(user);
         } else {
             const token = route.queryParams['token'];
+            let user: User;
             return this.userSvc.get(url, id, token)
                 .pipe(
-                    first()
+                    first(),
+                    map((response) => {
+                        user = response;
+                        if (user.grantList) {
+                            user.grantList.forEach(grant => this.userSvc.addNamesOfGrantRefs(grant));
+                        }
+                        return user;
+                    })
                 );
         }
     }

@@ -97,8 +97,8 @@
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-right">
                         <ul class="list-group">
-                            <li class="list-group-item-primary list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center" *ngFor="let usergrant of selected.grantList" (click)="goToRef(usergrant)">
-                                <!--<div class="row">-->
+                            <li class="list-group-item-primary list-group-item-action py-0 align-items-center" *ngFor="let usergrant of selected.grantList" (click)="goToRef(usergrant)">
+                                <div class="row">
                                     <span class="col-3 text-left text-truncate">
                                         <label class="col-form-label-sm p-0 ml-2" [innerHtml]="usergrant.role"></label>
                                     </span>
@@ -106,13 +106,14 @@
                                         <label class="col-form-label-sm p-0" [innerHtml]="usergrant.ctxTitle"></label>
                                     </span>
                                     <span class="col-2 text-left">
-                                        <label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef" (mouseover)="viewRefTitle(usergrant)" data-toggle="tooltip" data-placement="right" title="{{ctxTitle}}"></label>
+                                        <!--<label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef" (mouseover)="viewRefTitle(usergrant)" data-toggle="tooltip" data-placement="right" title="{{ctxTitle}}"></label>-->
+                                        <label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef"></label>
                                     </span>
                                     <span class="col-1">
                                         <input type="button" class="btn btn-outline-primary btn-sm" (click)="deleteGrant(usergrant); $event.stopPropagation()" name="deleteGrant"
                                             value="x" />
                                     </span>
-                                <!--</div>-->
+                                </div>
                             </li>
                         </ul>
                     </div>

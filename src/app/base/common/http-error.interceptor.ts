@@ -21,8 +21,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 catchError((err: HttpErrorResponse) => {
                     if (err.error instanceof Error) {
                         this.messages.error(`${err.status}, ` + err.error.message);
+                    } else if (err.error instanceof Object) {
+                        this.messages.error(`${err.status}, ERROR: ` + JSON.stringify(err.error));
                     } else {
-                        // this.messages.error(`${err.status}, ERROR: ` + JSON.stringify(err.error));
                         this.messages.error(`${err.status}: ` + err.error);
                     }
                     return empty();
