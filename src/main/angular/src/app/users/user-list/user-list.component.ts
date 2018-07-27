@@ -101,7 +101,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           });
         this.currentPage = page;
       } else {
-        this.usersService.filter(this.url, this.token, '?q=affiliation.name.keyword:' + this.selectedOUName.name, page)
+        this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOUName.objectId, page)
           .subscribe(result => {
             this.users = result.list;
             this.total = result.records;

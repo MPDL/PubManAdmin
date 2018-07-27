@@ -161,7 +161,10 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       this.searchForm.reset();
       this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key }]);
       this.currentPage = 1;
-      this.search.filter(this.url, this.token, '?q=affiliation.name.keyword:' + ou.key, 1)
+      let body = {'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword':ou.key}}}}, 'sort': [
+        { 'name.keyword': { 'order': 'asc' } }
+    ]};
+      this.search.query(this.url, this.token, body)
         .subscribe(res => {
           this.users = res.list;
           this.total = res.records;
