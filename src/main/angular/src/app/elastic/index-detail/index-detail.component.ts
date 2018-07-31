@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -11,9 +11,11 @@ import { NgForm } from '@angular/forms';
   templateUrl: './index-detail.component.html',
   styleUrls: ['./index-detail.component.scss']
 })
-export class IndexDetailComponent implements OnInit {
+export class IndexDetailComponent implements OnInit, OnDestroy {
 
   @ViewChild('f') form: NgForm;
+  remote;
+  index;
   index_name;
   isNewIndex: boolean = false;
   list: any[];
@@ -21,6 +23,7 @@ export class IndexDetailComponent implements OnInit {
   selectedSettings;
   mapping;
   selectedMapping;
+  aliases;
   subscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -37,9 +40,51 @@ export class IndexDetailComponent implements OnInit {
     if (this.index_name !== 'new') {
       this.getSettings(this.index_name);
       this.getMapping(this.index_name);
+      this.getAliases(this.index_name);
+      this.getIndexFromList(this.index_name);
     } else {
       this.isNewIndex = true;
       this.getList();
+    }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  async getAliases(index) {
+    try {
+      this.aliases = await this.service.getAliases4Index(index);
+    } catch (e) {
+      this.message.error(e);
+    }
+  }
+
+  async addAlias(index) {
+    try {
+      let alias = prompt('new alias name:');
+      let response = await this.service.addAlias(index, alias);
+      this.message.success(JSON.stringify(response));
+      this.aliases = this.getAliases(this.index_name);
+    } catch (e) {
+      this.message.error(e);
+    }
+  }
+
+  async removeAlias(index) {
+    try {
+      let alias;
+      let aliases = Object.keys(this.aliases[this.index_name].aliases);
+      if (aliases.length > 1) {
+        alias = prompt('which one?');
+      } else if (aliases.length === 1) {
+        alias = aliases[0];
+      }
+      let response = await this.service.removeAlias(index, alias);
+      this.message.success(JSON.stringify(response));
+      this.aliases = this.getAliases(this.index_name);
+    } catch (e) {
+      this.message.error(e);
     }
   }
 
@@ -67,10 +112,36 @@ export class IndexDetailComponent implements OnInit {
     }
   }
 
+  async getIndexFromList(index) {
+    try {
+      this.list = await this.service.listAllIndices();
+      let selected = this.list.filter(result => result.index === index);
+      if (selected.length === 1) {
+        this.index = selected[0];
+      }
+    } catch (e) {
+      this.message.error(e);
+    }
+  }
+
+  async getRemoteList(host) {
+    this.remote = host;
+    try {
+      this.list = await this.service.listRemoteIndices(this.remote);
+    } catch (e) {
+      this.message.error(e);
+    }
+  }
+
   async onChangeSettings(index) {
     try {
-      const settings = await this.service.getSettings4Index(index);
-      this.selectedSettings = this.cloneSettings(settings[index]);
+      if (this.remote != null) {
+        const settings = await this.service.getRemoteSettings4Index(this.remote, index);
+        this.selectedSettings = this.cloneSettings(settings[index]);
+      } else {
+        const settings = await this.service.getSettings4Index(index);
+        this.selectedSettings = this.cloneSettings(settings[index]);
+      }
     } catch (e) {
       this.message.error(e);
     }
@@ -86,8 +157,13 @@ export class IndexDetailComponent implements OnInit {
 
   async onChangeMappings(index) {
     try {
-      const mapping = await this.service.getMapping4Index(index);
-      this.selectedMapping = mapping[index];
+      if (this.remote != null) {
+        const mapping = await this.service.getRemoteMapping4Index(this.remote, index);
+        this.selectedMapping = mapping[index];
+      } else {
+        const mapping = await this.service.getMapping4Index(index);
+        this.selectedMapping = mapping[index];
+      }
     } catch (e) {
       this.message.error(e);
     }
@@ -95,6 +171,11 @@ export class IndexDetailComponent implements OnInit {
 
   gotoList() {
     this.router.navigate(['elastic/index']);
+  }
+
+  remoteList() {
+    let host = prompt('where from?');
+    this.getRemoteList(host);
   }
 
   async save() {
@@ -115,5 +196,26 @@ export class IndexDetailComponent implements OnInit {
     } else {
       alert('OOOPS! ' + this.form.valid);
     }
+  }
+
+  async openOrClose(index) {
+    try {
+      if (index.status === 'open') {
+        const response = await this.service.closeIndex(index.index);
+        this.message.success(JSON.stringify(response));
+        this.getIndexFromList(index.index);
+      } else {
+        const response = await this.service.openIndex(index.index);
+        this.message.success(JSON.stringify(response));
+        this.getIndexFromList(index.index);
+      }
+    } catch (e) {
+      this.message.error(e);
+    }
+
+  }
+
+  notyet(name) {
+    alert('this method is not yet implemented 4 ' + name);
   }
 }

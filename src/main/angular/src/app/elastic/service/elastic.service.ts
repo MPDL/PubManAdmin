@@ -10,7 +10,6 @@ import { environment } from '../../../environments/environment';
 export class ElasticService {
 
   client: Client;
-  uri: string;
 
   constructor(private message: MessagesService,
     private http: HttpClient) {
@@ -34,12 +33,24 @@ export class ElasticService {
     });
   }
 
+  public remoteClient(url): Client {
+    let rc = new Client({
+      host: url,
+      log: ['error', 'warning']
+    });
+    return rc;
+  } 
+
   info_api() {
     return this.client.info({});
   }
 
   listAllIndices() {
     return this.client.cat.indices({ format: 'json' });
+  }
+
+  listRemoteIndices(host) {
+    return this.remoteClient(host).cat.indices({ format: 'json' });
   }
 
   listAliases() {
@@ -53,14 +64,32 @@ export class ElasticService {
     });
   }
 
+  getIndex(name) {
+    return this.client.indices.get({
+      index: name
+    });
+  }
+
   delete(name) {
     return this.client.indices.delete({
       index: name
     });
   }
 
+  getAliases4Index(index: string) {
+    return this.client.indices.getAlias({
+      index: index
+    });
+  }
+
   getMapping4Index(index: string) {
     return this.client.indices.getMapping({
+      index: index
+    });
+  }
+
+  getRemoteMapping4Index(host: string, index: string) {
+    return this.remoteClient(host).indices.getMapping({
       index: index
     });
   }
@@ -79,40 +108,35 @@ export class ElasticService {
     });
   }
 
-  getOuById(id) {
-    return this.client.get({
-      index: 'new_model_ous',
-      type: 'organization',
-      id: id
+  getRemoteSettings4Index(host: string, index: string) {
+    return this.remoteClient(host).indices.getSettings({
+      index: index
     });
   }
 
-  getChildren4OU(id: string) {
-    return this.client.search({
-      index: 'new_model_ous',
-      body: '{"query": {"term": {"parentAffiliation.objectId":"' + id + '"}}}',
-      size: 100,
-      sort: 'name.keyword'
+  addAlias(index, alias) {
+    return this.client.indices.putAlias({
+      index: index,
+      name: alias
     });
   }
 
-  searchChildren(id, callback): any {
-    return this.client.search({
-      index: 'new_model_ous',
-      body: '{"size":100, "query": {"term": {"parentAffiliation.objectId":"' + id + '"}}}',
-    }, (error, response) => {
-      if (error) {
-        this.message.error(error)
-      }
-      if (response) {
-        const hitList = Array<any>();
-        response.hits.hits.forEach((hit) => {
-          const source = JSON.stringify(hit._source);
-          const json = JSON.parse(source);
-          hitList.push(json);
-        })
-        callback(hitList)
-      }
-    })
+  removeAlias(index, alias) {
+    return this.client.indices.deleteAlias({
+      index: index,
+      name: alias
+    });
+  }
+
+  openIndex(name) {
+    return this.client.indices.open({
+      index: name
+    });
+  }
+
+  closeIndex(name) {
+    return this.client.indices.close({
+      index: name
+    });
   }
 }
