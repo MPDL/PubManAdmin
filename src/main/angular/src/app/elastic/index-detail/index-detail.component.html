@@ -40,60 +40,6 @@
           <div class="tab-pane fade show active" id="index-info" role="tabpanel">
             <input class="btn btn-sm btn-outline-secondary mr-2" type="button" [value]="index_info?.status === 'open' ? 'close' : 'open'"
               (click)="openOrClose(index_info)" />
-            <input class="btn btn-sm btn-outline-secondary mr-2" type="button" value="addDocs" (click)="importDocs(index_name)" />
-            <input class="btn btn-sm btn-outline-secondary" type="button" value="removeDocs" (click)="notyet(index_name)" />
-            <div *ngIf='importing'>
-              <form class="list-group-item text-secondary" name="import_form" (ngSubmit)="import_form.valid && save()" #import_form="ngForm"
-                novalidate>
-                <div class="form-group row w-100">
-                  <label for="importurl" class="col-2 col-form-label col-form-label-sm">import url</label>
-                  <div class="col-10">
-                    <input class="form-control form-control-sm" type="text" placeholder="url 2 elastic search (defaults 2 current connection)"
-                      name="importurl" [(ngModel)]="import_url" id="importurl" #importurl="ngModel">
-                      <!--
-                    <div *ngIf="importurl.invalid && (importurl.dirty || importurl.touched)" class="text-danger">
-                      <div *ngIf="importurl.errors.required">
-                        import url is required.
-                      </div>
-                    </div>
-                    -->
-                  </div>
-                </div>
-                <div class="form-group row w-100">
-                  <label for="importindex" class="col-2 col-form-label col-form-label-sm">index</label>
-                  <div class="col-10">
-                    <input class="form-control form-control-sm" type="text" placeholder="index 2 get the docs from" name="importindex" [(ngModel)]="import_index"
-                      id="importindex" #importindex="ngModel" required>
-                    <div *ngIf="importindex.invalid && (importindex.dirty || importindex.touched)" class="text-danger">
-                      <div *ngIf="importindex.errors.required">
-                        index is required.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row w-100">
-                  <label for="query" class="col-2 col-form-label col-form-label-sm">filter term</label>
-                  <div class="col-10">
-                    <input class="form-control form-control-sm" type="text" placeholder="term:value" name="query" [(ngModel)]="filter_term" id="query"
-                      #query="ngModel" required>
-                    <div *ngIf="query.invalid && (query.dirty || query.touched)" class="text-danger">
-                      <div *ngIf="query.errors.required">
-                        query is required.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row w-100">
-                  <div class="col-2"></div>
-                  <div class="col-3">
-                    <input type="button" class="btn btn-outline-secondary btn-sm mr-2" name="import" value="import" (click)="import()" />
-                    <input type="button" class="btn btn-outline-secondary btn-sm mr-2" name="cancel" value="cancel" (click)="cancelImport()"
-                    />
-                  </div>
-                </div>
-              </form>
-              <pre class="m-3">{{import_form.value | json}}</pre>
-            </div>
             <pre class="m-3">{{index_info | json}}</pre>
           </div>
         </div>

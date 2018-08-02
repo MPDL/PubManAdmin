@@ -14,7 +14,6 @@ import { NgForm } from '@angular/forms';
 export class IndexDetailComponent implements OnInit, OnDestroy {
 
   @ViewChild('new_index_form') indexform: NgForm;
-  @ViewChild('import_form') importform: NgForm;
 
   remote;
   index;
@@ -27,10 +26,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   mapping;
   selectedMapping;
   aliases;
-  importing: boolean = false;
-  import_url;
-  import_index;
-  filter_term;
+  
   subscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -205,38 +201,6 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       this.message.error(e);
     }
 
-  }
-
-  importDocs(name) {
-    this.importing = true;
-  }
-
-  import() {
-    if (this.importform.valid) {
-      let url = this.import_url;
-      let index = this.import_index;
-      let term = this.filter_term;
-      this.service.scrollwithcallback(url, index, term, async (cb) => {
-        let docs = [];
-        cb.forEach(async doc => {
-          let temp = {index: {_index:this.index_name, _type:doc._type, _id:doc._id}};
-          docs.push(temp);
-          docs.push(doc._source);
-        });
-        try {
-          let go4it = await this.service.bulkIndex(docs);
-          this.message.success(JSON.stringify(go4it));
-        } catch(e) {
-          this.message.error(e);
-        }
-      });
-    } else {
-      this.message.error('form invalid? '+this.importform.hasError)
-    }
-  }
-
-  cancelImport() {
-    this.importing = false;
   }
 
   notyet(name) {
