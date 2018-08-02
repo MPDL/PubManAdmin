@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ContextsService } from '../services/contexts.service';
-import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model/inge';
@@ -42,7 +39,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectedWorkflow: string;
 
   constructor(private ctxSvc: ContextsService,
-    private ouSvc: Elastic4contextsService,
     private router: Router,
     private route: ActivatedRoute,
     private login: AuthenticationService,

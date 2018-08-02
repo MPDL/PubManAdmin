@@ -6,8 +6,6 @@ import { ClickOutsideDirective } from '../directives/click-outside.directive';
 import { DocumentClickDirective } from '../directives/documentclick.directive';
 import { ValueNotAllowedDirective } from '../directives/value-not-allowed.directive';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { PaginationComponent } from '../pagination/pagination.component';
-import { PaginationService } from '../services/pagination.service';
 import { SearchTermComponent } from '../common/components/search-term/search-term.component';
 import { SearchService } from '../common/services/search.service';
 import { ElasticSearchService } from '../common/services/elastic-search.service';
@@ -24,7 +22,6 @@ import { ElasticSearchService } from '../common/services/elastic-search.service'
     ClickOutsideDirective,
     DocumentClickDirective,
     ValueNotAllowedDirective,
-    PaginationComponent,
     SearchTermComponent
   ],
   exports: [
@@ -32,7 +29,6 @@ import { ElasticSearchService } from '../common/services/elastic-search.service'
     ClickOutsideDirective,
     DocumentClickDirective,
     ValueNotAllowedDirective,
-    PaginationComponent,
     NgxPaginationModule,
     SearchTermComponent,
     CommonModule,
@@ -40,7 +36,6 @@ import { ElasticSearchService } from '../common/services/elastic-search.service'
     ReactiveFormsModule
   ],
   providers: [
-    PaginationService,
     SearchService,
     ElasticSearchService
   ]

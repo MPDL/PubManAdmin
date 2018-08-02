@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { PaginationComponent } from '../../base/pagination/pagination.component';
-
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
@@ -17,8 +15,6 @@ import { mpgOus4auto } from '../../base/common/model/query-bodies';
 })
 export class ContextListComponent implements OnInit, OnDestroy {
 
-  @ViewChild(PaginationComponent)
-  private paginator: PaginationComponent;
   url = environment.rest_url + environment.rest_contexts;
   title: string = 'Contexts';
   ctxs: any[];
@@ -64,10 +60,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.currentPage = page;
     this.loading = false;
 
-  }
-
-  updatePaginator() {
-    this.pagedCtxs = this.paginator.pagedItems;
   }
 
   listAllContexts(token) {

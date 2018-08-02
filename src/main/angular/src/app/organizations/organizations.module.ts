@@ -5,10 +5,8 @@ import { MatTreeModule } from '@angular/material';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { SharedModule } from '../base/common/shared.module';
 import { OrganizationsRoutingModule } from './organizations-routing.module';
-import { OrganizationListComponent } from './organization-list/organization-list.component';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { OrganizationsService } from './services/organizations.service';
-import { Elastic4ousService } from './services/elastic4ous.service';
 import { OrganizationTreeComponent } from './organization-tree/organization-tree.component';
 
 @NgModule({
@@ -21,13 +19,11 @@ import { OrganizationTreeComponent } from './organization-tree/organization-tree
     OrganizationsRoutingModule
   ],
   declarations: [
-    OrganizationListComponent,
     OrganizationDetailsComponent,
     OrganizationTreeComponent
   ],
   providers: [
-    OrganizationsService,
-    Elastic4ousService
+    OrganizationsService
   ]
 })
 export class OrganizationsModule { }
