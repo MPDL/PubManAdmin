@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+// keep 4 diagnostics
 import { Router } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -17,7 +18,6 @@ import { UsersModule } from './users/users.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { ContextsModule } from './contexts/contexts.module';
 import { SearchModule } from './search/search.module';
-import { IndicesModule } from './more/indices.module';
 import { ElasticModule } from './elastic/elastic.module';
 
 import { AuthenticationService } from './base/services/authentication.service';
@@ -50,7 +50,6 @@ import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
     OrganizationsModule,
     ContextsModule,
     SearchModule,
-    IndicesModule,
     ElasticModule,
     SharedModule,
     AppRoutingModule
