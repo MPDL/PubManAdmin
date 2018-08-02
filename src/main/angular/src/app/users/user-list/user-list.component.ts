@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { User, OU } from '../../base/common/model';
+import { User, OU } from '../../base/common/model/inge';
 import { UsersService } from '../services/users.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { environment } from '../../../environments/environment';
-import { mpgOus4auto } from '../../base/common/query-bodies';
+import { environment } from 'environments/environment';
+import { mpgOus4auto } from '../../base/common/model/query-bodies';
 
 @Component({
   selector: 'user-list',

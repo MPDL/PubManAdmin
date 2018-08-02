@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { OrganizationsService } from '../services/organizations.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 // import { OrganizationTreeService, OUTreeFlatNode, OUTreeNode } from '../services/organization-tree.service';
 import { OrganizationTree2Service, OUTreeNode, OUTreeFlatNode } from '../services/organization-tree2.service';
 

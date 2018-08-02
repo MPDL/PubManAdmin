@@ -5,13 +5,13 @@ import { Observable ,  Subscription } from 'rxjs';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-import { ElasticSearchService } from '../services/elastic-search.service';
-import { SearchService } from '../services/search.service';
-import { SearchTermComponent } from '../search-term/search-term.component';
-import { SearchRequest, SearchTerm } from '../search-term/search.term';
-import { item_aggs } from '../search-term/search.aggregations';
+import { ElasticSearchService } from '../../base/common/services/elastic-search.service';
+import { SearchService } from '../../base/common/services/search.service';
+import { SearchTermComponent } from '../../base/common/components/search-term/search-term.component';
+import { SearchRequest, SearchTerm } from '../../base/common/components/search-term/search.term';
+import { item_aggs } from '../../base/common/components/search-term/search.aggregations';
 
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 
 
 @Component({
@@ -145,7 +145,16 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
     this.currentPage = 1;
-    this.search.filter(this.item_rest_url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
+    const term = new SearchTerm();
+    term.type = 'filter';
+    term.field = 'creationDate';
+    term.searchTerm = year.key_as_string+'||/y';
+    const terms = [term];
+    const request = new SearchRequest();
+    request.searchTerms = terms;
+    const body = this.search.buildQuery(request, 25, 0, 'creationDate', 'asc');
+    this.search.query(this.item_rest_url, this.token, body)
+    //this.search.filter(this.item_rest_url, this.token, '?q=creationDate:' + year.key_as_string + '||/y', 1)
       .subscribe(items => {
         this.items = items.list;
         this.total = items.records;

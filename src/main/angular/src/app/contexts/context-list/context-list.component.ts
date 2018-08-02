@@ -7,8 +7,8 @@ import { PaginationComponent } from '../../base/pagination/pagination.component'
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { ContextsService } from '../services/contexts.service';
-import { environment } from '../../../environments/environment';
-import { mpgOus4auto } from '../../base/common/query-bodies';
+import { environment } from 'environments/environment';
+import { mpgOus4auto } from '../../base/common/model/query-bodies';
 
 @Component({
   selector: 'app-context-list',

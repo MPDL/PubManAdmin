@@ -5,8 +5,8 @@ import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { OrganizationsService } from '../services/organizations.service';
-import { OU, Identifier, BasicRO, UserRO, OUMetadata } from '../../base/common/model';
-import { environment } from '../../../environments/environment';
+import { OU, Identifier, BasicRO, UserRO, OUMetadata } from '../../base/common/model/inge';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-organization-details',

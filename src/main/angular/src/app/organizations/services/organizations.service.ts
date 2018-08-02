@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
 
 @Injectable()

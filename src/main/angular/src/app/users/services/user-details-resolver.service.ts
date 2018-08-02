@@ -4,8 +4,8 @@ import { Observable, of } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
 import { UsersService } from './users.service';
-import { User, Grant, BasicRO } from '../../base/common/model';
-import { environment } from '../../../environments/environment';
+import { User, Grant, BasicRO } from '../../base/common/model/inge';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {

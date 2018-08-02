@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElasticService } from '../../base/services/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class Elastic4usersService extends ElasticService {

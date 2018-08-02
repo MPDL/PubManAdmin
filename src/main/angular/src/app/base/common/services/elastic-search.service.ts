@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { ElasticService } from '../../base/services/elastic.service';
-import { MessagesService } from '../../base/services/messages.service';
+import { ElasticService } from '../../services/elastic.service';
+import { MessagesService } from '../../services/messages.service';
 
 @Injectable()
 export class ElasticSearchService extends ElasticService {

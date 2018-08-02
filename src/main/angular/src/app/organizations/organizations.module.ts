@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatTreeModule } from '@angular/material';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { SharedModule } from '../base/shared/shared.module';
+import { SharedModule } from '../base/common/shared.module';
 import { OrganizationsRoutingModule } from './organizations-routing.module';
 import { OrganizationListComponent } from './organization-list/organization-list.component';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';

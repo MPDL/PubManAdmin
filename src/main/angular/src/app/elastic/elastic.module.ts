@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SharedModule } from '../base/shared/shared.module';
+import { SharedModule } from '../base/common/shared.module';
 import { ElasticRoutingModule } from './elastic-routing.module';
 import { ElasticComponent } from './elastic.component';
 import { ElasticStartComponent } from './start/elastic-start.component';

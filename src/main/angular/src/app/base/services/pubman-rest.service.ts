@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 
-import { SearchResult } from 'app/base/common/model';
+import { SearchResult } from '../common/model/inge';
 
 @Injectable()
 export class PubmanRestService {

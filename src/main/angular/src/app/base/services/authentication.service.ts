@@ -4,9 +4,9 @@ import { share, shareReplay } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 
-import { User } from '../common/model';
-import { MessagesService } from '../services/messages.service';
-import { environment } from '../../../environments/environment';
+import { User } from '../common/model/inge';
+import { MessagesService } from './messages.service';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class AuthenticationService {

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { User, Grant } from '../../base/common/model';
+import { User, Grant } from '../../base/common/model/inge';
 import { MessagesService } from '../../base/services/messages.service';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 
 
 @Injectable()

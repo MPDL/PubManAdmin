@@ -13,10 +13,13 @@ import { NgForm } from '@angular/forms';
 })
 export class IndexDetailComponent implements OnInit, OnDestroy {
 
-  @ViewChild('f') form: NgForm;
+  @ViewChild('new_index_form') indexform: NgForm;
+  @ViewChild('import_form') importform: NgForm;
+
   remote;
   index;
   index_name;
+  index_info;
   isNewIndex: boolean = false;
   list: any[];
   settings;
@@ -24,6 +27,10 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   mapping;
   selectedMapping;
   aliases;
+  importing: boolean = false;
+  import_url;
+  import_index;
+  filter_term;
   subscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -38,10 +45,8 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
         this.index_name = name;
       });
     if (this.index_name !== 'new') {
-      this.getSettings(this.index_name);
-      this.getMapping(this.index_name);
-      this.getAliases(this.index_name);
-      this.getIndexFromList(this.index_name);
+      this.getIndex(this.index_name);
+      this.getIndexInfo(this.index_name);
     } else {
       this.isNewIndex = true;
       this.getList();
@@ -52,10 +57,13 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  async getAliases(index) {
+  async getIndex(name) {
     try {
-      this.aliases = await this.service.getAliases4Index(index);
-    } catch (e) {
+      this.index = await this.service.getIndex(name);
+      this.settings = this.index[name].settings;
+      this.mapping = this.index[name].mappings;
+      this.aliases = this.index[name].aliases;
+    } catch(e) {
       this.message.error(e);
     }
   }
@@ -65,7 +73,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       let alias = prompt('new alias name:');
       let response = await this.service.addAlias(index, alias);
       this.message.success(JSON.stringify(response));
-      this.aliases = this.getAliases(this.index_name);
+      this.getIndex(index);
     } catch (e) {
       this.message.error(e);
     }
@@ -74,7 +82,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async removeAlias(index) {
     try {
       let alias;
-      let aliases = Object.keys(this.aliases[this.index_name].aliases);
+      let aliases = Object.keys(this.index[this.index_name].aliases);
       if (aliases.length > 1) {
         alias = prompt('which one?');
       } else if (aliases.length === 1) {
@@ -82,23 +90,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       }
       let response = await this.service.removeAlias(index, alias);
       this.message.success(JSON.stringify(response));
-      this.aliases = this.getAliases(this.index_name);
-    } catch (e) {
-      this.message.error(e);
-    }
-  }
-
-  async getSettings(index) {
-    try {
-      this.settings = await this.service.getSettings4Index(index);
-    } catch (e) {
-      this.message.error(e);
-    }
-  }
-
-  async getMapping(index) {
-    try {
-      this.mapping = await this.service.getMapping4Index(index);
+      this.getIndex(index);
     } catch (e) {
       this.message.error(e);
     }
@@ -112,12 +104,12 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  async getIndexFromList(index) {
+  async getIndexInfo(index) {
     try {
       this.list = await this.service.listAllIndices();
       let selected = this.list.filter(result => result.index === index);
       if (selected.length === 1) {
-        this.index = selected[0];
+        this.index_info = selected[0];
       }
     } catch (e) {
       this.message.error(e);
@@ -179,7 +171,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   }
 
   async save() {
-    if (this.form.valid) {
+    if (this.indexform.valid) {
       let msg = 'saving ' + this.index_name + '\n';
       msg = msg.concat('with seleted settings / mapping');
 
@@ -194,7 +186,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      alert('OOOPS! ' + this.form.valid);
+      alert('OOOPS! ' + this.indexform.valid);
     }
   }
 
@@ -203,16 +195,48 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       if (index.status === 'open') {
         const response = await this.service.closeIndex(index.index);
         this.message.success(JSON.stringify(response));
-        this.getIndexFromList(index.index);
+        this.getIndexInfo(index.index);
       } else {
         const response = await this.service.openIndex(index.index);
         this.message.success(JSON.stringify(response));
-        this.getIndexFromList(index.index);
+        this.getIndexInfo(index.index);
       }
     } catch (e) {
       this.message.error(e);
     }
 
+  }
+
+  importDocs(name) {
+    this.importing = true;
+  }
+
+  import() {
+    if (this.importform.valid) {
+      let url = this.import_url;
+      let index = this.import_index;
+      let term = this.filter_term;
+      this.service.scrollwithcallback(url, index, term, async (cb) => {
+        let docs = [];
+        cb.forEach(async doc => {
+          let temp = {index: {_index:this.index_name, _type:doc._type, _id:doc._id}};
+          docs.push(temp);
+          docs.push(doc._source);
+        });
+        try {
+          let go4it = await this.service.bulkIndex(docs);
+          this.message.success(JSON.stringify(go4it));
+        } catch(e) {
+          this.message.error(e);
+        }
+      });
+    } else {
+      this.message.error('form invalid? '+this.importform.hasError)
+    }
+  }
+
+  cancelImport() {
+    this.importing = false;
   }
 
   notyet(name) {

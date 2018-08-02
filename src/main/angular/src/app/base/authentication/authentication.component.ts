@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { MessagesService } from '../services/messages.service';
 import { AuthenticationService } from '../services/authentication.service';
 
-import { User } from '../common/model';
+import { User } from '../common/model/inge';
 
 @Component({
   selector: 'authentication-component',

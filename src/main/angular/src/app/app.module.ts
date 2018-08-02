@@ -12,7 +12,7 @@ import { MessagesComponent } from './base/messages/messages.component';
 import { NavigationComponent } from './base/navigation/navigation.component';
 import { HomeComponent } from './base/home/home.component';
 import { PageNotFoundComponent } from './base/common/page-not-found.component';
-import { SharedModule } from './base/shared/shared.module';
+import { SharedModule } from './base/common/shared.module';
 import { UsersModule } from './users/users.module';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { ContextsModule } from './contexts/contexts.module';

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import * as bodyBuilder from 'bodybuilder';
-import { PubmanRestService } from '../../base/services/pubman-rest.service';
+import { PubmanRestService } from '../../services/pubman-rest.service';
 
 @Injectable()
 export class SearchService extends PubmanRestService {

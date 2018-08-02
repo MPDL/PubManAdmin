@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { OrganizationsService } from '../services/organizations.service';
+import { OrganizationsService } from './organizations.service';
 import { MessagesService } from '../../base/services/messages.service';
 
 

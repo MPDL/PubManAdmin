@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { Client } from 'elasticsearch';
 
 import { MessagesService } from '../../base/services/messages.service';
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
+import { async } from 'q';
 
 @Injectable()
 export class ElasticService {
@@ -39,7 +40,7 @@ export class ElasticService {
       log: ['error', 'warning']
     });
     return rc;
-  } 
+  }
 
   info_api() {
     return this.client.info({});
@@ -139,4 +140,71 @@ export class ElasticService {
       index: name
     });
   }
+
+  scroll() {
+    const docs = [];
+    const queue = [];
+    this.client.search({
+      index: 'ous',
+      scroll: '30s',
+      q: 'parentAffiliation.objectId:ou_persistent13'
+    }, async (err, resp) => {
+      
+        queue.push(resp);
+        while (queue.length) {
+          const response = queue.shift();
+          response.hits.hits.forEach(hit => docs.push(hit));
+          if (response.hits.total === docs.length) {
+            console.log('number of docs '+docs.length)
+            return Promise.resolve(docs);
+          }
+          queue.push(
+          await this.client.scroll({
+            scrollId: response._scroll_id,
+            scroll: '30s'
+          }));
+        }
+    });
+    //return Promise.resolve(docs);
+  }
+
+  scrollwithcallback(url, index, term, callback): any {
+    let ms = this.message;
+    let hitList = Array<any>();
+    let ec: Client;
+    if (url != null) {
+      console.log('url to create client: '+url)
+      ec = this.remoteClient(url);
+    } else {
+      ec = this.client;
+    }
+    ec.search({
+      index: index,
+      scroll: '30s',
+      q: term
+    }, function scrolling(error, response) {
+      if (error) {
+        ms.error(error);
+      }
+      response.hits.hits.forEach(function (hit) {
+        hitList.push(hit);
+      });
+      if (response.hits.total > hitList.length) {
+        ec.scroll({
+          scrollId: response._scroll_id,
+          scroll: '30s'
+        }, scrolling);
+      } else {
+        callback(hitList);
+      }
+    });
+  }
+
+  bulkIndex(body) {
+    return this.client.bulk({
+      body: body
+    });
+  }
+
+
 }

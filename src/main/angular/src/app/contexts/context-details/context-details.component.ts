@@ -8,10 +8,10 @@ import { ContextsService } from '../services/contexts.service';
 import { Elastic4contextsService } from '../services/elastic4contexts.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model';
-import { allOpenedOUs } from '../../base/common/query-bodies';
+import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model/inge';
+import { allOpenedOUs } from '../../base/common/model/query-bodies';
 
-import { environment } from '../../../environments/environment';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-context-details',

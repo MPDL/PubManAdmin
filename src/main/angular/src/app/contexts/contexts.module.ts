@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { SharedModule } from '../base/shared/shared.module';
+import { SharedModule } from '../base/common/shared.module';
 
 import { ContextsRoutingModule } from './contexts-routing.module';
 import { ContextDetailsComponent } from './context-details/context-details.component';

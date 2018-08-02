@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { User, Grant, BasicRO } from '../../base/common/model';
+import { User, Grant, BasicRO } from '../../base/common/model/inge';
 import { UsersService } from '../services/users.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-import { environment } from '../../../environments/environment';
-import { allOpenedOUs } from '../../base/common/query-bodies';
+import { environment } from 'environments/environment';
+import { allOpenedOUs } from '../../base/common/model/query-bodies';
 
 @Component({
   selector: 'app-user-details',

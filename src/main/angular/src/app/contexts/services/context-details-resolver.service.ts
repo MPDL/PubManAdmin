@@ -7,8 +7,8 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 
 import { ContextsService } from './contexts.service';
 import { MessagesService } from '../../base/services/messages.service';
-import { Context } from '../../base/common/model';
-import { environment } from '../../../environments/environment';
+import { Context } from '../../base/common/model/inge';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {

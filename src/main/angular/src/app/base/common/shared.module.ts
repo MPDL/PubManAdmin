@@ -8,6 +8,10 @@ import { ValueNotAllowedDirective } from '../directives/value-not-allowed.direct
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { PaginationService } from '../services/pagination.service';
+import { SearchTermComponent } from '../common/components/search-term/search-term.component';
+import { SearchService } from '../common/services/search.service';
+import { ElasticSearchService } from '../common/services/elastic-search.service';
+
 
 @NgModule({
   imports: [
@@ -20,7 +24,8 @@ import { PaginationService } from '../services/pagination.service';
     ClickOutsideDirective,
     DocumentClickDirective,
     ValueNotAllowedDirective,
-    PaginationComponent
+    PaginationComponent,
+    SearchTermComponent
   ],
   exports: [
     SelectedItemColourDirective,
@@ -29,12 +34,15 @@ import { PaginationService } from '../services/pagination.service';
     ValueNotAllowedDirective,
     PaginationComponent,
     NgxPaginationModule,
+    SearchTermComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule
   ],
   providers: [
-    PaginationService
+    PaginationService,
+    SearchService,
+    ElasticSearchService
   ]
 })
 export class SharedModule { }

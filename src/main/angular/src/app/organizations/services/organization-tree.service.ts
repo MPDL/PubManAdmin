@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Elastic4ousService } from '../services/elastic4ous.service';
+import { Elastic4ousService } from './elastic4ous.service';
 import { MessagesService } from '../../base/services/messages.service';
 
 

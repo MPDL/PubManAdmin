@@ -3,10 +3,10 @@ import { Subscription } from 'rxjs';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';
-import { Grant, User } from '../../base/common/model';
+import { Grant, User } from '../../base/common/model/inge';
 import { UsersService } from '../services/users.service';
-import { environment } from '../../../environments/environment';
-import { allOpenedOUs } from '../../base/common/query-bodies';
+import { environment } from 'environments/environment';
+import { allOpenedOUs } from '../../base/common/model/query-bodies';
 
 @Component({
     selector: 'grants-component',

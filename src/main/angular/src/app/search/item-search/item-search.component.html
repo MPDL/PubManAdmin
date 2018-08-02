@@ -5,13 +5,6 @@
         </div>
         <div class="card-body">
             <form [formGroup]="searchForm" novalidate (ngSubmit)="submit()">
-                <!--
-                <div class="margin-20">
-                    <a (click)="addSearchTerm()" style="cursor: default">
-            Add searchTerm +
-          </a>
-                </div>
-                -->
                 <div formArrayName="searchTerms">
                     <div *ngFor="let searchTerm of searchTerms.controls; let i=index">
                         <div [formGroupName]="i">
