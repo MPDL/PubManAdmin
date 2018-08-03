@@ -7,13 +7,13 @@ import { IndexComponent } from './index/index.component';
 import { IndexDetailComponent } from './index-detail/index-detail.component';
 import { SearchComponent } from './search/search.component';
 import { UploadComponent } from './upload/upload.component';
-import { ElasticGuard } from '../base/services/elastic-guard.service';
+import { AdminGuard } from '../base/services/admin-guard.service';
 
 const routes: Routes = [
   {
     path: 'elastic',
     component: ElasticComponent,
-    canActivate: [ElasticGuard],
+    canActivate: [AdminGuard],
     children: [
       { path: 'index', component: IndexComponent },
       { path: 'index/:name', component: IndexDetailComponent },
