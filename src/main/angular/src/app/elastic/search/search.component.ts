@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { MessagesService } from '../../base/services/messages.service';
 import { ElasticService } from '../service/elastic.service';
-import { NgForm } from '@angular/forms';
+import { SearchService } from '../../base/common/services/search.service';
+import { SearchRequest, SearchTerm } from '../../base/common/components/search-term/search.term';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-search',
@@ -10,33 +13,87 @@ import { NgForm } from '@angular/forms';
 })
 export class SearchComponent implements OnInit {
 
-  @ViewChild('import_form') importform: NgForm;
+  searchForm: FormGroup;
+  searchRequest: SearchRequest;
+  searchResult: any;
+  source_list: any[];
+  target_list: any[];
 
-  importing: boolean = false;
-  import_url;
-  source_index;
-  target_index;
-  filter_term;
+  fields2Select: string[] = [];
 
-  constructor(private service: ElasticService,
+  constructor(private fb : FormBuilder,
+      private service: ElasticService,
+      private searchservice: SearchService,
       private message: MessagesService) { }
 
   ngOnInit() {
+    this.searchForm = this.fb.group({
+      remote_url: '',
+      source_index: ['', Validators.required],
+      target_index: ['', Validators.required],
+      searchTerms: this.fb.array([this.initSearchTerm()])
+    });
+    this.getList();
   }
 
-  importDocs(name) {
-    this.importing = true;
+  async changeList() {
+    let remote_url = this.searchForm.get('remote_url').value;
+    console.log('url? '+remote_url)
+    try {
+      this.source_list = await this.service.listRemoteIndices(remote_url);
+    } catch(e) {
+      this.message.error(e);
+    }
+  }
+
+  async getList() {
+    try {
+      this.source_list = await this.service.listAllIndices();
+      this.target_list = this.source_list;
+    } catch (e) {
+      this.message.error(e);
+    }
+  }
+
+  initSearchTerm() {
+    return this.fb.group({
+      type: '',
+      field: '',
+      searchTerm: ''
+    });
+  }
+
+  get searchTerms(): FormArray {
+    return this.searchForm.get('searchTerms') as FormArray;
+  }
+
+  addSearchTerm() {
+    this.searchTerms.push(this.initSearchTerm());
+  }
+
+  removeSearchTerm(i: number) {
+    this.searchTerms.removeAt(i);
+  }
+
+  handleNotification(event: string, index) {
+    if (event === 'add') {
+      this.addSearchTerm();
+    } else if (event === 'remove') {
+      this.removeSearchTerm(index);
+    }
   }
 
   import() {
-    if (this.importform.valid) {
-      let url = this.import_url;
-      let index = this.source_index;
-      let term = this.filter_term;
-      this.service.scrollwithcallback(url, index, term, async (cb) => {
+    if (this.searchForm.valid) {
+      let url = this.searchForm.get('remote_url').value;
+      let source = this.searchForm.get('source_index').value;
+      let target = this.searchForm.get('target_index').value;
+      this.searchRequest = this.prepareRequest();
+      let body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc')
+      this.service.scrollwithcallback(url, source, body, async (cb) => {
         let docs = [];
         cb.forEach(async doc => {
-          let temp = {index: {_index:this.target_index, _type:doc._type, _id:doc._id}};
+          let temp = {index: {_index:target, _type:doc._type, _id:doc._id}};
           docs.push(temp);
           docs.push(doc._source);
         });
@@ -48,12 +105,51 @@ export class SearchComponent implements OnInit {
         }
       });
     } else {
-      this.message.error('form invalid? '+this.importform.hasError)
+      this.message.error('form invalid? '+this.searchForm.hasError)
     }
   }
 
-  cancelImport() {
-    this.importing = false;
+  search() {
+    this.searchRequest = this.prepareRequest();
+    const preparedBody = this.searchservice.buildQuery(this.searchRequest, 25, 0, '_id', 'asc');
+    this.searchSelectedIndex(preparedBody);
+  }
+
+  prepareRequest(): SearchRequest {
+    const model = this.searchForm.value;
+    const searchTerms2Save: SearchTerm[] = model.searchTerms.map(
+      (term: SearchTerm) => Object.assign({}, term)
+    );
+    const request: SearchRequest = {
+      searchTerms: searchTerms2Save
+    };
+    return request;
+  }
+
+  searchSelectedIndex(body) {
+    let url;
+    if (this.searchForm.get('remote_url').value != '') {
+      url = this.searchForm.get('remote_url').value;
+    } else {
+      url = environment.elastic_url;
+    }
+    console.log('passing ' + url)
+    const index = this.searchForm.get('source_index').value;
+    this.service.scrollwithcallback(url, index, body, (hits) => {
+      this.searchResult = hits;
+    });
+  }
+
+  async reindex() {
+    const source = this.searchForm.get('source_index').value;
+    const dest = this.searchForm.get('target_index').value;
+    const body = {source: {index: source}, dest: {index: dest}};
+    try {
+      const result = await this.service.reindex(body);
+      this.message.success(JSON.stringify(result));
+    } catch (e) {
+      this,this.message.error(e);
+    }
   }
 
   notyet(name) {

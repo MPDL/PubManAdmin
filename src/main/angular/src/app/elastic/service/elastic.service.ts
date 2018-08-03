@@ -181,7 +181,7 @@ export class ElasticService {
     ec.search({
       index: index,
       scroll: '30s',
-      q: term
+      body: term
     }, function scrolling(error, response) {
       if (error) {
         ms.error(error);
@@ -206,5 +206,9 @@ export class ElasticService {
     });
   }
 
-
+  reindex(body) {
+    return this.client.reindex({
+      body: body
+    });
+  }
 }

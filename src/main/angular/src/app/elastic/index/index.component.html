@@ -1,43 +1,44 @@
 <div class="container">
-  <h3 class="text-secondary">Index Administration</h3>
-  <div class="card bg-secondary text-right">
-    <div class="card-body">
-      <h4 class="text-white card-title">Indices</h4>
-      <input type="submit" class="btn btn-secondary btn-sm" name="add" value="+" (click)="addNewIndex()" />
+  <div class="card border-secondary text-right text-secondary mt-2">
+    <div class="card-header border-secondary bg-white">
+      <h4 class="text-secondary card-title">Indices List</h4>
+      <input type="submit" class="btn btn-outline-secondary btn-sm" name="add" value="+" (click)="addNewIndex()" />
     </div>
     <div class="list-group-flush">
-      <div class="list-group-item list-group-item-secondary list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center" *ngFor="let index of indices" (click)="goTo(index.index)">
+      <div class="list-group-item list-group-item-secondary list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center"
+        *ngFor="let index of indices" (click)="goTo(index.index)">
         <span class="col-sm-1 text-right mr-2" [innerHtml]="index['docs.count']"></span>
         <span class="col-sm-4 text-left text-truncate" [innerHtml]="index.index || index"></span>
         <span class="col-sm-3 text-left text-truncate" [innerHtml]="index.status"></span>
         <span class="col-sm-3 text-left text-truncate" [innerHtml]="index.alias"></span>
-        <div class="col-sm-1"><input type="submit" class="btn btn-outline-secondary btn-sm float-right" (click)="delete(index); $event.stopPropagation()"
-          name="delete" value="x" /></div>
+        <div class="col-sm-1">
+          <input type="submit" class="btn btn-outline-secondary btn-sm float-right" (click)="delete(index); $event.stopPropagation()"
+            name="delete" value="x" />
+        </div>
       </div>
+    </div>
+    <div class="card-body border-secondary">
+      <h4 class="text-secondary card-title">Aliases</h4>
+    </div>
+    <div class="list-group-flush m-1">
+      <form [formGroup]="aliasForm" novalidate (ngSubmit)="submit()">
+        <div formArrayName="indexAliases">
+          <div *ngFor="let indexAlias of indexAliases.controls; let i=index">
+            <div [formGroupName]="i">
+              <index-alias [indexAliasForm]="indexAliases.controls[i]" [indexList]="indices" (notice)="handleNotification($event, i)"></index-alias>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row w-100">
+          <div class="col-1 ml-auto">
+            <input type="submit" class="btn btn-outline-secondary btn-sm" [disabled]="!aliasForm.valid" value="submit" />
+          </div>
+        </div>
+      </form>
     </div>
   </div>
   <!--<pre>{{aliases | json}}</pre>-->
   <!--<pre>{{indices | json}}</pre>-->
-  <div class="card bg-secondary text-right">
-    <div class="card-body">
-      <h4 class="text-white card-title">Aliases</h4>
-    </div>
-    <div class="list-group-flush">
-      <form [formGroup]="aliasForm" novalidate (ngSubmit)="submit()">
-        <div formArrayName="indexAliases">
-            <div *ngFor="let indexAlias of indexAliases.controls; let i=index">
-                <div [formGroupName]="i">
-                    <index-alias [indexAliasForm]="indexAliases.controls[i]" [indexList]="indices" (notice)="handleNotification($event, i)"></index-alias>
-                </div>
-            </div>
-        </div>
-        <div class="form-group row w-100">
-            <div class="col-1 ml-auto">
-            <input type="submit" class="btn btn-outline-light btn-sm" [disabled]="!aliasForm.valid" value="submit"/>
-        </div>
-        </div>
-    </form>
-    </div>
-  </div>
+
   <!--<pre>{{aliasForm.value | json}}</pre>-->
 </div>

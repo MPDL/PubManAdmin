@@ -75,7 +75,6 @@ export class ElasticSearchService extends ElasticService {
         const fields = Array<string>();
         this.client.indices.getFieldMapping({
             index: alias,
-            type: type,
             fields: '*',
             includeDefaults: false
         }, (error, response) => {
