@@ -7,6 +7,7 @@
         <p class="card-text">you\’re connected to
           <strong>{{host}}</strong>
         </p>
+        <p><input type="button" class="btn btn-outline-primary btn-sm" name="connect" value="connect 2" (click)="connect()" /></p>
         <p class="card-text">most actions require you to login with administrative privileges</p>
       </div>
       <div class="card-footer py-1">
@@ -40,17 +41,15 @@
         <a [routerLink]="['/organizations']" class="card-link text-light">OU Administration</a>
       </div>
     </div>
-    <!--
     <div class="card border-secondary text-right">
       <div class="card-body text-secondary">
-        <h4 class="card-title">ES Admin</h4>
+        <h4 class="card-title">Elasticsearch Admin</h4>
         <p class="card-text">Reindexing, aliasing, mappings ...</p>
       </div>
-      <div class="card-footer bg-secondary">
+      <div class="card-footer bg-secondary py-1">
         <a [routerLink]="['/elastic']" class="card-link text-light">Elastcsearch Administration</a>
       </div>
     </div>
-  -->
     <div class="card border-dark text-right">
       <div class="card-body">
         <h4 class="card-title">Search</h4>

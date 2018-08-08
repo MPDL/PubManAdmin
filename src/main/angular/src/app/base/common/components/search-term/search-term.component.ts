@@ -49,10 +49,4 @@ export class SearchTermComponent {
   removeSearchTerm() {
     this.notice.emit('remove');
   }
-  /*
-  searchItems(f,t) {
-    console.log('sending notification from child: ' + t);
-    this.notice.emit(f+':'+t);
-  }
-  */
 }

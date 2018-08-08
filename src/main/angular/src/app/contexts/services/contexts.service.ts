@@ -10,7 +10,7 @@ import { PubmanRestService } from '../../base/services/pubman-rest.service';
 export class ContextsService extends PubmanRestService {
 
 
-    context_url = environment.rest_url + environment.rest_contexts;
+    context_url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
 
     constructor(httpc: HttpClient) {
         super(httpc);

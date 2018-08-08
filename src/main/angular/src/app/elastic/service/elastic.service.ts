@@ -4,23 +4,27 @@ import { Observable } from 'rxjs';
 import { Client } from 'elasticsearch';
 
 import { MessagesService } from '../../base/services/messages.service';
+import { ConnectionService } from '../../base/services/connection.service';
 import { environment } from 'environments/environment';
-import { async } from 'q';
 
 @Injectable()
 export class ElasticService {
 
   client: Client;
+  url: string;
 
   constructor(private message: MessagesService,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private conn: ConnectionService) {
     if (!this.client) {
-      this.connect();
+      this.conn.conn.subscribe(name => {
+        this.url = name + environment.elastic_url;
+        this.connect(this.url);
+      });
     }
   }
 
-  private connect() {
-    const url = environment.elastic_url;
+  private connect(url) {
     this.client = new Client({
       host: url,
       log: ['error', 'warning']
@@ -155,7 +159,6 @@ export class ElasticService {
           const response = queue.shift();
           response.hits.hits.forEach(hit => docs.push(hit));
           if (response.hits.total === docs.length) {
-            console.log('number of docs '+docs.length)
             return Promise.resolve(docs);
           }
           queue.push(
@@ -173,7 +176,6 @@ export class ElasticService {
     let hitList = Array<any>();
     let ec: Client;
     if (url != null) {
-      console.log('url to create client: '+url)
       ec = this.remoteClient(url);
     } else {
       ec = this.client;

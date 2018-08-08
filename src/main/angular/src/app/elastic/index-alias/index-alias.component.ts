@@ -43,12 +43,10 @@ export class IndexAliasComponent implements OnInit {
   }
 
   onIndexSelect(selected) {
-    console.log('selected '+JSON.stringify(selected))
     this.indexAliasForm.patchValue({index: selected});
   }
 
   onAliasSelect(selected) {
-    console.log('selected '+JSON.stringify(selected))
     this.indexAliasForm.patchValue({alias: selected});
   }
 

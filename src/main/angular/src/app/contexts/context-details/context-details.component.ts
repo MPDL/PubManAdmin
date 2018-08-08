@@ -17,8 +17,8 @@ import { environment } from 'environments/environment';
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
 
-  url = environment.rest_url + environment.rest_contexts;
-  ous_url = environment.rest_url + environment.rest_ous;
+  url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
+  ous_url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
 
   @ViewChild('f') form: any;
 

@@ -16,7 +16,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class ContextListComponent implements OnInit, OnDestroy {
 
-  url = environment.rest_url + environment.rest_contexts;
+  url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
   title: string = 'Contexts';
   ctxs: any[];
   contextnames: any[] = [];
@@ -124,7 +124,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     if (term.length > 0) {
       const body = mpgOus4auto;
       body.query.bool.must.term["metadata.name.auto"] = term;
-      const url = environment.rest_url + environment.rest_ous;
+      const url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
       this.ctxSvc.query(url, null, body)
         .subscribe(res => {
           res.list.forEach(ou => {

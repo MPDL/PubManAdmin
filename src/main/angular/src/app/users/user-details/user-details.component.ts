@@ -16,9 +16,9 @@ import { allOpenedOUs } from '../../base/common/model/query-bodies';
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
 
-  url = environment.rest_url + environment.rest_users;
-  ous_url = environment.rest_url + environment.rest_ous;
-  ctxs_url = environment.rest_url + environment.rest_contexts;
+  url = localStorage.getItem('base_url') + environment.rest_users || environment.base_url + environment.rest_users;
+  ous_url = localStorage.getItem('base_url') +environment.rest_ous || environment.base_url + environment.rest_ous;
+  ctxs_url = localStorage.getItem('base_url') +environment.rest_contexts || environment.base_url + environment.rest_contexts;
 
   resettedPassword: string = 'hard2Remember';
   selected: User;

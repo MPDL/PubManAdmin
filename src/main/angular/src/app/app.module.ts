@@ -20,6 +20,7 @@ import { ContextsModule } from './contexts/contexts.module';
 import { SearchModule } from './search/search.module';
 import { ElasticModule } from './elastic/elastic.module';
 
+import { ConnectionService } from './base/services/connection.service';
 import { AuthenticationService } from './base/services/authentication.service';
 import { ElasticService } from './base/services/elastic.service';
 import { MessagesService } from './base/services/messages.service';
@@ -27,7 +28,6 @@ import { NavigationService } from './base/services/navigation.service';
 import { PubmanRestService } from './base/services/pubman-rest.service';
 import { AdminGuard } from './base/services/admin-guard.service';
 import { LoginGuard } from './base/services/login-guard.service';
-import { ElasticGuard } from './base/services/elastic-guard.service';
 
 import { FooterComponent } from './base/footer/footer.component';
 import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
@@ -55,6 +55,7 @@ import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
     AppRoutingModule
   ],
   providers: [
+    ConnectionService,
     AuthenticationService,
     ElasticService,
     MessagesService,
@@ -62,7 +63,6 @@ import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
     PubmanRestService,
     AdminGuard,
     LoginGuard,
-    ElasticGuard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

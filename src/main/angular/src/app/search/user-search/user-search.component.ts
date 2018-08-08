@@ -24,7 +24,7 @@ import { environment } from 'environments/environment';
 export class UserSearchComponent implements OnInit, OnDestroy {
 
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
-  url = environment.rest_url + environment.rest_users;
+  url = localStorage.getItem('base_url') + environment.rest_users || environment.base_url + environment.rest_users;
   searchForm: FormGroup;
   searchRequest: SearchRequest;
 

@@ -13,7 +13,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class SuggestionComponent implements OnInit {
 
-  url: string = environment.rest_url + environment.rest_ous;
+  url: string = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
   @Input() form: FormGroup;
   @Input() placeholder;
   @Input() color: string = 'primary';

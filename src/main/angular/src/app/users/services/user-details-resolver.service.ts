@@ -12,7 +12,7 @@ export class UserDetailsResolverService implements Resolve<User> {
 
     constructor(private userSvc: UsersService, private router: Router) { }
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User> {
-        const url = environment.rest_url + environment.rest_users;
+        const url = localStorage.getItem('base_url') + environment.rest_users || environment.base_url + environment.rest_users;
         const id = route.params['id'];
         if (id === 'new user') {
             const user = new User();

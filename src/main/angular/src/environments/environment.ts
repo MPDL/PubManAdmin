@@ -1,12 +1,11 @@
 export const environment = {
   production: false,
   base_url: 'https://dev.inge.mpdl.mpg.de',
-  elastic_url: 'https://dev.inge.mpdl.mpg.de/es',
-  rest_url: 'https://dev.inge.mpdl.mpg.de/rest',
-  rest_users: '/users',
-  rest_ous: '/ous',
-  rest_contexts: '/contexts',
-  rest_items: '/items',
+  elastic_url: '/es',
+  rest_users: '/rest/users',
+  rest_ous: '/rest/ous',
+  rest_contexts: '/rest/contexts',
+  rest_items: '/rest/items',
   item_index: {
     name: 'items',
     type: 'item'
@@ -22,8 +21,5 @@ export const environment = {
   ctx_index: {
     name: 'contexts',
     type: 'context'
-  },
-  elastic_admin: 'devil',
-  blazegraph_sparql_url: 'http://localhost:8888/blazegraph/namespace/wf/sparql',
-
+  }
 };

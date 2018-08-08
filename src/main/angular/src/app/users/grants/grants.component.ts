@@ -23,8 +23,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Input() isNewGrant: boolean;
     @Output() isNewGrantChange = new EventEmitter<boolean>();
 
-    ous_url = environment.rest_url + environment.rest_ous;
-    ctx_url = environment.rest_url + environment.rest_contexts;
+    ous_url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
+    ctx_url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
 
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR',

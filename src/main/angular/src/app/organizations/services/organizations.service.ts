@@ -10,7 +10,7 @@ import { PubmanRestService } from '../../base/services/pubman-rest.service';
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
 
-    ous_rest_url = environment.rest_url + environment.rest_ous;
+    ous_rest_url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
     ou;
     ous: any;
 

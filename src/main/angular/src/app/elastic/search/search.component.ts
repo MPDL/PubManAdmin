@@ -38,7 +38,6 @@ export class SearchComponent implements OnInit {
 
   async changeList() {
     let remote_url = this.searchForm.get('remote_url').value;
-    console.log('url? '+remote_url)
     try {
       this.source_list = await this.service.listRemoteIndices(remote_url);
     } catch(e) {
@@ -131,9 +130,8 @@ export class SearchComponent implements OnInit {
     if (this.searchForm.get('remote_url').value != '') {
       url = this.searchForm.get('remote_url').value;
     } else {
-      url = environment.elastic_url;
+      url = localStorage.getItem('base_url') + environment.elastic_url || environment.base_url + environment.elastic_url;
     }
-    console.log('passing ' + url)
     const index = this.searchForm.get('source_index').value;
     this.service.scrollwithcallback(url, index, body, (hits) => {
       this.searchResult = hits;

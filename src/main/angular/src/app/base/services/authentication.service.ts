@@ -6,13 +6,14 @@ import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, 
 
 import { User } from '../common/model/inge';
 import { MessagesService } from './messages.service';
+import { ConnectionService } from './connection.service';
 import { environment } from 'environments/environment';
 
 @Injectable()
 export class AuthenticationService {
 
-  private tokenUrl: string = environment.rest_url + '/login';
-
+  // private tokenUrl: string = localStorage.getItem('base_url') + '/rest/login' || environment.base_url + '/rest/login';
+  private tokenUrl;
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
   private isLoggedIn = new BehaviorSubject<boolean>(false);
@@ -41,14 +42,18 @@ export class AuthenticationService {
 
   constructor(
     private http: HttpClient,
-    private messages: MessagesService
-  ) { }
+    private messages: MessagesService,
+    private conn: ConnectionService
+  ) {
+    this.conn.conn.subscribe(name => {
+      this.tokenUrl = name + '/rest/login';
+    });
+   }
 
   login(username, password) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     // let body = ''' + username + ':' + password + ''';
     const body = username + ':' + password;
-
     return this.http.request('POST', this.tokenUrl, {
       body: body,
       headers: headers,
