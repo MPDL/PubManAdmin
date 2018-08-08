@@ -6,6 +6,13 @@
             <h4 class="card-title">{{title}}</h4>
             <input type="submit" class="btn btn-success btn-sm" name="add" value="+" (click)="addNewContext()" />
         </div>
+        <!--
+        <div class="row">
+            <div class="col-4">
+                <app-suggestion [form]="suggestionForm" [placeholder]="'child component'" [color]="'success'" (selectedSuggestion)="filter($event)"></app-suggestion>
+            </div>
+        </div>
+        -->
         <div class="row">
             <div class="col-4">
                 <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOUNames(ouSearchTerm)"

@@ -7,6 +7,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { ContextsService } from '../services/contexts.service';
 import { environment } from 'environments/environment';
 import { mpgOus4auto } from '../../base/common/model/query-bodies';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-context-list',
@@ -31,17 +32,24 @@ export class ContextListComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   pageSize: number = 25;
   currentPage: number = 1;
+  // suggestionForm: FormGroup;
 
   constructor(private ctxSvc: ContextsService,
     private router: Router,
     private message: MessagesService,
-    private loginService: AuthenticationService) { }
+    private loginService: AuthenticationService,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
     this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
     this.listAllContexts(this.token);
+    /*
+    this.suggestionForm = this.fb.group({
+      suggestion: ''
+    });
+    */
   }
 
   ngOnDestroy() {

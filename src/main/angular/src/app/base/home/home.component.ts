@@ -16,10 +16,6 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
   }
 
-  theDeveloperSays() {
-    alert('Your suggestion will be sent ...');
-  }
-
   info() {
     alert('NOT implemented yet ...');
   }

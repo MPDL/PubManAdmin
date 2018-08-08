@@ -9,6 +9,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { SearchTermComponent } from '../common/components/search-term/search-term.component';
 import { SearchService } from '../common/services/search.service';
 import { ElasticSearchService } from '../common/services/elastic-search.service';
+import { SuggestionComponent } from './components/suggestion/suggestion.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ElasticSearchService } from '../common/services/elastic-search.service'
     ClickOutsideDirective,
     DocumentClickDirective,
     ValueNotAllowedDirective,
-    SearchTermComponent
+    SearchTermComponent,
+    SuggestionComponent
   ],
   exports: [
     SelectedItemColourDirective,
@@ -31,6 +33,7 @@ import { ElasticSearchService } from '../common/services/elastic-search.service'
     ValueNotAllowedDirective,
     NgxPaginationModule,
     SearchTermComponent,
+    SuggestionComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule

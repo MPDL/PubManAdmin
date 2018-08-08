@@ -1,0 +1,10 @@
+<div [formGroup]="form">
+  <input class="form-control form-control-sm" type="text" formControlName="suggestion" [placeholder]="placeholder" id="suggestion"
+    autocomplete="off">
+    <ul id="suggestions" class="list-group" (clickOutside)="close()">
+      <li *ngFor="let selected of (searchResult | async)?.list" class="list-group-item list-group-item-action py-0 text-left" [ngClass]="'list-group-item-'+color"
+        (click)="filter(selected)">
+        <small>{{selected.name}}</small>
+      </li>
+    </ul>
+</div>
