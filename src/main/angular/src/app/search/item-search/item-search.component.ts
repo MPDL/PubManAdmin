@@ -40,7 +40,6 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   items: any[];
   total: number = 0;
   loading: boolean = false;
-  pageSize: number = 25;
   currentPage: number = 1;
   subscription: Subscription;
   token;

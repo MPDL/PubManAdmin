@@ -30,7 +30,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   pagedCtxs: any[];
   total: number = 1;
   loading: boolean = false;
-  pageSize: number = 25;
+  pageSize: number = 50;
   currentPage: number = 1;
   // suggestionForm: FormGroup;
 

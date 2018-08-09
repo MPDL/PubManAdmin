@@ -23,6 +23,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   alternativeName;
   description;
   ouIdentifierId;
+  ounames: any[] = [];
+  searchTerm;
 
   subscription: Subscription;
   loginSubscription: Subscription;
@@ -266,6 +268,44 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     template.metadata = meta;
     return template;
 
+  }
+
+  getNames(term) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedOUs(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedOUs(term);
+    }
+  }
+
+  returnSuggestedOUs(term) {
+    const ouNames: any[] = [];
+    const url = environment.rest_ous;
+    const queryString = '?q=metadata.name.auto:' + term;
+    this.ouSvc.filter(url, null, queryString, 1)
+      .subscribe(res => {
+        res.list.forEach(ou => {
+          ouNames.push(ou);
+        });
+        if (ouNames.length > 0) {
+          this.ounames = ouNames;
+        } else {
+          this.ounames = [];
+        }
+      }, err => {
+        this.message.error(err);
+      });
+  }
+
+  close() {
+    this.searchTerm = '';
+    this.ounames = [];
+  }
+
+  select(term) {
+    this.searchTerm = term.metadata.name;
+    this.selected.parentAffiliation.objectId = term.objectId;
+    this.ounames = [];
   }
 
 }

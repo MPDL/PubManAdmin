@@ -43,13 +43,17 @@
     <ul class="list-group">
       <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
         (click)="onSelect(user)">
-        <span class="col-sm-11">{{user.name}} ({{user.loginname}})</span>
-        <span class="col-sm-1">
-          <!--
-          <input type="submit" class="btn btn-outline-primary btn-sm float-right" (click)="delete(user); $event.stopPropagation()"
-            name="delete" value="x" />
-          -->
-        </span>
+        <div class="row">
+            <span class="col-8">
+                <label class="col-form-label-sm p-0 ml-2" [innerHtml]="user.name"></label>
+            </span>
+            <span class="col-2 text-left text-truncate">
+                <label class="col-form-label-sm p-0" [innerHtml]="user.loginname"></label>
+            </span>
+            <span class="col-2 text-left">
+                <label class="col-form-label-sm p-0" [innerHtml]="user.active === true ? 'active' : 'deactivated'"></label>
+            </span>
+        </div>
       </div>
     </ul>
   </div>

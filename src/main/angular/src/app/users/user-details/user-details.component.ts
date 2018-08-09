@@ -213,9 +213,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.post(this.url, this.selected, this.token)
         .subscribe(
           data => {
-            this.messageService.success('added new user ' + data);
-            this.gotoList();
-            this.selected = null;
+            this.messageService.success('added new user ' + this.selected.loginname);
+            this.isNewUser = false;
+            this.isNewOu = false;
+            this.selected = data;
+            //this.gotoList();
           },
           error => {
             this.messageService.error(error);
@@ -237,10 +239,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.put(this.url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
           data => {
-            this.messageService.success('updated ' + this.selected.loginname + ' ' + data);
-            this.gotoList();
-            this.selected = null;
+            this.messageService.success('updated ' + this.selected.loginname);
+            // this.gotoList();
+            this.isNewOu = false;
             this.isNewGrant = false;
+            this.selected = data;
           },
           error => {
             this.messageService.error(error);
@@ -263,4 +266,19 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  delete(user) {
+    this.selected = user;
+    const id = this.selected.loginname;
+    this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
+      .subscribe(
+        data => {
+          this.messageService.success('deleted ' + id + ' ' + data);
+        },
+        error => {
+          this.messageService.error(error);
+        }
+      );
+    this.selected = null;
+    this.gotoList();
+  }
 }

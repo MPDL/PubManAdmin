@@ -216,9 +216,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctxSvc.post(this.url, this.ctx, this.token)
         .subscribe(
         data => {
-          this.message.success('added new context ' + data);
-          this.ctx = null;
-          this.gotoList();
+          this.message.success('added new context ' + this.ctx.name);
+          this.isNewCtx = false;
+          this.ctx = data;
+          // this.gotoList();
         },
         error => {
           this.message.error(error);
@@ -230,9 +231,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctxSvc.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
         data => {
-          this.message.success('updated ' + this.ctx.objectId + ' ' + data);
-          this.gotoList();
-          this.ctx = null;
+          this.message.success('updated ' + this.ctx.objectId);
+          // this.gotoList();
+          this.ctx = data;
         },
         error => {
           this.message.error(error);

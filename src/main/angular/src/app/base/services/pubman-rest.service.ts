@@ -10,7 +10,7 @@ import { ConnectionService } from './connection.service';
 @Injectable()
 export class PubmanRestService {
 
-  defaultPageSize = 25;
+  defaultPageSize = 50;
   base_url;
 
   constructor(
@@ -122,18 +122,18 @@ export class PubmanRestService {
     return this.getResource('GET', resourceUrl, headers, null);
   }
 
-  post(path, resource, token): Observable<number> {
+  post(path, resource, token): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
     const requestUrl = this.base_url + path;
-    return this.getHttpStatus('POST', requestUrl, headers, body);
+    return this.getResource('POST', requestUrl, headers, body);
   }
 
-  put(path, resource, token): Observable<number> {
+  put(path, resource, token): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
     const requestUrl = this.base_url + path;
-    return this.getHttpStatus('PUT', requestUrl, headers, body);
+    return this.getResource('PUT', requestUrl, headers, body);
   }
 
   delete(path, resource, token): Observable<number> {

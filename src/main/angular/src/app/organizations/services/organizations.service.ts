@@ -53,14 +53,14 @@ export class OrganizationsService extends PubmanRestService {
     }
 
     openOu(ou: any, token: string): Observable<number> {
-        const ouUrl = this.ous_rest_url + '/' + ou.objectId + '/open';
+        const ouUrl = this.base_url + this.ous_rest_url + '/' + ou.objectId + '/open';
         const body = ou.lastModificationDate;
         const headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ouUrl, headers, body);
     }
 
     closeOu(ou: any, token: string): Observable<number> {
-        const ouUrl = this.ous_rest_url + '/' + ou.objectId + '/close';
+        const ouUrl = this.base_url + this.ous_rest_url + '/' + ou.objectId + '/close';
         const body = ou.lastModificationDate;
         const headers = this.addHeaders(token, true);
         return this.getHttpStatus('PUT', ouUrl, headers, body);

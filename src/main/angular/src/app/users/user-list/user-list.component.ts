@@ -35,7 +35,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   adminSubscription: Subscription;
   comingFrom;
   total: number;
-  pageSize: number = 25;
+  pageSize: number = 50;
   currentPage: number = 1;
   usernames: User[] = [];
   ounames: OU[] = [];

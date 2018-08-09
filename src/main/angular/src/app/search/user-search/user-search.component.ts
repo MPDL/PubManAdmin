@@ -40,7 +40,6 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   users: any[];
   total: number = 0;
   loading: boolean = false;
-  pageSize: number = 25;
   currentPage: number = 1;
   subscription: Subscription;
   token;
