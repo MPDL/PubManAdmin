@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { environment } from 'environments/environment';
 import { MessagesService } from '../services/messages.service';
 import { AuthenticationService } from '../services/authentication.service';
@@ -9,7 +9,8 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}]
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
@@ -21,9 +22,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private conn: ConnectionService,
     private login: AuthenticationService,
-    private message: MessagesService) { }
+    private message: MessagesService,
+    private location: Location) { }
 
   ngOnInit() {
+    console.log(this.location.path())
+    console.log(window.location.hostname)
     this.login_subscription = this.login.isLoggedIn$.subscribe(bool => {
       this.isLoggedIn = bool;
     });

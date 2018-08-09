@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "build-prod": "ng build --base-href=/admintool/ --prod -c=production",
     "build-qa": "ng build --base-href=/admintool/ --prod -c=qa",
     "build-dev": "ng build --base-href=/admintool/ --prod -c=dev",
     "test": "ng test",
