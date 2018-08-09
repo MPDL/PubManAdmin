@@ -5,15 +5,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 
 import { SearchResult } from '../common/model/inge';
+import { ConnectionService } from './connection.service';
 
 @Injectable()
 export class PubmanRestService {
 
   defaultPageSize = 25;
+  base_url;
 
   constructor(
-    protected client: HttpClient
-  ) { }
+    protected client: HttpClient,
+    protected conn: ConnectionService
+  ) {
+    this.conn.conn.subscribe(base => {
+      this.base_url = base;
+    });
+   }
 
   getSearchResults(method, url, headers, body): Observable<any> {
     return this.client.request(method, url, {
@@ -89,47 +96,50 @@ export class PubmanRestService {
     }
   }
 
-  getAll(url, token: string, page: number): Observable<any> {
+  getAll(path, token: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = url + '?limit=' + this.defaultPageSize + '&offset=' + offset;
+    const requestUrl = this.base_url + path + '?limit=' + this.defaultPageSize + '&offset=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
-  filter(url, token: string, query: string, page: number): Observable<any> {
+  filter(path, token: string, query: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = url + query + '&limit=' + this.defaultPageSize + '&offset=' + offset;
+    const requestUrl = this.base_url + path + query + '&limit=' + this.defaultPageSize + '&offset=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
-  query(url, token: string, body): Observable<any> {
+  query(path, token: string, body): Observable<any> {
     const headers = this.addHeaders(token, true);
-    const requestUrl = url + '/search';
+    const requestUrl = this.base_url + path + '/search';
     return this.getSearchResults('POST', requestUrl, headers, body);
   }
 
-  get(url, id, token): Observable<any> {
-    const resourceUrl = url + '/' + id;
+  get(path, id, token): Observable<any> {
+    const resourceUrl = this.base_url + path + '/' + id;
     const headers = this.addHeaders(token, false);
     return this.getResource('GET', resourceUrl, headers, null);
   }
 
-  post(url, resource, token): Observable<number> {
+  post(path, resource, token): Observable<number> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('POST', url, headers, body);
+    const requestUrl = this.base_url + path;
+    return this.getHttpStatus('POST', requestUrl, headers, body);
   }
 
-  put(url, resource, token): Observable<number> {
+  put(path, resource, token): Observable<number> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('PUT', url, headers, body);
+    const requestUrl = this.base_url + path;
+    return this.getHttpStatus('PUT', requestUrl, headers, body);
   }
 
-  delete(url, resource, token): Observable<number> {
+  delete(path, resource, token): Observable<number> {
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('DELETE', url, headers, null);
+    const requestUrl = this.base_url + path;
+    return this.getHttpStatus('DELETE', requestUrl, headers, null);
   }
 
 }

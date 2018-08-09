@@ -12,7 +12,6 @@ import { environment } from 'environments/environment';
 @Injectable()
 export class AuthenticationService {
 
-  // private tokenUrl: string = localStorage.getItem('base_url') + '/rest/login' || environment.base_url + '/rest/login';
   private tokenUrl;
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);

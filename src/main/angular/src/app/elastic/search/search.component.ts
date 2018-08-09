@@ -130,7 +130,7 @@ export class SearchComponent implements OnInit {
     if (this.searchForm.get('remote_url').value != '') {
       url = this.searchForm.get('remote_url').value;
     } else {
-      url = localStorage.getItem('base_url') + environment.elastic_url || environment.base_url + environment.elastic_url;
+      url = null;
     }
     const index = this.searchForm.get('source_index').value;
     this.service.scrollwithcallback(url, index, body, (hits) => {

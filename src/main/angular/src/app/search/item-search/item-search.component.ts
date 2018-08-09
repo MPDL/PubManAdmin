@@ -23,7 +23,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
 
-  item_rest_url = localStorage.getItem('base_url') + environment.rest_items || environment.base_url + environment.rest_items;
+  item_rest_url = environment.rest_items;
 
   searchForm: FormGroup;
   searchRequest: SearchRequest;

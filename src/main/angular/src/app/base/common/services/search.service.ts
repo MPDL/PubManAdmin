@@ -3,12 +3,14 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import * as bodyBuilder from 'bodybuilder';
 import { PubmanRestService } from '../../services/pubman-rest.service';
+import { ConnectionService } from '../../services/connection.service';
 
 @Injectable()
 export class SearchService extends PubmanRestService {
 
-  constructor(httpc: HttpClient) {
-    super(httpc);
+  constructor(httpc: HttpClient,
+      conn: ConnectionService) {
+    super(httpc, conn);
    }
 
   buildQueryOnly(request): any {

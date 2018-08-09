@@ -8,7 +8,7 @@ import { share } from 'rxjs/operators';
 })
 export class ConnectionService {
 
-  private initial_value = localStorage.getItem('base_url') || environment.base_url;
+  private initial_value = environment.base_url;
   private connection = new BehaviorSubject<string>(this.initial_value);
   conn = this.connection.asObservable(); 
 

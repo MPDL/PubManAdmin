@@ -6,21 +6,23 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { environment } from 'environments/environment';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
+import { ConnectionService } from '../../base/services/connection.service';
 
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
 
-    ous_rest_url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
+    ous_rest_url = environment.rest_ous;
     ou;
     ous: any;
 
-    constructor(protected httpc: HttpClient) {
-        super(httpc);
+    constructor(protected httpc: HttpClient,
+            conn: ConnectionService) {
+        super(httpc, conn);
     }
 
     getOuById(id: string, token: string): Observable<any> {
         const headers = this.addHeaders(token, false);
-        const url =  this.ous_rest_url + '/' + id;
+        const url = this.base_url + this.ous_rest_url + '/' + id;
         return this.httpc.request('GET', url, {
             headers: headers
         }).pipe(
@@ -36,7 +38,7 @@ export class OrganizationsService extends PubmanRestService {
 
     listChildren4Ou(id: string, token: string): Observable<any[]> {
         const headers = this.addHeaders(token, false);
-        const url =  this.ous_rest_url + '/' + id + '/children';
+        const url = this.base_url + this.ous_rest_url + '/' + id + '/children';
         return this.httpc.request('GET', url, {
             headers: headers
         }).pipe(

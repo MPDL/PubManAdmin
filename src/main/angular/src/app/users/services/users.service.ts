@@ -5,22 +5,24 @@ import { Observable } from 'rxjs';
 import { User, Grant } from '../../base/common/model/inge';
 import { MessagesService } from '../../base/services/messages.service';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
+import { ConnectionService } from '../../base/services/connection.service';
 import { environment } from 'environments/environment';
 
 
 @Injectable()
 export class UsersService extends PubmanRestService {
 
-  usersUrl: string = localStorage.getItem('base_url') + environment.rest_users || environment.base_url + environment.rest_users;
-  ous_url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
-  ctxs_url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
+  usersUrl: string = environment.rest_users;
+  ous_url = environment.rest_ous;
+  ctxs_url = environment.rest_contexts;
 
   users: User[] = [];
   user: User;
 
   constructor(httpc: HttpClient,
+    conn: ConnectionService,
     private messageService: MessagesService) {
-    super(httpc);
+    super(httpc, conn);
   }
 
   activate(user: User, token: string): Observable<User> {

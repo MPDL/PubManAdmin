@@ -13,22 +13,28 @@ import { Subscription } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  subscription: Subscription;
+  login_subscription: Subscription;
+  host_subscription: Subscription;
+
   isLoggedIn: boolean = false;
-  host: string = localStorage.getItem('base_url') || environment.base_url;
+  host: string;
 
   constructor(private conn: ConnectionService,
     private login: AuthenticationService,
     private message: MessagesService) { }
 
   ngOnInit() {
-    this.subscription = this.login.isLoggedIn$.subscribe(bool => {
+    this.login_subscription = this.login.isLoggedIn$.subscribe(bool => {
       this.isLoggedIn = bool;
+    });
+    this.host_subscription = this.conn.conn.subscribe(name => {
+      this.host = name;
     });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.login_subscription.unsubscribe();
+    this.host_subscription.unsubscribe();
   }
 
   info() {
@@ -41,9 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (base_url === null) {
         return;
       }
-      localStorage.setItem('base_url', base_url);
-      this.host = localStorage.getItem('base_url');
-      this.conn.setConnection(this.host);
+      this.conn.setConnection(base_url);
     } else {
       this.message.warning('you MUST logout, in order 2 change the connection!');
     }

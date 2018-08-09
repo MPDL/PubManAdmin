@@ -3,23 +3,27 @@ import { Observable } from 'rxjs';
 import { Client, SearchResponse, GetResponse } from 'elasticsearch';
 import { environment } from 'environments/environment';
 import { MessagesService } from './messages.service';
-
+import { ConnectionService } from '../../base/services/connection.service';
 
 @Injectable()
 export class ElasticService {
 
   public client: Client;
-  public uri: string = localStorage.getItem('base_url') + environment.elastic_url || environment.base_url + environment.elastic_url;
+  public uri: string;
 
-  constructor(protected messages: MessagesService) {
+  constructor(protected messages: MessagesService,
+    private conn: ConnectionService) {
     if (!this.client) {
-      this.connect();
+      this.conn.conn.subscribe(name => {
+        this.uri = name + environment.elastic_url;
+        this.connect(this.uri);
+      });
     }
   }
 
-  private connect() {
+  private connect(uri) {
     this.client = new Client({
-      host: this.uri,
+      host: uri,
       log: ['error', 'warning']
     });
   }

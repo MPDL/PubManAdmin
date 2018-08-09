@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { ElasticService } from '../../services/elastic.service';
 import { MessagesService } from '../../services/messages.service';
+import { ConnectionService } from '../../services/connection.service';
 
 @Injectable()
 export class ElasticSearchService extends ElasticService {
 
-    constructor(messages: MessagesService) {
-        super(messages);
+    constructor(messages: MessagesService,
+        conn: ConnectionService) {
+        super(messages, conn);
     }
 
     bucketAggregation(index, body, nested, callback): any {

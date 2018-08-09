@@ -18,7 +18,7 @@ const routes: Routes = [
       { path: 'index', component: IndexComponent },
       { path: 'index/:name', component: IndexDetailComponent },
       { path: 'search', component: SearchComponent },
-      { path: 'upload', component: UploadComponent },
+      // { path: 'upload', component: UploadComponent },
       { path: '', component: ElasticStartComponent }
     ]
   }

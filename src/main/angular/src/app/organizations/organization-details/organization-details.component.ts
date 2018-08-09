@@ -15,7 +15,7 @@ import { environment } from 'environments/environment';
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
-  ou_rest_url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
+  ou_rest_url = environment.rest_ous;
   token: string;
   selected: OU;
   children: OU[];

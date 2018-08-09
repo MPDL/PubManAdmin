@@ -5,15 +5,17 @@ import { Observable } from 'rxjs';
 import { Context } from '../../base/common/model/inge';
 import { environment } from 'environments/environment';
 import { PubmanRestService } from '../../base/services/pubman-rest.service';
+import { ConnectionService } from '../../base/services/connection.service';
 
 @Injectable()
 export class ContextsService extends PubmanRestService {
 
 
-    context_url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
+    context_url = environment.rest_contexts;
 
-    constructor(httpc: HttpClient) {
-        super(httpc);
+    constructor(httpc: HttpClient,
+        conn: ConnectionService) {
+        super(httpc, conn);
     }
 
     openContext(ctx: Context, token: string): Observable<number> {

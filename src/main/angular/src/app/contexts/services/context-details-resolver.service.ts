@@ -19,7 +19,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
         private router: Router) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
-        const url = localStorage.getItem('base_url') + environment.rest_contexts || environment.base_url + environment.rest_contexts;
+        const url = environment.rest_contexts;
         const id = route.params['id'];
         if (id === 'new ctx') {
             const ctx = new Context();

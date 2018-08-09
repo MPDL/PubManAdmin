@@ -18,7 +18,7 @@ import { mpgOus4auto } from '../../base/common/model/query-bodies';
 
 export class UserListComponent implements OnInit, OnDestroy {
 
-  url = localStorage.getItem('base_url') +environment.rest_users || environment.base_url + environment.rest_users;
+  url = environment.rest_users;
   title: string = 'Users';
   users: User[];
   selected: User;
@@ -184,7 +184,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     const ouNames: OU[] = [];
     const body = mpgOus4auto;
     body.query.bool.must.term["metadata.name.auto"] = term;
-    const url = localStorage.getItem('base_url') + environment.rest_ous || environment.base_url + environment.rest_ous;
+    const url = environment.rest_ous;
     this.usersService.query(url, null, body)
       .subscribe(res => {
         res.list.forEach(ou => {
