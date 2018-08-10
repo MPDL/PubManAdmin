@@ -207,9 +207,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ouSvc.post(this.ou_rest_url, this.selected, this.token)
         .subscribe(
         data => {
-          this.message.success('added new organization ' + data);
-          this.gotoList();
-          this.selected = null;
+          this.message.success('added new organization ' + this.selected.metadata.name);
+          this.isNewOrganization = false;
+          this.selected = data;
         },
         error => {
           this.message.error(error);
@@ -220,9 +220,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {
-          this.message.success('updated ' + this.selected.objectId + ' ' + data);
-          this.gotoList();
-          this.selected = null;
+          this.message.success('updated ' + this.selected.objectId);
+          this.selected = data;
         },
         error => {
           this.message.error(error);

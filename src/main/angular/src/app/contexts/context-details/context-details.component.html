@@ -61,9 +61,9 @@
       <div class="form-group row w-100">
         <div class="col-3 ml-auto">
           <input type="button" class="btn btn-outline-success btn-sm mr-2" name="cancel" value="cancel" (click)="gotoList()" />
-          <input type="button" class="btn btn-outline-success btn-sm mr-2" name="save" value="save" (click)="save(ctx)" />
-          <input *ngIf="ctx.state === 'CREATED'" type="button" class="btn btn-outline-success btn-sm" name="delete" value="delete"
+          <input *ngIf="ctx.state === 'CREATED'" type="button" class="btn btn-outline-success btn-sm mr-2" name="delete" value="delete"
             (click)="delete(ctx)" />
+          <input type="button" class="btn btn-outline-success btn-sm" name="save" value="save" (click)="save(ctx)" />
         </div>
       </div>
 

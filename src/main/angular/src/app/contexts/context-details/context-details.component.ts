@@ -54,19 +54,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.token = token;
     });
     this.genres2display = Object.keys(genres).filter(val => val.match(/^[A-Z]/));
-    if (this.ctx.allowedGenres != null) {
-      this.allowedGenres = this.ctx.allowedGenres || [];
-    } else {
-      this.ctx.allowedGenres = [];
-      this.allowedGenres = this.ctx.allowedGenres;
-    }
-    this.subjects2display = Object.keys(subjects).filter(val => val.match(/^[A-Z]/));
-    if (this.ctx.allowedSubjectClassifications != null) {
-      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
-    } else {
-      this.ctx.allowedSubjectClassifications = [];
-      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
-    }
+    this.initializeAllowed(this.ctx);
 
     this.workflows2display = Object.keys(workflow).filter(val => val.match(/^[A-Z]/));
     this.selectedWorkflow = this.ctx.workflow;
@@ -74,6 +62,22 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.loginSubscription.unsubscribe();
+  }
+
+  initializeAllowed(ctx) {
+    if (ctx.allowedGenres != null) {
+      this.allowedGenres = this.ctx.allowedGenres || [];
+    } else {
+      this.ctx.allowedGenres = [];
+      this.allowedGenres = this.ctx.allowedGenres;
+    }
+    this.subjects2display = Object.keys(subjects).filter(val => val.match(/^[A-Z]/));
+    if (ctx.allowedSubjectClassifications != null) {
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
+    } else {
+      this.ctx.allowedSubjectClassifications = [];
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
+    }
   }
 
   listOuNames() {
@@ -219,6 +223,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           this.message.success('added new context ' + this.ctx.name);
           this.isNewCtx = false;
           this.ctx = data;
+          this.initializeAllowed(this.ctx);
           // this.gotoList();
         },
         error => {
@@ -234,6 +239,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           this.message.success('updated ' + this.ctx.objectId);
           // this.gotoList();
           this.ctx = data;
+          this.initializeAllowed(this.ctx);
         },
         error => {
           this.message.error(error);
