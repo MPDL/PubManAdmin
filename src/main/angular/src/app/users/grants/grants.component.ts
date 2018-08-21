@@ -61,7 +61,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     getNewGrantSelect() {
         let ous_body = allOpenedOUs;
-        this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&limit=300', 1)
+        this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&size=300', 1)
             .subscribe(ctxs => {
                 this.ctxs = ctxs.list;
             });
