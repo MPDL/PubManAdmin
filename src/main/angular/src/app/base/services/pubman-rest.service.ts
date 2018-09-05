@@ -98,14 +98,14 @@ export class PubmanRestService {
 
   getAll(path, token: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = this.base_url + path + '?limit=' + this.defaultPageSize + '&offset=' + offset;
+    const requestUrl = this.base_url + path + '?size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
   filter(path, token: string, query: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = this.base_url + path + query + '&limit=' + this.defaultPageSize + '&offset=' + offset;
+    const requestUrl = this.base_url + path + query + '&size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
