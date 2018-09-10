@@ -1,24 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-
-import { MessagesService } from '../services/messages.service';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
-  selector: 'messages-component',
+  selector: 'app-messages',
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit {
 
-  message: any;
+  message;
 
-  constructor(private messages: MessagesService) { }
+  constructor(private dialog: MatDialogRef<MessagesComponent>,
+    @Inject(MAT_DIALOG_DATA) private data) { }
 
   ngOnInit() {
-     this.messages.getMessage().subscribe(message => { this.message = message; });
+    this.message = this.data;
   }
 
-  delete(message) {
-    this.message = null;
+  close() {
+    this.dialog.close();
   }
-
 }

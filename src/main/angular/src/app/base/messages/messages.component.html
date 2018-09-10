@@ -1,11 +1,13 @@
-<div class="container-fluid">
-    <div class="row" *ngIf="message" [ngClass]="{ 'alert': message, 'alert-success': message.type === 'success', 'alert-warning': message.type === 'warning', 'alert-danger': message.type === 'error' }">
+<!--<div class="modal-body">-->
+    <div class="d-flex flex-sm-row border" *ngIf="message" [ngClass]="{ 'alert': message, 'alert-success border-success': message.type === 'success', 'alert-warning border-warning': message.type === 'warning', 'alert-danger border-danger': message.type === 'error' }">
         <div class="col-sm-11">
-        <span><small>{{message.text}}</small></span>
+            <span><small>{{message.text}}</small></span>
         </div>
-        <div class="col-sm-1">
-        <input type="submit" class="btn btn-sm float-right" [ngClass]="{ 'btn-outline-primary': message, 'btn-outline-success': message.type === 'success', 'btn-outline-warning': message.type === 'warning', 'btn-outline-danger': message.type === 'error' }" (click)="delete(message); $event.stopPropagation()"
-            name="delete" value="x" />
+        <div class="col-sm-1 ml-auto">
+            <button type="button" class="close" [ngClass]="{ 'text-primary': text, 'text-success': message.type === 'success', 'text-warning': message.type === 'warning', 'text-danger': message.type === 'error' }"
+                data-dismiss="alert" (click)="close()">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     </div>
-</div>
+<!--</div>-->

@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  base_url: 'https://dev.inge.mpdl.mpg.de',
+  base_url: 'https://qa.pure.mpdl.mpg.de',
   elastic_url: '/es',
   rest_users: '/rest/users',
   rest_ous: '/rest/ous',

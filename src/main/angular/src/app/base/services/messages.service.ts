@@ -1,47 +1,46 @@
 import { Injectable } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
-import { Observable , Subject } from 'rxjs';
-
-@Injectable()
+import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material';
+import { MessagesComponent } from '../messages/messages.component';
+import { Overlay } from '@angular/cdk/overlay';
+@Injectable({
+  providedIn: 'root'
+})
 export class MessagesService {
 
-  private subject = new Subject<any>();
-  private keepMessage = false;
+  messageDialogRef: MatDialogRef<MessagesComponent>;
+  // messageDialogConfig = new MatDialogConfig();
 
-  constructor(private router: Router) {
-    router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        if (this.keepMessage) {
-          this.keepMessage = false;
-        } else {
-          this.subject.next();
-        }
-      }
+  constructor(private dialog: MatDialog, private overlay: Overlay) { }
+
+  displayMessage(message?) {
+    this.messageDialogRef = this.dialog.open(MessagesComponent, {
+      hasBackdrop: false,
+      //width: '100%',
+      //role: 'alertdialog',
+      //autoFocus: false,
+      //scrollStrategy: this.overlay.scrollStrategies.noop(),
+      data: message,
+      panelClass: 'isis-mat-dialog'
     });
   }
 
-  info(message: string, keepMessage = false) {
-    this.keepMessage = keepMessage;
-    this.subject.next({ text: message });
+  info(message: string) {
+    const msg = { text: message };
+    this.displayMessage(msg);
   }
 
-  success(message: string, keepMessage = false) {
-    this.keepMessage = keepMessage;
-    this.subject.next({ type: 'success', text: message });
+  success(message: string) {
+    const msg = { type: 'success', text: message };
+    this.displayMessage(msg);
   }
 
-  warning(message: string, keepMessage = false) {
-    this.keepMessage = keepMessage;
-    this.subject.next({ type: 'warning', text: message });
+  warning(message: string) {
+    const msg = { type: 'warning', text: message };
+    this.displayMessage(msg);
   }
 
-  error(message: string, keepMessage = false) {
-    this.keepMessage = keepMessage;
-    this.subject.next({ type: 'error', text: message });
+  error(message: string) {
+    const msg = { type: 'error', text: message };
+    this.displayMessage(msg);
   }
-
-  getMessage(): Observable<any> {
-    return this.subject.asObservable();
-  }
-
 }

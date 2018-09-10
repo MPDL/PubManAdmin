@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MatDialogModule, MatInputModule } from '@angular/material';
 // keep 4 diagnostics
 import { Router } from '@angular/router';
 
@@ -44,8 +46,11 @@ import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    MatDialogModule,
+    MatInputModule,
     UsersModule,
     OrganizationsModule,
     ContextsModule,
@@ -53,6 +58,9 @@ import { HttpErrorInterceptor } from './base/common/http-error.interceptor';
     ElasticModule,
     SharedModule,
     AppRoutingModule
+  ],
+  entryComponents: [
+    MessagesComponent
   ],
   providers: [
     ConnectionService,

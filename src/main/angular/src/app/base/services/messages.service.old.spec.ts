@@ -1,8 +1,8 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { MessagesService } from './messages.service';
+import { MessagesService } from './messages.service.old';
 
-describe('MessageService', () => {
+describe('MessagesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [MessagesService]
