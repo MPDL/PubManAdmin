@@ -216,7 +216,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         });
 
     } else {
-      this.message.success('updating ' + this.selected.objectId);
+      // this.message.success('updating ' + this.selected.objectId);
       this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
         data => {

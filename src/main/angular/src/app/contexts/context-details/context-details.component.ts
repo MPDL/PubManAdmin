@@ -232,7 +232,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         );
 
     } else {
-      this.message.success('updating ' + this.ctx.objectId);
+      // this.message.success('updating ' + this.ctx.objectId);
       this.ctxSvc.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
         data => {
