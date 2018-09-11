@@ -233,7 +233,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   delete(ou) {
     this.selected = ou;
     const id = this.selected.objectId;
-    this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
+    if (confirm('delete '+ou.metadata.name+' ?')) {
+      this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -241,6 +242,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.message.error(error);
       });
     this.gotoList();
+    }
   }
 
 

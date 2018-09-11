@@ -52,7 +52,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.selected = this.route.snapshot.data['user'];
-    
     if (this.route.snapshot.queryParams['admin']) {
       this.isAdmin = this.route.snapshot.queryParams['admin'];
     }
@@ -145,14 +144,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   resetPassword(user) {
-    user.password = this.resettedPassword;
-    this.usersService.changePassword(user, this.token)
-      .subscribe(u => {
-        this.selected = u;
-        this.messageService.warning(u.loginname + ':  password was reset to: ' + user.password);
-      }, error => {
-        this.messageService.error(error);
-      });
+    if (user.active === true) {
+      user.password = this.resettedPassword;
+      this.usersService.changePassword(user, this.token)
+        .subscribe(u => {
+          this.selected = u;
+          this.messageService.warning(u.loginname + ':  password was reset to: ' + user.password);
+        }, error => {
+          this.messageService.error(error);
+        });
+    } else {
+      this.messageService.warning('password will not be reset for deactivated user!');
+    }
   }
 
   changePassword(user) {
@@ -243,7 +246,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             // this.gotoList();
             this.isNewOu = false;
             this.isNewGrant = false;
-            this.selected = data;
+            this.usersService.get(environment.rest_users, data.objectId, this.token)
+            .subscribe(updated => {
+              this.selected = updated;
+              if (this.selected.grantList) {
+                this.selected.grantList.forEach(grant => this.usersService.addNamesOfGrantRefs(grant));
+              }
+            });
+            // this.selected = data;
+            // this.router.navigate(['/user', this.selected.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
           },
           error => {
             this.messageService.error(error);
@@ -269,7 +280,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   delete(user) {
     this.selected = user;
     const id = this.selected.loginname;
-    this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
+    if (confirm('delete '+user.name+' ?')) {
+      this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
         data => {
           this.messageService.success('deleted ' + id + ' ' + data);
@@ -280,5 +292,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       );
     this.selected = null;
     this.gotoList();
+    }
   }
 }

@@ -186,7 +186,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   delete(ctx) {
     this.ctx = ctx;
     const id = this.ctx.objectId;
-    this.ctxSvc.delete(this.url + '/' + id, this.ctx, this.token)
+    if (confirm('delete '+ctx.name+' ?')) {
+      this.ctxSvc.delete(this.url + '/' + id, this.ctx, this.token)
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
@@ -194,6 +195,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         this.message.error(error);
       });
     this.gotoList();
+    }
   }
 
   gotoList() {

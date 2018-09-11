@@ -32,7 +32,7 @@
                     <input class="form-control form-control-sm" type="password" name="password" [(ngModel)]="selected.password" id="selected-password"
                         readonly>
                 </div>
-                <div class="col-4">
+                <div *ngIf="selected.active === true" class="col-4">
                     <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="resetPassword(selected)" name="resetPassword"
                         value="reset" />
                 </div>
@@ -72,7 +72,7 @@
                     <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="selected.affiliation.name" id="selected-ou"
                         readonly>
                 </div>
-                <div class="col-4">
+                <div *ngIf="selected.active === true" class="col-4">
                     <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="onChangeOu()" name="changeou" value="change"
                     />
                 </div>
@@ -119,7 +119,7 @@
                         </ul>
                     </div>
                 </div>
-                <div *ngIf="!isNewGrant" class="form-group row w-100">
+                <div *ngIf="!isNewGrant && selected.active === true" class="form-group row w-100">
 
                     <div class="col-2 ml-auto">
                         <input type="button" class="btn btn-outline-primary btn-sm float-right" (click)="addGrant(); $event.stopPropagation()" name="addGrant"

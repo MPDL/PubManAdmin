@@ -37,7 +37,7 @@
         <div class="col-6">
           <input class="form-control form-control-sm" type="text" name="state" [(ngModel)]="ctx.state" id="ctx-state" readonly>
         </div>
-        <div class="col-4">
+        <div *ngIf="ctx.state" class="col-4">
           <input type="button" class="btn btn-outline-success btn-sm float-right" (click)="activateContext(ctx)" name="state" [value]="ctx.state === 'CLOSED' || ctx.state === 'CREATED' ? 'open' : 'close'"
           />
         </div>
