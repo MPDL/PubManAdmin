@@ -1,0 +1,15 @@
+target/
+
+.project
+.metadata
+.settings/
+.classpath
+*.launch
+*~
+/jacoco
+
+# IntelliJ
+*.iml
+.idea/
+*.iws
+
