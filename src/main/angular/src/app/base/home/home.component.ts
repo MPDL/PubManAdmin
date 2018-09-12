@@ -36,9 +36,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   info() {
-    const message = 'hosd afan gnobf druggd?';
-    this.message.warning(message);
-    // alert('NOT implemented yet ...');
+    alert('NOT implemented yet ...');
   }
 
   connect() {
