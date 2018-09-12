@@ -8,6 +8,7 @@
     "build-prod": "ng build --base-href=/admintool/ --prod -c=production",
     "build-qa": "ng build --base-href=/admintool/ --prod -c=qa",
     "build-dev": "ng build --base-href=/admintool/ --prod -c=dev",
+    "patch": "node patch.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
