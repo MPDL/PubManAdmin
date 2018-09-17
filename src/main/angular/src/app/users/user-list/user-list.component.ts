@@ -65,7 +65,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       if (this.isAdmin) {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
-        this.messageService.warning('Only administartors are allowed to view this list');
+        this.messageService.warning('Only admins are allowed to view the list');
         this.router.navigate(['/user', this.loggedInUser.objectId],
           { queryParams: { token: this.token, admin: false }, skipLocationChange: true });
       }

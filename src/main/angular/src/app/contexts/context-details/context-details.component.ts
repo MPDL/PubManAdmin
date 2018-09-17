@@ -219,6 +219,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         this.message.warning('you MUST select an organization');
         return;
       }
+      if (this.ctx.allowedGenres.length === 0) {
+        this.message.warning('select at least one allowed genre');
+        return;
+      }
       this.ctxSvc.post(this.url, this.ctx, this.token)
         .subscribe(
         data => {
@@ -234,6 +238,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         );
 
     } else {
+      if (this.ctx.allowedGenres.length === 0) {
+        this.message.warning('select at least one allowed genre');
+        return;
+      }
       // this.message.success('updating ' + this.ctx.objectId);
       this.ctxSvc.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(

@@ -71,7 +71,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   listAllContexts(token) {
-    this.ctxSvc.getAll(this.url, this.token, 1)
+    this.ctxSvc.getAll(this.url, token, 1)
       .subscribe(ctxs => {
         this.ctxs = ctxs.list;
         this.total = ctxs.records;

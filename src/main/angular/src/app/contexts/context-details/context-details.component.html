@@ -67,7 +67,7 @@
         </div>
       </div>
 
-      <div class="form-group row w-100">
+      <div *ngIf="ctx.state !== 'CLOSED'" class="form-group row w-100">
         <label for="allowedGenres" class="col-2 col-form-label col-form-label-sm">allowed genres</label>
         <div class="col-10 text-right">
           <div class="form-group row">
@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <div class="form-group row w-100">
+      <div *ngIf="ctx.state !== 'CLOSED'" class="form-group row w-100">
         <label for="allowedSubjects" class="col-2 col-form-label col-form-label-sm">subject classifications</label>
         <div class="col-10 text-right">
           <div class="form-group row">
@@ -137,7 +137,7 @@
         </div>
       </div>
 
-      <div class="form-group row w-100">
+      <div *ngIf="ctx.state !== 'CLOSED'" class="form-group row w-100">
         <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">workflow</label>
         <div class="col-10 text-right">
           <div class="form-group row">
@@ -157,7 +157,7 @@
       </div>
 
       <div class="form-group row w-100">
-        <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">contact email</label>
+        <label for="contactEmail" class="col-2 col-form-label col-form-label-sm">contact email</label>
         <div class="col-10 text-right">
           <div class="form-group row">
             <div class="col-5">
@@ -172,5 +172,5 @@
       </div>
     </form>
   </div>
-  <!--<pre>{{f.value | json}}</pre>-->
+  <!--<pre>{{ctx | json}}</pre>-->
 </div>

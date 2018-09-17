@@ -238,10 +238,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(
       data => {
         this.message.success('deleted ' + id + ' ' + data);
+        this.gotoList();
       }, error => {
         this.message.error(error);
       });
-    this.gotoList();
     }
   }
 
