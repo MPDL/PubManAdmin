@@ -1,6 +1,8 @@
-.admin-pagination /deep/ .ngx-pagination .current {
+
+.admin-pagination ::ng-deep .ngx-pagination .current {
     background: #91eed2;
  }
+
  ul {
    list-style:none;
 }

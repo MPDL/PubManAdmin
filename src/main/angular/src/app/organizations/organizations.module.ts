@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MatTreeModule } from '@angular/material';
+import { MatTreeModule } from '@angular/material/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { SharedModule } from '../base/common/shared.module';
 import { OrganizationsRoutingModule } from './organizations-routing.module';
