@@ -11,7 +11,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 })
 export class UploadComponent implements OnInit, OnDestroy {
 
-  @ViewChild('fileInput')
+  @ViewChild('fileInput', { static: true })
   selectedFile: any;
 
   file2upload: any;

@@ -13,7 +13,7 @@ import { NgForm } from '@angular/forms';
 })
 export class IndexDetailComponent implements OnInit, OnDestroy {
 
-  @ViewChild('new_index_form') indexform: NgForm;
+  @ViewChild('new_index_form', { static: false }) indexform: NgForm;
 
   remote;
   index;
