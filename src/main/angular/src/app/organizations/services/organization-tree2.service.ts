@@ -43,7 +43,7 @@ export class OrganizationTree2Service {
   async initialize() {
     const data: any[] = [];
     try {
-      const mpg = await this.service.getOuById('ou_persistent13', null).toPromise();
+      const mpg = await this.service.getOuById('ou_96022', null).toPromise();
       const ext = await this.service.getOuById('ou_persistent22', null).toPromise();
       data.push(this.generateNode(mpg));
       data.push(this.generateNode(ext));

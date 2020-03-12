@@ -151,7 +151,7 @@ export class ElasticService {
     this.client.search({
       index: 'ous',
       scroll: '30s',
-      q: 'parentAffiliation.objectId:ou_persistent13'
+      q: 'parentAffiliation.objectId:ou_96022'
     }, async (err, resp) => {
       
         queue.push(resp);
