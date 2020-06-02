@@ -27,6 +27,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   isNewCtx: boolean = false;
   ous: any[];
   selectedOu: any;
+  ounames: any[] = [];
+  searchTerm;
   subscription: Subscription;
   loginSubscription: Subscription;
   genres2display: string[] = [];
@@ -256,5 +258,43 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         }
         );
     }
+  }
+
+  getNames(term) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedOUs(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedOUs(term);
+    }
+  }
+
+  returnSuggestedOUs(term) {
+    const ouNames: any[] = [];
+    const url = environment.rest_ous;
+    const queryString = '?q=metadata.name.auto:' + term;
+    this.ctxSvc.filter(url, null, queryString, 1)
+      .subscribe(res => {
+        res.list.forEach(ou => {
+          ouNames.push(ou);
+        });
+        if (ouNames.length > 0) {
+          this.ounames = ouNames;
+        } else {
+          this.ounames = [];
+        }
+      }, err => {
+        this.message.error(err);
+      });
+  }
+
+  close() {
+    this.searchTerm = '';
+    this.ounames = [];
+  }
+
+  select(term) {
+    this.searchTerm = term.metadata.name;
+    this.selectedOu = term;
+    this.ounames = [];
   }
 }

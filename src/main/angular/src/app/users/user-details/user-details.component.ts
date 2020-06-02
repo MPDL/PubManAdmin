@@ -23,6 +23,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   resettedPassword: string = 'hard2Remember';
   selected: User;
   ous: any[];
+  ounames: any[] = [];
+  searchTerm;
   selectedOu: any;
   isNewUser: boolean = false;
   isNewGrant: boolean = false;
@@ -293,5 +295,43 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected = null;
     this.gotoList();
     }
+  }
+
+  getNames(term) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedOUs(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedOUs(term);
+    }
+  }
+
+  returnSuggestedOUs(term) {
+    const ouNames: any[] = [];
+    const url = environment.rest_ous;
+    const queryString = '?q=metadata.name.auto:' + term;
+    this.usersService.filter(url, null, queryString, 1)
+      .subscribe(res => {
+        res.list.forEach(ou => {
+          ouNames.push(ou);
+        });
+        if (ouNames.length > 0) {
+          this.ounames = ouNames;
+        } else {
+          this.ounames = [];
+        }
+      }, err => {
+        this.messageService.error(err);
+      });
+  }
+
+  close() {
+    this.searchTerm = '';
+    this.ounames = [];
+  }
+
+  select(term) {
+    this.searchTerm = term.metadata.name;
+    this.selectedOu = term;
+    this.ounames = [];
   }
 }
