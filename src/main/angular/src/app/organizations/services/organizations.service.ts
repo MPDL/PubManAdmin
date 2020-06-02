@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -16,7 +16,7 @@ export class OrganizationsService extends PubmanRestService {
     ous: any;
 
     constructor(protected httpc: HttpClient,
-            conn: ConnectionService) {
+        conn: ConnectionService) {
         super(httpc, conn);
     }
 

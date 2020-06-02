@@ -4,7 +4,7 @@ export const mpgOus4auto = {
         'bool': {
             'filter': {
                 'terms': {
-                    'parentAffiliation.objectId': ['ou_96022', 'ou_persistent22']
+                    'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
                 }
             },
             'must': {
@@ -25,7 +25,7 @@ export const allOpenedOUs = {
             'filter': 
                 {
                     'terms': {
-                        'parentAffiliation.objectId': ['ou_96022', 'ou_persistent22']
+                        'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
                     }
                 },
             'must': {
