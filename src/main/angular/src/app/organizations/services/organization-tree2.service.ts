@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { OrganizationsService } from './organizations.service';
 import { MessagesService } from '../../base/services/messages.service';
+import { environment } from '../../../environments/environment';
+import { allOpenedOUs, allTopLevelOUs } from '../../base/common/model/query-bodies';
 
 
 export class OUTreeNode {
@@ -43,15 +45,25 @@ export class OrganizationTree2Service {
   async initialize() {
     const data: any[] = [];
     try {
+      /*
       const mpg = await this.service.getOuById('ou_persistent13', null).toPromise();
       const ext = await this.service.getOuById('ou_persistent22', null).toPromise();
       data.push(this.generateNode(mpg));
       data.push(this.generateNode(ext));
+      */
+      const tlous = await this.getTopLevelOUs();
+      tlous.list.forEach(ou => data.push(this.generateNode(ou)));
       this.dataChange.next(data);
     } catch (e) {
       this.message.error(e);
     }
 
+  }
+
+  getTopLevelOUs() {
+    const body = allTopLevelOUs;
+    const tops = this.service.query(environment.rest_ous, null, body).toPromise();
+    return tops;
   }
 
   getChildren4OU(id) {

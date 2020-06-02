@@ -22,12 +22,12 @@ export const allOpenedOUs = {
     'size': 300,
     'query': {
         'bool': {
-            'filter': 
-                {
-                    'terms': {
-                        'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
-                    }
-                },
+            'filter':
+            {
+                'terms': {
+                    'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
+                }
+            },
             'must': {
                 'term': {
                     'publicStatus.keyword': 'OPENED'
@@ -36,8 +36,23 @@ export const allOpenedOUs = {
         }
     },
     'sort': [
-        { 'parentAffiliation.objectId': { 'order': 'asc'} },
+        { 'parentAffiliation.objectId': { 'order': 'asc' } },
         { 'metadata.name.keyword': { 'order': 'asc' } }
+    ]
+};
+export const allTopLevelOUs = {
+    'size': 100,
+    'query': {
+        'bool': {
+            'must_not': {
+                'exists': {
+                    'field': 'parentAffiliation'
+                }
+            }
+        }
+    },
+    'sort': [
+        { 'metadata.name.keyword': { 'order': 'desc' } }
     ]
 };
 
