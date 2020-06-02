@@ -20,7 +20,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   url = environment.rest_contexts;
   ous_url = environment.rest_ous;
 
-  @ViewChild('f', { static: false }) form: any;
+  @ViewChild('f') form: any;
 
   token: string;
   ctx: Context;
