@@ -1,6 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.mpg.mpdl.inge</groupId>
@@ -10,7 +9,6 @@
 	<artifactId>admintool</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -19,7 +17,7 @@
 				<version>3.2.2</version>
 				<configuration>
 					<webResources>
-						<resource>
+						<resource>						
 							<!-- this is relative to the pom.xml directory -->
 							<directory>src/main/angular/dist</directory>
 						</resource>
@@ -34,9 +32,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-
-
-
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.1.0</version>
@@ -52,7 +47,6 @@
 					</filesets>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
@@ -81,7 +75,7 @@
 							<arguments>install</arguments>
 						</configuration>
 					</execution>
-<execution>
+					<execution>
 						<id>npm patch angular</id>
 						<goals>
 							<goal>npm</goal>
@@ -99,28 +93,24 @@
 							<arguments>run build-prod</arguments>
 						</configuration>
 					</execution>
-
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	
 	<dependencies>
-	<dependency>
-		<groupId>de.mpg.mpdl.inge</groupId>
-		<artifactId>inge_util</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>javax</groupId>
-		<artifactId>javaee-web-api</artifactId>
-		<version>7.0</version>
-		<scope>provided</scope>
-	</dependency>
-	
+		<dependency>
+			<groupId>de.mpg.mpdl.inge</groupId>
+			<artifactId>inge_util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-web-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-	
 	<profiles>
-<profile>
+		<profile>
 			<id>jenkins_deploy</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
@@ -137,13 +127,15 @@
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<target>
-						                <!-- first copy the ear file to a temporary directory and move it to the deployment directory afterwards -->  
-										<scp
-                                            file="${project.build.directory}/${project.build.finalName}.${project.packaging}" 
-                                            remoteTofile="${jboss.user.scp}:${jboss.install.dir}/standalone/deployments/admintool.war"
-                                            keyfile="${user.home}/.ssh/id_rsa" knownhosts="${user.home}/.ssh/known_hosts"
-                                            passphrase="" trust="true" verbose="true" />
+									<target>										
+									    <!-- first copy the ear file to a temporary directory and move it to the deployment directory afterwards -->
+										<scp file="${project.build.directory}/${project.build.finalName}.${project.packaging}" 
+										    remoteTofile="${jboss.user.scp}:${jboss.install.dir}/standalone/deployments/admintool.war" 
+											keyfile="${user.home}/.ssh/id_rsa" 
+											knownhosts="${user.home}/.ssh/known_hosts" 
+											passphrase="" 
+											trust="true" 
+											verbose="true" />
 									</target>
 								</configuration>
 							</execution>
@@ -164,10 +156,5 @@
 				</plugins>
 			</build>
 		</profile>
-
-</profiles>
-
-
-
-
+	</profiles>
 </project>
