@@ -5,9 +5,10 @@
 				<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
 			</select>
 		</div>
-		<div class="col-7" *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')">
+		<div class="col-7 input-group" *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')">
+			<input class="form-control form-control-sm" placeholder="filter..." type="text" (ngModelChange)="filterCtxs($event)" [(ngModel)]="filterText"/>
 			<select class="select form-control form-control-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)" name="selectedCtx">
-				<option [ngValue]="ctx" *ngFor="let ctx of ctxs">{{ctx.name}} {{ctx.objectId}}</option>
+				<option [ngValue]="ctx" *ngFor="let ctx of ctxs_filtered">{{ctx.name}} {{ctx.objectId}}</option>
 			</select>
 		</div>
 		<div class="col-7" *ngIf="selectedRole && selectedRole === 'YEARBOOK-EDITOR'">

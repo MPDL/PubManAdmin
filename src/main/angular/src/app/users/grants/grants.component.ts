@@ -30,6 +30,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR',
         'REPORTER', 'USR_ADMIN', 'YEARBOOK-EDITOR', 'YEARBOOK-ADMIN'];
     ctxs: Array<any>;
+    ctxs_filtered: Array<any>;
     ous: Array<any>;
     selectedGrant: Grant;
     selectedGrants: Grant[] = [];
@@ -64,6 +65,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
         this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&size=300', 1)
             .subscribe(ctxs => {
                 this.ctxs = ctxs.list;
+                this.ctxs_filtered = ctxs.list;
             });
 
         this.usersService.query(this.ous_url, null, ous_body)
@@ -143,7 +145,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
                 this.selectedUser = user;
                 if (this.selectedUser.grantList) {
                     this.selectedUser.grantList.forEach(grant => this.usersService.addNamesOfGrantRefs(grant));
-                  }
+                }
                 this.selectedUserChange.emit(this.selectedUser);
                 this.messageService.success('added Grants to ' + this.selectedUser.loginname);
                 this.selectedGrants = null;
@@ -154,6 +156,15 @@ export class GrantsComponent implements OnInit, OnDestroy {
             });
         } else {
             this.messageService.warning('no grant(s) selected !');
+        }
+    }
+
+    filterCtxs(event) {
+        this.ctxs_filtered = this.ctxs;
+        if (typeof event === 'string') {
+            this.ctxs_filtered = this.ctxs.filter(c => c.name.toLowerCase()
+                .includes(event.toLowerCase()));
+            this.selectedCtx = this.ctxs_filtered[0];
         }
     }
 }
