@@ -72,7 +72,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>install</arguments>
+							<arguments>install --force</arguments>
 						</configuration>
 					</execution>
 					<execution>
