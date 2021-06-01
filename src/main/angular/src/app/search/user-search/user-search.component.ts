@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import { Observable, Subscription } from 'rxjs';
-import * as bodyBuilder from 'bodybuilder';
+import { Subscription } from 'rxjs';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -7,7 +7,7 @@ import { AuthenticationService } from '../../base/services/authentication.servic
 import { ContextsService } from '../services/contexts.service';
 import { environment } from 'environments/environment';
 import { mpgOus4auto } from '../../base/common/model/query-bodies';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-context-list',

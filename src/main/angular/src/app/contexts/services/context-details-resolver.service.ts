@@ -15,8 +15,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
 
     constructor(
         private ctxSvc: ContextsService,
-        private message: MessagesService,
-        private router: Router) { }
+        private message: MessagesService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
         const url = environment.rest_contexts;

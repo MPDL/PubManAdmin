@@ -1,7 +1,6 @@
-import { Component, OnInit, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { IndexAliasComponent } from '../index-alias/index-alias.component';
 import { ElasticService } from '../service/elastic.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';

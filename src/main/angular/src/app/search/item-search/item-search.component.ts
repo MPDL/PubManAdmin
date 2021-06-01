@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ComponentRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { Validators, FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 
-import { Observable ,  Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { MessagesService } from '../../base/services/messages.service';
 import { AuthenticationService } from '../../base/services/authentication.service';

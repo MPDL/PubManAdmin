@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { MessagesService } from '../../base/services/messages.service';

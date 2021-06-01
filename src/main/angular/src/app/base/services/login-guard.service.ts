@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthenticationService } from './authentication.service';
@@ -12,7 +12,7 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   subscription: Subscription;
 
   constructor(private authentication: AuthenticationService,
-      private router: Router, private message: MessagesService) { }
+      private message: MessagesService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
       const url: string = state.url;

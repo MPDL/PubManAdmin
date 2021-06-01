@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Client, SearchResponse, GetResponse } from 'elasticsearch';
+import { Client } from 'elasticsearch';
 import { environment } from 'environments/environment';
 import { MessagesService } from './messages.service';
 import { ConnectionService } from '../../base/services/connection.service';

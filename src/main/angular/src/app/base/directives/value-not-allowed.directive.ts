@@ -1,5 +1,5 @@
-import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { NG_VALIDATORS, Validator, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { Directive, Input } from '@angular/core';
+import { NG_VALIDATORS, Validator, ValidatorFn, AbstractControl } from '@angular/forms';
 
 export function valueValidator(regex: RegExp): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} => {

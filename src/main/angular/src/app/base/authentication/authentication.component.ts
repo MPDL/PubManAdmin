@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { MessagesService } from '../services/messages.service';
 import { AuthenticationService } from '../services/authentication.service';
@@ -21,7 +20,6 @@ export class AuthenticationComponent implements OnInit {
   user: User;
 
   constructor(
-    private router: Router,
     private messages: MessagesService,
     private authentication: AuthenticationService
   ) { }

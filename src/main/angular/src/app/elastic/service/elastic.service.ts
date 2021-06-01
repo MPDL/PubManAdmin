@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Client } from 'elasticsearch';
 
 import { MessagesService } from '../../base/services/messages.service';
@@ -14,7 +13,6 @@ export class ElasticService {
   url: string;
 
   constructor(private message: MessagesService,
-    private http: HttpClient,
     private conn: ConnectionService) {
     if (!this.client) {
       this.conn.conn.subscribe(name => {

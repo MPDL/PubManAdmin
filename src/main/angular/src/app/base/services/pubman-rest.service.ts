@@ -2,7 +2,7 @@
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 
 import { SearchResult } from '../common/model/inge';
 import { ConnectionService } from './connection.service';

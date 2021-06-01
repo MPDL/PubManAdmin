@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ContextsService } from '../services/contexts.service';

@@ -2,12 +2,11 @@ import { throwError as observableThrowError, Observable, BehaviorSubject } from 
 import { map, catchError } from 'rxjs/operators';
 import { share, shareReplay } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { User } from '../common/model/inge';
 import { MessagesService } from './messages.service';
 import { ConnectionService } from './connection.service';
-import { environment } from 'environments/environment';
 
 @Injectable()
 export class AuthenticationService {

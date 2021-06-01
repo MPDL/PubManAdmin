@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { OrganizationsService } from './organizations.service';
 import { MessagesService } from '../../base/services/messages.service';
 import { environment } from '../../../environments/environment';
-import { allOpenedOUs, allTopLevelOUs } from '../../base/common/model/query-bodies';
+import { allTopLevelOUs } from '../../base/common/model/query-bodies';
 
 
 export class OUTreeNode {

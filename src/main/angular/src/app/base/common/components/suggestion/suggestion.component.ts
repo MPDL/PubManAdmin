@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
-import { distinctUntilChanged, map, switchMap, debounceTime } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { FormGroup } from '@angular/forms';
+import { distinctUntilChanged, switchMap, debounceTime } from 'rxjs/operators';
 import { PubmanRestService } from '../../../services/pubman-rest.service';
 import { mpgOus4auto } from '../../model/query-bodies';
 import { environment } from '../../../../../environments/environment';
