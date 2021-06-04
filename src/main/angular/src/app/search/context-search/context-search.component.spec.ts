@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ContextSearchComponent } from './context-search.component';
 
@@ -6,7 +6,7 @@ describe('ContextSearchComponent', () => {
   let component: ContextSearchComponent;
   let fixture: ComponentFixture<ContextSearchComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ContextSearchComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ContextListComponent } from './context-list.component';
 
@@ -6,7 +6,7 @@ describe('ContextListComponent', () => {
   let component: ContextListComponent;
   let fixture: ComponentFixture<ContextListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ContextListComponent ]
     })
