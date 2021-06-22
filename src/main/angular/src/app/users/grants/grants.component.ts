@@ -28,7 +28,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR',
-        'REPORTER', 'USR_ADMIN', 'YEARBOOK-EDITOR', 'YEARBOOK-ADMIN'];
+        'REPORTER'];
     ctxs: Array<any>;
     ctxs_filtered: Array<any>;
     ous: Array<any>;
@@ -90,24 +90,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
         const rolename = this.selectedRole;
 
         if (rolename) {
-            if (rolename === 'USR_ADMIN') {
-                const ref_id = this.selectedUser.affiliation.objectId;
-                this.addGrant(rolename, ref_id);
-            }
             if (rolename.startsWith('CONE') || rolename === 'REPORTER') {
                 this.addGrant(rolename, null);
-            }
-            if (rolename === 'YEARBOOK-ADMIN') {
-                const ref_id = this.selectedUser.affiliation.objectId;
-                this.addGrant(rolename, ref_id);
-            }
-            if (rolename === 'YEARBOOK-EDITOR') {
-                if (this.selectedOu != null) {
-                    const ref_id = this.selectedOu.objectId;
-                    this.addGrant(rolename, ref_id);
-                } else {
-                    this.messageService.error('you must select an organization!');
-                }
             }
             if (rolename === 'DEPOSITOR' || rolename === 'MODERATOR') {
                 if (this.selectedCtx != null) {
