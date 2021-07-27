@@ -64,6 +64,18 @@ export class PubmanRestService {
     )
   }
 
+  getString(url): Observable<string> {
+    return this.client.get(url, {responseType: 'text'}).pipe(
+      map((response: string) => {
+        const resource = response;
+        return resource;
+      }),
+      catchError((err) => {
+        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      })
+    )
+  }
+
   getHttpStatus(method, url, headers, body): Observable<any> {
     return this.client.request(method, url, {
       headers: headers,

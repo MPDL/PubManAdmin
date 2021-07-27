@@ -60,7 +60,7 @@ export class UsersService extends PubmanRestService {
 
   generateRandomPassword(): Observable<string> {
     const userUrl = this.usersUrl + '/generateRandomPassword';
-    return this.getResource('GET', userUrl, null, null);
+    return this.getString(userUrl);
   }
 
   addNamesOfGrantRefs(grant) {

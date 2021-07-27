@@ -35,9 +35,15 @@
                     <input class="form-control form-control-sm" type="password" name="password"
                         [(ngModel)]="selected.password" id="selected-password" readonly>
                 </div>
-                <div *ngIf="selected.active === true" class="col-4">
+                <div *ngIf="selected.active == true && selected.password" class="col-4">
                     <input type="button" class="btn btn-outline-primary btn-sm float-right"
-                        (click)="resetPassword(selected)" name="resetPassword" value="reset" />
+                        (click)="resetPassword(selected)" name="resetPassword" value="save" />
+                    <input type="button" class="btn btn-outline-primary btn-sm float-right"
+                        (click)="generateRandomPassword(selected)" name="generatePassword" value="generate" />
+                </div>
+                <div *ngIf="selected.active == true && !selected.password" class="col-4">
+                    <input type="button" class="btn btn-outline-primary btn-sm float-right"
+                        (click)="generateRandomPassword(selected)" name="generatePassword" value="generate" />
                 </div>
             </div>
             <div class="form-group row w-100">

@@ -20,7 +20,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ous_url = environment.rest_ous;
   ctxs_url = environment.rest_contexts;
 
-  resettedPassword: string;
   selected: User;
   ous: any[];
   ounames: any[] = [];
@@ -55,22 +54,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.selected = this.route.snapshot.data['user'];
+
     if (this.route.snapshot.queryParams['admin']) {
       this.isAdmin = this.route.snapshot.queryParams['admin'];
     }
+
     if (this.selected.loginname === 'new user') {
       this.isNewUser = true;
       this.isNewOu = true;
     }
+
     this.listOuNames();
-
-  }
-
-  generateRandomPassword() {
-    this.usersService.generateRandomPassword()
-      .subscribe(pw => {
-        this.resettedPassword = pw;
-      });
   }
 
   listOuNames() {
@@ -153,10 +147,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.messageService.warning('you\'re not authorized !')
   }
 
+  generateRandomPassword(user) {
+    this.usersService.generateRandomPassword()
+      .subscribe(pw => {
+        user.password = pw.toString();
+      });
+    }
+
   resetPassword(user) {
-    this.generateRandomPassword();
     if (user.active === true) {
-      user.password = this.resettedPassword;
       this.usersService.changePassword(user, this.token)
         .subscribe(u => {
           this.selected = u;
