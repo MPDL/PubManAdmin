@@ -20,7 +20,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ous_url = environment.rest_ous;
   ctxs_url = environment.rest_contexts;
 
-  resettedPassword: string = 'hard2Remember';
+  resettedPassword: string;
   selected: User;
   ous: any[];
   ounames: any[] = [];
@@ -35,6 +35,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedGrants: Grant[] = [];
   grantsToRemove: string;
   ctxTitle: string;
+  pw: string;
 
   subscription: Subscription;
   token: string;
@@ -63,6 +64,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
     this.listOuNames();
 
+  }
+
+  generateRandomPassword() {
+    this.usersService.generateRandomPassword()
+      .subscribe(pw => {
+        this.resettedPassword = pw;
+      });
   }
 
   listOuNames() {
@@ -146,6 +154,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   resetPassword(user) {
+    this.generateRandomPassword();
     if (user.active === true) {
       user.password = this.resettedPassword;
       this.usersService.changePassword(user, this.token)

@@ -58,6 +58,11 @@ export class UsersService extends PubmanRestService {
     return this.getResource('PUT', userUrl, headers, body);
   }
 
+  generateRandomPassword(): Observable<User> {
+    const userUrl = this.usersUrl + '/generateRandomPassword';
+    return this.getResource('GET', userUrl, null, null);
+  }
+
   addNamesOfGrantRefs(grant) {
     const ref = grant.objectRef;
     if (ref === undefined) {
