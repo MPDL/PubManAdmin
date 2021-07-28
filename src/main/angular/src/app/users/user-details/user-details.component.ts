@@ -159,7 +159,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe(u => {
           this.selected = u;
-          this.messageService.warning(u.loginname + ':  password was reset to: ' + user.password);
+          this.messageService.success(u.loginname + ':  password was reset to ' + user.password);
         }, error => {
           this.messageService.error(error);
         });
@@ -173,7 +173,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe(u => {
           this.selected = u;
-          this.messageService.warning(u.loginname + ':  password has changed to: ' + user.password);
+          this.messageService.success(u.loginname + ':  password has changed to ' + user.password);
         }, error => {
           this.messageService.error(error);
         });
@@ -226,7 +226,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.post(this.url, this.selected, this.token)
         .subscribe(
           data => {
-            this.messageService.success('added new user ' + this.selected.loginname);
+            this.messageService.success('added new user ' + this.selected.loginname + ' with password ' + this.selected.password);
             this.isNewUser = false;
             this.isNewOu = false;
             this.selected = data;

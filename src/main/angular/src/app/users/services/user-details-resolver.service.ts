@@ -17,10 +17,10 @@ export class UserDetailsResolverService implements Resolve<User> {
         if (id === 'new user') {
             const user = new User();
             user.loginname = 'new user';
-            user.password = 'hard2Remember';
             user.grantList = new Array<Grant>();
             user.affiliation = new BasicRO();
             user.active = false;
+            this.generateRandomPassword(user);
             return of(user);
         } else {
             const token = route.queryParams['token'];
@@ -38,4 +38,12 @@ export class UserDetailsResolverService implements Resolve<User> {
                 );
         }
     }
+
+    generateRandomPassword(user) {
+        this.userSvc.generateRandomPassword()
+          .subscribe(pw => {
+            user.password = pw.toString();
+          });
+        }
+    
 }
