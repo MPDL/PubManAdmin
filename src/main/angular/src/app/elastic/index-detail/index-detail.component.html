@@ -1,23 +1,23 @@
 <div class="container">
   <div *ngIf="!isNewIndex; else new_index">
     <div class="card border-secondary text-secondary mt-2">
-      <div class="card-header border-secondary text-right bg-white">
+      <div class="card-header border-secondary text-end bg-white">
         <h4 class="text-secondary card-title">{{index_name}}</h4>
       </div>
       <div class="row mt-2">
         <div class="col-2">
           <ul class="nav flex-column nav-pills" id="index-tabs" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="index-info-tab" data-toggle="pill" href="#index-info" role="tab">Info</a>
+              <a class="nav-link active" id="index-info-tab" data-bs-toggle="pill" href="#index-info" role="tab">Info</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="index-settings-tab" data-toggle="pill" href="#index-settings" role="tab">Settings</a>
+              <a class="nav-link" id="index-settings-tab" data-bs-toggle="pill" href="#index-settings" role="tab">Settings</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="index-mapping-tab" data-toggle="pill" href="#index-mapping" role="tab">Mapping</a>
+              <a class="nav-link" id="index-mapping-tab" data-bs-toggle="pill" href="#index-mapping" role="tab">Mapping</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="index-aliases-tab" data-toggle="pill" href="#index-aliases" role="tab">Aliases</a>
+              <a class="nav-link" id="index-aliases-tab" data-bs-toggle="pill" href="#index-aliases" role="tab">Aliases</a>
             </li>
           </ul>
         </div>
@@ -28,17 +28,17 @@
               <pre class="m-3">{{settings | json}}</pre>
             </div>
             <div class="tab-pane fade" id="index-mapping" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary mr-2" type="button" value="update" (click)="notyet(index_name)" />
+              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="update" (click)="notyet(index_name)" />
               <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="notyet(index_name)" />
               <pre class="m-3">{{mapping | json}}</pre>
             </div>
             <div class="tab-pane fade" id="index-aliases" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary mr-2" type="button" value="add" (click)="addAlias(index_name)" />
+              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="add" (click)="addAlias(index_name)" />
               <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="removeAlias(index_name)" />
               <pre class="m-3">{{aliases | json}}</pre>
             </div>
             <div class="tab-pane fade show active" id="index-info" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary mr-2" type="button" [value]="index_info?.status === 'open' ? 'close' : 'open'"
+              <input class="btn btn-sm btn-outline-secondary me-2" type="button" [value]="index_info?.status === 'open' ? 'close' : 'open'"
                 (click)="openOrClose(index_info)" />
               <pre class="m-3">{{index_info | json}}</pre>
             </div>
@@ -93,9 +93,9 @@
     <div class="form-group row w-100">
       <div class="col-2"></div>
       <div class="col-3">
-        <input type="button" class="btn btn-outline-secondary btn-sm mr-2" name="connect" value="connect" (click)="remoteList()"
+        <input type="button" class="btn btn-outline-secondary btn-sm me-2" name="connect" value="connect" (click)="remoteList()"
         />
-        <input type="button" class="btn btn-outline-secondary btn-sm mr-2" name="cancel" value="cancel" (click)="gotoList()" />
+        <input type="button" class="btn btn-outline-secondary btn-sm me-2" name="cancel" value="cancel" (click)="gotoList()" />
         <input type="button" class="btn btn-outline-secondary btn-sm" name="save" value="save" (click)="save()" />
       </div>
     </div>

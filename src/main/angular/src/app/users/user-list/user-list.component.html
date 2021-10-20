@@ -1,7 +1,8 @@
-<div class="container">
+<div class="container-xl">
+
   <h3 class="text-primary">User Administration</h3>
 
-  <div class="card text-white bg-primary text-right">
+  <div class="card text-white bg-primary text-end">
     <div class="card-body">
       <h4 class="card-title">{{title}}</h4>
       <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewUser()" />
@@ -12,7 +13,7 @@
           placeholder="filter by organization" id="ouSearchTerm" autocomplete="off">
         <div *ngIf="ounames.length > 0">
           <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOUNames()">
-            <li *ngFor="let ouname of ounames" class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(ouname)"
+            <li *ngFor="let ouname of ounames" class="list-group-item-primary list-group-item-action py-0 text-start" (class.selected)="isSelectedName(ouname)"
               (click)="filter(ouname)">
               <small>{{ouname.name}}</small>
             </li>
@@ -26,7 +27,7 @@
           placeholder="search by name" id="searchTerm" autocomplete="off">
         <div *ngIf="usernames.length > 0">
           <ul id="user_suggestions" class="list-group" (clickOutside)="closeUserNames()">
-            <li *ngFor="let username of usernames" class="list-group-item-primary list-group-item-action py-0 text-left" (class.selected)="isSelectedName(username)"
+            <li *ngFor="let username of usernames" class="list-group-item-primary list-group-item-action py-0 text-start" (class.selected)="isSelectedName(username)"
               (click)="select(username)">
               <small>{{username.name}}</small>
             </li>
@@ -45,16 +46,17 @@
         (click)="onSelect(user)">
         <div class="row">
             <span class="col-8">
-                <label class="col-form-label-sm p-0 ml-2" [innerHtml]="user.name"></label>
+                <label class="col-form-label-sm p-0 ms-2" [innerHtml]="user.name"></label>
             </span>
-            <span class="col-2 text-left text-truncate">
+            <span class="col-2 text-start text-truncate">
                 <label class="col-form-label-sm p-0" [innerHtml]="user.loginname"></label>
             </span>
-            <span class="col-2 text-left">
+            <span class="col-2 text-start">
                 <label class="col-form-label-sm p-0" [innerHtml]="user.active === true ? 'active' : 'deactivated'"></label>
             </span>
         </div>
       </div>
     </ul>
   </div>
+  
 </div>

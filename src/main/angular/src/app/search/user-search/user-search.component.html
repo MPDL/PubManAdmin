@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="card border-primary text-right m-1">
+    <div class="card border-primary text-end m-1">
         <div class="card-header">
             <h4 class="card-title">search 4 users</h4>
         </div>
@@ -12,8 +12,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row w-100">
-                    <div class="col-1 ml-auto">
+                <div class="formgroup row w-100">
+                    <div class="col-1 ms-auto">
                         <input type="submit" class="btn btn-outline-primary btn-sm" [disabled]="!searchForm.valid" value="submit" />
                     </div>
                 </div>
@@ -23,7 +23,7 @@
     </div>
     <div class="row">
         <div class="col-3">
-            <div class="card border-primary text-right m-1">
+            <div class="card border-primary text-end m-1">
                 <div class="row">
                     <label for="aggregationSelect" class="col-4 col-form-label col-form-label-sm"><span class="align-bottom">group by</span></label>
                     <div class="col-8">
@@ -33,25 +33,25 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="selected === 'creationDate'" class="card border-primary text-right m-1">
+            <div *ngIf="selected === 'creationDate'" class="card border-primary text-end m-1">
                 <div class="card-header">
                     <h4 class="card-title">users / creationDate</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
-                        <span class="badge badge-primary">{{year.doc_count}}</span>
-                        <span class="text-primary ml-2">{{year.key_as_string.substring(0,4)}}</span>
+                        <span class="badge bg-primary">{{year.doc_count}}</span>
+                        <span class="text-primary ms-2">{{year.key_as_string.substring(0,4)}}</span>
                         <li>
                 </ul>
             </div>
-            <div *ngIf="selected === 'organization'" class="card border-primary text-right m-1">
+            <div *ngIf="selected === 'organization'" class="card border-primary text-end m-1">
                 <div class="card-header">
                     <h4 class="card-title">users / organization</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let ou of ous" (click)="onSelectOu(ou)">
-                        <span class="text-primary mr-2">{{ou.key}}</span>
-                        <span class="badge badge-primary">{{ou.doc_count}}</span>
+                        <span class="text-primary me-2">{{ou.key}}</span>
+                        <span class="badge bg-primary">{{ou.doc_count}}</span>
                         <li>
                 </ul>
             </div>
@@ -68,9 +68,9 @@
                     <li selected-item-color class="list-group-item text-primary justify-content-start p-1" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: 25, currentPage: currentPage, totalItems: total }"
                         (click)="onSelect(user)">
                         <span class="text-primary">{{user.objectId}}</span>
-                        <span class="text-primary ml-2">{{user.name}}</span>
-                        <span class="text-primary ml-2">({{user.loginname}})</span>
-                        <span class="text-primary ml-2">{{user.affiliation?.name}}</span>
+                        <span class="text-primary ms-2">{{user.name}}</span>
+                        <span class="text-primary ms-2">({{user.loginname}})</span>
+                        <span class="text-primary ms-2">{{user.affiliation?.name}}</span>
                     <li>
                 </ul>
             </div>

@@ -14,7 +14,7 @@
 -->
 <div *ngIf="showFile">
   <div class="list-group">
-    <div *ngFor="let file of fileUploads | async" class="list-group-item-primary list-group-item-action py-0 text-left" (click)="setImageSource(file)">{{file}}</div>
+    <div *ngFor="let file of fileUploads | async" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="setImageSource(file)">{{file}}</div>
   </div>
 </div>
 <img [src]=selectedImage/>

@@ -1,6 +1,8 @@
-<div class="container">
+<div class="container-xl">
+
   <h3 class="text-info">Organizational Units Administration</h3>
-  <div class="card text-white bg-info text-right">
+
+  <div class="card text-white bg-info text-end">
     <div class="card-body">
       <h4 class="card-title">Organizations</h4>
       <input type="submit" class="btn btn-info btn-sm" name="add" value="+" (click)="addNewOrganization()" />
@@ -11,7 +13,7 @@
           placeholder="search by name" id="searchTerm" autocomplete="off">
         <div *ngIf="ounames.length > 0">
           <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-            <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-left" (click)="select(name)">
+            <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="select(name)">
               <small>{{name.metadata.name}}</small>
             </li>
           </ul>
@@ -32,4 +34,5 @@
       </cdk-tree-node>
     </cdk-tree>
   </div>
+  
 </div>
