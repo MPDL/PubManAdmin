@@ -1,19 +1,17 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top py-0 justify-content-between">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-    aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-  <div class="collapse navbar-collapse row" id="navbarNav">
-
-    <div class="navbar-nav align-self-center mr-auto">
-      <a [routerLink]="['/home']" class="nav-item nav-link">Home</a>
-      <a [routerLink]="['/users']" class="nav-item nav-link">Users</a>
-      <a [routerLink]="['/organizations']" class="nav-item nav-link">OUs</a>
-      <a [routerLink]="['/contexts']" class="nav-item nav-link">Contexts</a>
-      <a [routerLink]="['/search']" class="nav-item nav-link">Search</a>
-      <a [routerLink]="['/elastic']" class="nav-item nav-link">ESAdmin</a>
-    </div>
-    <div class="align-self-center">
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top py-0">
+<div class="container-fluid" id="navbarNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <nav class="navbar-nav me-auto">
+        <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
+        <a class="nav-link" routerLink="/users" routerLinkActive="active">Users</a>
+        <a class="nav-link" routerLink="/organizations" routerLinkActive="active">OUs</a>
+        <a class="nav-link" routerLink="/contexts" routerLinkActive="active">Contexts</a>
+        <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
+        <a class="nav-link" routerLink="/elastic" routerLinkActive="active">ESAdmin</a>
+      </nav>
       <authentication-component></authentication-component>
     </div>
   </div>

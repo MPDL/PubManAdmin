@@ -1,15 +1,22 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light py-0 justify-content-between">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-    aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse row" id="navbarNav">
-    <div class="navbar-nav align-self-center mr-auto">
-      <a routerLink="./" class="nav-item nav-link" [routerLinkActive]="['active']">Elastic</a>
-      <a routerLink="./index" class="nav-item nav-link" [routerLinkActive]="['active']">index</a>
-      <a routerLink="./search" class="nav-item nav-link" [routerLinkActive]="['active']">search</a>
-      <!--<a routerLink="./upload" class="nav-item nav-link" [routerLinkActive]="['active']">upload</a>-->
+<div class="container-xl">
+
+  <h3>ESAdmin</h3>
+
+  <nav class="navbar navbar-expand-md navbar-light bg-light py-0">
+    <div class="container-fluid px-0" id="navbarEsAdmin">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContentEsAdmin" aria-controls="navbarEsAdmin" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContentEsAdmin">
+        <nav class="navbar-nav">
+          <a class="nav-link" routerLink="./" routerLinkActive="active">Elastic</a>
+          <a class="nav-link" routerLink="./index" routerLinkActive="active">Index</a>
+          <a class="nav-link" routerLink="./search" routerLinkActive="active">Search</a>
+        </nav>
+      </div>
     </div>
-  </div>
-</nav>
-<router-outlet></router-outlet>
+  </nav>
+  
+  <router-outlet></router-outlet>
+
+</div>

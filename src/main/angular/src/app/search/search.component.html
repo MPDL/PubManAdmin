@@ -1,15 +1,23 @@
-<h3>Search</h3>
-<nav class="navbar navbar-expand-md navbar-light bg-light py-0 justify-content-between">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse row" id="navbarNav">
-          <div class="navbar-nav align-self-center mr-auto">
-                <a class="nav-item nav-link" routerLink="./users" routerLinkActive="active">Users</a>
-                <a class="nav-item nav-link" routerLink="./organizations" routerLinkActive="active">Organizations</a>
-                <a class="nav-item nav-link" routerLink="./contexts" routerLinkActive="active">Contexts</a>
-                <a class="nav-item nav-link" routerLink="./items" routerLinkActive="active">Items</a>         </div>
-        </div>
-      </nav>
-<router-outlet></router-outlet>
+<div class="container-xl">
+
+  <h3>Search</h3>
+
+  <nav class="navbar navbar-expand-md navbar-light bg-light py-0">
+    <div class="container-fluid px-0" id="navbarSearch">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContentSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContentSearch">
+        <nav class="navbar-nav">
+          <a class="nav-link" routerLink="./users" routerLinkActive="active">Users</a>
+          <a class="nav-link" routerLink="./organizations" routerLinkActive="active">Organizations</a>
+          <a class="nav-link" routerLink="./contexts" routerLinkActive="active">Contexts</a>
+          <a class="nav-link" routerLink="./items" routerLinkActive="active">Items</a>
+        </nav>
+      </div>
+    </div>
+  </nav>
+
+  <router-outlet></router-outlet>
+
+</div>
