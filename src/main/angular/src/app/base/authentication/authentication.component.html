@@ -1,27 +1,29 @@
-<form [hidden]="loggedIn" *ngIf="empty" class="form-inline float-right" name="form1" (ngSubmit)="f1.valid && login()" #f1="ngForm"
-  novalidate>
-  <div class="form-group align-self-center" [ngClass]="{ 'has-danger': f1.submitted && !username.valid }">
-    <input type="text" class="form-control form-control-sm" name="username" [(ngModel)]="credentials.username" #username="ngModel"
-      placeholder="loginname" required />
-    <div *ngIf="f1.submitted && !username.valid" class="form-text text-danger">Username is required</div>
-  </div>
-  <div class="form-group align-self-center" [ngClass]="{ 'has-danger': f1.submitted && !password.valid }">
-    <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="credentials.password" #password="ngModel"
-      placeholder="password" required />
-    <div *ngIf="f1.submitted && !password.valid" class="form-text text-danger">Password is required</div>
-  </div>
-  <div class="form-group align-self-center">
-    <input type="submit" class="btn btn-outline-primary btn-sm" name="login" value="login" />
-  </div>
-  </form>
-  <form [hidden]="!loggedIn" class="form-inline float-right" name="form2" #f2="ngForm" novalidate>
-    <div class="form-group align-self-center">
-      <small class="form-text text-primary"><span>Welcome   </span></small>
+<form #f1="ngForm" [hidden]="loggedIn" *ngIf="empty">
+  <div class="row g-1">
+    <div class="col">
+      <input type="text" class="form-control form-control-sm py-0" name="username" [(ngModel)]="credentials.username" #username="ngModel" placeholder="loginname" required />
     </div>
-    <div class="form-group align-self-center ml-2">
-      <small class="form-text text-muted"><span>{{credentials.username}}   </span></small>
+    <div *ngIf="username.invalid && (username.dirty || username.touched)" class="col form-text text-danger align-self-center">loginname is required</div>
+    <div class="col">
+      <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="credentials.password" #password="ngModel" placeholder="password" required />
     </div>
-    <div class="form-group align-self-center ml-2">
+    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="col form-text text-danger align-self-center">password is required</div>
+    <div class="col-auto">
+      <input type="submit" [disabled]="f1.invalid" class="btn btn-outline-primary btn-sm" name="login" value="login" (click)="login()" />
+    </div>
+  </div>
+</form>
+
+<form #f2="ngForm" [hidden]="!loggedIn">
+  <div class="row g-1">
+    <div class="col align-self-center">
+      <small class="form-text text-primary"><span>Welcome</span></small>
+    </div>
+    <div class="col align-self-center">
+      <small class="form-text text-muted"><span>{{credentials.username}} </span></small>
+    </div>
+    <div class="col">
       <a class="btn btn-outline-primary btn-sm" [routerLink]="['/home']" (click)="logout()">Logout</a>
     </div>
-  </form>
+  </div>
+</form>
