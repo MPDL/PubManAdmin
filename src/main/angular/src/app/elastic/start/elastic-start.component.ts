@@ -24,6 +24,7 @@ export class ElasticStartComponent implements OnInit {
       this.info = await this.elastic.info_api();
     } catch (e) {
       this.message.error(e);
+      this.info = null;
     }
   }
 

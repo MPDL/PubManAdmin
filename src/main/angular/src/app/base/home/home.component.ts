@@ -35,10 +35,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.host_subscription.unsubscribe();
   }
 
-  info() {
-    alert('NOT implemented yet ...');
-  }
-
   connect() {
     if (!this.isLoggedIn) {
       let base_url = prompt('URL to connect 2', 'https://');

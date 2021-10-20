@@ -14,11 +14,6 @@ export class MessagesService {
 
   displayMessage(message?) {
     this.messageDialogRef = this.dialog.open(MessagesComponent, {
-      hasBackdrop: false,
-      //width: '100%',
-      //role: 'alertdialog',
-      //autoFocus: false,
-      //scrollStrategy: this.overlay.scrollStrategies.noop(),
       data: message,
       panelClass: 'isis-mat-dialog'
     });
