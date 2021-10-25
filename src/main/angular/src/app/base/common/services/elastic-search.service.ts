@@ -19,7 +19,7 @@ export class ElasticSearchService extends ElasticService {
       if (err) {
         this.messages.error(err);
       } else {
-        const buckets = Array<any>();
+        const buckets = [];
         if (nested) {
           res.aggregations.name1.name2.buckets.forEach((bucket) => {
             buckets.push(bucket);
@@ -35,7 +35,7 @@ export class ElasticSearchService extends ElasticService {
   }
 
   buckets(index, body, nested): any[] {
-    const buckets = Array<any>();
+    const buckets = [];
     this.client.search({
       index: index,
       body: body,
@@ -73,7 +73,7 @@ export class ElasticSearchService extends ElasticService {
   }
 
   getMappingFields(alias, type): Array<string> {
-    const fields = Array<string>();
+    const fields:string[] = [];
     this.client.indices.getFieldMapping({
       index: alias,
       fields: '*',

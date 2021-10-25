@@ -4,7 +4,7 @@ import {Observable, of} from 'rxjs';
 import {first, map} from 'rxjs/operators';
 
 import {UsersService} from './users.service';
-import {User, Grant, BasicRO} from '../../base/common/model/inge';
+import {User, BasicRO} from '../../base/common/model/inge';
 import {environment} from 'environments/environment';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class UserDetailsResolverService implements Resolve<User> {
     if (id === 'new user') {
       const user = new User();
       user.loginname = 'new user';
-      user.grantList = new Array<Grant>();
+      user.grantList = [];
       user.affiliation = new BasicRO();
       user.active = false;
       this.generateRandomPassword(user);
