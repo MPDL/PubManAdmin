@@ -1,0 +1,21 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2015,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "object-curly-spacing":2,
+        "semi":2,
+        "comma-dangle": [2, "always-multiline"],
+        "array-bracket-spacing": [2, "never"],
+        "arrow-parens": [2, "always"]
+    }
+}
