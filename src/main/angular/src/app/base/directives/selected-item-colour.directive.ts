@@ -1,10 +1,9 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import {Directive, ElementRef, HostListener, Input} from '@angular/core';
 
 @Directive({
-  selector: '[selected-item-color]'
+  selector: '[selected-item-color]',
 })
 export class SelectedItemColourDirective {
-
   @Input() selectedcolor: string;
   @Input() defaultColor: string;
 
@@ -21,5 +20,4 @@ export class SelectedItemColourDirective {
   highlight(color: string) {
     this.elemRef.nativeElement.style.backgroundColor = color;
   }
-
 }

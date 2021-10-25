@@ -1,21 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { Observable, Subscription } from 'rxjs';
-import { OrganizationsService } from '../services/organizations.service';
-import { AuthenticationService } from '../../base/services/authentication.service';
-import { MessagesService } from '../../base/services/messages.service';
-import { environment } from 'environments/environment';
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import {Observable, Subscription} from 'rxjs';
+import {OrganizationsService} from '../services/organizations.service';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {environment} from 'environments/environment';
 // import { OrganizationTreeService, OUTreeFlatNode, OUTreeNode } from '../services/organization-tree.service';
-import { OrganizationTree2Service, OUTreeNode, OUTreeFlatNode } from '../services/organization-tree2.service';
+import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/organization-tree2.service';
 
 @Component({
   selector: 'app-organization-tree',
   templateUrl: 'organization-tree.component.html',
   styleUrls: ['organization-tree.component.scss'],
-  providers: [OrganizationTree2Service]
+  providers: [OrganizationTree2Service],
 })
 export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ounames: any[] = [];
@@ -35,7 +35,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     private message: MessagesService) { }
 
   ngOnInit() {
-    this.subscription = this.loginService.token$.subscribe(token => {
+    this.subscription = this.loginService.token$.subscribe((token) => {
       this.token = token;
     });
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
@@ -45,7 +45,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
 
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-    this.database.dataChange.subscribe(data => {
+    this.database.dataChange.subscribe((data) => {
       this.dataSource.data = data;
     });
 
@@ -56,7 +56,9 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  getChildren = (node: OUTreeNode): Observable<OUTreeNode[]> => { return node.childrenChange; };
+  getChildren = (node: OUTreeNode): Observable<OUTreeNode[]> => {
+    return node.childrenChange;
+  };
 
   transformer = (node: OUTreeNode, level: number) => {
     if (this.nodeMap.has(node.ouName)) {
@@ -65,13 +67,19 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     const newNode = new OUTreeFlatNode(node.ouName, node.ouId, level, node.hasChildren, node.parentOUId);
     this.nodeMap.set(node.ouName, newNode);
     return newNode;
-  }
+  };
 
-  getLevel = (node: OUTreeFlatNode) => { return node.level; };
+  getLevel = (node: OUTreeFlatNode) => {
+    return node.level;
+  };
 
-  isExpandable = (node: OUTreeFlatNode) => { return node.expandable; };
+  isExpandable = (node: OUTreeFlatNode) => {
+    return node.expandable;
+  };
 
-  hasChild = (_: number, _nodeData: OUTreeFlatNode) => { return _nodeData.expandable; };
+  hasChild = (_: number, _nodeData: OUTreeFlatNode) => {
+    return _nodeData.expandable;
+  };
 
   loadChildren(node: OUTreeFlatNode) {
     this.database.loadChildren(node.ouName, node.ouId);
@@ -109,8 +117,8 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.service.filter(url, null, queryString, 1)
-      .subscribe(res => {
-        res.list.forEach(ou => {
+      .subscribe((res) => {
+        res.list.forEach((ou) => {
           ouNames.push(ou);
         });
         if (ouNames.length > 0) {
@@ -118,7 +126,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
         } else {
           this.ounames = [];
         }
-      }, err => {
+      }, (err) => {
         this.message.error(err);
       });
   }
@@ -133,5 +141,4 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/organization', term.objectId]);
     this.ounames = [];
   }
-
 }

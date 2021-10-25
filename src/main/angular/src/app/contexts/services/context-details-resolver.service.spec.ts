@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 
-import { ContextDetailsResolverService } from './context-details-resolver.service';
+import {ContextDetailsResolverService} from './context-details-resolver.service';
 
 describe('ContextDetailsResolverService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ContextDetailsResolverService]
+      providers: [ContextDetailsResolverService],
     });
   });
 

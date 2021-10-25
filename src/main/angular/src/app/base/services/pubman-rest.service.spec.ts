@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 
-import { PubmanRestService } from './pubman-rest.service';
+import {PubmanRestService} from './pubman-rest.service';
 
 describe('PubmanRestService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PubmanRestService]
+      providers: [PubmanRestService],
     });
   });
 

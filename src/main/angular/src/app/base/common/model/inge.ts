@@ -1,75 +1,74 @@
 export class UserRO {
-    objectId: string;
-    name: string;
+  objectId: string;
+  name: string;
 }
 
 export class BasicRO {
-    objectId: string;
-    name: string;
-    creationDate: Date;
-    lastModificationDate: Date;
-    creator: UserRO;
-    modifier: UserRO;
+  objectId: string;
+  name: string;
+  creationDate: Date;
+  lastModificationDate: Date;
+  creator: UserRO;
+  modifier: UserRO;
 }
 
 export class Grant {
-    role: string;
-    grantType: string;
-    objectRef: string;
+  role: string;
+  grantType: string;
+  objectRef: string;
 }
 
 export class User extends BasicRO {
-    loginname: string;
-    password: string;
-    email: string;
-    affiliation: BasicRO;
-    active: boolean;
-    grantList: Grant[];
+  loginname: string;
+  password: string;
+  email: string;
+  affiliation: BasicRO;
+  active: boolean;
+  grantList: Grant[];
 }
 
 export class OU extends BasicRO {
-    predecessorAffiliations: BasicRO[];
-    hasChildren: boolean = false;
-    childAffiliations: BasicRO[];
-    hasPredecessors: boolean = false;
-    parentAffiliation: BasicRO;
-    publicStatus: string;
-    metadata: OUMetadata;
+  predecessorAffiliations: BasicRO[];
+  hasChildren: boolean = false;
+  childAffiliations: BasicRO[];
+  hasPredecessors: boolean = false;
+  parentAffiliation: BasicRO;
+  publicStatus: string;
+  metadata: OUMetadata;
 }
 
 export class OUMetadata {
-    alternativeNames: string[];
-    city: string;
-    countryCode: string;
-    coordinates: Coordinates;
-    identifiers: Identifier[];
-    name: string;
-    type: string;
-    descriptions: string[];
-    startDate: string;
-    endDate: string;
+  alternativeNames: string[];
+  city: string;
+  countryCode: string;
+  coordinates: Coordinates;
+  identifiers: Identifier[];
+  name: string;
+  type: string;
+  descriptions: string[];
+  startDate: string;
+  endDate: string;
 }
 
 export class Identifier {
-    typeString: string;
-    id: string;
+  typeString: string;
+  id: string;
 }
 
 export class Coordinates {
-    altitude: number;
-    latitude: number;
-    longitude: number;
-
+  altitude: number;
+  latitude: number;
+  longitude: number;
 }
 
 export class Context extends BasicRO {
-    state: string;
-    description: string;
-    responsibleAffiliations: BasicRO[];
-    allowedGenres: string[];
-    allowedSubjectClassifications: string[];
-    workflow: string;
-    contactEmail: string;
+  state: string;
+  description: string;
+  responsibleAffiliations: BasicRO[];
+  allowedGenres: string[];
+  allowedSubjectClassifications: string[];
+  workflow: string;
+  contactEmail: string;
 }
 
 export enum workflow {
@@ -142,7 +141,7 @@ export enum genres {
 }
 
 export class SearchResult {
-    numberOfRecords: number;
-    records: any[];
+  numberOfRecords: number;
+  records: any[];
 }
 

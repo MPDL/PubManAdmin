@@ -1,21 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { User, Grant, BasicRO } from '../../base/common/model/inge';
-import { UsersService } from '../services/users.service';
-import { MessagesService } from '../../base/services/messages.service';
-import { AuthenticationService } from '../../base/services/authentication.service';
-import { environment } from 'environments/environment';
-import { allOpenedOUs } from '../../base/common/model/query-bodies';
+import {User, Grant, BasicRO} from '../../base/common/model/inge';
+import {UsersService} from '../services/users.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {environment} from 'environments/environment';
+import {allOpenedOUs} from '../../base/common/model/query-bodies';
 
 @Component({
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
-  styleUrls: ['./user-details.component.scss']
+  styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
-
   url = environment.rest_users;
   ous_url = environment.rest_ous;
   ctxs_url = environment.rest_contexts;
@@ -45,11 +44,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private usersService: UsersService,
     private messageService: MessagesService,
-    private loginService: AuthenticationService,
+    private loginService: AuthenticationService
   ) { }
 
   ngOnInit() {
-    this.tokenSubscription = this.loginService.token$.subscribe(token => {
+    this.tokenSubscription = this.loginService.token$.subscribe((token) => {
       this.token = token;
     });
 
@@ -70,7 +69,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   listOuNames() {
     const body = allOpenedOUs;
     this.usersService.query(this.ous_url, null, body)
-      .subscribe(ous => {
+      .subscribe((ous) => {
         this.ous = ous.list;
       });
   }
@@ -95,7 +94,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   deleteGrant(grant2delete) {
     this.grants2remove = true;
     this.selectedGrant = grant2delete;
-    if (!this.selectedGrants.some(grant => (grant2delete.objectRef === grant.objectRef && grant2delete.role === grant.role))) {
+    if (!this.selectedGrants.some((grant) => (grant2delete.objectRef === grant.objectRef && grant2delete.role === grant.role))) {
       this.selectedGrants.push(grant2delete);
     }
     this.grantsToRemove = JSON.stringify(this.selectedGrants);
@@ -124,13 +123,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     } else {
       if (ref.startsWith('ou')) {
         this.usersService.get(this.ous_url, ref, null)
-          .subscribe(ou => {
+          .subscribe((ou) => {
             this.ctxTitle = ou.metadata.name;
           });
       } else {
         if (ref.startsWith('ctx')) {
           this.usersService.get(this.ctxs_url, ref, null)
-            .subscribe(ctx => {
+            .subscribe((ctx) => {
               this.ctxTitle = ctx.name;
             });
         }
@@ -140,27 +139,27 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   gotoList() {
     const userId = this.selected ? this.selected.loginname : null;
-    this.router.navigate(['/users', { id: userId }]);
+    this.router.navigate(['/users', {id: userId}]);
   }
 
   notAllowed(whatthehackever) {
-    this.messageService.warning('you\'re not authorized !')
+    this.messageService.warning('you\'re not authorized !');
   }
 
   generateRandomPassword(user) {
     this.usersService.generateRandomPassword()
-      .subscribe(pw => {
+      .subscribe((pw) => {
         user.password = pw.toString();
       });
-    }
+  }
 
   resetPassword(user) {
     if (user.active === true) {
       this.usersService.changePassword(user, this.token)
-        .subscribe(u => {
+        .subscribe((u) => {
           this.selected = u;
           this.messageService.success(u.loginname + ':  password was reset to ' + user.password);
-        }, error => {
+        }, (error) => {
           this.messageService.error(error);
         });
     } else {
@@ -171,10 +170,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   changePassword(user) {
     if (user.password != null) {
       this.usersService.changePassword(user, this.token)
-        .subscribe(u => {
+        .subscribe((u) => {
           this.selected = u;
           this.messageService.success(u.loginname + ':  password has changed to ' + user.password);
-        }, error => {
+        }, (error) => {
           this.messageService.error(error);
         });
     } else {
@@ -186,18 +185,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected = user;
     if (this.selected.active === true) {
       this.usersService.deactivate(this.selected, this.token)
-        .subscribe(user2deactivate => {
+        .subscribe((user2deactivate) => {
           this.selected = user2deactivate;
           this.messageService.success('Deactivated ' + this.selected.objectId);
-        }, error => {
+        }, (error) => {
           this.messageService.error(error);
         });
     } else {
       this.usersService.activate(this.selected, this.token)
-        .subscribe(user2activate => {
+        .subscribe((user2activate) => {
           this.selected = user2activate;
           this.messageService.success('Activated ' + this.selected.objectId);
-        }, error => {
+        }, (error) => {
           this.messageService.error(error);
         });
     }
@@ -215,9 +214,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
     if (this.isNewUser) {
       if (this.selectedOu != null) {
-        const ou_id = this.selectedOu.objectId;
+        const ouId = this.selectedOu.objectId;
         const aff = new BasicRO();
-        aff.objectId = ou_id;
+        aff.objectId = ouId;
         this.selected.affiliation = aff;
       } else {
         this.messageService.warning('you MUST select an organization');
@@ -225,24 +224,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       }
       this.usersService.post(this.url, this.selected, this.token)
         .subscribe(
-          data => {
+          (data) => {
             this.messageService.success('added new user ' + this.selected.loginname + ' with password ' + this.selected.password);
             this.isNewUser = false;
             this.isNewOu = false;
             this.selected = data;
-            //this.gotoList();
           },
-          error => {
+          (error) => {
             this.messageService.error(error);
           }
         );
-
     } else {
       if (this.isNewOu) {
         if (this.selectedOu != null) {
-          const ou_id = this.selectedOu.objectId;
+          const ouId = this.selectedOu.objectId;
           const aff = new BasicRO();
-          aff.objectId = ou_id;
+          aff.objectId = ouId;
           this.selected.affiliation = aff;
         } else {
           this.messageService.warning('you MUST select an organization');
@@ -251,22 +248,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       }
       this.usersService.put(this.url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
-          data => {
+          (data) => {
             this.messageService.success('updated ' + this.selected.loginname);
             // this.gotoList();
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.rest_users, data.objectId, this.token)
-            .subscribe(updated => {
-              this.selected = updated;
-              if (this.selected.grantList) {
-                this.selected.grantList.forEach(grant => this.usersService.addNamesOfGrantRefs(grant));
-              }
-            });
+              .subscribe((updated) => {
+                this.selected = updated;
+                if (this.selected.grantList) {
+                  this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+                }
+              });
             // this.selected = data;
             // this.router.navigate(['/user', this.selected.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
           },
-          error => {
+          (error) => {
             this.messageService.error(error);
           }
         );
@@ -274,15 +271,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeGrants() {
-    this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe(user => {
+    this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe((user) => {
       this.selected = user;
       if (this.selected.grantList) {
-        this.selected.grantList.forEach(grant => this.usersService.addNamesOfGrantRefs(grant));
+        this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
       }
       this.messageService.success('removed Grants from ' + this.selected.loginname);
       this.selectedGrants = null;
       this.grants2remove = false;
-    }, error => {
+    }, (error) => {
       this.messageService.error(error);
     });
   }
@@ -290,18 +287,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   delete(user) {
     this.selected = user;
     const id = this.selected.loginname;
-    if (confirm('delete '+user.name+' ?')) {
+    if (confirm('delete ' + user.name + ' ?')) {
       this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
-      .subscribe(
-        data => {
-          this.messageService.success('deleted ' + id + ' ' + data);
-        },
-        error => {
-          this.messageService.error(error);
-        }
-      );
-    this.selected = null;
-    this.gotoList();
+        .subscribe(
+          (data) => {
+            this.messageService.success('deleted ' + id + ' ' + data);
+          },
+          (error) => {
+            this.messageService.error(error);
+          }
+        );
+      this.selected = null;
+      this.gotoList();
     }
   }
 
@@ -318,8 +315,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.usersService.filter(url, null, queryString, 1)
-      .subscribe(res => {
-        res.list.forEach(ou => {
+      .subscribe((res) => {
+        res.list.forEach((ou) => {
           ouNames.push(ou);
         });
         if (ouNames.length > 0) {
@@ -327,7 +324,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.ounames = [];
         }
-      }, err => {
+      }, (err) => {
         this.messageService.error(err);
       });
   }

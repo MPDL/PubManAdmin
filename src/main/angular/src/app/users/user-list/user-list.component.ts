@@ -1,23 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { User, OU } from '../../base/common/model/inge';
-import { UsersService } from '../services/users.service';
-import { AuthenticationService } from '../../base/services/authentication.service';
-import { MessagesService } from '../../base/services/messages.service';
-import { environment } from 'environments/environment';
-import { mpgOus4auto } from '../../base/common/model/query-bodies';
+import {User, OU} from '../../base/common/model/inge';
+import {UsersService} from '../services/users.service';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {environment} from 'environments/environment';
+import {mpgOus4auto} from '../../base/common/model/query-bodies';
 
 @Component({
   selector: 'user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
-  providers: []
 })
 
 export class UserListComponent implements OnInit, OnDestroy {
-
   url = environment.rest_users;
   title: string = 'Users';
   users: User[];
@@ -51,13 +49,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.tokenSubscription = this.loginService.token$.subscribe(token => {
+    this.tokenSubscription = this.loginService.token$.subscribe((token) => {
       this.token = token;
     });
-    this.userSubscription = this.loginService.user$.subscribe(user => {
+    this.userSubscription = this.loginService.user$.subscribe((user) => {
       this.loggedInUser = user;
     });
-    this.adminSubscription = this.loginService.isAdmin$.subscribe(admin => {
+    this.adminSubscription = this.loginService.isAdmin$.subscribe((admin) => {
       this.isAdmin = admin;
     });
 
@@ -67,7 +65,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       } else if (this.loggedInUser != null) {
         this.messageService.warning('Only admins are allowed to view the list');
         this.router.navigate(['/user', this.loggedInUser.objectId],
-          { queryParams: { token: this.token, admin: false }, skipLocationChange: true });
+          {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
       }
     }
     this.comingFrom = this.route.snapshot.params['id'];
@@ -81,7 +79,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   getAllUsersAsObservable(token, page) {
     this.usersService.getAll(this.url, token, page)
-      .subscribe(result => {
+      .subscribe((result) => {
         this.users = result.list;
         this.total = result.records;
       }, (err) => {
@@ -93,7 +91,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       if (this.selectedOUName === undefined) {
         this.usersService.getAll(this.url, this.token, page)
-          .subscribe(result => {
+          .subscribe((result) => {
             this.users = result.list;
             this.total = result.records;
           }, (err) => {
@@ -102,7 +100,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.currentPage = page;
       } else {
         this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOUName.objectId, page)
-          .subscribe(result => {
+          .subscribe((result) => {
             this.users = result.list;
             this.total = result.records;
           }, (err) => {
@@ -124,12 +122,12 @@ export class UserListComponent implements OnInit, OnDestroy {
   onSelect(user: User) {
     this.isNewUser = false;
     this.selected = user;
-    this.router.navigate(['/user', user.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
+    this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
   }
 
   addNewUser() {
     const userid = 'new user';
-    this.router.navigate(['/user', userid], { queryParams: { token: 'new' }, skipLocationChange: true });
+    this.router.navigate(['/user', userid], {queryParams: {token: 'new'}, skipLocationChange: true});
   }
 
   delete(user) {
@@ -137,10 +135,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     const id = this.selected.loginname;
     this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
       .subscribe(
-        data => {
+        (data) => {
           this.messageService.success('deleted ' + id + ' ' + data);
         },
-        error => {
+        (error) => {
           this.messageService.error(error);
         }
       );
@@ -150,7 +148,6 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getUserNames(term: string) {
-
     if (this.token != null) {
       if (term.length > 0 && !term.startsWith('"')) {
         this.returnSuggestedUsers(term);
@@ -158,36 +155,36 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.returnSuggestedUsers(term);
       }
     } else {
-      this.messageService.warning('no token, no users!')
+      this.messageService.warning('no token, no users!');
     }
   }
 
   returnSuggestedUsers(term) {
     const userNames: any[] = [];
     const queryString = '?q=name.auto:' + term;
-        this.usersService.filter(this.url, this.token, queryString, 1)
-          .subscribe(res => {
-            res.list.forEach(user => {
-              userNames.push(user);
-            });
-            if (userNames.length > 0) {
-              this.usernames = userNames;
-            } else {
-              this.usernames = [];
-            }
-          }, err => {
-            this.messageService.error(err);
-          });
+    this.usersService.filter(this.url, this.token, queryString, 1)
+      .subscribe((res) => {
+        res.list.forEach((user) => {
+          userNames.push(user);
+        });
+        if (userNames.length > 0) {
+          this.usernames = userNames;
+        } else {
+          this.usernames = [];
+        }
+      }, (err) => {
+        this.messageService.error(err);
+      });
   }
 
   getOUNames(term: string) {
     const ouNames: OU[] = [];
     const body = mpgOus4auto;
-    body.query.bool.must.term["metadata.name.auto"] = term;
+    body.query.bool.must.term['metadata.name.auto'] = term;
     const url = environment.rest_ous;
     this.usersService.query(url, null, body)
-      .subscribe(res => {
-        res.list.forEach(ou => {
+      .subscribe((res) => {
+        res.list.forEach((ou) => {
           ouNames.push(ou);
         });
         if (ouNames.length > 0) {
@@ -195,7 +192,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         } else {
           this.ounames = [];
         }
-      }, err => {
+      }, (err) => {
         this.messageService.error(err);
       });
   }
@@ -205,14 +202,14 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       this.currentPage = 1;
       this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
-        .subscribe(res => {
+        .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
-        }, err => {
+        }, (err) => {
           this.messageService.error(err);
         });
     } else {
-      this.messageService.warning('no token, no users!')
+      this.messageService.warning('no token, no users!');
     }
     this.title = 'Users of ' + this.selectedOUName.name;
     this.closeOUNames();
@@ -231,8 +228,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   select(term) {
     this.userSearchTerm = term.name;
     if (this.token != null) {
-      this.router.navigate(['/user', term.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
-
+      this.router.navigate(['/user', term.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
     } else {
       this.messageService.warning('no login, no user !!!');
     }
@@ -242,5 +238,4 @@ export class UserListComponent implements OnInit, OnDestroy {
   isSelectedName(user: User) {
     return this.selectedUserName ? this.selectedUserName.loginname === user.loginname : false;
   }
-
 }
