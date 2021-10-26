@@ -63,7 +63,7 @@ export class ElasticService {
           this.messages.error(error);
         }
         if (response) {
-          const hitList = [];
+          const hitList = Array<any>();
           response.hits.hits.forEach((hit) => {
             const source = JSON.stringify(hit._source);
             const json = JSON.parse(source);

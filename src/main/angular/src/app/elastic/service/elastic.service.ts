@@ -168,7 +168,7 @@ export class ElasticService {
 
   scrollwithcallback(url, index, term, callback): any {
     const ms = this.message;
-    const hitList = [];
+    const hitList = Array<any>();
     let ec: Client;
     if (url != null) {
       ec = this.remoteClient(url);
