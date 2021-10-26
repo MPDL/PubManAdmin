@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {ContextsService} from './contexts.service';
+import { ContextsService } from './contexts.service';
 
 describe('ContextsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ContextsService],
+      providers: [ContextsService]
     });
   });
 

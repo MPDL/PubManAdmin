@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {MessagesService} from './messages.service';
+import { MessagesService } from './messages.service';
 
 describe('MessageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [MessagesService],
+      providers: [MessagesService]
     });
   });
 

@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {MessagesService} from '../services/messages.service';
-import {AuthenticationService} from '../services/authentication.service';
+import { MessagesService } from '../services/messages.service';
+import { AuthenticationService } from '../services/authentication.service';
 
-import {User} from '../common/model/inge';
+import { User } from '../common/model/inge';
 
 @Component({
   selector: 'authentication-component',
   templateUrl: './authentication.component.html',
-  styleUrls: ['./authentication.component.scss'],
+  styleUrls: ['./authentication.component.scss']
 })
 export class AuthenticationComponent implements OnInit {
+
   credentials: any = {};
   loggedIn = false;
   hasToken = false;
@@ -30,15 +31,15 @@ export class AuthenticationComponent implements OnInit {
   login() {
     this.authentication.login(this.credentials.username, this.credentials.password)
       .subscribe(
-        (data) => {
-          this.token = data;
-          this.who();
-          this.loggedIn = true;
-        },
-        (error) => {
-          this.messages.error(error);
-          this.loggedIn = false;
-        }
+      data => {
+        this.token = data;
+        this.who();
+        this.loggedIn = true;
+      },
+      error => {
+        this.messages.error(error);
+        this.loggedIn = false;
+      }
       );
   }
 
@@ -57,17 +58,18 @@ export class AuthenticationComponent implements OnInit {
     if (this.token !== '') {
       this.authentication.who(this.token)
         .subscribe(
-          (data) => {
-            this.user = data;
-            this.hasToken = true;
+        data => {
+          this.user = data;
+          this.hasToken = true;
 
-            this.credentials.username = this.user.name;
-          },
-          (error) => {
-            this.messages.error(error);
-            this.hasToken = false;
-          }
+          this.credentials.username = this.user.name;
+        },
+        error => {
+          this.messages.error(error);
+          this.hasToken = false;
+        }
         );
     }
   }
+
 }

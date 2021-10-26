@@ -1,9 +1,10 @@
-import {Directive, ElementRef, HostListener, Output, EventEmitter} from '@angular/core';
+import { Directive, ElementRef, HostListener, Output, EventEmitter } from '@angular/core';
 
 @Directive({
-  selector: '[clickOutside]',
+  selector: '[clickOutside]'
 })
 export class DocumentClickDirective {
+
   @Output() clickOutside: EventEmitter<any> = new EventEmitter();
 
   constructor(private _elementRef: ElementRef) { }

@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {ConnectionService} from './connection.service';
+import { ConnectionService } from './connection.service';
 
 describe('ConnectionService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ConnectionService],
+      providers: [ConnectionService]
     });
   });
 

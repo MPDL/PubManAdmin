@@ -1,4 +1,4 @@
-import {AdmintoolPage} from './app.po';
+import { AdmintoolPage } from './app.po';
 
 describe('admintool App', () => {
   let page: AdmintoolPage;

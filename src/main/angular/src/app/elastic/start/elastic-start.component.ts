@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {ElasticService} from '../service/elastic.service';
-import {MessagesService} from '../../base/services/messages.service';
+import { Component, OnInit } from '@angular/core';
+import { ElasticService } from '../service/elastic.service';
+import { MessagesService } from '../../base/services/messages.service';
 
 @Component({
   selector: 'app-elastic-start',
   templateUrl: './elastic-start.component.html',
-  styleUrls: ['./elastic-start.component.scss'],
+  styleUrls: ['./elastic-start.component.scss']
 })
 export class ElasticStartComponent implements OnInit {
+
   info: any;
   host: any;
 

@@ -1,10 +1,10 @@
 export class SearchRequest {
-  searchTerms: SearchTerm[];
+    searchTerms: SearchTerm[];
 }
 
 export class SearchTerm {
-  type: string;
-  field: string;
-  searchTerm: string;
-  fields: string[];
+    type: string;
+    field: string;
+    searchTerm: string;
+    fields: string[];
 }

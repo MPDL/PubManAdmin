@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {UserDetailsResolverService} from './user-details-resolver.service';
+import { UserDetailsResolverService } from './user-details-resolver.service';
 
 describe('UserDetailsResolverService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserDetailsResolverService],
+      providers: [UserDetailsResolverService]
     });
   });
 

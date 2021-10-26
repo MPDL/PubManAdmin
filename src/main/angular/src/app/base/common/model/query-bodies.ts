@@ -1,59 +1,59 @@
 export const mpgOus4auto = {
-  'size': 25,
-  'query': {
-    'bool': {
-      'filter': {
-        'terms': {
-          'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22'],
-        },
-      },
-      'must': {
-        'term': {
-          'metadata.name.auto': 'term',
-        },
-      },
+    'size': 25,
+    'query': {
+        'bool': {
+            'filter': {
+                'terms': {
+                    'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
+                }
+            },
+            'must': {
+                'term': {
+                    'metadata.name.auto': 'term'
+                }
+            }
+        }
     },
-  },
-  'sort': [
-    {'metadata.name.keyword': {'order': 'asc'}},
-  ],
+    'sort': [
+        { 'metadata.name.keyword': { 'order': 'asc' } }
+    ]
 };
 export const allOpenedOUs = {
-  'size': 300,
-  'query': {
-    'bool': {
-      'filter':
+    'size': 300,
+    'query': {
+        'bool': {
+            'filter':
             {
-              'terms': {
-                'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22'],
-              },
+                'terms': {
+                    'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']
+                }
             },
-      'must': {
-        'term': {
-          'publicStatus.keyword': 'OPENED',
-        },
-      },
+            'must': {
+                'term': {
+                    'publicStatus.keyword': 'OPENED'
+                }
+            }
+        }
     },
-  },
-  'sort': [
-    {'parentAffiliation.objectId': {'order': 'asc'}},
-    {'metadata.name.keyword': {'order': 'asc'}},
-  ],
+    'sort': [
+        { 'parentAffiliation.objectId': { 'order': 'asc' } },
+        { 'metadata.name.keyword': { 'order': 'asc' } }
+    ]
 };
 export const allTopLevelOUs = {
-  'size': 100,
-  'query': {
-    'bool': {
-      'must_not': {
-        'exists': {
-          'field': 'parentAffiliation',
-        },
-      },
+    'size': 100,
+    'query': {
+        'bool': {
+            'must_not': {
+                'exists': {
+                    'field': 'parentAffiliation'
+                }
+            }
+        }
     },
-  },
-  'sort': [
-    {'metadata.name.keyword': {'order': 'desc'}},
-  ],
+    'sort': [
+        { 'metadata.name.keyword': { 'order': 'desc' } }
+    ]
 };
 
 

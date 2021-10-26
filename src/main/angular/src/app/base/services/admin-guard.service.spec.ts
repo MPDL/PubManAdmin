@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {AdminGuard} from './admin-guard.service';
+import { AdminGuard } from './admin-guard.service';
 
 describe('AdminGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AdminGuard],
+      providers: [AdminGuard]
     });
   });
 

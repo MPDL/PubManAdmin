@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {NavigationService} from './navigation.service';
+import { NavigationService } from './navigation.service';
 
 describe('NavigationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [NavigationService],
+      providers: [NavigationService]
     });
   });
 

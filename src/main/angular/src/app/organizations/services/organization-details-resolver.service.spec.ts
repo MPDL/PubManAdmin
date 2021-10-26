@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {OrganizationDetailsResolverService} from './organization-details-resolver.service';
+import { OrganizationDetailsResolverService } from './organization-details-resolver.service';
 
 describe('OrganizationDetailsResolverService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OrganizationDetailsResolverService],
+      providers: [OrganizationDetailsResolverService]
     });
   });
 

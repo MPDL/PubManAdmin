@@ -1,17 +1,18 @@
-import {Component, OnInit, AfterViewInit} from '@angular/core';
-import {Router} from '@angular/router';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import {ElasticService} from '../service/elastic.service';
-import {MessagesService} from '../../base/services/messages.service';
-import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
+import { ElasticService } from '../service/elastic.service';
+import { MessagesService } from '../../base/services/messages.service';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
-  styleUrls: ['./index.component.scss'],
+  styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, AfterViewInit {
+
   indices: any[];
   aliases: any;
   aliasForm: FormGroup;
@@ -21,12 +22,12 @@ export class IndexComponent implements OnInit, AfterViewInit {
   constructor(private elastic: ElasticService,
     private message: MessagesService,
     private builder: FormBuilder,
-    private router: Router ) { }
+    private router: Router, ) { }
 
   ngOnInit() {
     this.list();
     this.aliasForm = this.builder.group({
-      indexAliases: this.builder.array([this.initAliasForm()]),
+      indexAliases: this.builder.array([this.initAliasForm()])
     });
   }
 
@@ -38,7 +39,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     return this.builder.group({
       action: 'add',
       index: '',
-      alias: '',
+      alias: ''
     });
   }
 
@@ -69,9 +70,9 @@ export class IndexComponent implements OnInit, AfterViewInit {
         }
       });
 
-      this.indices.map((index) => {
+      this.indices.map(index => {
         if (index.status === 'open') {
-          index.alias = Object.keys(this.aliases[index.index].aliases);
+        index.alias = Object.keys(this.aliases[index.index].aliases);
         }
       });
     } catch (e) {
@@ -110,30 +111,30 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   submit() {
     const aliases = this.aliasForm.value;
-    aliases.indexAliases.forEach((alias) => {
+    aliases.indexAliases.forEach(alias => {
       switch (alias.action) {
-      case 'add': {
-        this.elastic.addAlias(alias.index, alias.alias)
-          .then((response) => this.message.info(JSON.stringify(response)))
-          .catch((err) => {
-            this.message.error(err);
-          });
-        break;
-      }
-      case 'remove': {
-        let a2remove: string;
-        if (alias.alias.includes(',')) {
-          a2remove = prompt('which one?');
-        } else {
-          a2remove = alias.alias;
+        case 'add': {
+          this.elastic.addAlias(alias.index, alias.alias)
+            .then(response => this.message.info(JSON.stringify(response)))
+            .catch(err => {
+              this.message.error(err);
+            })
+          break;
         }
-        this.elastic.removeAlias(alias.index, a2remove)
-          .then((response) => this.message.info(JSON.stringify(response)))
-          .catch((err) => {
-            this.message.error(err);
-          });
-        break;
-      }
+        case 'remove': {
+          let a2remove: string;
+          if (alias.alias.includes(',')) {
+            a2remove = prompt('which one?');
+          } else {
+            a2remove = alias.alias;
+          }
+          this.elastic.removeAlias(alias.index, a2remove)
+            .then(response => this.message.info(JSON.stringify(response)))
+            .catch(err => {
+              this.message.error(err);
+            })
+          break;
+        }
       }
       this.list();
     });

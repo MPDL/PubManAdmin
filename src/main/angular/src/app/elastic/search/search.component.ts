@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormArray, FormBuilder, Validators} from '@angular/forms';
-import {MessagesService} from '../../base/services/messages.service';
-import {ElasticService} from '../service/elastic.service';
-import {SearchService} from '../../base/common/services/search.service';
-import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { MessagesService } from '../../base/services/messages.service';
+import { ElasticService } from '../service/elastic.service';
+import { SearchService } from '../../base/common/services/search.service';
+import { SearchRequest, SearchTerm } from '../../base/common/components/search-term/search.term';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+  styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+
   searchForm: FormGroup;
   searchRequest: SearchRequest;
   searchResult: any;
@@ -29,16 +30,16 @@ export class SearchComponent implements OnInit {
       remote_url: '',
       source_index: ['', Validators.required],
       target_index: ['', Validators.required],
-      searchTerms: this.fb.array([this.initSearchTerm()]),
+      searchTerms: this.fb.array([this.initSearchTerm()])
     });
     this.getList();
   }
 
   async changeList() {
-    const remoteUrl = this.searchForm.get('remote_url').value;
+    let remote_url = this.searchForm.get('remote_url').value;
     try {
-      this.source_list = await this.service.listRemoteIndices(remoteUrl);
-    } catch (e) {
+      this.source_list = await this.service.listRemoteIndices(remote_url);
+    } catch(e) {
       this.message.error(e);
     }
   }
@@ -56,7 +57,7 @@ export class SearchComponent implements OnInit {
     return this.fb.group({
       type: '',
       field: '',
-      searchTerm: '',
+      searchTerm: ''
     });
   }
 
@@ -82,27 +83,27 @@ export class SearchComponent implements OnInit {
 
   import() {
     if (this.searchForm.valid) {
-      const url = this.searchForm.get('remote_url').value;
-      const source = this.searchForm.get('source_index').value;
-      const target = this.searchForm.get('target_index').value;
+      let url = this.searchForm.get('remote_url').value;
+      let source = this.searchForm.get('source_index').value;
+      let target = this.searchForm.get('target_index').value;
       this.searchRequest = this.prepareRequest();
-      const body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc');
+      let body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc')
       this.service.scrollwithcallback(url, source, body, async (cb) => {
-        const docs = [];
-        cb.forEach(async (doc) => {
-          const temp = {index: {_index: target, _type: doc._type, _id: doc._id}};
+        let docs = [];
+        cb.forEach(async doc => {
+          let temp = {index: {_index:target, _type:doc._type, _id:doc._id}};
           docs.push(temp);
           docs.push(doc._source);
         });
         try {
-          const go4it = await this.service.bulkIndex(docs);
+          let go4it = await this.service.bulkIndex(docs);
           this.message.success(JSON.stringify(go4it));
-        } catch (e) {
+        } catch(e) {
           this.message.error(e);
         }
       });
     } else {
-      this.message.error('form invalid? '+this.searchForm.hasError);
+      this.message.error('form invalid? '+this.searchForm.hasError)
     }
   }
 
@@ -118,7 +119,7 @@ export class SearchComponent implements OnInit {
       (term: SearchTerm) => Object.assign({}, term)
     );
     const request: SearchRequest = {
-      searchTerms: searchTerms2Save,
+      searchTerms: searchTerms2Save
     };
     return request;
   }
@@ -144,7 +145,7 @@ export class SearchComponent implements OnInit {
       const result = await this.service.reindex(body);
       this.message.success(JSON.stringify(result));
     } catch (e) {
-      this, this.message.error(e);
+      this,this.message.error(e);
     }
   }
 

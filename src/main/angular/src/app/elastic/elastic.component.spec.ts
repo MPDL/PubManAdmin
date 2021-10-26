@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {ElasticComponent} from './elastic.component';
+import { ElasticComponent } from './elastic.component';
 
 describe('ElasticComponent', () => {
   let component: ElasticComponent;
@@ -8,9 +8,9 @@ describe('ElasticComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ElasticComponent],
+      declarations: [ ElasticComponent ]
     })
-      .compileComponents();
+    .compileComponents();
   }));
 
   beforeEach(() => {

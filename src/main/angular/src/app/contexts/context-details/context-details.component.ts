@@ -1,21 +1,22 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-import {ContextsService} from '../services/contexts.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
-import {MessagesService} from '../../base/services/messages.service';
-import {BasicRO, Context, genres, subjects, workflow} from '../../base/common/model/inge';
-import {allOpenedOUs} from '../../base/common/model/query-bodies';
+import { ContextsService } from '../services/contexts.service';
+import { AuthenticationService } from '../../base/services/authentication.service';
+import { MessagesService } from '../../base/services/messages.service';
+import { BasicRO, Context, genres, subjects, workflow } from '../../base/common/model/inge';
+import { allOpenedOUs } from '../../base/common/model/query-bodies';
 
-import {environment} from 'environments/environment';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-context-details',
   templateUrl: './context-details.component.html',
-  styleUrls: ['./context-details.component.scss'],
+  styleUrls: ['./context-details.component.scss']
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
+
   url = environment.rest_contexts;
   ous_url = environment.rest_ous;
 
@@ -51,13 +52,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.isNewCtx = true;
       this.listOuNames();
     }
-    this.loginSubscription = this.login.token$.subscribe((token) => {
+    this.loginSubscription = this.login.token$.subscribe(token => {
       this.token = token;
     });
-    this.genres2display = Object.keys(genres).filter((val) => val.match(/^[A-Z]/));
+    this.genres2display = Object.keys(genres).filter(val => val.match(/^[A-Z]/));
     this.initializeAllowed(this.ctx);
 
-    this.workflows2display = Object.keys(workflow).filter((val) => val.match(/^[A-Z]/));
+    this.workflows2display = Object.keys(workflow).filter(val => val.match(/^[A-Z]/));
     this.selectedWorkflow = this.ctx.workflow;
   }
 
@@ -72,7 +73,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctx.allowedGenres = [];
       this.allowedGenres = this.ctx.allowedGenres;
     }
-    this.subjects2display = Object.keys(subjects).filter((val) => val.match(/^[A-Z]/));
+    this.subjects2display = Object.keys(subjects).filter(val => val.match(/^[A-Z]/));
     if (ctx.allowedSubjectClassifications != null) {
       this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
     } else {
@@ -84,7 +85,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   listOuNames() {
     const body = allOpenedOUs;
     this.ctxSvc.query(this.ous_url, null, body)
-      .subscribe((ous) => {
+      .subscribe(ous => {
         this.ous = ous.list;
       });
   }
@@ -95,10 +96,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   getSelectedCtx(id) {
     this.ctxSvc.get(this.url, id, this.token)
-      .subscribe((ctx) => {
+      .subscribe(ctx => {
         this.ctx = ctx;
       },
-      (error) => {
+      error => {
         this.message.error(error);
       });
   }
@@ -119,7 +120,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   addGenres(selected) {
     this.selectedGenres = selected;
-    this.selectedGenres.forEach((g) => {
+    this.selectedGenres.forEach(g => {
       if (!this.allowedGenres.includes(g)) {
         this.allowedGenres.push(g);
       }
@@ -128,7 +129,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   addSubjects(selected) {
     this.selectedSubjects = selected;
-    this.selectedSubjects.forEach((s) => {
+    this.selectedSubjects.forEach(s => {
       if (!this.allowedSubjects.includes(s)) {
         this.allowedSubjects.push(s);
       }
@@ -136,7 +137,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   addAllGenres() {
-    this.genres2display.forEach((g) => {
+    this.genres2display.forEach(g => {
       if (!this.allowedGenres.includes(g)) {
         this.allowedGenres.push(g);
       }
@@ -144,7 +145,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   addAllSubjects() {
-    this.subjects2display.forEach((s) => {
+    this.subjects2display.forEach(s => {
       if (!this.allowedSubjects.includes(s)) {
         this.allowedSubjects.push(s);
       }
@@ -167,18 +168,18 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx = ctx;
     if (this.ctx.state === 'CREATED' || this.ctx.state === 'CLOSED') {
       this.ctxSvc.openContext(this.ctx, this.token)
-        .subscribe((httpStatus) => {
+        .subscribe(httpStatus => {
           this.getSelectedCtx(this.ctx.objectId);
           this.message.success('Opened ' + ctx.objectId + ' ' + httpStatus);
-        }, (error) => {
+        }, error => {
           this.message.error(error);
         });
     } else {
       this.ctxSvc.closeContext(this.ctx, this.token)
-        .subscribe((httpStatus) => {
+        .subscribe(httpStatus => {
           this.getSelectedCtx(this.ctx.objectId);
           this.message.success('Closed ' + ctx.objectId + ' ' + httpStatus);
-        }, (error) => {
+        }, error => {
           this.message.error(error);
         });
     }
@@ -189,13 +190,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const id = this.ctx.objectId;
     if (confirm('delete '+ctx.name+' ?')) {
       this.ctxSvc.delete(this.url + '/' + id, this.ctx, this.token)
-        .subscribe(
-          (data) => {
-            this.message.success('deleted ' + id + ' ' + data);
-          }, (error) => {
-            this.message.error(error);
-          });
-      this.gotoList();
+      .subscribe(
+      data => {
+        this.message.success('deleted ' + id + ' ' + data);
+      }, error => {
+        this.message.error(error);
+      });
+    this.gotoList();
     }
   }
 
@@ -212,9 +213,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
     if (this.isNewCtx) {
       if (this.selectedOu != null) {
-        const ouId = this.selectedOu.objectId;
+        const ou_id = this.selectedOu.objectId;
         const aff = new BasicRO();
-        aff.objectId = ouId;
+        aff.objectId = ou_id;
         this.ctx.responsibleAffiliations.push(aff);
       } else {
         this.message.warning('you MUST select an organization');
@@ -226,17 +227,18 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       }
       this.ctxSvc.post(this.url, this.ctx, this.token)
         .subscribe(
-          (data) => {
-            this.message.success('added new context ' + this.ctx.name);
-            this.isNewCtx = false;
-            this.ctx = data;
-            this.initializeAllowed(this.ctx);
+        data => {
+          this.message.success('added new context ' + this.ctx.name);
+          this.isNewCtx = false;
+          this.ctx = data;
+          this.initializeAllowed(this.ctx);
           // this.gotoList();
-          },
-          (error) => {
-            this.message.error(error);
-          }
+        },
+        error => {
+          this.message.error(error);
+        }
         );
+
     } else {
       if (this.ctx.allowedGenres.length === 0) {
         this.message.warning('select at least one allowed genre');
@@ -245,15 +247,15 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       // this.message.success('updating ' + this.ctx.objectId);
       this.ctxSvc.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
-          (data) => {
-            this.message.success('updated ' + this.ctx.objectId);
-            // this.gotoList();
-            this.ctx = data;
-            this.initializeAllowed(this.ctx);
-          },
-          (error) => {
-            this.message.error(error);
-          }
+        data => {
+          this.message.success('updated ' + this.ctx.objectId);
+          // this.gotoList();
+          this.ctx = data;
+          this.initializeAllowed(this.ctx);
+        },
+        error => {
+          this.message.error(error);
+        }
         );
     }
   }
@@ -271,8 +273,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.ctxSvc.filter(url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ou) => {
+      .subscribe(res => {
+        res.list.forEach(ou => {
           ouNames.push(ou);
         });
         if (ouNames.length > 0) {
@@ -280,7 +282,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.ounames = [];
         }
-      }, (err) => {
+      }, err => {
         this.message.error(err);
       });
   }

@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {IndexDetailComponent} from './index-detail.component';
+import { IndexDetailComponent } from './index-detail.component';
 
 describe('IndexDetailComponent', () => {
   let component: IndexDetailComponent;
@@ -8,9 +8,9 @@ describe('IndexDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [IndexDetailComponent],
+      declarations: [ IndexDetailComponent ]
     })
-      .compileComponents();
+    .compileComponents();
   }));
 
   beforeEach(() => {

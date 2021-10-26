@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {SearchService} from './search.service';
+import { SearchService } from './search.service';
 
 describe('SearchService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SearchService],
+      providers: [SearchService]
     });
   });
 

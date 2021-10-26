@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {ElasticService} from './elastic.service';
+import { ElasticService } from './elastic.service';
 
 describe('ElasticService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ElasticService],
+      providers: [ElasticService]
     });
   });
 

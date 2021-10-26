@@ -1,15 +1,16 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {MessagesService} from '../services/messages.service';
-import {AuthenticationService} from '../services/authentication.service';
-import {ConnectionService} from '../services/connection.service';
-import {Subscription} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MessagesService } from '../services/messages.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { ConnectionService } from '../services/connection.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
+
   login_subscription: Subscription;
   host_subscription: Subscription;
 
@@ -21,10 +22,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     private message: MessagesService) { }
 
   ngOnInit() {
-    this.login_subscription = this.login.isLoggedIn$.subscribe((bool) => {
+    this.login_subscription = this.login.isLoggedIn$.subscribe(bool => {
       this.isLoggedIn = bool;
     });
-    this.host_subscription = this.conn.conn.subscribe((name) => {
+    this.host_subscription = this.conn.conn.subscribe(name => {
       this.host = name;
     });
   }
@@ -36,11 +37,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   connect() {
     if (!this.isLoggedIn) {
-      const baseUrl = prompt('URL to connect 2', 'https://');
-      if (baseUrl === null) {
+      let base_url = prompt('URL to connect 2', 'https://');
+      if (base_url === null) {
         return;
       }
-      this.conn.setConnection(baseUrl);
+      this.conn.setConnection(base_url);
     } else {
       this.message.warning('you MUST logout, in order 2 change the connection!');
     }

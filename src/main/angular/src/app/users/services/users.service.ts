@@ -1,15 +1,16 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-import {User, Grant} from '../../base/common/model/inge';
-import {PubmanRestService} from '../../base/services/pubman-rest.service';
-import {ConnectionService} from '../../base/services/connection.service';
-import {environment} from 'environments/environment';
+import { User, Grant } from '../../base/common/model/inge';
+import { PubmanRestService } from '../../base/services/pubman-rest.service';
+import { ConnectionService } from '../../base/services/connection.service';
+import { environment } from 'environments/environment';
 
 
 @Injectable()
 export class UsersService extends PubmanRestService {
+
   usersUrl: string = this.base_url + environment.rest_users;
   ous_url = environment.rest_ous;
   ctxs_url = environment.rest_contexts;
@@ -68,13 +69,13 @@ export class UsersService extends PubmanRestService {
     } else {
       if (ref.startsWith('ou')) {
         this.get(this.ous_url, ref, null)
-          .subscribe((ou) => {
+          .subscribe(ou => {
             grant.ctxTitle = ou.metadata.name;
           });
       } else {
         if (ref.startsWith('ctx')) {
           this.get(this.ctxs_url, ref, null)
-            .subscribe((ctx) => {
+            .subscribe(ctx => {
               grant.ctxTitle = ctx.name;
             });
         }

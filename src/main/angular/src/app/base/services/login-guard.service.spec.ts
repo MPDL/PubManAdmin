@@ -1,11 +1,11 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
-import {LoginGuard} from './login-guard.service';
+import { LoginGuard } from './login-guard.service';
 
 describe('LoginGuardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LoginGuard],
+      providers: [LoginGuard]
     });
   });
 

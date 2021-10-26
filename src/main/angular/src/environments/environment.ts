@@ -8,18 +8,18 @@ export const environment = {
   rest_items: '/rest/items',
   item_index: {
     name: 'items',
-    type: 'item',
+    type: 'item'
   },
   user_index: {
     name: 'users',
-    type: 'user',
+    type: 'user'
   },
   ou_index: {
     name: 'ous',
-    type: 'organization',
+    type: 'organization'
   },
   ctx_index: {
     name: 'contexts',
-    type: 'context',
-  },
+    type: 'context'
+  }
 };

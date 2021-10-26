@@ -1,20 +1,21 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
-import {MessagesService} from '../../base/services/messages.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
-import {ContextsService} from '../services/contexts.service';
-import {environment} from 'environments/environment';
-import {mpgOus4auto} from '../../base/common/model/query-bodies';
-import {FormBuilder} from '@angular/forms';
+import { MessagesService } from '../../base/services/messages.service';
+import { AuthenticationService } from '../../base/services/authentication.service';
+import { ContextsService } from '../services/contexts.service';
+import { environment } from 'environments/environment';
+import { mpgOus4auto } from '../../base/common/model/query-bodies';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-context-list',
   templateUrl: './context-list.component.html',
-  styleUrls: ['./context-list.component.scss'],
+  styleUrls: ['./context-list.component.scss']
 })
 export class ContextListComponent implements OnInit, OnDestroy {
+
   url = environment.rest_contexts;
   title: string = 'Contexts';
   ctxs: any[];
@@ -40,7 +41,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.subscription = this.loginService.token$.subscribe((token) => {
+    this.subscription = this.loginService.token$.subscribe(token => {
       this.token = token;
     });
     this.listAllContexts(this.token);
@@ -58,7 +59,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   getPage(page: number) {
     this.loading = true;
     this.ctxSvc.getAll(this.url, this.token, page)
-      .subscribe((result) => {
+      .subscribe(result => {
         this.ctxs = result.list;
         this.total = result.records;
       }, (err) => {
@@ -66,11 +67,12 @@ export class ContextListComponent implements OnInit, OnDestroy {
       });
     this.currentPage = page;
     this.loading = false;
+
   }
 
   listAllContexts(token) {
     this.ctxSvc.getAll(this.url, token, 1)
-      .subscribe((ctxs) => {
+      .subscribe(ctxs => {
         this.ctxs = ctxs.list;
         this.total = ctxs.records;
       });
@@ -103,8 +105,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
     const contextNames: any[] = [];
     const queryString = '?q=name.auto:' + term;
     this.ctxSvc.filter(this.url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ctx) => {
+      .subscribe(res => {
+        res.list.forEach(ctx => {
           contextNames.push(ctx);
         });
         if (contextNames.length > 0) {
@@ -112,7 +114,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
         } else {
           this.contextnames = [];
         }
-      }, (err) => {
+      }, err => {
         this.message.error(err);
       });
   }
@@ -121,11 +123,11 @@ export class ContextListComponent implements OnInit, OnDestroy {
     const ouNames: any[] = [];
     if (term.length > 0) {
       const body = mpgOus4auto;
-      body.query.bool.must.term['metadata.name.auto'] = term;
+      body.query.bool.must.term["metadata.name.auto"] = term;
       const url = environment.rest_ous;
       this.ctxSvc.query(url, null, body)
-        .subscribe((res) => {
-          res.list.forEach((ou) => {
+        .subscribe(res => {
+          res.list.forEach(ou => {
             ouNames.push(ou);
           });
           if (ouNames.length > 0) {
@@ -133,7 +135,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
           } else {
             this.ounames = [];
           }
-        }, (err) => {
+        }, err => {
           this.message.error(err);
         });
     }
@@ -143,14 +145,14 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.selectedOUName = ou;
     this.currentPage = 1;
     this.ctxSvc.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
-      .subscribe((res) => {
+      .subscribe(res => {
         this.ctxs = res.list;
         if (res.records > 0) {
           this.total = res.records;
         } else {
-          this.message.info('query did not return any results.');
+          this.message.info('query did not return any results.')
         }
-      }, (err) => {
+      }, err => {
         this.message.error(JSON.stringify(err));
       });
     this.title = 'Contexts for ' + this.selectedOUName.name;

@@ -1,13 +1,13 @@
-import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {MatTreeModule} from '@angular/material/tree';
-import {CdkTreeModule} from '@angular/cdk/tree';
-import {SharedModule} from '../base/common/shared.module';
-import {OrganizationsRoutingModule} from './organizations-routing.module';
-import {OrganizationDetailsComponent} from './organization-details/organization-details.component';
-import {OrganizationsService} from './services/organizations.service';
-import {OrganizationTreeComponent} from './organization-tree/organization-tree.component';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatTreeModule } from '@angular/material/tree';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { SharedModule } from '../base/common/shared.module';
+import { OrganizationsRoutingModule } from './organizations-routing.module';
+import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
+import { OrganizationsService } from './services/organizations.service';
+import { OrganizationTreeComponent } from './organization-tree/organization-tree.component';
 
 @NgModule({
   imports: [
@@ -16,14 +16,14 @@ import {OrganizationTreeComponent} from './organization-tree/organization-tree.c
     MatTreeModule,
     CdkTreeModule,
     SharedModule,
-    OrganizationsRoutingModule,
+    OrganizationsRoutingModule
   ],
   declarations: [
     OrganizationDetailsComponent,
-    OrganizationTreeComponent,
+    OrganizationTreeComponent
   ],
   providers: [
-    OrganizationsService,
-  ],
+    OrganizationsService
+  ]
 })
 export class OrganizationsModule { }
