@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormArray, FormBuilder, Validators} from '@angular/forms';
 import {MessagesService} from '../../base/services/messages.service';
-import {ElasticService} from '../service/elastic.service';
+import {ElasticService} from '../services/elastic.service';
 import {SearchService} from '../../base/common/services/search.service';
 import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
 

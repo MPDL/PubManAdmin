@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 
 import {ElasticComponent} from './elastic.component';
-import {ElasticStartComponent} from './start/elastic-start.component';
+import {ElasticStartComponent} from './elastic-start/elastic-start.component';
 import {IndexListComponent} from './index-list/index-list.component';
 import {IndexDetailComponent} from './index-detail/index-detail.component';
 import {ElasticSearchComponent} from './elastic-search/elastic-search.component';

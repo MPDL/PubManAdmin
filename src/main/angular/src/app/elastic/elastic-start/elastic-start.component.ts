@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ElasticService} from '../service/elastic.service';
+import {ElasticService} from '../services/elastic.service';
 import {MessagesService} from '../../base/services/messages.service';
 
 @Component({

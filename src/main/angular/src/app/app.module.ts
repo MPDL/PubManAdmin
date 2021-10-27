@@ -26,7 +26,6 @@ import {ConnectionService} from './base/services/connection.service';
 import {AuthenticationService} from './base/services/authentication.service';
 import {ElasticService} from './base/services/elastic.service';
 import {MessagesService} from './base/services/messages.service';
-import {NavigationService} from './base/services/navigation.service';
 import {PubmanRestService} from './base/services/pubman-rest.service';
 import {AdminGuard} from './base/services/admin-guard.service';
 import {LoginGuard} from './base/services/login-guard.service';
@@ -67,7 +66,6 @@ import {HttpErrorInterceptor} from './base/common/http-error.interceptor';
     AuthenticationService,
     ElasticService,
     MessagesService,
-    NavigationService,
     PubmanRestService,
     AdminGuard,
     LoginGuard,

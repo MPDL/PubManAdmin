@@ -8,7 +8,6 @@ import {Overlay} from '@angular/cdk/overlay';
 })
 export class MessagesService {
   messageDialogRef: MatDialogRef<MessagesComponent>;
-  // messageDialogConfig = new MatDialogConfig();
 
   constructor(
     private dialog: MatDialog,

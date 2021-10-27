@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 import {MessagesService} from '../../base/services/messages.service';
-import {ElasticService} from '../service/elastic.service';
+import {ElasticService} from '../services/elastic.service';
 import {NgForm} from '@angular/forms';
 
 @Component({

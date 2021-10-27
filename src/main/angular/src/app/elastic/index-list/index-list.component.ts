@@ -1,7 +1,7 @@
 import {Component, OnInit, AfterViewInit} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {ElasticService} from '../service/elastic.service';
+import {ElasticService} from '../services/elastic.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
 
