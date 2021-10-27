@@ -45,7 +45,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private usersService: UsersService,
     private messageService: MessagesService,
     private loginService: AuthenticationService,
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.tokenSubscription = this.loginService.token$.subscribe((token) => {
@@ -261,8 +261,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
                   this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
                 }
               });
-            // this.selected = data;
-            // this.router.navigate(['/user', this.selected.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
           },
           (error) => {
             this.messageService.error(error);

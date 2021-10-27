@@ -44,18 +44,19 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   token;
   index: string = 'default';
 
-  constructor(private elastic: ElasticSearchService,
+  constructor(
+    private elastic: ElasticSearchService,
     private search: SearchService,
     private message: MessagesService,
     private login: AuthenticationService,
-    private builder: FormBuilder) { }
+    private builder: FormBuilder
+  ) {}
 
   get diagnostic() {
     return JSON.stringify(this.years);
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   ngOnInit() {
     for (const agg in itemAggs) {

@@ -33,11 +33,13 @@ export class ContextListComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   // suggestionForm: FormGroup;
 
-  constructor(private ctxSvc: ContextsService,
+  constructor(
+    private ctxSvc: ContextsService,
     private router: Router,
     private message: MessagesService,
     private loginService: AuthenticationService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit() {
     this.subscription = this.loginService.token$.subscribe((token) => {
@@ -77,8 +79,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   goTo(ctx) {
-    const id = ctx.objectId;
-    this.router.navigate(['/context', id]);
+    const ctxId = ctx.objectId;
+    this.router.navigate(['/context', ctxId]);
   }
 
   isSelected(ctx) {
@@ -87,8 +89,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   addNewContext() {
-    const ctxid = 'new ctx';
-    this.router.navigate(['/context', ctxid]);
+    const ctxId = 'new ctx';
+    this.router.navigate(['/context', ctxId]);
   }
 
   getContextNames(term: string) {

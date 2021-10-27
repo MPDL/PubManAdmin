@@ -11,8 +11,10 @@ import {ConnectionService} from '../../base/services/connection.service';
 export class ContextsService extends PubmanRestService {
   context_url = environment.rest_contexts;
 
-  constructor(httpc: HttpClient,
-    conn: ConnectionService) {
+  constructor(
+    httpc: HttpClient,
+    conn: ConnectionService
+  ) {
     super(httpc, conn);
   }
 

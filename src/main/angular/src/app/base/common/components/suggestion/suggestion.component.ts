@@ -19,7 +19,9 @@ export class SuggestionComponent implements OnInit {
   searchResult: Observable<any>;
   @Output() selectedSuggestion = new EventEmitter<any>();
 
-  constructor(private service: PubmanRestService) { }
+  constructor(
+    private service: PubmanRestService
+  ) {}
 
   ngOnInit() {
     this.searchResult = this.getListOfSuggestions(this.form.get('suggestion').valueChanges);

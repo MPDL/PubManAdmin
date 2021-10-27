@@ -13,18 +13,22 @@ export class OUTreeNode {
     return this.childrenChange.value;
   }
 
-  constructor(public ouName: string,
+  constructor(
+    public ouName: string,
     public ouId: string,
     public hasChildren: boolean = false,
-    public parentOUId: string | null = null) { }
+    public parentOUId: string | null = null
+  ) {}
 }
 
 export class OUTreeFlatNode {
-  constructor(public ouName: string,
+  constructor(
+    public ouName: string,
     public ouId: string,
     public level: number = 1,
     public expandable: boolean = false,
-    public parentOUId: string | null = null) { }
+    public parentOUId: string | null = null
+  ) {}
 }
 
 @Injectable({
@@ -38,10 +42,10 @@ export class OrganizationTree2Service {
     return this.dataChange.value;
   }
 
-  constructor(private service: OrganizationsService,
-    private message: MessagesService) {
-    // this.initialize();
-  }
+  constructor(
+    private service: OrganizationsService,
+    private message: MessagesService
+  ) {}
 
   async initialize() {
     const data: any[] = [];

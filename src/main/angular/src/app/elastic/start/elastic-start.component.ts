@@ -11,8 +11,10 @@ export class ElasticStartComponent implements OnInit {
   info: any;
   host: any;
 
-  constructor(private elastic: ElasticService,
-    private message: MessagesService) { }
+  constructor(
+    private elastic: ElasticService,
+    private message: MessagesService
+  ) {}
 
   ngOnInit() {
     this.getInfo();

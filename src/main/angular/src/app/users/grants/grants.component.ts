@@ -44,7 +44,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
         private messageService: MessagesService,
         private loginService: AuthenticationService,
         private usersService: UsersService,
-    ) { }
+    ) {}
 
     ngOnInit() {
       this.tokenSubscription = this.loginService.token$.subscribe((token) => {

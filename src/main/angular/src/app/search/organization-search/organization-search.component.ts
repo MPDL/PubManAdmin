@@ -10,9 +10,7 @@ export class OrganizationSearchComponent implements OnInit {
   id;
   mems;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 }

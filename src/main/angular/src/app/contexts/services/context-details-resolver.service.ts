@@ -13,8 +13,9 @@ import {environment} from 'environments/environment';
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
   constructor(
-        private ctxSvc: ContextsService,
-        private message: MessagesService) { }
+    private ctxSvc: ContextsService,
+    private message: MessagesService
+  ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
     const url = environment.rest_contexts;

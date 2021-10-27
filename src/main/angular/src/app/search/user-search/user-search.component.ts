@@ -43,12 +43,14 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   token;
   index: string = 'default';
 
-  constructor(private elastic: ElasticSearchService,
+  constructor(
+    private elastic: ElasticSearchService,
     private search: SearchService,
     private message: MessagesService,
     private login: AuthenticationService,
     private builder: FormBuilder,
-    private router: Router) { }
+    private router: Router
+  ) {}
 
   get diagnostic() {
     return JSON.stringify(this.years);

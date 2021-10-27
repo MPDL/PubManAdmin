@@ -21,11 +21,9 @@ export class AuthenticationComponent implements OnInit {
   constructor(
     private messages: MessagesService,
     private authentication: AuthenticationService
-  ) { }
+  ) {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   login() {
     this.authentication.login(this.credentials.username, this.credentials.password)

@@ -2,14 +2,17 @@ import {Injectable} from '@angular/core';
 import {Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
 import {Observable, of} from 'rxjs';
 import {first, map} from 'rxjs/operators';
-
 import {UsersService} from './users.service';
 import {User, BasicRO} from '../../base/common/model/inge';
 import {environment} from 'environments/environment';
 
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {
-  constructor(private userSvc: UsersService, private router: Router) { }
+  constructor(
+    private userSvc: UsersService,
+    private router: Router
+  ) {}
+
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User> {
     const url = environment.rest_users;
     const id = route.params['id'];

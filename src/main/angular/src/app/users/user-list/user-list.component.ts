@@ -47,7 +47,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     private messageService: MessagesService,
     private route: ActivatedRoute,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.tokenSubscription = this.loginService.token$.subscribe((token) => {
@@ -65,8 +65,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
         this.messageService.warning('Only admins are allowed to view the list');
-        this.router.navigate(['/user', this.loggedInUser.objectId],
-          {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
+        this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
       }
     }
     this.comingFrom = this.route.snapshot.params['id'];

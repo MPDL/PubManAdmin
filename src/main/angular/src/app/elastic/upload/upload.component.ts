@@ -23,9 +23,11 @@ export class UploadComponent implements OnInit, OnDestroy {
   loginSubscription: Subscription;
   token: string;
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private message: MessagesService,
-    private login: AuthenticationService) { }
+    private login: AuthenticationService
+  ) {}
 
   ngOnInit() {
     this.loginSubscription = this.login.token$.subscribe((token) => {

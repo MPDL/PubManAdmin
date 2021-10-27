@@ -16,9 +16,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   host: string;
 
-  constructor(private conn: ConnectionService,
+  constructor(
+    private conn: ConnectionService,
     private login: AuthenticationService,
-    private message: MessagesService) { }
+    private message: MessagesService
+  ) {}
 
   ngOnInit() {
     this.login_subscription = this.login.isLoggedIn$.subscribe((bool) => {

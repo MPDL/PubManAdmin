@@ -18,10 +18,12 @@ export class IndexComponent implements OnInit, AfterViewInit {
   indexList: string[] = [];
 
 
-  constructor(private elastic: ElasticService,
+  constructor(
+    private elastic: ElasticService,
     private message: MessagesService,
     private builder: FormBuilder,
-    private router: Router, ) { }
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.list();

@@ -39,11 +39,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   workflows2display: string[] = [];
   selectedWorkflow: string;
 
-  constructor(private ctxSvc: ContextsService,
+  constructor(
+    private ctxSvc: ContextsService,
     private router: Router,
     private route: ActivatedRoute,
     private login: AuthenticationService,
-    private message: MessagesService) { }
+    private message: MessagesService
+  ) {}
 
   ngOnInit() {
     this.ctx = this.route.snapshot.data['ctx'];

@@ -9,7 +9,10 @@ export class MessagesService {
   messageDialogRef: MatDialogRef<MessagesComponent>;
   // messageDialogConfig = new MatDialogConfig();
 
-  constructor(private dialog: MatDialog, private overlay: Overlay) { }
+  constructor(
+    private dialog: MatDialog,
+    private overlay: Overlay
+  ) {}
 
   displayMessage(message?) {
     this.messageDialogRef = this.dialog.open(MessagesComponent, {

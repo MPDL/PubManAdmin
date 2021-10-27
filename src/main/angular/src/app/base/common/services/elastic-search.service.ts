@@ -6,8 +6,10 @@ import {ConnectionService} from '../../services/connection.service';
 
 @Injectable()
 export class ElasticSearchService extends ElasticService {
-  constructor(messages: MessagesService,
-    conn: ConnectionService) {
+  constructor(
+    messages: MessagesService,
+    conn: ConnectionService
+  ) {
     super(messages, conn);
   }
 

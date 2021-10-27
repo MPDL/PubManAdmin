@@ -14,8 +14,10 @@ export class OrganizationsService extends PubmanRestService {
   ou;
   ous: any;
 
-  constructor(protected httpc: HttpClient,
-    conn: ConnectionService) {
+  constructor(
+    protected httpc: HttpClient,
+    conn: ConnectionService
+  ) {
     super(httpc, conn);
   }
 

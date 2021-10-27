@@ -17,8 +17,10 @@ export class UsersService extends PubmanRestService {
   users: User[] = [];
   user: User;
 
-  constructor(httpc: HttpClient,
-    conn: ConnectionService) {
+  constructor(
+    httpc: HttpClient,
+    conn: ConnectionService
+  ) {
     super(httpc, conn);
   }
 

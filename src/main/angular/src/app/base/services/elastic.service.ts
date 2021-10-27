@@ -9,8 +9,10 @@ export class ElasticService {
   public client: Client;
   public uri: string;
 
-  constructor(protected messages: MessagesService,
-    private conn: ConnectionService) {
+  constructor(
+    protected messages: MessagesService,
+    private conn: ConnectionService
+  ) {
     if (!this.client) {
       this.conn.conn.subscribe((name) => {
         this.uri = name + environment.elastic_url;

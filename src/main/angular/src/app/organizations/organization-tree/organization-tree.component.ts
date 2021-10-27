@@ -28,11 +28,13 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   treeFlattener: MatTreeFlattener<OUTreeNode, OUTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<OUTreeNode, OUTreeFlatNode>;
 
-  constructor(private database: OrganizationTree2Service,
+  constructor(
+    private database: OrganizationTree2Service,
     private router: Router,
     private loginService: AuthenticationService,
     private service: OrganizationsService,
-    private message: MessagesService) { }
+    private message: MessagesService
+  ) {}
 
   ngOnInit() {
     this.subscription = this.loginService.token$.subscribe((token) => {

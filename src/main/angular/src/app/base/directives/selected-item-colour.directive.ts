@@ -7,7 +7,9 @@ export class SelectedItemColourDirective {
   @Input() selectedcolor: string;
   @Input() defaultColor: string;
 
-  constructor(private elemRef: ElementRef) { }
+  constructor(
+    private elemRef: ElementRef
+  ) {}
 
   @HostListener('mouseenter') onMouseEnter() {
     this.highlight(this.selectedcolor || this.defaultColor || 'silver');

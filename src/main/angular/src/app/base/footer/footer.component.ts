@@ -14,7 +14,9 @@ export class FooterComponent implements OnInit {
   appHome;
   hostname;
 
-  constructor(private conn: ConnectionService) { }
+  constructor(
+    private conn: ConnectionService
+  ) { }
 
   ngOnInit() {
     this.appVersion = appVersion;

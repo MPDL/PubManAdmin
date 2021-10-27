@@ -9,16 +9,12 @@ import {SearchComponent} from './search/search.component';
 import {AdminGuard} from '../base/services/admin-guard.service';
 
 const routes: Routes = [
-  {
-    path: 'elastic',
-    component: ElasticComponent,
-    canActivate: [AdminGuard],
+  {path: 'elastic', component: ElasticComponent, canActivate: [AdminGuard],
     children: [
       {path: 'index', component: IndexComponent},
       {path: 'index/:name', component: IndexDetailComponent},
       {path: 'search', component: SearchComponent},
-      // { path: 'upload', component: UploadComponent },
-      {path: '', component: ElasticStartComponent},
+      {path: '', component: ElasticStartComponent}, // Default route
     ],
   },
 ];
@@ -27,4 +23,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
+
 export class ElasticRoutingModule { }

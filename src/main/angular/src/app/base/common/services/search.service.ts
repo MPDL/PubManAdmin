@@ -7,8 +7,10 @@ import {ConnectionService} from '../../services/connection.service';
 
 @Injectable()
 export class SearchService extends PubmanRestService {
-  constructor(httpc: HttpClient,
-    conn: ConnectionService) {
+  constructor(
+    httpc: HttpClient,
+    conn: ConnectionService
+  ) {
     super(httpc, conn);
   }
 

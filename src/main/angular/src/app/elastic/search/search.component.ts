@@ -19,10 +19,12 @@ export class SearchComponent implements OnInit {
 
   fields2Select: string[] = [];
 
-  constructor(private fb : FormBuilder,
-      private service: ElasticService,
-      private searchservice: SearchService,
-      private message: MessagesService) { }
+  constructor(
+    private fb : FormBuilder,
+    private service: ElasticService,
+    private searchservice: SearchService,
+    private message: MessagesService
+  ) {}
 
   ngOnInit() {
     this.searchForm = this.fb.group({

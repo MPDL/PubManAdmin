@@ -10,8 +10,10 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   checked: boolean = false;
   subscription: Subscription;
 
-  constructor(private authentication: AuthenticationService,
-      private message: MessagesService) { }
+  constructor(
+    private authentication: AuthenticationService,
+    private message: MessagesService
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const url: string = state.url;
@@ -29,7 +31,6 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
     if (this.checked) {
       return true;
     }
-    // this.router.navigate(['/home']);
     this.message.warning('This site requires you to login ...');
     return false;
   }

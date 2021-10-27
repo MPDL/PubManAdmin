@@ -15,7 +15,7 @@ export function valueValidator(regex: RegExp): ValidatorFn {
 export class ValueNotAllowedDirective implements Validator {
   @Input() valuenotallowed: string;
 
-  constructor() { }
+  constructor() {}
 
   validate(c: AbstractControl): {[key: string]: any} {
     return this.valuenotallowed ? valueValidator(new RegExp(this.valuenotallowed, 'i'))(c) : null;

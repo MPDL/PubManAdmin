@@ -16,10 +16,9 @@ export class IndexAliasComponent implements OnInit {
   @Input() indexList: any[];
   @Output() notice = new EventEmitter<string>();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   filter() {
     const selectedIndex = this.indexAliasForm.get('index') as FormGroup;

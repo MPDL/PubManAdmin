@@ -35,7 +35,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     private ouSvc: OrganizationsService,
     private login: AuthenticationService,
     private message: MessagesService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.subscription = this.route.params
