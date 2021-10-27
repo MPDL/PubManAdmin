@@ -27,7 +27,7 @@ export class SearchService extends PubmanRestService {
           must = [{match: {[field]: value}}];
         }
         break;
-      case 'mustNot':
+      case 'must_not':
         if (mustNot) {
           mustNot.push({term: {[field]: value}});
         } else {
@@ -65,7 +65,7 @@ export class SearchService extends PubmanRestService {
       case 'must':
         query = query.query('match', field, value);
         break;
-      case 'mustNot':
+      case 'must_not':
         query = query.notFilter('term', field, value);
         break;
       case 'filter':
