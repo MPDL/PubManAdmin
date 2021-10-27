@@ -3,6 +3,7 @@ import {Directive, ElementRef, Output, EventEmitter, HostListener} from '@angula
 @Directive({
   selector: '[click-outside]',
 })
+
 export class ClickOutsideDirective {
   @Output()
   public clickoutside = new EventEmitter();

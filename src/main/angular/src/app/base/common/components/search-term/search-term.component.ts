@@ -8,6 +8,7 @@ export const queryTypes = ['must', 'must_not', 'filter', 'should'];
   templateUrl: './search-term.component.html',
   styleUrls: ['./search-term.component.scss'],
 })
+
 export class SearchTermComponent {
   filteredTerms: string[] = [];
   types: string[] = queryTypes;

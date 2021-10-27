@@ -12,6 +12,7 @@ export function valueValidator(regex: RegExp): ValidatorFn {
   selector: '[value-not-allowed]',
   providers: [{provide: NG_VALIDATORS, useExisting: ValueNotAllowedDirective, multi: true}],
 })
+
 export class ValueNotAllowedDirective implements Validator {
   @Input() valuenotallowed: string;
 

@@ -14,6 +14,7 @@ import {FormBuilder} from '@angular/forms';
   templateUrl: './context-list.component.html',
   styleUrls: ['./context-list.component.scss'],
 })
+
 export class ContextListComponent implements OnInit, OnDestroy {
   url = environment.rest_contexts;
   title: string = 'Contexts';

@@ -5,6 +5,7 @@ import {environment} from '../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
+
 export class ConnectionService {
   private initial_value = environment.base_url;
   private connection = new BehaviorSubject<string>(this.initial_value);

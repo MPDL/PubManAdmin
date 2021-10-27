@@ -25,4 +25,5 @@ import {GrantsComponent} from './grants/grants.component';
     UsersService,
   ],
 })
-export class UsersModule { }
+
+export class UsersModule {}

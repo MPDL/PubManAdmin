@@ -15,6 +15,7 @@ import {environment} from 'environments/environment';
   templateUrl: './context-details.component.html',
   styleUrls: ['./context-details.component.scss'],
 })
+
 export class ContextDetailsComponent implements OnInit, OnDestroy {
   url = environment.rest_contexts;
   ous_url = environment.rest_ous;

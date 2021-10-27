@@ -5,7 +5,6 @@ import {MessagesService} from '../../base/services/messages.service';
 import {environment} from '../../../environments/environment';
 import {allTopLevelOUs} from '../../base/common/model/query-bodies';
 
-
 export class OUTreeNode {
   childrenChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
 

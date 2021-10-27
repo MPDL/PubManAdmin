@@ -11,6 +11,7 @@ import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
+
 export class IndexComponent implements OnInit, AfterViewInit {
   indices: any[];
   aliases: any;

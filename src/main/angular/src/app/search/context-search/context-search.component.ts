@@ -5,6 +5,5 @@ import {Component} from '@angular/core';
   templateUrl: './context-search.component.html',
   styleUrls: ['./context-search.component.scss'],
 })
-export class ContextSearchComponent {
 
-}
+export class ContextSearchComponent {}

@@ -23,4 +23,5 @@ import {IndexAliasComponent} from './index-alias/index-alias.component';
     ElasticService,
   ],
 })
-export class ElasticModule { }
+
+export class ElasticModule {}

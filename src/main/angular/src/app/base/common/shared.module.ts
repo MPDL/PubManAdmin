@@ -11,7 +11,6 @@ import {SearchService} from '../common/services/search.service';
 import {ElasticSearchService} from '../common/services/elastic-search.service';
 import {SuggestionComponent} from './components/suggestion/suggestion.component';
 
-
 @NgModule({
   imports: [
     CommonModule,
@@ -43,4 +42,5 @@ import {SuggestionComponent} from './components/suggestion/suggestion.component'
     ElasticSearchService,
   ],
 })
-export class SharedModule { }
+
+export class SharedModule {}

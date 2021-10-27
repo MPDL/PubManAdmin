@@ -3,6 +3,7 @@ import {Directive, ElementRef, HostListener, Input} from '@angular/core';
 @Directive({
   selector: '[selected-item-color]',
 })
+
 export class SelectedItemColourDirective {
   @Input() selectedcolor: string;
   @Input() defaultColor: string;

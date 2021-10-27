@@ -9,6 +9,7 @@ import {AuthenticationService} from '../../base/services/authentication.service'
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
 })
+
 export class UploadComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput', {static: true})
     selectedFile: any;
