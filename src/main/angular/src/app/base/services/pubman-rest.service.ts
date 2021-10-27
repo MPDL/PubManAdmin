@@ -1,15 +1,14 @@
 
-import { throwError as observableThrowError, Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
+import {throwError as observableThrowError, Observable} from 'rxjs';
+import {map, catchError} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpResponse, HttpHeaders} from '@angular/common/http';
 
-import { SearchResult } from '../common/model/inge';
-import { ConnectionService } from './connection.service';
+import {SearchResult} from '../common/model/inge';
+import {ConnectionService} from './connection.service';
 
 @Injectable()
 export class PubmanRestService {
-
   defaultPageSize = 50;
   base_url;
 
@@ -17,26 +16,26 @@ export class PubmanRestService {
     protected client: HttpClient,
     protected conn: ConnectionService
   ) {
-    this.conn.conn.subscribe(base => {
+    this.conn.conn.subscribe((base) => {
       this.base_url = base;
     });
-   }
+  }
 
   getSearchResults(method, url, headers, body): Observable<any> {
     return this.client.request(method, url, {
       headers: headers,
       observe: 'body',
       responseType: 'json',
-      body: body
+      body: body,
     }).pipe(
       map((response: SearchResult) => {
-        const result = { list: [], records: 0 };
+        const result = {list: [], records: 0};
         const data = response;
         const hits = [];
         const records = data.numberOfRecords;
         if (records > 0) {
-          data.records.forEach(element => {
-            hits.push(element.data)
+          data.records.forEach((element) => {
+            hits.push(element.data);
           });
           result.list = hits;
           result.records = records;
@@ -46,13 +45,13 @@ export class PubmanRestService {
       catchError((err) => {
         return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
-    )
+    );
   }
 
   getResource(method, url, headers, body): Observable<any> {
     return this.client.request(method, url, {
       headers: headers,
-      body: body
+      body: body,
     }).pipe(
       map((response: HttpResponse<any>) => {
         const resource = response;
@@ -61,7 +60,7 @@ export class PubmanRestService {
       catchError((err) => {
         return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
-    )
+    );
   }
 
   getString(url): Observable<string> {
@@ -73,7 +72,7 @@ export class PubmanRestService {
       catchError((err) => {
         return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
-    )
+    );
   }
 
   getHttpStatus(method, url, headers, body): Observable<any> {
@@ -81,7 +80,7 @@ export class PubmanRestService {
       headers: headers,
       body: body,
       observe: 'response',
-      responseType: 'text'
+      responseType: 'text',
     }).pipe(
       map((response) => {
         const status = response.status;
@@ -90,7 +89,7 @@ export class PubmanRestService {
       catchError((err) => {
         return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
-    )
+    );
   }
 
   addHeaders(token, ct: boolean): HttpHeaders {
@@ -153,5 +152,4 @@ export class PubmanRestService {
     const requestUrl = this.base_url + path;
     return this.getHttpStatus('DELETE', requestUrl, headers, null);
   }
-
 }

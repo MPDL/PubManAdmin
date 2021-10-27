@@ -1,27 +1,26 @@
-import { Component, OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Component, OnInit, OnDestroy, QueryList, ViewChildren} from '@angular/core';
+import {FormGroup, FormArray, FormBuilder} from '@angular/forms';
+import {Router} from '@angular/router';
 
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
 
-import { MessagesService } from '../../base/services/messages.service';
-import { AuthenticationService } from '../../base/services/authentication.service';
-import { ElasticSearchService } from '../../base/common/services/elastic-search.service';
-import { SearchService } from '../../base/common/services/search.service';
-import { SearchTermComponent } from '../../base/common/components/search-term/search-term.component';
-import { SearchRequest, SearchTerm } from '../../base/common/components/search-term/search.term';
-import { user_aggs } from '../../base/common/components/search-term/search.aggregations';
+import {MessagesService} from '../../base/services/messages.service';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {ElasticSearchService} from '../../base/common/services/elastic-search.service';
+import {SearchService} from '../../base/common/services/search.service';
+import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
+import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
+import {userAggs} from '../../base/common/components/search-term/search.aggregations';
 
-import { environment } from 'environments/environment';
+import {environment} from 'environments/environment';
 
 
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
-  styleUrls: ['./user-search.component.scss']
+  styleUrls: ['./user-search.component.scss'],
 })
 export class UserSearchComponent implements OnInit, OnDestroy {
-
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
   url = environment.rest_users;
   searchForm: FormGroup;
@@ -51,18 +50,20 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     private builder: FormBuilder,
     private router: Router) { }
 
-  get diagnostic() { return JSON.stringify(this.years); }
+  get diagnostic() {
+    return JSON.stringify(this.years);
+  }
 
   ngOnInit() {
-    for (const agg in user_aggs) {
+    for (const agg in userAggs) {
       this.aggregationsList.push(agg);
     }
     this.fields2Select = this.elastic.getMappingFields(environment.user_index.name, environment.user_index.type);
-    this.subscription = this.login.token$.subscribe(token => {
+    this.subscription = this.login.token$.subscribe((token) => {
       this.token = token;
     });
     this.searchForm = this.builder.group({
-      searchTerms: this.builder.array([this.initSearchTerm()])
+      searchTerms: this.builder.array([this.initSearchTerm()]),
     });
   }
 
@@ -75,7 +76,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       type: '',
       field: '',
       searchTerm: '',
-      fields: []
+      fields: [],
     });
   }
 
@@ -92,18 +93,18 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   onAggregationSelect(agg) {
-    this.selectedAggregation = user_aggs[agg];
+    this.selectedAggregation = userAggs[agg];
     switch (agg) {
-      case 'creationDate':
-        this.years = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
-        this.selected = agg;
-        break;
-      case 'organization':
-        this.ous = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
-        this.selected = agg;
-        break;
-      default:
-        this.selected = null;
+    case 'creationDate':
+      this.years = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
+      this.selected = agg;
+      break;
+    case 'organization':
+      this.ous = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
+      this.selected = agg;
+      break;
+    default:
+      this.selected = null;
     }
   }
 
@@ -112,10 +113,10 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     const body = this.search.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
     this.loading = true;
     this.search.query(this.url, this.token, body)
-      .subscribe(res => {
+      .subscribe((res) => {
         this.total = res.records;
         this.currentPage = page;
-        this.users = res.list
+        this.users = res.list;
         this.loading = false;
       }, (err) => {
         this.message.error(err);
@@ -126,10 +127,10 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     if (this.token !== null) {
       this.currentPage = 1;
       this.search.query(this.url, this.token, body)
-        .subscribe(res => {
+        .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
-        }, err => {
+        }, (err) => {
           this.message.error(err);
         });
     } else {
@@ -140,7 +141,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   onSelectYear(year) {
     if (this.token !== null) {
       this.searchForm.reset();
-      this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y' }]);
+      this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y'}]);
       this.currentPage = 1;
       const term = new SearchTerm();
       term.type = 'filter';
@@ -151,11 +152,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       request.searchTerms = terms;
       const body = this.search.buildQuery(request, 25, 0, 'creationDate', 'asc');
       this.search.query(this.url, this.token, body)
-        // this.search.filter(this.url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
-        .subscribe(res => {
+      // this.search.filter(this.url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
+        .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
-        }, err => {
+        }, (err) => {
           this.message.error(err);
         });
     } else {
@@ -166,18 +167,18 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   onSelectOu(ou) {
     if (this.token !== null) {
       this.searchForm.reset();
-      this.searchForm.controls.searchTerms.patchValue([{ type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key }]);
+      this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
       this.currentPage = 1;
-      let body = {
-        'size': 25, 'query': { 'bool': { 'filter': { 'term': { 'affiliation.name.keyword': ou.key } } } }, 'sort': [
-          { 'name.keyword': { 'order': 'asc' } }
-        ]
+      const body = {
+        'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword': ou.key}}}}, 'sort': [
+          {'name.keyword': {'order': 'asc'}},
+        ],
       };
       this.search.query(this.url, this.token, body)
-        .subscribe(res => {
+        .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
-        }, err => {
+        }, (err) => {
           this.message.error(err);
         });
     } else {
@@ -187,7 +188,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   onSelect(item) {
     if (confirm('wanna edit it?')) {
-      this.router.navigate(['/user', item.objectId], { queryParams: { token: this.token }, skipLocationChange: true });
+      this.router.navigate(['/user', item.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
     }
   }
 
@@ -211,9 +212,8 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       (term: SearchTerm) => Object.assign({}, term)
     );
     const request: SearchRequest = {
-      searchTerms: searchTerms2Save
+      searchTerms: searchTerms2Save,
     };
     return request;
   }
-
 }

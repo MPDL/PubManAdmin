@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Client } from 'elasticsearch';
-import { environment } from 'environments/environment';
-import { MessagesService } from './messages.service';
-import { ConnectionService } from '../../base/services/connection.service';
+import {Injectable} from '@angular/core';
+import {Client} from 'elasticsearch';
+import {environment} from 'environments/environment';
+import {MessagesService} from './messages.service';
+import {ConnectionService} from '../../base/services/connection.service';
 
 @Injectable()
 export class ElasticService {
-
   public client: Client;
   public uri: string;
 
   constructor(protected messages: MessagesService,
     private conn: ConnectionService) {
     if (!this.client) {
-      this.conn.conn.subscribe(name => {
+      this.conn.conn.subscribe((name) => {
         this.uri = name + environment.elastic_url;
         this.connect(this.uri);
       });
@@ -23,23 +22,23 @@ export class ElasticService {
   private connect(uri) {
     this.client = new Client({
       host: uri,
-      log: ['error', 'warning']
+      log: ['error', 'warning'],
     });
   }
 
   count(index: string, callback): any {
     return this.client.search({
       index: index,
-      size: 0
+      size: 0,
     },
-      (error, response) => {
-        if (error) {
-          this.messages.error(error);
-        }
-        if (response) {
-          callback(response.hits.total);
-        }
-      });
+    (error, response) => {
+      if (error) {
+        this.messages.error(error);
+      }
+      if (response) {
+        callback(response.hits.total);
+      }
+    });
   }
 
   listOuNames(parent: string, id: string, callback): any {
@@ -57,24 +56,22 @@ export class ElasticService {
         q: queryString,
         _sourceInclude: 'objectId, metadata.name, hasChildren, publicStatus',
         size: 100,
-        sort: 'metadata.name.keyword:asc'
+        sort: 'metadata.name.keyword:asc',
       },
-        (error, response) => {
-          if (error) {
-            this.messages.error(error);
-          }
-          if (response) {
-            const hitList = Array<any>();
-            response.hits.hits.forEach((hit) => {
-              const source = JSON.stringify(hit._source);
-              const json = JSON.parse(source);
-              hitList.push(json);
-            });
-            callback(hitList)
-          }
-        });
+      (error, response) => {
+        if (error) {
+          this.messages.error(error);
+        }
+        if (response) {
+          const hitList = [];
+          response.hits.hits.forEach((hit) => {
+            const source = JSON.stringify(hit._source);
+            const json = JSON.parse(source);
+            hitList.push(json);
+          });
+          callback(hitList);
+        }
+      });
     }
   }
-
-
 }

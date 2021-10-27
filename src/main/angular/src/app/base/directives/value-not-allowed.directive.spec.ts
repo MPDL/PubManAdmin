@@ -1,4 +1,4 @@
-import { ValueNotAllowedDirective } from './value-not-allowed.directive';
+import {ValueNotAllowedDirective} from './value-not-allowed.directive';
 
 describe('ValueNotAllowedDirective', () => {
   it('should create an instance', () => {

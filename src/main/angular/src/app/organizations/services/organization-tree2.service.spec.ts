@@ -1,11 +1,11 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 
-import { OrganizationTree2Service } from './organization-tree2.service';
+import {OrganizationTree2Service} from './organization-tree2.service';
 
 describe('OrganizationTree2Service', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OrganizationTree2Service]
+      providers: [OrganizationTree2Service],
     });
   });
 

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { IndexAliasComponent } from './index-alias.component';
+import {IndexAliasComponent} from './index-alias.component';
 
 describe('IndexAliasComponent', () => {
   let component: IndexAliasComponent;
@@ -8,9 +8,9 @@ describe('IndexAliasComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ IndexAliasComponent ]
+      declarations: [IndexAliasComponent],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

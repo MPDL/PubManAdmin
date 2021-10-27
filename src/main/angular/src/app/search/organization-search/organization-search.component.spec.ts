@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { OrganizationSearchComponent } from './organization-search.component';
+import {OrganizationSearchComponent} from './organization-search.component';
 
 describe('OrganizationSearchComponent', () => {
   let component: OrganizationSearchComponent;
@@ -8,9 +8,9 @@ describe('OrganizationSearchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ OrganizationSearchComponent ]
+      declarations: [OrganizationSearchComponent],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,15 +1,14 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {FormGroup} from '@angular/forms';
 
 export const queryTypes = ['must', 'must_not', 'filter', 'should'];
 
 @Component({
   selector: 'search-term',
   templateUrl: './search-term.component.html',
-  styleUrls: ['./search-term.component.scss']
+  styleUrls: ['./search-term.component.scss'],
 })
 export class SearchTermComponent {
-
   filteredTerms: string[] = [];
   types: string[] = queryTypes;
 

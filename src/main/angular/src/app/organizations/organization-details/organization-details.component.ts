@@ -1,20 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { AuthenticationService } from '../../base/services/authentication.service';
-import { MessagesService } from '../../base/services/messages.service';
-import { OrganizationsService } from '../services/organizations.service';
-import { OU, Identifier, BasicRO, UserRO, OUMetadata } from '../../base/common/model/inge';
-import { environment } from 'environments/environment';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {OrganizationsService} from '../services/organizations.service';
+import {OU, Identifier, BasicRO, UserRO, OUMetadata} from '../../base/common/model/inge';
+import {environment} from 'environments/environment';
 
 @Component({
   selector: 'app-organization-details',
   templateUrl: './organization-details.component.html',
-  styleUrls: ['./organization-details.component.scss']
+  styleUrls: ['./organization-details.component.scss'],
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
-
   ou_rest_url = environment.rest_ous;
   token: string;
   selected: OU;
@@ -40,15 +39,14 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.route.params
-      .subscribe(params => {
-        this.loginSubscription = this.login.token$.subscribe(token => {
+      .subscribe((params) => {
+        this.loginSubscription = this.login.token$.subscribe((token) => {
           this.token = token;
         });
         const id = params['id'];
         if (id === 'new org') {
           this.isNewOrganization = true;
           this.selected = this.prepareNewOU(id);
-
         } else {
           this.getSelectedOu(id, this.token);
           this.listChildren(id);
@@ -63,15 +61,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   getSelectedOu(id, token) {
     this.ouSvc.get(this.ou_rest_url, id, token)
-      .subscribe(ou => {
+      .subscribe((ou) => {
         this.selected = ou;
         if (this.selected.hasPredecessors === true) {
-          const pre_id = this.selected.predecessorAffiliations[0].objectId;
-          this.listPredecessors(pre_id, token);
+          const preId = this.selected.predecessorAffiliations[0].objectId;
+          this.listPredecessors(preId, token);
         } else {
           this.predecessors = [];
         }
-      }, error => {
+      }, (error) => {
         this.message.error(error);
       });
   }
@@ -79,14 +77,14 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   listPredecessors(id: string, token) {
     const query = '?q=objectId:' + id;
     this.ouSvc.filter(this.ou_rest_url, token, query, 1)
-      .subscribe(ous => {
+      .subscribe((ous) => {
         this.predecessors = ous.list;
       });
   }
 
   listChildren(mother: string) {
     this.ouSvc.listChildren4Ou(mother, null)
-      .subscribe(children => {
+      .subscribe((children) => {
         this.children = children;
       });
   }
@@ -95,18 +93,18 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected = ou;
     if (this.selected.publicStatus === 'CREATED' || this.selected.publicStatus === 'CLOSED') {
       this.ouSvc.openOu(this.selected, this.token)
-        .subscribe(httpStatus => {
+        .subscribe((httpStatus) => {
           this.getSelectedOu(this.selected.objectId, this.token);
           this.message.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
-        }, error => {
+        }, (error) => {
           this.message.error(error);
         });
     } else {
       this.ouSvc.closeOu(this.selected, this.token)
-        .subscribe(httpStatus => {
+        .subscribe((httpStatus) => {
           this.getSelectedOu(this.selected.objectId, this.token);
           this.message.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
-        }, error => {
+        }, (error) => {
           this.message.error(error);
         });
     }
@@ -117,9 +115,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addName(selected) {
-
     if (selected != null && selected !== '') {
-
       if (this.selected.metadata.alternativeNames) {
         if (!this.selected.metadata.alternativeNames.includes(selected)) {
           this.selected.metadata.alternativeNames.push(selected);
@@ -144,7 +140,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   addDesc(selected) {
     if (selected != null && selected !== '') {
-
       if (this.selected.metadata.descriptions) {
         if (!this.selected.metadata.descriptions.includes(selected)) {
           this.selected.metadata.descriptions.push(selected);
@@ -169,11 +164,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   addIdentifier(selected) {
     if (selected != null && selected !== '') {
-
       const ouid = new Identifier();
       ouid.id = selected;
       if (this.selected.metadata.identifiers) {
-        if (!this.selected.metadata.identifiers.some(id => (id.id === selected))) {
+        if (!this.selected.metadata.identifiers.some((id) => (id.id === selected))) {
           this.selected.metadata.identifiers.push(ouid);
         }
       } else {
@@ -206,26 +200,25 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     if (this.isNewOrganization) {
       this.ouSvc.post(this.ou_rest_url, this.selected, this.token)
         .subscribe(
-        data => {
-          this.message.success('added new organization ' + this.selected.metadata.name);
-          this.isNewOrganization = false;
-          this.selected = data;
-        },
-        error => {
-          this.message.error(error);
-        });
-
+          (data) => {
+            this.message.success('added new organization ' + this.selected.metadata.name);
+            this.isNewOrganization = false;
+            this.selected = data;
+          },
+          (error) => {
+            this.message.error(error);
+          });
     } else {
       // this.message.success('updating ' + this.selected.objectId);
       this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
-        data => {
-          this.message.success('updated ' + this.selected.objectId);
-          this.selected = data;
-        },
-        error => {
-          this.message.error(error);
-        }
+          (data) => {
+            this.message.success('updated ' + this.selected.objectId);
+            this.selected = data;
+          },
+          (error) => {
+            this.message.error(error);
+          }
         );
     }
   }
@@ -235,13 +228,13 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     const id = this.selected.objectId;
     if (confirm('delete '+ou.metadata.name+' ?')) {
       this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
-      .subscribe(
-      data => {
-        this.message.success('deleted ' + id + ' ' + data);
-        this.gotoList();
-      }, error => {
-        this.message.error(error);
-      });
+        .subscribe(
+          (data) => {
+            this.message.success('deleted ' + id + ' ' + data);
+            this.gotoList();
+          }, (error) => {
+            this.message.error(error);
+          });
     }
   }
 
@@ -254,7 +247,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/organizations']);
   }
 
-  get diagnostic() { return JSON.stringify(this.selected); }
+  get diagnostic() {
+    return JSON.stringify(this.selected);
+  }
 
   prepareNewOU(id): OU {
     const template = new OU();
@@ -268,7 +263,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     meta.name = 'new ou';
     template.metadata = meta;
     return template;
-
   }
 
   getNames(term) {
@@ -284,8 +278,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.ouSvc.filter(url, null, queryString, 1)
-      .subscribe(res => {
-        res.list.forEach(ou => {
+      .subscribe((res) => {
+        res.list.forEach((ou) => {
           ouNames.push(ou);
         });
         if (ouNames.length > 0) {
@@ -293,7 +287,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.ounames = [];
         }
-      }, err => {
+      }, (err) => {
         this.message.error(err);
       });
   }
@@ -308,5 +302,4 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected.parentAffiliation.objectId = term.objectId;
     this.ounames = [];
   }
-
 }

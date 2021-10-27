@@ -1,16 +1,15 @@
-import { throwError as observableThrowError, Observable, BehaviorSubject } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { share, shareReplay } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {throwError as observableThrowError, Observable, BehaviorSubject} from 'rxjs';
+import {map, catchError} from 'rxjs/operators';
+import {share, shareReplay} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import { User } from '../common/model/inge';
-import { MessagesService } from './messages.service';
-import { ConnectionService } from './connection.service';
+import {User} from '../common/model/inge';
+import {MessagesService} from './messages.service';
+import {ConnectionService} from './connection.service';
 
 @Injectable()
 export class AuthenticationService {
-
   private tokenUrl;
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
@@ -43,10 +42,10 @@ export class AuthenticationService {
     private messages: MessagesService,
     private conn: ConnectionService
   ) {
-    this.conn.conn.subscribe(name => {
+    this.conn.conn.subscribe((name) => {
       this.tokenUrl = name + '/rest/login';
     });
-   }
+  }
 
   login(username, password) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -56,7 +55,7 @@ export class AuthenticationService {
       body: body,
       headers: headers,
       observe: 'response',
-      responseType: 'text'
+      responseType: 'text',
     }).pipe(
       map((response) => {
         const token = response.headers.get('Token');
@@ -71,7 +70,7 @@ export class AuthenticationService {
       catchError((err) => {
         return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
-    )
+    );
   }
 
   logout() {
@@ -87,13 +86,13 @@ export class AuthenticationService {
     let user: User;
     return this.http.request<User>('GET', whoUrl, {
       headers: headers,
-      observe: 'body'
+      observe: 'body',
     }).pipe(
       map((response) => {
         user = response;
         this.setUser(user);
         if (user.grantList != null) {
-          if (user.grantList.find(grant => grant.role === 'SYSADMIN')) {
+          if (user.grantList.find((grant) => grant.role === 'SYSADMIN')) {
             this.setIsAdmin(true);
           }
         }
@@ -102,6 +101,6 @@ export class AuthenticationService {
       catchError((err) => {
         return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
       })
-    )
+    );
   }
 }

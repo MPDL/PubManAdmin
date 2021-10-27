@@ -1,15 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {FormGroup} from '@angular/forms';
 
 export const actionTypes = ['add', 'remove'];
 
 @Component({
   selector: 'index-alias',
   templateUrl: './index-alias.component.html',
-  styleUrls: ['./index-alias.component.scss']
+  styleUrls: ['./index-alias.component.scss'],
 })
 export class IndexAliasComponent implements OnInit {
-
   filteredIndices: string[] = [];
   actions: string[] = actionTypes;
 
@@ -63,5 +62,4 @@ export class IndexAliasComponent implements OnInit {
   removeAliasForm() {
     this.notice.emit('remove');
   }
-
 }

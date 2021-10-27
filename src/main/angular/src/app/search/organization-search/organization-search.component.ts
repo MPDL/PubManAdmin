@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-organization-search',
   templateUrl: './organization-search.component.html',
-  styleUrls: ['./organization-search.component.scss']
+  styleUrls: ['./organization-search.component.scss'],
 })
 export class OrganizationSearchComponent implements OnInit {
-
   result;
   id;
   mems;
@@ -14,7 +13,6 @@ export class OrganizationSearchComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    
-  }
 
+  }
 }

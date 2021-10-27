@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { OrganizationsService } from './organizations.service';
-import { MessagesService } from '../../base/services/messages.service';
-import { environment } from '../../../environments/environment';
-import { allTopLevelOUs } from '../../base/common/model/query-bodies';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {OrganizationsService} from './organizations.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {environment} from '../../../environments/environment';
+import {allTopLevelOUs} from '../../base/common/model/query-bodies';
 
 
 export class OUTreeNode {
@@ -28,14 +28,15 @@ export class OUTreeFlatNode {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrganizationTree2Service {
-
   dataChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
   nodeMap: Map<string, OUTreeNode> = new Map<string, OUTreeNode>();
 
-  get data(): OUTreeNode[] { return this.dataChange.value; }
+  get data(): OUTreeNode[] {
+    return this.dataChange.value;
+  }
 
   constructor(private service: OrganizationsService,
     private message: MessagesService) {
@@ -52,12 +53,11 @@ export class OrganizationTree2Service {
       data.push(this.generateNode(ext));
       */
       const tlous = await this.getTopLevelOUs();
-      tlous.list.forEach(ou => data.push(this.generateNode(ou)));
+      tlous.list.forEach((ou) => data.push(this.generateNode(ou)));
       this.dataChange.next(data);
     } catch (e) {
       this.message.error(e);
     }
-
   }
 
   getTopLevelOUs() {
@@ -78,12 +78,12 @@ export class OrganizationTree2Service {
     const parent = this.nodeMap.get(ouName)!;
     let children = [];
     this.getChildren4OU(ouId)
-      .then(resp => {
+      .then((resp) => {
         children = resp;
-        const nodes = children.map(child => this.generateNode(child));
+        const nodes = children.map((child) => this.generateNode(child));
         parent.childrenChange.next(nodes);
         this.dataChange.next(this.dataChange.value);
-      }).catch(err => {
+      }).catch((err) => {
         this.message.error(err);
       });
   }

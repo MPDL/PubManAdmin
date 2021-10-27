@@ -1,18 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import { MessagesService } from '../../base/services/messages.service';
-import { ElasticService } from '../service/elastic.service';
-import { NgForm } from '@angular/forms';
+import {MessagesService} from '../../base/services/messages.service';
+import {ElasticService} from '../service/elastic.service';
+import {NgForm} from '@angular/forms';
 
 @Component({
   // selector: 'app-indices-detail',
   templateUrl: './index-detail.component.html',
-  styleUrls: ['./index-detail.component.scss']
+  styleUrls: ['./index-detail.component.scss'],
 })
 export class IndexDetailComponent implements OnInit, OnDestroy {
-
   @ViewChild('new_index_form') indexform: NgForm;
 
   remote;
@@ -26,7 +25,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   mapping;
   selectedMapping;
   aliases;
-  
+
   subscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -36,7 +35,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.route.params
-      .subscribe(params => {
+      .subscribe((params) => {
         const name = params['name'];
         this.index_name = name;
       });
@@ -59,15 +58,15 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       this.settings = this.index[name].settings;
       this.mapping = this.index[name].mappings;
       this.aliases = this.index[name].aliases;
-    } catch(e) {
+    } catch (e) {
       this.message.error(e);
     }
   }
 
   async addAlias(index) {
     try {
-      let alias = prompt('new alias name:');
-      let response = await this.service.addAlias(index, alias);
+      const alias = prompt('new alias name:');
+      const response = await this.service.addAlias(index, alias);
       this.message.success(JSON.stringify(response));
       this.getIndex(index);
     } catch (e) {
@@ -78,13 +77,13 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async removeAlias(index) {
     try {
       let alias;
-      let aliases = Object.keys(this.index[this.index_name].aliases);
+      const aliases = Object.keys(this.index[this.index_name].aliases);
       if (aliases.length > 1) {
         alias = prompt('which one?');
       } else if (aliases.length === 1) {
         alias = aliases[0];
       }
-      let response = await this.service.removeAlias(index, alias);
+      const response = await this.service.removeAlias(index, alias);
       this.message.success(JSON.stringify(response));
       this.getIndex(index);
     } catch (e) {
@@ -103,7 +102,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async getIndexInfo(index) {
     try {
       this.list = await this.service.listAllIndices();
-      let selected = this.list.filter(result => result.index === index);
+      const selected = this.list.filter((result) => result.index === index);
       if (selected.length === 1) {
         this.index_info = selected[0];
       }
@@ -136,10 +135,18 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   }
 
   cloneSettings(settings) {
-    if (settings.settings.index.version) { delete settings.settings.index.version; }
-    if (settings.settings.index.provided_name) { delete settings.settings.index.provided_name; }
-    if (settings.settings.index.creation_date) { delete settings.settings.index.creation_date; }
-    if (settings.settings.index.uuid) { delete settings.settings.index.uuid; }
+    if (settings.settings.index.version) {
+      delete settings.settings.index.version;
+    }
+    if (settings.settings.index.provided_name) {
+      delete settings.settings.index.provided_name;
+    }
+    if (settings.settings.index.creation_date) {
+      delete settings.settings.index.creation_date;
+    }
+    if (settings.settings.index.uuid) {
+      delete settings.settings.index.uuid;
+    }
     return settings;
   }
 
@@ -162,7 +169,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   }
 
   remoteList() {
-    let host = prompt('where from?');
+    const host = prompt('where from?');
     this.getRemoteList(host);
   }
 
@@ -200,7 +207,6 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.message.error(e);
     }
-
   }
 
   notyet(name) {

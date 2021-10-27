@@ -1,5 +1,5 @@
-import { Directive, Input } from '@angular/core';
-import { NG_VALIDATORS, Validator, ValidatorFn, AbstractControl } from '@angular/forms';
+import {Directive, Input} from '@angular/core';
+import {NG_VALIDATORS, Validator, ValidatorFn, AbstractControl} from '@angular/forms';
 
 export function valueValidator(regex: RegExp): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} => {
@@ -10,10 +10,9 @@ export function valueValidator(regex: RegExp): ValidatorFn {
 
 @Directive({
   selector: '[value-not-allowed]',
-  providers: [{provide: NG_VALIDATORS, useExisting: ValueNotAllowedDirective, multi: true}]
+  providers: [{provide: NG_VALIDATORS, useExisting: ValueNotAllowedDirective, multi: true}],
 })
 export class ValueNotAllowedDirective implements Validator {
-
   @Input() valuenotallowed: string;
 
   constructor() { }
@@ -21,5 +20,4 @@ export class ValueNotAllowedDirective implements Validator {
   validate(c: AbstractControl): {[key: string]: any} {
     return this.valuenotallowed ? valueValidator(new RegExp(this.valuenotallowed, 'i'))(c) : null;
   }
-
 }
