@@ -13,7 +13,6 @@ import {itemAggs} from '../../base/common/components/search-term/search.aggregat
 
 import {environment} from 'environments/environment';
 
-
 @Component({
   selector: 'app-item-search',
   templateUrl: './item-search.component.html',

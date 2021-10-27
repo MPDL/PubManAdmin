@@ -14,7 +14,6 @@ import {userAggs} from '../../base/common/components/search-term/search.aggregat
 
 import {environment} from 'environments/environment';
 
-
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',

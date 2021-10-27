@@ -5,8 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
-// keep 4 diagnostics
-import {Router} from '@angular/router';
+import {Router} from '@angular/router'; // keep 4 diagnostics
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';

@@ -5,7 +5,6 @@ import {ElasticService} from '../service/elastic.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
 
-
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -17,7 +16,6 @@ export class IndexComponent implements OnInit, AfterViewInit {
   aliases: any;
   aliasForm: FormGroup;
   indexList: string[] = [];
-
 
   constructor(
     private elastic: ElasticService,
@@ -33,9 +31,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-
-  }
+  ngAfterViewInit() {}
 
   initAliasForm() {
     return this.builder.group({

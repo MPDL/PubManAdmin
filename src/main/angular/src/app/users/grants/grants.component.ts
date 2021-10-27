@@ -26,8 +26,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     ctx_url = environment.rest_contexts;
 
     grants: Grant[];
-    roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR',
-      'REPORTER'];
+    roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER'];
     ctxs: Array<any>;
     ctxs_filtered: Array<any>;
     ous: Array<any>;
