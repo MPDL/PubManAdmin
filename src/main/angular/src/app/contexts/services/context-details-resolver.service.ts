@@ -2,7 +2,7 @@
 import {throwError as observableThrowError, Observable, of} from 'rxjs';
 import {first, catchError} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
-import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
+import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
 
 
 import {ContextsService} from './contexts.service';
@@ -17,7 +17,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
     private message: MessagesService
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Context> {
+  resolve(route: ActivatedRouteSnapshot): Observable<Context> {
     const url = environment.rest_contexts;
     const id = route.params['id'];
     if (id === 'new ctx') {
@@ -33,7 +33,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
       return this.ctxSvc.get(url, id, token)
         .pipe(
           first(),
-          catchError((err, obs) => {
+          catchError((err) => {
             this.message.error(err);
             return observableThrowError(err);
           })

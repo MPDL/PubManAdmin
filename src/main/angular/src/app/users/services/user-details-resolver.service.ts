@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
+import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
 import {Observable, of} from 'rxjs';
 import {first, map} from 'rxjs/operators';
 import {UsersService} from './users.service';
@@ -10,10 +10,9 @@ import {environment} from 'environments/environment';
 export class UserDetailsResolverService implements Resolve<User> {
   constructor(
     private userSvc: UsersService,
-    private router: Router
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User> {
+  resolve(route: ActivatedRouteSnapshot): Observable<User> {
     const url = environment.rest_users;
     const id = route.params['id'];
     if (id === 'new user') {
