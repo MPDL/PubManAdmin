@@ -11,7 +11,7 @@ import {allOpenedOUs} from '../../base/common/model/query-bodies';
 import {environment} from 'environments/environment';
 
 @Component({
-  selector: 'app-context-details',
+  selector: 'context-details-component',
   templateUrl: './context-details.component.html',
   styleUrls: ['./context-details.component.scss'],
 })

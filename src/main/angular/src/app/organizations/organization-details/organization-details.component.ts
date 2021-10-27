@@ -9,7 +9,7 @@ import {OU, Identifier, BasicRO, UserRO, OUMetadata} from '../../base/common/mod
 import {environment} from 'environments/environment';
 
 @Component({
-  selector: 'app-organization-details',
+  selector: 'organization-details-component',
   templateUrl: './organization-details.component.html',
   styleUrls: ['./organization-details.component.scss'],
 })

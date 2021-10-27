@@ -6,12 +6,12 @@ import {MessagesService} from '../../base/services/messages.service';
 import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
 
 @Component({
-  selector: 'app-index',
-  templateUrl: './index.component.html',
-  styleUrls: ['./index.component.scss'],
+  selector: 'index-list-component',
+  templateUrl: './index-list.component.html',
+  styleUrls: ['./index-list.component.scss'],
 })
 
-export class IndexComponent implements OnInit, AfterViewInit {
+export class IndexListComponent implements OnInit, AfterViewInit {
   indices: any[];
   aliases: any;
   aliasForm: FormGroup;

@@ -7,7 +7,7 @@ import {mpgOus4auto} from '../../model/query-bodies';
 import {environment} from '../../../../../environments/environment';
 
 @Component({
-  selector: 'app-suggestion',
+  selector: 'suggestion-component',
   templateUrl: './suggestion.component.html',
   styleUrls: ['./suggestion.component.scss'],
 })

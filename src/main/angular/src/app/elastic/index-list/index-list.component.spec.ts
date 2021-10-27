@@ -1,20 +1,20 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import {IndexComponent} from './index.component';
+import {IndexListComponent} from './index-list.component';
 
 describe('IndexComponent', () => {
-  let component: IndexComponent;
-  let fixture: ComponentFixture<IndexComponent>;
+  let component: IndexListComponent;
+  let fixture: ComponentFixture<IndexListComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [IndexComponent],
+      declarations: [IndexListComponent],
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IndexComponent);
+    fixture = TestBed.createComponent(IndexListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

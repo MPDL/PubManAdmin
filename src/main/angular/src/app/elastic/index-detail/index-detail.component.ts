@@ -7,7 +7,7 @@ import {ElasticService} from '../service/elastic.service';
 import {NgForm} from '@angular/forms';
 
 @Component({
-  // selector: 'app-indices-detail',
+  selector: 'index-detail-component',
   templateUrl: './index-detail.component.html',
   styleUrls: ['./index-detail.component.scss'],
 })

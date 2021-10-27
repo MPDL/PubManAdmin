@@ -3,7 +3,7 @@ import {ElasticService} from '../service/elastic.service';
 import {MessagesService} from '../../base/services/messages.service';
 
 @Component({
-  selector: 'app-elastic-start',
+  selector: 'elastic-start-component',
   templateUrl: './elastic-start.component.html',
   styleUrls: ['./elastic-start.component.scss'],
 })

@@ -10,7 +10,7 @@ import {environment} from 'environments/environment';
 import {mpgOus4auto} from '../../base/common/model/query-bodies';
 
 @Component({
-  selector: 'user-list',
+  selector: 'user-list-component',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
   providers: [],

@@ -5,7 +5,7 @@ import {MessagesService} from '../../base/services/messages.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
 
 @Component({
-  selector: 'app-upload',
+  selector: 'upload-component',
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
 })

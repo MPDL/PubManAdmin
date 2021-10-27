@@ -6,12 +6,12 @@ import {SearchService} from '../../base/common/services/search.service';
 import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+  selector: 'elastic-search-component',
+  templateUrl: './elastic-search.component.html',
+  styleUrls: ['./elastic-search.component.scss'],
 })
 
-export class SearchComponent implements OnInit {
+export class ElasticSearchComponent implements OnInit {
   searchForm: FormGroup;
   searchRequest: SearchRequest;
   searchResult: any;

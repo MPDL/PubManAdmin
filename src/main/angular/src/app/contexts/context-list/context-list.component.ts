@@ -10,7 +10,7 @@ import {mpgOus4auto} from '../../base/common/model/query-bodies';
 import {FormBuilder} from '@angular/forms';
 
 @Component({
-  selector: 'app-context-list',
+  selector: 'context-list-component',
   templateUrl: './context-list.component.html',
   styleUrls: ['./context-list.component.scss'],
 })

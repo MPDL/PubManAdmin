@@ -4,7 +4,7 @@ const {homepage: appHome} = require('../../../../package.json');
 import {ConnectionService} from '../services/connection.service';
 
 @Component({
-  selector: 'app-footer',
+  selector: 'footer-component',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })

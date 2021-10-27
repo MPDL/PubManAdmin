@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 @Component({
-  selector: 'app-context-search',
+  selector: 'context-search-component',
   templateUrl: './context-search.component.html',
   styleUrls: ['./context-search.component.scss'],
 })

@@ -10,7 +10,7 @@ import {environment} from 'environments/environment';
 import {allOpenedOUs} from '../../base/common/model/query-bodies';
 
 @Component({
-  selector: 'app-user-details',
+  selector: 'user-details-component',
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
 })

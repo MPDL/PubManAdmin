@@ -4,7 +4,7 @@ import {FormGroup} from '@angular/forms';
 export const actionTypes = ['add', 'remove'];
 
 @Component({
-  selector: 'index-alias',
+  selector: 'index-alias-component',
   templateUrl: './index-alias.component.html',
   styleUrls: ['./index-alias.component.scss'],
 })

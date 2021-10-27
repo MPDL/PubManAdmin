@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-elastic',
+  selector: 'elastic-component',
   templateUrl: './elastic.component.html',
   styleUrls: ['./elastic.component.scss'],
 })

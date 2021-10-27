@@ -12,7 +12,7 @@ import {environment} from 'environments/environment';
 import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/organization-tree2.service';
 
 @Component({
-  selector: 'app-organization-tree',
+  selector: 'organization-tree-component',
   templateUrl: 'organization-tree.component.html',
   styleUrls: ['organization-tree.component.scss'],
   providers: [OrganizationTree2Service],
