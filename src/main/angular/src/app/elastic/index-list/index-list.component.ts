@@ -20,21 +20,21 @@ export class IndexListComponent implements OnInit, AfterViewInit {
   constructor(
     private elastic: ElasticService,
     private message: MessagesService,
-    private builder: FormBuilder,
+    private fb: FormBuilder,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.list();
-    this.aliasForm = this.builder.group({
-      indexAliases: this.builder.array([this.initAliasForm()]),
+    this.aliasForm = this.fb.group({
+      indexAliases: this.fb.array([this.initAliasForm()]),
     });
   }
 
   ngAfterViewInit() {}
 
   initAliasForm() {
-    return this.builder.group({
+    return this.fb.group({
       action: 'add',
       index: '',
       alias: '',

@@ -49,7 +49,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     private search: SearchService,
     private message: MessagesService,
     private login: AuthenticationService,
-    private builder: FormBuilder
+    private fb: FormBuilder
   ) {}
 
   get diagnostic() {
@@ -66,8 +66,8 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription = this.login.token$.subscribe((token) => {
       this.token = token;
     });
-    this.searchForm = this.builder.group({
-      searchTerms: this.builder.array([this.initSearchTerm()]),
+    this.searchForm = this.fb.group({
+      searchTerms: this.fb.array([this.initSearchTerm()]),
     });
   }
 
@@ -76,7 +76,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   initSearchTerm() {
-    return this.builder.group({
+    return this.fb.group({
       type: '',
       field: '',
       searchTerm: '',

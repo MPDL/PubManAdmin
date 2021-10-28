@@ -48,7 +48,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     private search: SearchService,
     private message: MessagesService,
     private login: AuthenticationService,
-    private builder: FormBuilder,
+    private fb: FormBuilder,
     private router: Router
   ) {}
 
@@ -64,8 +64,8 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.subscription = this.login.token$.subscribe((token) => {
       this.token = token;
     });
-    this.searchForm = this.builder.group({
-      searchTerms: this.builder.array([this.initSearchTerm()]),
+    this.searchForm = this.fb.group({
+      searchTerms: this.fb.array([this.initSearchTerm()]),
     });
   }
 
@@ -74,7 +74,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   initSearchTerm() {
-    return this.builder.group({
+    return this.fb.group({
       type: '',
       field: '',
       searchTerm: '',
