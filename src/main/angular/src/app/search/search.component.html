@@ -3,17 +3,17 @@
   <h3>Search</h3>
 
   <nav class="navbar navbar-expand-md navbar-light bg-light py-0">
-    <div class="container-fluid px-0" id="navbarSearch">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContentSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle navigation">
+    <div class="container-fluid px-0">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContentSearch">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarContentSearch">
-        <nav class="navbar-nav">
-          <a class="nav-link" routerLink="./users" routerLinkActive="active">Users</a>
-          <a class="nav-link" routerLink="./organizations" routerLinkActive="active">Organizations</a>
-          <a class="nav-link" routerLink="./contexts" routerLinkActive="active">Contexts</a>
-          <a class="nav-link" routerLink="./items" routerLinkActive="active">Items</a>
-        </nav>
+        <ul class="nav navbar-nav me-auto" routerLinkActive="active">
+          <li class="nav-item"><a class="nav-link" routerLink="./users">Users</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="./organizations">Organizations</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="./contexts">Contexts</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="./items">Items</a></li>
+        </ul>
       </div>
     </div>
   </nav>

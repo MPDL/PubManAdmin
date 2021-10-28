@@ -3,16 +3,16 @@
   <h3>ESAdmin</h3>
 
   <nav class="navbar navbar-expand-md navbar-light bg-light py-0">
-    <div class="container-fluid px-0" id="navbarEsAdmin">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContentEsAdmin" aria-controls="navbarEsAdmin" aria-expanded="false" aria-label="Toggle navigation">
+    <div class="container-fluid px-0">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContentEsAdmin">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarContentEsAdmin">
-        <nav class="navbar-nav">
-          <a class="nav-link" routerLink="./" routerLinkActive="active">Elastic</a>
-          <a class="nav-link" routerLink="./index" routerLinkActive="active">Index</a>
-          <a class="nav-link" routerLink="./search" routerLinkActive="active">Search</a>
-        </nav>
+        <ul class="nav navbar-nav me-auto" routerLinkActive="active">
+          <li class="nav-item"><a class="nav-link" routerLink="./">Elastic</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="./index">Index</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="./search">Search</a></li>
+        </ul>
       </div>
     </div>
   </nav>

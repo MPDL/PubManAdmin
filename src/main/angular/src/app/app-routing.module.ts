@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import {Routes, RouterModule, ExtraOptions} from '@angular/router';
 
 import {HomeComponent} from './base/home/home.component';
 import {PageNotFoundComponent} from './base/common/page-not-found.component';
@@ -10,8 +10,13 @@ const routes: Routes = [
   {path: '**', component: PageNotFoundComponent}, // Wildcard route for page not found
 ];
 
+const routerOptions: ExtraOptions = {
+  anchorScrolling: 'enabled',
+  enableTracing: true,
+};
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {enableTracing: true})], // @TODO: wieder aubauen
+  imports: [RouterModule.forRoot(routes, routerOptions)], // @TODO: wieder aubauen
   exports: [RouterModule],
 })
 
