@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, AfterViewInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnInit, OnDestroy, QueryList, ViewChildren} from '@angular/core';
 import {FormGroup, FormArray, FormBuilder} from '@angular/forms';
 
 import {Subscription} from 'rxjs';
@@ -19,7 +19,7 @@ import {environment} from 'environments/environment';
   styleUrls: ['./item-search.component.scss'],
 })
 
-export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ItemSearchComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
 
   item_rest_url = environment.rest_items;
@@ -55,8 +55,6 @@ export class ItemSearchComponent implements OnInit, OnDestroy, AfterViewInit {
   get diagnostic() {
     return JSON.stringify(this.years);
   }
-
-  ngAfterViewInit() {}
 
   ngOnInit() {
     for (const agg in itemAggs) {

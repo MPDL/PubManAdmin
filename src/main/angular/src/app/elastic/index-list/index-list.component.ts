@@ -1,4 +1,4 @@
-import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {ElasticService} from '../services/elastic.service';
@@ -11,7 +11,7 @@ import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
   styleUrls: ['./index-list.component.scss'],
 })
 
-export class IndexListComponent implements OnInit, AfterViewInit {
+export class IndexListComponent implements OnInit {
   indices: any[];
   aliases: any;
   aliasForm: FormGroup;
@@ -30,8 +30,6 @@ export class IndexListComponent implements OnInit, AfterViewInit {
       indexAliases: this.fb.array([this.initAliasForm()]),
     });
   }
-
-  ngAfterViewInit() {}
 
   initAliasForm() {
     return this.fb.group({
