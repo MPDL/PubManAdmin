@@ -12,11 +12,11 @@ const routes: Routes = [
 
 const routerOptions: ExtraOptions = {
   anchorScrolling: 'enabled',
-  enableTracing: true,
+  enableTracing: true, // @TODO: wieder aubauen
 };
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, routerOptions)], // @TODO: wieder aubauen
+  imports: [RouterModule.forRoot(routes, routerOptions)],
   exports: [RouterModule],
 })
 
