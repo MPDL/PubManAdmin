@@ -1,5 +1,5 @@
 <div class="container-fluid">
-<div class="form-group row">
+<div class="row">
     <input #fileInput class="col-11 form-control form-control-sm" type="file" (change)="onFileChange($event)" multiple/>
     <button class="col-1 btn btn-sm btn-outline-primary" type="submit" [disabled]="!filesToUpload" (click)="upload()">Start</button>
   </div>

@@ -5,7 +5,7 @@
         </div>
         <form class="list-group-item text-primary" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm"
             novalidate>
-            <div class="form-group row w-100">
+            <div class="row w-100">
                 <label for="selected-loginname" class="col-2 col-form-label col-form-label-sm">loginname</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="loginname"
@@ -29,7 +29,7 @@
                         id="selected-id" readonly>
                 </div>
             </div>
-            <div class="form-group row w-100">
+            <div class="row w-100">
                 <label for="selected-password" class="col-2 col-form-label col-form-label-sm">password</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="password" name="password"
@@ -46,7 +46,7 @@
                         (click)="generateRandomPassword(selected)" name="generatePassword" value="generate" />
                 </div>
             </div>
-            <div class="form-group row w-100">
+            <div class="row w-100">
                 <label for="selected-active" class="col-2 col-form-label col-form-label-sm">active</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="active" [(ngModel)]="selected.active"
@@ -58,7 +58,7 @@
                         [value]="selected.active === false ? 'activate' : 'deactivate'" />
                 </div>
             </div>
-            <div class="form-group row w-100">
+            <div class="row w-100">
                 <label for="selected-name" class="col-2 col-form-label col-form-label-sm">name</label>
                 <div class="col-10">
                     <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="selected.name"
@@ -70,14 +70,14 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row w-100">
+            <div class="row w-100">
                 <label for="selected-email" class="col-2 col-form-label col-form-label-sm">email</label>
                 <div class="col-10">
                     <input class="form-control form-control-sm" type="email" name="email" [(ngModel)]="selected.email"
                         id="selected-email">
                 </div>
             </div>
-            <div *ngIf="!isNewOu" class="form-group row w-100">
+            <div *ngIf="!isNewOu" class="row w-100">
                 <label for="selected-ou" class="col-2 col-form-label col-form-label-sm">organization</label>
                 <div *ngIf="selected.affiliation" class="col-6">
                     <input class="form-control form-control-sm" type="text" name="ouid"
@@ -88,7 +88,7 @@
                         name="changeou" value="change" />
                 </div>
             </div>
-            <div *ngIf="isNewUser || isNewOu" class="form-group row w-100">
+            <div *ngIf="isNewUser || isNewOu" class="row w-100">
                 <!--
                 <label for="ou2select" class="col-2 col-form-label col-form-label-sm">organization</label>
                 <div class="col-10">
@@ -112,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row w-100">
+            <div class="row w-100">
                 <div class="col-3 ms-auto">
                     <input type="button" class="btn btn-outline-primary btn-sm me-2" name="cancel" value="cancel"
                         (click)="gotoList()" />
@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div *ngIf="!isNewUser" class="w-100">
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
                         <ul class="list-group">
@@ -150,22 +150,22 @@
                         </ul>
                     </div>
                 </div>
-                <div *ngIf="!isNewGrant && selected.active === true" class="form-group row w-100">
+                <div *ngIf="!isNewGrant && selected.active === true" class="row w-100">
 
                     <div class="col-2 ms-auto">
                         <input type="button" class="btn btn-outline-primary btn-sm float-end"
                             (click)="addGrant(); $event.stopPropagation()" name="addGrant" value="add grants" />
                     </div>
                 </div>
-                <div *ngIf="isNewGrant" class="form-group row w-100">
+                <div *ngIf="isNewGrant" class="row w-100">
                     <div class="col-10 ms-auto">
-                        <grants-component class="form-group row w-100" [(selectedUser)]="selected" [token]="token"
+                        <grants-component class="row w-100" [(selectedUser)]="selected" [token]="token"
                             [(isNewGrant)]="isNewGrant"></grants-component>
                     </div>
                 </div>
-                <div *ngIf="grants2remove" class="form-group row w-100">
+                <div *ngIf="grants2remove" class="row w-100">
                     <div class="col-10 ms-auto">
-                        <div class="form-group row w-100">
+                        <div class="row w-100">
                             <div class="col-9">
                                 <textarea class="form-control form-control-sm" rows="3" name="grantsToRemove"
                                     [(ngModel)]="grantsToRemove" readonly></textarea>
@@ -189,7 +189,7 @@
             </div>
             <form class="list-group-item text-primary" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm"
                 novalidate>
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <label for="selected-loginname" class="col-2 col-form-label col-form-label-sm">loginname</label>
                     <div class="col-6">
                         <input class="form-control form-control-sm" type="text" name="loginname"
@@ -202,7 +202,7 @@
                             [(ngModel)]="selected.objectId" id="selected-id" readonly>
                     </div>
                 </div>
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <label for="selected-password" class="col-2 col-form-label col-form-label-sm">password</label>
                     <div class="col-6">
                         <input class="form-control form-control-sm" type="password" name="password"
@@ -213,7 +213,7 @@
                             (click)="changePassword(selected)" name="changePassword" value="change" />
                     </div>
                 </div>
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <label for="selected-active" class="col-2 col-form-label col-form-label-sm">active</label>
                     <div class="col-6">
                         <input class="form-control form-control-sm" type="text" name="active"
@@ -225,21 +225,21 @@
                             [value]="selected.active === false ? 'activate' : 'deactivate'" />
                     </div>
                 </div>
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <label for="selected-name" class="col-2 col-form-label col-form-label-sm">name</label>
                     <div class="col-10">
                         <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="selected.name"
                             id="selected-name" readonly>
                     </div>
                 </div>
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <label for="selected-email" class="col-2 col-form-label col-form-label-sm">email</label>
                     <div class="col-10">
                         <input class="form-control form-control-sm" type="email" name="email"
                             [(ngModel)]="selected.email" id="selected-email" readonly>
                     </div>
                 </div>
-                <div *ngIf="!isNewOu" class="form-group row w-100">
+                <div *ngIf="!isNewOu" class="row w-100">
                     <label for="selected-ou" class="col-2 col-form-label col-form-label-sm">organization</label>
                     <div *ngIf="selected.affiliation" class="col-6">
                         <input class="form-control form-control-sm" type="text" name="ouid"
@@ -250,7 +250,7 @@
                             (click)="notAllowed()" name="changeou" value="change" />
                     </div>
                 </div>
-                <div *ngIf="isNewUser || isNewOu" class="form-group row w-100">
+                <div *ngIf="isNewUser || isNewOu" class="row w-100">
                     <label for="ou2select" class="col-2 col-form-label col-form-label-sm">organization</label>
                     <div class="col-10">
                         <select id="ou2select" class="select form-control form-control-sm" [(ngModel)]="selectedOu"
@@ -259,7 +259,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group row w-100">
+                <div class="row w-100">
                     <div class="col-2 ms-auto">
                         <input type="button" class="btn btn-outline-primary btn-sm disabled" name="cancel"
                             value="cancel" (click)="notAllowed()" />
@@ -268,7 +268,7 @@
                     </div>
                 </div>
                 <div *ngIf="!isNewUser" class="w-100">
-                    <div class="form-group row w-100">
+                    <div class="row w-100">
                         <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                         <div class="col-10 text-end">
                             <ul class="list-group">
@@ -289,22 +289,22 @@
                             </ul>
                         </div>
                     </div>
-                    <div *ngIf="!isNewGrant" class="form-group row w-100">
+                    <div *ngIf="!isNewGrant" class="row w-100">
 
                         <div class="col-2 ms-auto">
                             <input type="button" class="btn btn-outline-primary btn-sm disabled float-end"
                                 (click)="notAllowed(); $event.stopPropagation()" name="addGrant" value="add grants" />
                         </div>
                     </div>
-                    <div *ngIf="isNewGrant" class="form-group row w-100">
+                    <div *ngIf="isNewGrant" class="row w-100">
                         <div class="col-10 ms-auto">
-                            <grants-component class="form-group row w-100" [(selectedUser)]="selected" [token]="token"
+                            <grants-component class="row w-100" [(selectedUser)]="selected" [token]="token"
                                 [(isNewGrant)]="isNewGrant"></grants-component>
                         </div>
                     </div>
-                    <div *ngIf="grants2remove" class="form-group row w-100">
+                    <div *ngIf="grants2remove" class="row w-100">
                         <div class="col-10 ms-auto">
-                            <div class="form-group row w-100">
+                            <div class="row w-100">
                                 <div class="col-9">
                                     <textarea class="form-control form-control-sm" rows="3" name="grantsToRemove"
                                         [(ngModel)]="grantsToRemove" readonly></textarea>
