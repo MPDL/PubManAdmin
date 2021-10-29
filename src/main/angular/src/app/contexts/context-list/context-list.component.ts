@@ -31,7 +31,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   pageSize: number = 50;
   currentPage: number = 1;
-  // suggestionForm: FormGroup;
 
   constructor(
     private ctxSvc: ContextsService,
