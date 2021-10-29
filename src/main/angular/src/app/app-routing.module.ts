@@ -11,8 +11,8 @@ const routes: Routes = [
 ];
 
 const routerOptions: ExtraOptions = {
-  anchorScrolling: 'enabled',
-  enableTracing: true, // @TODO: wieder aubauen
+  relativeLinkResolution: 'legacy',
+  // enableTracing: true, // @TODO: wieder aubauen
 };
 
 @NgModule({
