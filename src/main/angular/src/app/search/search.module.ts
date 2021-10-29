@@ -6,8 +6,7 @@ import {SharedModule} from '../base/common/shared.module';
 import {SearchRoutingModule} from './search-routing.module';
 import {SearchComponent} from './search.component';
 import {UserSearchComponent} from './user-search/user-search.component';
-import {OrganizationSearchComponent} from './organization-search/organization-search.component';
-import {ContextSearchComponent} from './context-search/context-search.component';
+import {SearchInfoComponent} from './search-info/search-info.component';
 import {ItemSearchComponent} from './item-search/item-search.component';
 
 @NgModule({
@@ -19,8 +18,7 @@ import {ItemSearchComponent} from './item-search/item-search.component';
   declarations: [
     SearchComponent,
     UserSearchComponent,
-    OrganizationSearchComponent,
-    ContextSearchComponent,
+    SearchInfoComponent,
     ItemSearchComponent,
   ],
 })

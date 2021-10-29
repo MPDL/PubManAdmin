@@ -3,7 +3,7 @@ import {Routes, RouterModule} from '@angular/router';
 
 import {SearchComponent} from './search.component';
 import {UserSearchComponent} from './user-search/user-search.component';
-import {ContextSearchComponent} from './context-search/context-search.component';
+import {SearchInfoComponent} from './search-info/search-info.component';
 import {ItemSearchComponent} from './item-search/item-search.component';
 import {AdminGuard} from '../base/services/admin-guard.service';
 
@@ -14,7 +14,7 @@ const routes: Routes = [
       {path: 'organizations', redirectTo: '/organizations', pathMatch: 'full'},
       {path: 'contexts', redirectTo: '/contexts', pathMatch: 'full'},
       {path: 'items', component: ItemSearchComponent},
-      {path: '', component: ContextSearchComponent}, // Default route -> Dummy Info Seite (@TODO: sollte irgendwann durch eine echte ContextSearch oder eine dedizierte Hinweis-Seite ersetzt werden)
+      {path: '', component: SearchInfoComponent}, // Default route
     ],
   },
 ];
