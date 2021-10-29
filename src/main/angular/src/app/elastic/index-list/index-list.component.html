@@ -27,7 +27,7 @@
         <div formArrayName="indexAliases">
           <div *ngFor="let indexAlias of indexAliases.controls; let i=index">
             <div [formGroupName]="i">
-              <index-alias [indexAliasForm]="indexAliases.controls[i]" [indexList]="indices" (notice)="handleNotification($event, i)"></index-alias>
+              <index-alias-component [indexAliasForm]="indexAliases.controls[i]" [indexList]="indices" (notice)="handleNotification($event, i)"></index-alias-component>
             </div>
           </div>
         </div>
