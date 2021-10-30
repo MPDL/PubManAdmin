@@ -82,7 +82,7 @@ export class AppModule {
   // Order matters !!!
   // AppRouting has to be last in imports [], otherwise the '**' routing will match.
   // Diagnostic only: inspect router configuration
-  constructor(router: Router) { // @TODO: wieder einkommentieren
+  constructor(router: Router) { // TODO: wieder einkommentieren
     console.log('App Routes: ', JSON.stringify(router.config, undefined, 2));
   }
 }

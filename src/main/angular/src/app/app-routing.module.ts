@@ -12,7 +12,7 @@ const routes: Routes = [
 
 const routerOptions: ExtraOptions = {
   relativeLinkResolution: 'legacy',
-  // enableTracing: true, // @TODO: wieder aubauen
+  // enableTracing: true, // TODO: wieder aubauen
 };
 
 @NgModule({
