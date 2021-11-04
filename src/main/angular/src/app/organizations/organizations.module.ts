@@ -26,5 +26,4 @@ import {OrganizationTreeComponent} from './organization-tree/organization-tree.c
     OrganizationsService,
   ],
 })
-
 export class OrganizationsModule {}

@@ -9,7 +9,6 @@ import {Subscription} from 'rxjs';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-
 export class HomeComponent implements OnInit, OnDestroy {
   login_subscription: Subscription;
   host_subscription: Subscription;

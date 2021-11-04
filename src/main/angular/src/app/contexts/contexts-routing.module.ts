@@ -16,5 +16,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [ContextDetailsResolverService],
 })
-
 export class ContextsRoutingModule {}

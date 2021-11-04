@@ -13,7 +13,6 @@ import {environment} from 'environments/environment';
   templateUrl: './organization-details.component.html',
   styleUrls: ['./organization-details.component.scss'],
 })
-
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ou_rest_url = environment.rest_ous;
   token: string;

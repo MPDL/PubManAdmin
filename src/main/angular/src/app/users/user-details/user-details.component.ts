@@ -14,7 +14,6 @@ import {allOpenedOUs} from '../../base/common/model/query-bodies';
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
 })
-
 export class UserDetailsComponent implements OnInit, OnDestroy {
   url = environment.rest_users;
   ous_url = environment.rest_ous;

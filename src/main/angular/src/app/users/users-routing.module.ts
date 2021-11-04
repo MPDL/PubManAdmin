@@ -16,5 +16,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [UserDetailsResolverService],
 })
-
 export class UsersRoutingModule {}

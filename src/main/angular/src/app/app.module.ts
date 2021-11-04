@@ -77,7 +77,6 @@ import {HttpErrorInterceptor} from './base/common/http-error.interceptor';
   ],
   bootstrap: [AppComponent],
 })
-
 export class AppModule {
   // Order matters !!!
   // AppRouting has to be last in imports [], otherwise the '**' routing will match.

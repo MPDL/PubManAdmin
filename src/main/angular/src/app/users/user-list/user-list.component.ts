@@ -15,7 +15,6 @@ import {mpgOus4auto} from '../../base/common/model/query-bodies';
   styleUrls: ['./user-list.component.scss'],
   providers: [],
 })
-
 export class UserListComponent implements OnInit, OnDestroy {
   url = environment.rest_users;
   title: string = 'Users';

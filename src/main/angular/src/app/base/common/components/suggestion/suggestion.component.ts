@@ -11,7 +11,6 @@ import {environment} from '../../../../../environments/environment';
   templateUrl: './suggestion.component.html',
   styleUrls: ['./suggestion.component.scss'],
 })
-
 export class SuggestionComponent implements OnInit {
   url: string = environment.rest_ous;
   @Input() form: FormGroup;

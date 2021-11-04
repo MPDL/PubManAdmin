@@ -10,7 +10,6 @@ import {User} from '../common/model/inge';
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.scss'],
 })
-
 export class AuthenticationComponent implements OnInit {
   credentials: any = {};
   loggedIn = false;

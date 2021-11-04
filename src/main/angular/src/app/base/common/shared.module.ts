@@ -43,5 +43,4 @@ import {SuggestionComponent} from './components/suggestion/suggestion.component'
     ElasticSearchService,
   ],
 })
-
 export class SharedModule {}

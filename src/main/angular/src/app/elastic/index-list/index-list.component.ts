@@ -10,7 +10,6 @@ import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
   templateUrl: './index-list.component.html',
   styleUrls: ['./index-list.component.scss'],
 })
-
 export class IndexListComponent implements OnInit {
   indices: any[];
   aliases: any;

@@ -10,7 +10,6 @@ import {SearchRequest, SearchTerm} from '../../base/common/components/search-ter
   templateUrl: './elastic-search.component.html',
   styleUrls: ['./elastic-search.component.scss'],
 })
-
 export class ElasticSearchComponent implements OnInit {
   searchForm: FormGroup;
   searchRequest: SearchRequest;

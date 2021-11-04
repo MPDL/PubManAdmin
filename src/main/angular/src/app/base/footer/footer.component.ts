@@ -8,7 +8,6 @@ import {ConnectionService} from '../services/connection.service';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })
-
 export class FooterComponent implements OnInit {
   appVersion;
   appName = 'Pubman Administration';

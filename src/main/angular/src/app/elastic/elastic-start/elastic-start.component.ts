@@ -7,7 +7,6 @@ import {MessagesService} from '../../base/services/messages.service';
   templateUrl: './elastic-start.component.html',
   styleUrls: ['./elastic-start.component.scss'],
 })
-
 export class ElasticStartComponent implements OnInit {
   info: any;
   host: any;

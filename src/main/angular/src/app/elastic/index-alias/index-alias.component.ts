@@ -8,7 +8,6 @@ export const actionTypes = ['add', 'remove'];
   templateUrl: './index-alias.component.html',
   styleUrls: ['./index-alias.component.scss'],
 })
-
 export class IndexAliasComponent implements OnInit {
   filteredIndices: string[] = [];
   actions: string[] = actionTypes;

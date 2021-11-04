@@ -17,7 +17,6 @@ import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/
   styleUrls: ['organization-tree.component.scss'],
   providers: [OrganizationTree2Service],
 })
-
 export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ounames: any[] = [];
   subscription: Subscription;

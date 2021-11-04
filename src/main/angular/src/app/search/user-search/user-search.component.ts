@@ -19,7 +19,6 @@ import {environment} from 'environments/environment';
   templateUrl: './user-search.component.html',
   styleUrls: ['./user-search.component.scss'],
 })
-
 export class UserSearchComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
   url = environment.rest_users;

@@ -22,5 +22,4 @@ import {ItemSearchComponent} from './item-search/item-search.component';
     ItemSearchComponent,
   ],
 })
-
 export class SearchModule {}

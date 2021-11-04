@@ -6,7 +6,6 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.scss'],
 })
-
 export class MessagesComponent implements OnInit {
   message;
 

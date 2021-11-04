@@ -24,5 +24,4 @@ import {ContextsService} from './services/contexts.service';
     ContextsService,
   ],
 })
-
 export class ContextsModule {}
