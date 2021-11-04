@@ -19,7 +19,8 @@ import {environment} from 'environments/environment';
   styleUrls: ['./item-search.component.scss'],
 })
 export class ItemSearchComponent implements OnInit, OnDestroy {
-  @ViewChildren(SearchTermComponent) components: QueryList<SearchTermComponent>;
+  @ViewChildren(SearchTermComponent)
+    components: QueryList<SearchTermComponent>;
 
   item_rest_url = environment.rest_items;
 

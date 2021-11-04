@@ -12,12 +12,18 @@ import {environment} from '../../../../../environments/environment';
   styleUrls: ['./suggestion.component.scss'],
 })
 export class SuggestionComponent implements OnInit {
+  @Input()
+    form: FormGroup;
+  @Input()
+    placeholder;
+  @Input()
+    color: string = 'primary';
+
+  @Output()
+    selectedSuggestion = new EventEmitter<any>();
+
   url: string = environment.rest_ous;
-  @Input() form: FormGroup;
-  @Input() placeholder;
-  @Input() color: string = 'primary';
   searchResult: Observable<any>;
-  @Output() selectedSuggestion = new EventEmitter<any>();
 
   constructor(
     private service: PubmanRestService

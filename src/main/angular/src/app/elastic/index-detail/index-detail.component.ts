@@ -12,7 +12,8 @@ import {NgForm} from '@angular/forms';
   styleUrls: ['./index-detail.component.scss'],
 })
 export class IndexDetailComponent implements OnInit, OnDestroy {
-  @ViewChild('new_index_form') indexform: NgForm;
+  @ViewChild('new_index_form')
+    indexform: NgForm;
 
   remote;
   index;

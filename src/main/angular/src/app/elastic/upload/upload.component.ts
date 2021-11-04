@@ -10,7 +10,8 @@ import {AuthenticationService} from '../../base/services/authentication.service'
   styleUrls: ['./upload.component.scss'],
 })
 export class UploadComponent implements OnInit, OnDestroy {
-  @ViewChild('fileInput', {static: true}) selectedFile: any;
+  @ViewChild('fileInput', {static: true})
+    selectedFile: any;
 
   file2upload: any;
   filesToUpload: File[] = [];

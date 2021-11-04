@@ -12,18 +12,22 @@ import {allOpenedOUs} from '../../base/common/model/query-bodies';
   selector: 'grants-component',
   templateUrl: './grants.component.html',
   styleUrls: ['./grants.component.scss'],
-  providers: [],
 })
 export class GrantsComponent implements OnInit, OnDestroy {
-    @Input() selectedUser: User;
-    @Output() selectedUserChange = new EventEmitter<User>();
-    @Input() token: string;
-    @Input() isNewGrant: boolean;
-    @Output() isNewGrantChange = new EventEmitter<boolean>();
+    @Input()
+      selectedUser: User;
+    @Input()
+      token: string;
+    @Input()
+      isNewGrant: boolean;
+
+    @Output()
+      isNewGrantChange = new EventEmitter<boolean>();
+    @Output()
+      selectedUserChange = new EventEmitter<User>();
 
     ous_url = environment.rest_ous;
     ctx_url = environment.rest_contexts;
-
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER'];
     ctxs: Array<any>;

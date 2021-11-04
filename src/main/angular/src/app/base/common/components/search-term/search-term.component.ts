@@ -9,12 +9,16 @@ export const queryTypes = ['must', 'must_not', 'filter', 'should'];
   styleUrls: ['./search-term.component.scss'],
 })
 export class SearchTermComponent {
+  @Input()
+    searchTermForm: FormGroup;
+  @Input()
+    fields: string[];
+
+  @Output()
+    notice = new EventEmitter<string>();
+
   filteredTerms: string[] = [];
   types: string[] = queryTypes;
-
-  @Input() searchTermForm: FormGroup;
-  @Input() fields: string[];
-  @Output() notice = new EventEmitter<string>();
 
   filter() {
     const selectedField = this.searchTermForm.get('field') as FormGroup;

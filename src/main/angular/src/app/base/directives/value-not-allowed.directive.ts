@@ -13,7 +13,8 @@ export function valueValidator(regex: RegExp): ValidatorFn {
   providers: [{provide: NG_VALIDATORS, useExisting: ValueNotAllowedDirective, multi: true}],
 })
 export class ValueNotAllowedDirective implements Validator {
-  @Input() valuenotallowed: string;
+  @Input()
+    valuenotallowed: string;
 
   constructor() {}
 

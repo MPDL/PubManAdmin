@@ -9,12 +9,16 @@ export const actionTypes = ['add', 'remove'];
   styleUrls: ['./index-alias.component.scss'],
 })
 export class IndexAliasComponent implements OnInit {
+  @Input()
+    indexAliasForm: FormGroup;
+  @Input()
+    indexList: any[];
+
+  @Output()
+    notice = new EventEmitter<string>();
+
   filteredIndices: string[] = [];
   actions: string[] = actionTypes;
-
-  @Input() indexAliasForm: FormGroup;
-  @Input() indexList: any[];
-  @Output() notice = new EventEmitter<string>();
 
   constructor() {}
 
@@ -47,7 +51,6 @@ export class IndexAliasComponent implements OnInit {
   onAliasSelect(selected) {
     this.indexAliasForm.patchValue({alias: selected});
   }
-
 
   close() {
     this.indexAliasForm.patchValue({index: ''});
