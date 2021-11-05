@@ -9,9 +9,7 @@
     "build-qa": "ng build --base-href=/admintool/ --configuration production -c=qa",
     "build-dev": "ng build --base-href=/admintool/ --configuration production -c=dev",
     "patch": "node patch.js",
-    "test": "ng test",
-    "eslint": "npx eslint . --ext .ts",
-    "e2e": "ng e2e"
+    "eslint": "npx eslint . --ext .ts"
   },
   "private": true,
   "dependencies": {
@@ -59,7 +57,6 @@
     "karma-jasmine": "~4.0.1",
     "karma-jasmine-html-reporter": "^1.7.0",
     "node-polyfill-webpack-plugin": "^1.1.4",
-    "protractor": "~7.0.0",
     "ts-node": "^8.10.2",
     "typescript": "^4.3.5"
   },
