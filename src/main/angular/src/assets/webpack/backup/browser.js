@@ -5,12 +5,21 @@
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
+ * 
+ * Polyfill Node.js core modules in Webpack.
+ * npm install node-polyfill-webpack-plugin
+ * const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+ * plugins: new NodePolyfillPlugin({ excludeAliases: ["console"] })
+ * node: { global: true }
+ * 
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBrowserConfig = void 0;
+const typescript_1 = require("typescript");
 const utils_1 = require("../../utils");
 const plugins_1 = require("../plugins");
 const helpers_1 = require("../utils/helpers");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 function getBrowserConfig(wco) {
     const { buildOptions } = wco;
     const { crossOrigin = 'none', subresourceIntegrity, extractLicenses, vendorChunk, commonChunk, allowedCommonJsDependencies, } = buildOptions;
@@ -20,6 +29,18 @@ function getBrowserConfig(wco) {
         const SubresourceIntegrityPlugin = require('webpack-subresource-integrity');
         extraPlugins.push(new SubresourceIntegrityPlugin({
             hashFuncNames: ['sha384'],
+        }));
+    }
+    if (extractLicenses) {
+        const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
+        extraPlugins.push(new LicenseWebpackPlugin({
+            stats: {
+                warnings: false,
+                errors: false,
+            },
+            perChunkOutput: false,
+            outputFilename: '3rdpartylicenses.txt',
+            skipChildCompilers: true,
         }));
     }
     if (scriptsSourceMap || stylesSourceMap) {
@@ -37,11 +58,12 @@ function getBrowserConfig(wco) {
         devtool: false,
         resolve: {
             mainFields: ['es2015', 'browser', 'module', 'main'],
-            conditionNames: ['es2015', '...'],
         },
+        target: wco.tsConfig.options.target === typescript_1.ScriptTarget.ES5
+            ? ['web', 'es5']
+            : 'web',
         output: {
             crossOriginLoading,
-            trustedTypes: 'angular#bundler',
         },
         optimization: {
             runtimeChunk: 'single',
@@ -74,9 +96,14 @@ function getBrowserConfig(wco) {
             new plugins_1.CommonJsUsageWarnPlugin({
                 allowedDependencies: allowedCommonJsDependencies,
             }),
+            new NodePolyfillPlugin({
+                excludeAliases: ["console"]
+            }),
             ...extraPlugins,
         ],
-        node: false,
+        node: {
+            global: true,
+        }
     };
 }
 exports.getBrowserConfig = getBrowserConfig;

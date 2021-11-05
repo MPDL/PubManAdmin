@@ -11,20 +11,13 @@
 //    "strictNullChecks": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "target": "es2015",
+    "target": "es2017",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "es6",
-      "es2017",
+      "es2020",
       "dom"
-    ],
-    "paths": {
-      "core-js/es7/reflect": [
-        "node_modules/core-js/proposals/reflect-metadata"
-      ],
-      "core-js/es6/*": ["node_modules/core-js/es/*"]
-    }
+    ]
   }
 }

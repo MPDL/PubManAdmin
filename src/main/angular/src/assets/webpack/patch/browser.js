@@ -59,7 +59,7 @@ function getBrowserConfig(wco) {
         resolve: {
             mainFields: ['es2015', 'browser', 'module', 'main'],
         },
-        target: wco.tsConfig.options.target === typescript_1.ScriptTarget.ES5 || buildBrowserFeatures.isEs5SupportNeeded()
+        target: wco.tsConfig.options.target === typescript_1.ScriptTarget.ES5
             ? ['web', 'es5']
             : 'web',
         output: {
