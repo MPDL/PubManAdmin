@@ -32,14 +32,14 @@ export class ContextListComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
 
   constructor(
-    private ctxSvc: ContextsService,
+    private contextsService: ContextsService,
     private router: Router,
-    private message: MessagesService,
-    private loginService: AuthenticationService,
+    private messagesService: MessagesService,
+    private authenticationService: AuthenticationService,
   ) {}
 
   ngOnInit() {
-    this.subscription = this.loginService.token$.subscribe((token) => this.token = token);
+    this.subscription = this.authenticationService.token$.subscribe((token) => this.token = token);
     this.listAllContexts(this.token);
   }
 
@@ -49,19 +49,19 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.loading = true;
-    this.ctxSvc.getAll(this.url, this.token, page)
+    this.contextsService.getAll(this.url, this.token, page)
       .subscribe((result) => {
         this.ctxs = result.list;
         this.total = result.records;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
     this.currentPage = page;
     this.loading = false;
   }
 
   listAllContexts(token) {
-    this.ctxSvc.getAll(this.url, token, 1)
+    this.contextsService.getAll(this.url, token, 1)
       .subscribe((ctxs) => {
         this.ctxs = ctxs.list;
         this.total = ctxs.records;
@@ -94,7 +94,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   returnSuggestedContexts(term) {
     const contextNames: any[] = [];
     const queryString = '?q=name.auto:' + term;
-    this.ctxSvc.filter(this.url, null, queryString, 1)
+    this.contextsService.filter(this.url, null, queryString, 1)
       .subscribe((res) => {
         res.list.forEach((ctx) => {
           contextNames.push(ctx);
@@ -105,7 +105,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
           this.contextnames = [];
         }
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -115,7 +115,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
       const body = mpgOus4auto;
       body.query.bool.must.term['metadata.name.auto'] = term;
       const url = environment.rest_ous;
-      this.ctxSvc.query(url, null, body)
+      this.contextsService.query(url, null, body)
         .subscribe((res) => {
           res.list.forEach((ou) => {
             ouNames.push(ou);
@@ -126,7 +126,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
             this.ounames = [];
           }
         }, (err) => {
-          this.message.error(err);
+          this.messagesService.error(err);
         });
     }
   }
@@ -134,16 +134,16 @@ export class ContextListComponent implements OnInit, OnDestroy {
   filter(ou) {
     this.selectedOUName = ou;
     this.currentPage = 1;
-    this.ctxSvc.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
+    this.contextsService.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe((res) => {
         this.ctxs = res.list;
         if (res.records > 0) {
           this.total = res.records;
         } else {
-          this.message.info('query did not return any results.');
+          this.messagesService.info('query did not return any results.');
         }
       }, (err) => {
-        this.message.error(JSON.stringify(err));
+        this.messagesService.error(JSON.stringify(err));
       });
     this.title = 'Contexts for ' + this.selectedOUName.name;
     this.closeOUNames();

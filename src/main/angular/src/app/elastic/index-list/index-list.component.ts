@@ -17,21 +17,21 @@ export class IndexListComponent implements OnInit {
   indexList: string[] = [];
 
   constructor(
-    private elastic: ElasticService,
-    private message: MessagesService,
-    private fb: FormBuilder,
+    private elasticService: ElasticService,
+    private messagesService: MessagesService,
+    private formBuilder: FormBuilder,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.list();
-    this.aliasForm = this.fb.group({
-      indexAliases: this.fb.array([this.initAliasForm()]),
+    this.aliasForm = this.formBuilder.group({
+      indexAliases: this.formBuilder.array([this.initAliasForm()]),
     });
   }
 
   initAliasForm() {
-    return this.fb.group({
+    return this.formBuilder.group({
       action: 'add',
       index: '',
       alias: '',
@@ -52,8 +52,8 @@ export class IndexListComponent implements OnInit {
 
   async list() {
     try {
-      this.indices = await this.elastic.listAllIndices();
-      this.aliases = await this.elastic.listAliases();
+      this.indices = await this.elasticService.listAllIndices();
+      this.aliases = await this.elasticService.listAliases();
 
       this.indices.sort((a, b) => {
         if (a.index < b.index) {
@@ -71,7 +71,7 @@ export class IndexListComponent implements OnInit {
         }
       });
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
@@ -86,12 +86,12 @@ export class IndexListComponent implements OnInit {
   async delete(index) {
     if (confirm('you\'re about 2 delete ' + index.index)) {
       try {
-        const res = await this.elastic.delete(index.index);
+        const res = await this.elasticService.delete(index.index);
         const pos = this.indices.indexOf(index);
         this.indices.splice(pos, 1);
-        this.message.success('deleted ' + index.index + '\n' + JSON.stringify(res));
+        this.messagesService.success('deleted ' + index.index + '\n' + JSON.stringify(res));
       } catch (e) {
-        this.message.error(e);
+        this.messagesService.error(e);
       }
     }
   }
@@ -109,10 +109,10 @@ export class IndexListComponent implements OnInit {
     aliases.indexAliases.forEach((alias) => {
       switch (alias.action) {
       case 'add': {
-        this.elastic.addAlias(alias.index, alias.alias)
-          .then((response) => this.message.info(JSON.stringify(response)))
+        this.elasticService.addAlias(alias.index, alias.alias)
+          .then((response) => this.messagesService.info(JSON.stringify(response)))
           .catch((err) => {
-            this.message.error(err);
+            this.messagesService.error(err);
           });
         break;
       }
@@ -123,10 +123,10 @@ export class IndexListComponent implements OnInit {
         } else {
           a2remove = alias.alias;
         }
-        this.elastic.removeAlias(alias.index, a2remove)
-          .then((response) => this.message.info(JSON.stringify(response)))
+        this.elasticService.removeAlias(alias.index, a2remove)
+          .then((response) => this.messagesService.info(JSON.stringify(response)))
           .catch((err) => {
-            this.message.error(err);
+            this.messagesService.error(err);
           });
         break;
       }

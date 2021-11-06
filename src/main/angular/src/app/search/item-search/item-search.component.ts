@@ -45,11 +45,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   index: string = 'default';
 
   constructor(
-    private elastic: ElasticSearchService,
-    private search: SearchService,
-    private message: MessagesService,
-    private login: AuthenticationService,
-    private fb: FormBuilder
+    private elasticSearchService: ElasticSearchService,
+    private searchService: SearchService,
+    private messagesService: MessagesService,
+    private authenticationservice: AuthenticationService,
+    private formBuilder: FormBuilder
   ) {}
 
   get diagnostic() {
@@ -60,10 +60,10 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     for (const itemAgg in itemAggs) {
       this.aggregationsList.push(itemAgg);
     }
-    this.fields2Select = this.elastic.getMappingFields(environment.item_index.name, environment.item_index.type);
-    this.subscription = this.login.token$.subscribe((token) => this.token = token);
-    this.searchForm = this.fb.group({
-      searchTerms: this.fb.array([this.initSearchTerm()]),
+    this.fields2Select = this.elasticSearchService.getMappingFields(environment.item_index.name, environment.item_index.type);
+    this.subscription = this.authenticationservice.token$.subscribe((token) => this.token = token);
+    this.searchForm = this.formBuilder.group({
+      searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
   }
 
@@ -72,7 +72,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   }
 
   initSearchTerm() {
-    return this.fb.group({
+    return this.formBuilder.group({
       type: '',
       field: '',
       searchTerm: '',
@@ -96,15 +96,15 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.selectedAggregation = itemAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = this.elastic.buckets(environment.item_index.name, this.selectedAggregation, false);
+      this.years = this.elasticSearchService.buckets(environment.item_index.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'genre':
-      this.genres = this.elastic.buckets(environment.item_index.name, this.selectedAggregation, false);
+      this.genres = this.elasticSearchService.buckets(environment.item_index.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'publisher':
-      this.publishers = this.elastic.buckets(environment.item_index.name, this.selectedAggregation, true);
+      this.publishers = this.elasticSearchService.buckets(environment.item_index.name, this.selectedAggregation, true);
       this.selected = agg;
       break;
     default:
@@ -114,27 +114,27 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    const body = this.search.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.title.keyword', 'asc');
+    const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.title.keyword', 'asc');
     this.loading = true;
-    this.search.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.item_rest_url, this.token, body)
       .subscribe((res) => {
         this.total = res.records;
         this.currentPage = page;
         this.items = res.list;
         this.loading = false;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
   searchItems(body) {
     this.currentPage = 1;
-    this.search.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.item_rest_url, this.token, body)
       .subscribe((items) => {
         this.items = items.list;
         this.total = items.records;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -149,14 +149,14 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     const terms = [term];
     const request = new SearchRequest();
     request.searchTerms = terms;
-    const body = this.search.buildQuery(request, 25, 0, 'creationDate', 'asc');
-    this.search.query(this.item_rest_url, this.token, body)
+    const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
+    this.searchService.query(this.item_rest_url, this.token, body)
     // this.search.filter(this.item_rest_url, this.token, '?q=creationDate:' + year.key_as_string + '||/y', 1)
       .subscribe((items) => {
         this.items = items.list;
         this.total = items.records;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -164,12 +164,12 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'metadata.genre', searchTerm: genre.key}]);
     this.currentPage = 1;
-    this.search.filter(this.item_rest_url, this.token, '?q=metadata.genre:' + genre.key, 1)
+    this.searchService.filter(this.item_rest_url, this.token, '?q=metadata.genre:' + genre.key, 1)
       .subscribe((items) => {
         this.items = items.list;
         this.total = items.records;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -181,12 +181,12 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter',
       field: 'metadata.sources.publishingInfo.publisher.keyword', searchTerm: publisher.key}]);
     this.currentPage = 1;
-    this.search.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.item_rest_url, this.token, body)
       .subscribe((items) => {
         this.items = items.list;
         this.total = items.records;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -207,7 +207,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    const preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, 'metadata.title.keyword', 'asc');
+    const preparedBody = this.searchService.buildQuery(this.searchRequest, 25, 0, 'metadata.title.keyword', 'asc');
     this.searchItems(preparedBody);
   }
 

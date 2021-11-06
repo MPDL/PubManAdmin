@@ -20,18 +20,18 @@ export class ElasticSearchComponent implements OnInit {
   fields2Select: string[] = [];
 
   constructor(
-    private fb : FormBuilder,
-    private service: ElasticService,
+    private formBuilder : FormBuilder,
+    private elasticService: ElasticService,
     private searchservice: SearchService,
-    private message: MessagesService
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
-    this.searchForm = this.fb.group({
+    this.searchForm = this.formBuilder.group({
       remote_url: '',
       source_index: ['', Validators.required],
       target_index: ['', Validators.required],
-      searchTerms: this.fb.array([this.initSearchTerm()]),
+      searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
     this.getList();
   }
@@ -39,23 +39,23 @@ export class ElasticSearchComponent implements OnInit {
   async changeList() {
     const remoteUrl = this.searchForm.get('remote_url').value;
     try {
-      this.source_list = await this.service.listRemoteIndices(remoteUrl);
+      this.source_list = await this.elasticService.listRemoteIndices(remoteUrl);
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   async getList() {
     try {
-      this.source_list = await this.service.listAllIndices();
+      this.source_list = await this.elasticService.listAllIndices();
       this.target_list = this.source_list;
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   initSearchTerm() {
-    return this.fb.group({
+    return this.formBuilder.group({
       type: '',
       field: '',
       searchTerm: '',
@@ -89,7 +89,7 @@ export class ElasticSearchComponent implements OnInit {
       const target = this.searchForm.get('target_index').value;
       this.searchRequest = this.prepareRequest();
       const body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc');
-      this.service.scrollwithcallback(url, source, body, async (cb) => {
+      this.elasticService.scrollwithcallback(url, source, body, async (cb) => {
         const docs = [];
         cb.forEach(async (doc) => {
           const temp = {index: {_index: target, _type: doc._type, _id: doc._id}};
@@ -97,14 +97,14 @@ export class ElasticSearchComponent implements OnInit {
           docs.push(doc._source);
         });
         try {
-          const go4it = await this.service.bulkIndex(docs);
-          this.message.success(JSON.stringify(go4it));
+          const go4it = await this.elasticService.bulkIndex(docs);
+          this.messagesService.success(JSON.stringify(go4it));
         } catch (e) {
-          this.message.error(e);
+          this.messagesService.error(e);
         }
       });
     } else {
-      this.message.error('form invalid? '+this.searchForm.hasError);
+      this.messagesService.error('form invalid? '+this.searchForm.hasError);
     }
   }
 
@@ -133,7 +133,7 @@ export class ElasticSearchComponent implements OnInit {
       url = null;
     }
     const index = this.searchForm.get('source_index').value;
-    this.service.scrollwithcallback(url, index, body, (hits) => {
+    this.elasticService.scrollwithcallback(url, index, body, (hits) => {
       this.searchResult = hits;
     });
   }
@@ -143,10 +143,10 @@ export class ElasticSearchComponent implements OnInit {
     const dest = this.searchForm.get('target_index').value;
     const body = {source: {index: source}, dest: {index: dest}};
     try {
-      const result = await this.service.reindex(body);
-      this.message.success(JSON.stringify(result));
+      const result = await this.elasticService.reindex(body);
+      this.messagesService.success(JSON.stringify(result));
     } catch (e) {
-      this, this.message.error(e);
+      this, this.messagesService.error(e);
     }
   }
 

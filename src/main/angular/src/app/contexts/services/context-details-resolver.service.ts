@@ -13,8 +13,8 @@ import {environment} from 'environments/environment';
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
   constructor(
-    private ctxSvc: ContextsService,
-    private message: MessagesService
+    private contextsService: ContextsService,
+    private messagesService: MessagesService
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<Context> {
@@ -30,11 +30,11 @@ export class ContextDetailsResolverService implements Resolve<any> {
       return of(ctx);
     } else {
       const token = route.params['token'];
-      return this.ctxSvc.get(url, id, token)
+      return this.contextsService.get(url, id, token)
         .pipe(
           first(),
           catchError((err) => {
-            this.message.error(err);
+            this.messagesService.error(err);
             return observableThrowError(err);
           })
         );

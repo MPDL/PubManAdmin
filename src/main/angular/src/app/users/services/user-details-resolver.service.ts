@@ -9,7 +9,7 @@ import {environment} from 'environments/environment';
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {
   constructor(
-    private userSvc: UsersService,
+    private usersService: UsersService,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<User> {
@@ -26,13 +26,13 @@ export class UserDetailsResolverService implements Resolve<User> {
     } else {
       const token = route.queryParams['token'];
       let user: User;
-      return this.userSvc.get(url, id, token)
+      return this.usersService.get(url, id, token)
         .pipe(
           first(),
           map((response) => {
             user = response;
             if (user.grantList) {
-              user.grantList.forEach((grant) => this.userSvc.addNamesOfGrantRefs(grant));
+              user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
             }
             return user;
           })
@@ -41,7 +41,7 @@ export class UserDetailsResolverService implements Resolve<User> {
   }
 
   generateRandomPassword(user: User) {
-    this.userSvc.generateRandomPassword()
+    this.usersService.generateRandomPassword()
       .subscribe((pw) => user.password = pw.toString());
   }
 }

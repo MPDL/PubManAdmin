@@ -26,7 +26,7 @@ export class SuggestionComponent implements OnInit {
   searchResult: Observable<any>;
 
   constructor(
-    private service: PubmanRestService
+    private pubmanRestService: PubmanRestService
   ) {}
 
   ngOnInit() {
@@ -44,7 +44,7 @@ export class SuggestionComponent implements OnInit {
   search(val) {
     const body = mpgOus4auto;
     body.query.bool.must.term['metadata.name.auto'] = val;
-    return this.service.query(this.url, null, body);
+    return this.pubmanRestService.query(this.url, null, body);
   }
 
   filter(selected) {

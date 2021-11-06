@@ -15,12 +15,12 @@ export class FooterComponent implements OnInit {
   hostname;
 
   constructor(
-    private conn: ConnectionService
+    private connectionService: ConnectionService
   ) {}
 
   ngOnInit() {
     this.appVersion = appVersion;
     this.appHome = appHome;
-    this.conn.conn.subscribe((name) => this.hostname = name);
+    this.connectionService.connectionService.subscribe((name) => this.hostname = name);
   }
 }

@@ -12,8 +12,8 @@ export class ElasticStartComponent implements OnInit {
   host: any;
 
   constructor(
-    private elastic: ElasticService,
-    private message: MessagesService
+    private elasticService: ElasticService,
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
@@ -22,16 +22,16 @@ export class ElasticStartComponent implements OnInit {
 
   async getInfo() {
     try {
-      this.info = await this.elastic.info_api();
+      this.info = await this.elasticService.info_api();
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
       this.info = null;
     }
   }
 
   connect2(server) {
     this.host = server;
-    this.elastic.connect2(this.host);
+    this.elasticService.connect2(this.host);
     this.getInfo();
   }
 }

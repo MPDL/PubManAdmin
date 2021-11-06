@@ -30,9 +30,7 @@ export class OUTreeFlatNode {
   ) {}
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class OrganizationTree2Service {
   dataChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
   nodeMap: Map<string, OUTreeNode> = new Map<string, OUTreeNode>();
@@ -42,8 +40,8 @@ export class OrganizationTree2Service {
   }
 
   constructor(
-    private service: OrganizationsService,
-    private message: MessagesService
+    private organizationService: OrganizationsService,
+    private messagesService: MessagesService
   ) {}
 
   async initialize() {
@@ -59,18 +57,18 @@ export class OrganizationTree2Service {
       tlous.list.forEach((ou) => data.push(this.generateNode(ou)));
       this.dataChange.next(data);
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   getTopLevelOUs() {
     const body = allTopLevelOUs;
-    const tops = this.service.query(environment.rest_ous, null, body).toPromise();
+    const tops = this.organizationService.query(environment.rest_ous, null, body).toPromise();
     return tops;
   }
 
   getChildren4OU(id) {
-    const resp = this.service.listChildren4Ou(id, null).toPromise();
+    const resp = this.organizationService.listChildren4Ou(id, null).toPromise();
     return resp;
   }
 
@@ -87,7 +85,7 @@ export class OrganizationTree2Service {
         parent.childrenChange.next(nodes);
         this.dataChange.next(this.dataChange.value);
       }).catch((err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 

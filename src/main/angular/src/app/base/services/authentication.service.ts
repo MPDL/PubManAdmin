@@ -39,10 +39,10 @@ export class AuthenticationService {
 
   constructor(
     private http: HttpClient,
-    private messages: MessagesService,
-    private conn: ConnectionService
+    private messagesService: MessagesService,
+    private connectionService: ConnectionService
   ) {
-    this.conn.conn.subscribe((name) => this.tokenUrl = name + '/rest/login');
+    this.connectionService.connectionService.subscribe((name) => this.tokenUrl = name + '/rest/login');
   }
 
   login(username, password) {
@@ -62,7 +62,7 @@ export class AuthenticationService {
           this.setIsLoggedIn(true);
           return token;
         } else {
-          this.messages.error(response.status + ' ' + response.statusText);
+          this.messagesService.error(response.status + ' ' + response.statusText);
         }
       }),
       catchError((err) => {

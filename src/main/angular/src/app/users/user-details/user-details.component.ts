@@ -43,12 +43,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private usersService: UsersService,
-    private messageService: MessagesService,
-    private loginService: AuthenticationService,
+    private messagesService: MessagesService,
+    private authenticationService: AuthenticationService,
   ) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.loginService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
 
     this.selected = this.route.snapshot.data['user'];
 
@@ -100,7 +100,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selectedGrant = grant;
     const ref = this.selectedGrant.objectRef;
     if (ref === undefined) {
-      this.messageService.warning('the reference of the selected grant is undefined!');
+      this.messagesService.warning('the reference of the selected grant is undefined!');
     } else {
       if (ref.startsWith('ou')) {
         this.router.navigate(['/organization', ref]);
@@ -135,7 +135,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   notAllowed(whatthehackever) {
-    this.messageService.warning('you\'re not authorized !');
+    this.messagesService.warning('you\'re not authorized !');
   }
 
   generateRandomPassword(user) {
@@ -148,12 +148,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe((u) => {
           this.selected = u;
-          this.messageService.success(u.loginname + ':  password was reset to ' + user.password);
+          this.messagesService.success(u.loginname + ':  password was reset to ' + user.password);
         }, (error) => {
-          this.messageService.error(error);
+          this.messagesService.error(error);
         });
     } else {
-      this.messageService.warning('password will not be reset for deactivated user!');
+      this.messagesService.warning('password will not be reset for deactivated user!');
     }
   }
 
@@ -162,12 +162,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe((u) => {
           this.selected = u;
-          this.messageService.success(u.loginname + ':  password has changed to ' + user.password);
+          this.messagesService.success(u.loginname + ':  password has changed to ' + user.password);
         }, (error) => {
-          this.messageService.error(error);
+          this.messagesService.error(error);
         });
     } else {
-      this.messageService.error('password must not be empty!');
+      this.messagesService.error('password must not be empty!');
     }
   }
 
@@ -177,17 +177,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.deactivate(this.selected, this.token)
         .subscribe((user2deactivate) => {
           this.selected = user2deactivate;
-          this.messageService.success('Deactivated ' + this.selected.objectId);
+          this.messagesService.success('Deactivated ' + this.selected.objectId);
         }, (error) => {
-          this.messageService.error(error);
+          this.messagesService.error(error);
         });
     } else {
       this.usersService.activate(this.selected, this.token)
         .subscribe((user2activate) => {
           this.selected = user2activate;
-          this.messageService.success('Activated ' + this.selected.objectId);
+          this.messagesService.success('Activated ' + this.selected.objectId);
         }, (error) => {
-          this.messageService.error(error);
+          this.messagesService.error(error);
         });
     }
   }
@@ -195,11 +195,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   save(user2save) {
     this.selected = user2save;
     if (this.selected.loginname.includes(' ')) {
-      this.messageService.warning('loginname MUST NOT contain spaces');
+      this.messagesService.warning('loginname MUST NOT contain spaces');
       return;
     }
     if (this.selected.name == null) {
-      this.messageService.warning('name MUST NOT be empty');
+      this.messagesService.warning('name MUST NOT be empty');
       return;
     }
     if (this.isNewUser) {
@@ -209,20 +209,20 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         aff.objectId = ouId;
         this.selected.affiliation = aff;
       } else {
-        this.messageService.warning('you MUST select an organization');
+        this.messagesService.warning('you MUST select an organization');
         return;
       }
       this.usersService.post(this.url, this.selected, this.token)
         .subscribe(
           (data) => {
-            this.messageService.success('added new user ' + this.selected.loginname + ' with password ' + this.selected.password);
+            this.messagesService.success('added new user ' + this.selected.loginname + ' with password ' + this.selected.password);
             this.isNewUser = false;
             this.isNewOu = false;
             this.selected = data;
             // this.gotoList();
           },
           (error) => {
-            this.messageService.error(error);
+            this.messagesService.error(error);
           }
         );
     } else {
@@ -233,14 +233,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           aff.objectId = ouId;
           this.selected.affiliation = aff;
         } else {
-          this.messageService.warning('you MUST select an organization');
+          this.messagesService.warning('you MUST select an organization');
           return;
         }
       }
       this.usersService.put(this.url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
           (data) => {
-            this.messageService.success('updated ' + this.selected.loginname);
+            this.messagesService.success('updated ' + this.selected.loginname);
             // this.gotoList();
             this.isNewOu = false;
             this.isNewGrant = false;
@@ -253,7 +253,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
               });
           },
           (error) => {
-            this.messageService.error(error);
+            this.messagesService.error(error);
           }
         );
     }
@@ -265,11 +265,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       if (this.selected.grantList) {
         this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
       }
-      this.messageService.success('removed Grants from ' + this.selected.loginname);
+      this.messagesService.success('removed Grants from ' + this.selected.loginname);
       this.selectedGrants = null;
       this.grants2remove = false;
     }, (error) => {
-      this.messageService.error(error);
+      this.messagesService.error(error);
     });
   }
 
@@ -280,10 +280,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
           (data) => {
-            this.messageService.success('deleted ' + id + ' ' + data);
+            this.messagesService.success('deleted ' + id + ' ' + data);
           },
           (error) => {
-            this.messageService.error(error);
+            this.messagesService.error(error);
           }
         );
       this.selected = null;
@@ -314,7 +314,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           this.ounames = [];
         }
       }, (err) => {
-        this.messageService.error(err);
+        this.messagesService.error(err);
       });
   }
 

@@ -10,11 +10,11 @@ export class ElasticService {
   public uri: string;
 
   constructor(
-    protected messages: MessagesService,
-    private conn: ConnectionService
+    protected messagesService: MessagesService,
+    protected connectionService: ConnectionService
   ) {
     if (!this.client) {
-      this.conn.conn.subscribe((name) => {
+      this.connectionService.connectionService.subscribe((name) => {
         this.uri = name + environment.elastic_url;
         this.connect(this.uri);
       });
@@ -35,7 +35,7 @@ export class ElasticService {
     },
     (error, response) => {
       if (error) {
-        this.messages.error(error);
+        this.messagesService.error(error);
       }
       if (response) {
         callback(response.hits.total);
@@ -62,7 +62,7 @@ export class ElasticService {
       },
       (error, response) => {
         if (error) {
-          this.messages.error(error);
+          this.messagesService.error(error);
         }
         if (response) {
           const hitList = [];

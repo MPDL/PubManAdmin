@@ -25,7 +25,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private message: MessagesService,
+    private messagesService: MessagesService,
     private login: AuthenticationService
   ) {}
 
@@ -65,7 +65,7 @@ export class UploadComponent implements OnInit, OnDestroy {
           this.isInProgress = true;
           this.progress.percentage = Math.round(100 * event.loaded / event.total);
         } else if (event instanceof HttpResponse) {
-          this.message.info(event.status + ' ' + event.statusText + ' upload complete!');
+          this.messagesService.info(event.status + ' ' + event.statusText + ' upload complete!');
           this.isInProgress = false;
           this.selectedFile.nativeElement.value = '';
           this.filesToUpload = undefined;

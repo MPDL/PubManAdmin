@@ -18,10 +18,10 @@ export class UsersService extends PubmanRestService {
   user: User;
 
   constructor(
-    httpc: HttpClient,
-    conn: ConnectionService
+    protected httpc: HttpClient,
+    protected connectionService: ConnectionService
   ) {
-    super(httpc, conn);
+    super(httpc, connectionService);
   }
 
   activate(user: User, token: string): Observable<User> {

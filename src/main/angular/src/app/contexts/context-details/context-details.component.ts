@@ -41,11 +41,11 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectedWorkflow: string;
 
   constructor(
-    private ctxSvc: ContextsService,
+    private contextsService: ContextsService,
     private router: Router,
     private route: ActivatedRoute,
-    private login: AuthenticationService,
-    private message: MessagesService
+    private authenticationService: AuthenticationService,
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
@@ -54,7 +54,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.isNewCtx = true;
       this.listOuNames();
     }
-    this.loginSubscription = this.login.token$.subscribe((token) => this.token = token);
+    this.loginSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
     this.genres2display = Object.keys(genres).filter((val) => val.match(/^[A-Z]/));
     this.initializeAllowed(this.ctx);
 
@@ -84,7 +84,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   listOuNames() {
     const body = allOpenedOUs;
-    this.ctxSvc.query(this.ous_url, null, body)
+    this.contextsService.query(this.ous_url, null, body)
       .subscribe((ous) => this.ous = ous.list);
   }
 
@@ -93,12 +93,12 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedCtx(id) {
-    this.ctxSvc.get(this.url, id, this.token)
+    this.contextsService.get(this.url, id, this.token)
       .subscribe((ctx) => {
         this.ctx = ctx;
       },
       (error) => {
-        this.message.error(error);
+        this.messagesService.error(error);
       });
   }
 
@@ -165,20 +165,20 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   activateContext(ctx) {
     this.ctx = ctx;
     if (this.ctx.state === 'CREATED' || this.ctx.state === 'CLOSED') {
-      this.ctxSvc.openContext(this.ctx, this.token)
+      this.contextsService.openContext(this.ctx, this.token)
         .subscribe((httpStatus) => {
           this.getSelectedCtx(this.ctx.objectId);
-          this.message.success('Opened ' + ctx.objectId + ' ' + httpStatus);
+          this.messagesService.success('Opened ' + ctx.objectId + ' ' + httpStatus);
         }, (error) => {
-          this.message.error(error);
+          this.messagesService.error(error);
         });
     } else {
-      this.ctxSvc.closeContext(this.ctx, this.token)
+      this.contextsService.closeContext(this.ctx, this.token)
         .subscribe((httpStatus) => {
           this.getSelectedCtx(this.ctx.objectId);
-          this.message.success('Closed ' + ctx.objectId + ' ' + httpStatus);
+          this.messagesService.success('Closed ' + ctx.objectId + ' ' + httpStatus);
         }, (error) => {
-          this.message.error(error);
+          this.messagesService.error(error);
         });
     }
   }
@@ -187,12 +187,12 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx = ctx;
     const id = this.ctx.objectId;
     if (confirm('delete '+ctx.name+' ?')) {
-      this.ctxSvc.delete(this.url + '/' + id, this.ctx, this.token)
+      this.contextsService.delete(this.url + '/' + id, this.ctx, this.token)
         .subscribe(
           (data) => {
-            this.message.success('deleted ' + id + ' ' + data);
+            this.messagesService.success('deleted ' + id + ' ' + data);
           }, (error) => {
-            this.message.error(error);
+            this.messagesService.error(error);
           });
       this.gotoList();
     }
@@ -205,7 +205,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   save(ctx2save) {
     this.ctx = ctx2save;
     if (this.ctx.name.includes('new ctx')) {
-      this.message.warning('name MUST NOT be new ctx');
+      this.messagesService.warning('name MUST NOT be new ctx');
       return;
     }
 
@@ -216,42 +216,42 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         aff.objectId = ouId;
         this.ctx.responsibleAffiliations.push(aff);
       } else {
-        this.message.warning('you MUST select an organization');
+        this.messagesService.warning('you MUST select an organization');
         return;
       }
       if (this.ctx.allowedGenres.length === 0) {
-        this.message.warning('select at least one allowed genre');
+        this.messagesService.warning('select at least one allowed genre');
         return;
       }
-      this.ctxSvc.post(this.url, this.ctx, this.token)
+      this.contextsService.post(this.url, this.ctx, this.token)
         .subscribe(
           (data) => {
-            this.message.success('added new context ' + this.ctx.name);
+            this.messagesService.success('added new context ' + this.ctx.name);
             this.isNewCtx = false;
             this.ctx = data;
             this.initializeAllowed(this.ctx);
             // this.gotoList();
           },
           (error) => {
-            this.message.error(error);
+            this.messagesService.error(error);
           }
         );
     } else {
       if (this.ctx.allowedGenres.length === 0) {
-        this.message.warning('select at least one allowed genre');
+        this.messagesService.warning('select at least one allowed genre');
         return;
       }
-      // this.message.success('updating ' + this.ctx.objectId);
-      this.ctxSvc.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
+      // this.messagesService.success('updating ' + this.ctx.objectId);
+      this.contextsService.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe(
           (data) => {
-            this.message.success('updated ' + this.ctx.objectId);
+            this.messagesService.success('updated ' + this.ctx.objectId);
             // this.gotoList();
             this.ctx = data;
             this.initializeAllowed(this.ctx);
           },
           (error) => {
-            this.message.error(error);
+            this.messagesService.error(error);
           }
         );
     }
@@ -269,7 +269,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const ouNames: any[] = [];
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.ctxSvc.filter(url, null, queryString, 1)
+    this.contextsService.filter(url, null, queryString, 1)
       .subscribe((res) => {
         res.list.forEach((ou) => {
           ouNames.push(ou);
@@ -280,7 +280,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           this.ounames = [];
         }
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 

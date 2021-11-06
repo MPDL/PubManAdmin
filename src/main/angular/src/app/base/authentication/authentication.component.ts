@@ -19,7 +19,7 @@ export class AuthenticationComponent implements OnInit {
   user: User;
 
   constructor(
-    private messages: MessagesService,
+    private messagesService: MessagesService,
     private authentication: AuthenticationService
   ) {}
 
@@ -34,7 +34,7 @@ export class AuthenticationComponent implements OnInit {
           this.loggedIn = true;
         },
         (error) => {
-          this.messages.error(error);
+          this.messagesService.error(error);
           this.loggedIn = false;
         }
       );
@@ -62,7 +62,7 @@ export class AuthenticationComponent implements OnInit {
             this.credentials.username = this.user.name;
           },
           (error) => {
-            this.messages.error(error);
+            this.messagesService.error(error);
             this.hasToken = false;
           }
         );

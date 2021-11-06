@@ -32,8 +32,8 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: ElasticService,
-    private message: MessagesService
+    private elasticService: ElasticService,
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
@@ -57,23 +57,23 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   async getIndex(name) {
     try {
-      this.index = await this.service.getIndex(name);
+      this.index = await this.elasticService.getIndex(name);
       this.settings = this.index[name].settings;
       this.mapping = this.index[name].mappings;
       this.aliases = this.index[name].aliases;
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   async addAlias(index) {
     try {
       const alias = prompt('new alias name:');
-      const response = await this.service.addAlias(index, alias);
-      this.message.success(JSON.stringify(response));
+      const response = await this.elasticService.addAlias(index, alias);
+      this.messagesService.success(JSON.stringify(response));
       this.getIndex(index);
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
@@ -86,54 +86,54 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       } else if (aliases.length === 1) {
         alias = aliases[0];
       }
-      const response = await this.service.removeAlias(index, alias);
-      this.message.success(JSON.stringify(response));
+      const response = await this.elasticService.removeAlias(index, alias);
+      this.messagesService.success(JSON.stringify(response));
       this.getIndex(index);
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   async getList() {
     try {
-      this.list = await this.service.listAllIndices();
+      this.list = await this.elasticService.listAllIndices();
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   async getIndexInfo(index) {
     try {
-      this.list = await this.service.listAllIndices();
+      this.list = await this.elasticService.listAllIndices();
       const selected = this.list.filter((result) => result.index === index);
       if (selected.length === 1) {
         this.index_info = selected[0];
       }
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   async getRemoteList(host) {
     this.remote = host;
     try {
-      this.list = await this.service.listRemoteIndices(this.remote);
+      this.list = await this.elasticService.listRemoteIndices(this.remote);
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
   async onChangeSettings(index) {
     try {
       if (this.remote != null) {
-        const settings = await this.service.getRemoteSettings4Index(this.remote, index);
+        const settings = await this.elasticService.getRemoteSettings4Index(this.remote, index);
         this.selectedSettings = this.cloneSettings(settings[index]);
       } else {
-        const settings = await this.service.getSettings4Index(index);
+        const settings = await this.elasticService.getSettings4Index(index);
         this.selectedSettings = this.cloneSettings(settings[index]);
       }
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
@@ -156,14 +156,14 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async onChangeMappings(index) {
     try {
       if (this.remote != null) {
-        const mapping = await this.service.getRemoteMapping4Index(this.remote, index);
+        const mapping = await this.elasticService.getRemoteMapping4Index(this.remote, index);
         this.selectedMapping = mapping[index];
       } else {
-        const mapping = await this.service.getMapping4Index(index);
+        const mapping = await this.elasticService.getMapping4Index(index);
         this.selectedMapping = mapping[index];
       }
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 
@@ -185,10 +185,10 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
         const body = {};
         Object.assign(body, this.selectedSettings, this.selectedMapping);
         try {
-          const res = await this.service.create(this.index_name, body);
-          this.message.success('created index ' + this.index_name + '\n' + JSON.stringify(res));
+          const res = await this.elasticService.create(this.index_name, body);
+          this.messagesService.success('created index ' + this.index_name + '\n' + JSON.stringify(res));
         } catch (e) {
-          this.message.error(e);
+          this.messagesService.error(e);
         }
       }
     } else {
@@ -199,16 +199,16 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async openOrClose(index) {
     try {
       if (index.status === 'open') {
-        const response = await this.service.closeIndex(index.index);
-        this.message.success(JSON.stringify(response));
+        const response = await this.elasticService.closeIndex(index.index);
+        this.messagesService.success(JSON.stringify(response));
         this.getIndexInfo(index.index);
       } else {
-        const response = await this.service.openIndex(index.index);
-        this.message.success(JSON.stringify(response));
+        const response = await this.elasticService.openIndex(index.index);
+        this.messagesService.success(JSON.stringify(response));
         this.getIndexInfo(index.index);
       }
     } catch (e) {
-      this.message.error(e);
+      this.messagesService.error(e);
     }
   }
 

@@ -11,11 +11,11 @@ export class ElasticService {
   url: string;
 
   constructor(
-    private message: MessagesService,
-    private conn: ConnectionService
+    private messagesService: MessagesService,
+    private connectionService: ConnectionService
   ) {
     if (!this.client) {
-      this.conn.conn.subscribe((name) => {
+      this.connectionService.connectionService.subscribe((name) => {
         this.url = name + environment.elastic_url;
         this.connect(this.url);
       });
@@ -169,7 +169,7 @@ export class ElasticService {
   }
 
   scrollwithcallback(url, index, term, callback): any {
-    const ms = this.message;
+    const ms = this.messagesService;
     const hitList = [];
     let ec: Client;
     if (url != null) {

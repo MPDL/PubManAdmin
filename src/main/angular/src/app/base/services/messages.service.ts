@@ -1,17 +1,13 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MessagesComponent} from '../messages/messages.component';
-import {Overlay} from '@angular/cdk/overlay';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class MessagesService {
   messageDialogRef: MatDialogRef<MessagesComponent>;
 
   constructor(
-    private dialog: MatDialog,
-    private overlay: Overlay
+    private dialog: MatDialog
   ) {}
 
   displayMessage(message?) {

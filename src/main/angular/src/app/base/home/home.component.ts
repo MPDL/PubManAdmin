@@ -17,14 +17,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   host: string;
 
   constructor(
-    private conn: ConnectionService,
+    private connectionService: ConnectionService,
     private login: AuthenticationService,
-    private message: MessagesService
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
     this.login_subscription = this.login.isLoggedIn$.subscribe((bool) => this.isLoggedIn = bool);
-    this.host_subscription = this.conn.conn.subscribe((name) => this.host = name);
+    this.host_subscription = this.connectionService.connectionService.subscribe((name) => this.host = name);
   }
 
   ngOnDestroy() {
@@ -38,9 +38,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (baseUrl === null) {
         return;
       }
-      this.conn.setConnection(baseUrl);
+      this.connectionService.setConnection(baseUrl);
     } else {
-      this.message.warning('you MUST logout, in order 2 change the connection!');
+      this.messagesService.warning('you MUST logout, in order 2 change the connection!');
     }
   }
 }

@@ -31,13 +31,13 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   constructor(
     private database: OrganizationTree2Service,
     private router: Router,
-    private loginService: AuthenticationService,
-    private service: OrganizationsService,
-    private message: MessagesService
+    private authenticationService: AuthenticationService,
+    private organizationService: OrganizationsService,
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
-    this.subscription = this.loginService.token$.subscribe((token) => this.token = token);
+    this.subscription = this.authenticationService.token$.subscribe((token) => this.token = token);
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OUTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
@@ -109,7 +109,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     const ouNames: any[] = [];
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.service.filter(url, null, queryString, 1)
+    this.organizationService.filter(url, null, queryString, 1)
       .subscribe((res) => {
         res.list.forEach((ou) => {
           ouNames.push(ou);
@@ -120,7 +120,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
           this.ounames = [];
         }
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 

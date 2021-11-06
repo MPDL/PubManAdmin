@@ -43,13 +43,13 @@ export class GrantsComponent implements OnInit, OnDestroy {
     tokenSubscription: Subscription;
 
     constructor(
-        private messageService: MessagesService,
-        private loginService: AuthenticationService,
+        private messagesService: MessagesService,
+        private authenticationService: AuthenticationService,
         private usersService: UsersService,
     ) {}
 
     ngOnInit() {
-      this.tokenSubscription = this.loginService.token$.subscribe((token) => this.token = token);
+      this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
       if (this.token != null) {
         this.getNewGrantSelect();
       }
@@ -95,11 +95,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
             const refId = this.selectedCtx.objectId;
             this.addGrant(rolename, refId);
           } else {
-            this.messageService.error('you must select a context!');
+            this.messagesService.error('you must select a context!');
           }
         }
       } else {
-        this.messageService.error('ROLE!!!');
+        this.messagesService.error('ROLE!!!');
       }
     }
 
@@ -127,15 +127,15 @@ export class GrantsComponent implements OnInit, OnDestroy {
             this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
           }
           this.selectedUserChange.emit(this.selectedUser);
-          this.messageService.success('added Grants to ' + this.selectedUser.loginname);
+          this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
           this.selectedGrants = null;
           this.grantsToAdd = '';
           this.isNewGrantChange.emit(false);
         }, (error) => {
-          this.messageService.error(error);
+          this.messagesService.error(error);
         });
       } else {
-        this.messageService.warning('no grant(s) selected !');
+        this.messagesService.warning('no grant(s) selected !');
       }
     }
 

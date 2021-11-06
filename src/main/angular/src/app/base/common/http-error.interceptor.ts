@@ -8,7 +8,7 @@ import {MessagesService} from '../services/messages.service';
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
-    private messages: MessagesService
+    private messagesService: MessagesService
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -16,11 +16,11 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       .pipe(
         catchError((err: HttpErrorResponse) => {
           if (err.error instanceof Error) {
-            this.messages.error(`${err.status}, ` + err.error.message);
+            this.messagesService.error(`${err.status}, ` + err.error.message);
           } else if (err.error instanceof Object) {
-            this.messages.error(`${err.status}, ERROR: ` + JSON.stringify(err.error));
+            this.messagesService.error(`${err.status}, ERROR: ` + JSON.stringify(err.error));
           } else {
-            this.messages.error(`${err.status}: ` + err.error);
+            this.messagesService.error(`${err.status}: ` + err.error);
           }
           return empty();
         })

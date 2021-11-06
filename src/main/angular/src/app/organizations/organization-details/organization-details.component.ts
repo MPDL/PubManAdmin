@@ -34,7 +34,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private ouSvc: OrganizationsService,
     private login: AuthenticationService,
-    private message: MessagesService
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
@@ -70,7 +70,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           this.predecessors = [];
         }
       }, (error) => {
-        this.message.error(error);
+        this.messagesService.error(error);
       });
   }
 
@@ -91,17 +91,17 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ouSvc.openOu(this.selected, this.token)
         .subscribe((httpStatus) => {
           this.getSelectedOu(this.selected.objectId, this.token);
-          this.message.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
+          this.messagesService.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
         }, (error) => {
-          this.message.error(error);
+          this.messagesService.error(error);
         });
     } else {
       this.ouSvc.closeOu(this.selected, this.token)
         .subscribe((httpStatus) => {
           this.getSelectedOu(this.selected.objectId, this.token);
-          this.message.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
+          this.messagesService.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
         }, (error) => {
-          this.message.error(error);
+          this.messagesService.error(error);
         });
     }
   }
@@ -186,34 +186,34 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   save(ou) {
     this.selected = ou;
     if (this.selected.parentAffiliation.objectId === '') {
-      this.message.warning('parent id MUST NOT be empty');
+      this.messagesService.warning('parent id MUST NOT be empty');
       return;
     }
     if (this.selected.metadata.name.includes('new ou')) {
-      this.message.warning('name MUST NOT be new ou');
+      this.messagesService.warning('name MUST NOT be new ou');
       return;
     }
     if (this.isNewOrganization) {
       this.ouSvc.post(this.ou_rest_url, this.selected, this.token)
         .subscribe(
           (data) => {
-            this.message.success('added new organization ' + this.selected.metadata.name);
+            this.messagesService.success('added new organization ' + this.selected.metadata.name);
             this.isNewOrganization = false;
             this.selected = data;
           },
           (error) => {
-            this.message.error(error);
+            this.messagesService.error(error);
           });
     } else {
-      // this.message.success('updating ' + this.selected.objectId);
+      // this.messagesService.success('updating ' + this.selected.objectId);
       this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
           (data) => {
-            this.message.success('updated ' + this.selected.objectId);
+            this.messagesService.success('updated ' + this.selected.objectId);
             this.selected = data;
           },
           (error) => {
-            this.message.error(error);
+            this.messagesService.error(error);
           }
         );
     }
@@ -226,10 +226,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe(
           (data) => {
-            this.message.success('deleted ' + id + ' ' + data);
+            this.messagesService.success('deleted ' + id + ' ' + data);
             this.gotoList();
           }, (error) => {
-            this.message.error(error);
+            this.messagesService.error(error);
           });
     }
   }
@@ -284,7 +284,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           this.ounames = [];
         }
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 

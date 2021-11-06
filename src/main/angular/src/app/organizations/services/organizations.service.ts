@@ -16,9 +16,9 @@ export class OrganizationsService extends PubmanRestService {
 
   constructor(
     protected httpc: HttpClient,
-    conn: ConnectionService
+    protected connectionService: ConnectionService
   ) {
-    super(httpc, conn);
+    super(httpc, connectionService);
   }
 
   getOuById(id: string, token: string): Observable<any> {

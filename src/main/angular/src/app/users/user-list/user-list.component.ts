@@ -40,24 +40,22 @@ export class UserListComponent implements OnInit, OnDestroy {
   userSearchTerm;
   ouSearchTerm;
 
-  constructor(
-    private usersService: UsersService,
-    private loginService: AuthenticationService,
-    private messageService: MessagesService,
+  constructor(private usersService: UsersService,
+    private authenticationService: AuthenticationService,
+    private messagesService: MessagesService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.loginService.token$.subscribe((token) => this.token = token);
-    this.userSubscription = this.loginService.user$.subscribe((user) => this.loggedInUser = user);
-    this.adminSubscription = this.loginService.isAdmin$.subscribe((admin) => this.isAdmin = admin);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.userSubscription = this.authenticationService.user$.subscribe((user) => this.loggedInUser = user);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((admin) => this.isAdmin = admin);
 
     if (this.token != null) {
       if (this.isAdmin) {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
-        this.messageService.warning('Only admins are allowed to view the list');
+        this.messagesService.warning('Only admins are allowed to view the list');
         this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
       }
     }
@@ -76,7 +74,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.users = result.list;
         this.total = result.records;
       }, (err) => {
-        this.messageService.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -88,7 +86,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             this.users = result.list;
             this.total = result.records;
           }, (err) => {
-            this.messageService.error(err);
+            this.messagesService.error(err);
           });
         this.currentPage = page;
       } else {
@@ -97,7 +95,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             this.users = result.list;
             this.total = result.records;
           }, (err) => {
-            this.messageService.error(err);
+            this.messagesService.error(err);
           });
         this.currentPage = page;
       }
@@ -127,14 +125,12 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.selected = user;
     const id = this.selected.loginname;
     this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
-      .subscribe(
-        (data) => {
-          this.messageService.success('deleted ' + id + ' ' + data);
-        },
-        (error) => {
-          this.messageService.error(error);
-        }
-      );
+      .subscribe((data) => {
+        this.messagesService.success('deleted ' + id + ' ' + data);
+      },
+      (error) => {
+        this.messagesService.error(error);
+      });
     const index = this.users.indexOf(this.selected);
     this.users.splice(index, 1);
     this.selected = null;
@@ -148,7 +144,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.returnSuggestedUsers(term);
       }
     } else {
-      this.messageService.warning('no token, no users!');
+      this.messagesService.warning('no token, no users!');
     }
   }
 
@@ -166,7 +162,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           this.usernames = [];
         }
       }, (err) => {
-        this.messageService.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -186,7 +182,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           this.ounames = [];
         }
       }, (err) => {
-        this.messageService.error(err);
+        this.messagesService.error(err);
       });
   }
 
@@ -199,10 +195,10 @@ export class UserListComponent implements OnInit, OnDestroy {
           this.users = res.list;
           this.total = res.records;
         }, (err) => {
-          this.messageService.error(err);
+          this.messagesService.error(err);
         });
     } else {
-      this.messageService.warning('no token, no users!');
+      this.messagesService.warning('no token, no users!');
     }
     this.title = 'Users of ' + this.selectedOUName.name;
     this.closeOUNames();
@@ -223,7 +219,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       this.router.navigate(['/user', term.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
     } else {
-      this.messageService.warning('no login, no user !!!');
+      this.messagesService.warning('no login, no user !!!');
     }
     this.usernames = [];
   }

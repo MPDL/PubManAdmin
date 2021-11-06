@@ -45,11 +45,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   index: string = 'default';
 
   constructor(
-    private elastic: ElasticSearchService,
-    private search: SearchService,
-    private message: MessagesService,
-    private login: AuthenticationService,
-    private fb: FormBuilder,
+    private elasticSearchService: ElasticSearchService,
+    private searchService: SearchService,
+    private messagesService: MessagesService,
+    private authenticationService: AuthenticationService,
+    private formBuilder: FormBuilder,
     private router: Router
   ) {}
 
@@ -61,10 +61,10 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     for (const userAgg in userAggs) {
       this.aggregationsList.push(userAgg);
     }
-    this.fields2Select = this.elastic.getMappingFields(environment.user_index.name, environment.user_index.type);
-    this.subscription = this.login.token$.subscribe((token) => this.token = token);
-    this.searchForm = this.fb.group({
-      searchTerms: this.fb.array([this.initSearchTerm()]),
+    this.fields2Select = this.elasticSearchService.getMappingFields(environment.user_index.name, environment.user_index.type);
+    this.subscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.searchForm = this.formBuilder.group({
+      searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
   }
 
@@ -73,7 +73,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   initSearchTerm() {
-    return this.fb.group({
+    return this.formBuilder.group({
       type: '',
       field: '',
       searchTerm: '',
@@ -97,11 +97,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.selectedAggregation = userAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
+      this.years = this.elasticSearchService.buckets(environment.user_index.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'organization':
-      this.ous = this.elastic.buckets(environment.user_index.name, this.selectedAggregation, false);
+      this.ous = this.elasticSearchService.buckets(environment.user_index.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     default:
@@ -111,31 +111,31 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    const body = this.search.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
+    const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
     this.loading = true;
-    this.search.query(this.url, this.token, body)
+    this.searchService.query(this.url, this.token, body)
       .subscribe((res) => {
         this.total = res.records;
         this.currentPage = page;
         this.users = res.list;
         this.loading = false;
       }, (err) => {
-        this.message.error(err);
+        this.messagesService.error(err);
       });
   }
 
   searchItems(body) {
     if (this.token !== null) {
       this.currentPage = 1;
-      this.search.query(this.url, this.token, body)
+      this.searchService.query(this.url, this.token, body)
         .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
         }, (err) => {
-          this.message.error(err);
+          this.messagesService.error(err);
         });
     } else {
-      this.message.warning('no login, no users!');
+      this.messagesService.warning('no login, no users!');
     }
   }
 
@@ -151,17 +151,17 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       const terms = [term];
       const request = new SearchRequest();
       request.searchTerms = terms;
-      const body = this.search.buildQuery(request, 25, 0, 'creationDate', 'asc');
-      this.search.query(this.url, this.token, body)
+      const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
+      this.searchService.query(this.url, this.token, body)
       // this.search.filter(this.url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
         .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
         }, (err) => {
-          this.message.error(err);
+          this.messagesService.error(err);
         });
     } else {
-      this.message.warning('no login, no users!');
+      this.messagesService.warning('no login, no users!');
     }
   }
 
@@ -175,15 +175,15 @@ export class UserSearchComponent implements OnInit, OnDestroy {
           {'name.keyword': {'order': 'asc'}},
         ],
       };
-      this.search.query(this.url, this.token, body)
+      this.searchService.query(this.url, this.token, body)
         .subscribe((res) => {
           this.users = res.list;
           this.total = res.records;
         }, (err) => {
-          this.message.error(err);
+          this.messagesService.error(err);
         });
     } else {
-      this.message.warning('no login, no users!');
+      this.messagesService.warning('no login, no users!');
     }
   }
 
@@ -203,7 +203,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    const preparedBody = this.search.buildQuery(this.searchRequest, 25, 0, 'name.keyword', 'asc');
+    const preparedBody = this.searchService.buildQuery(this.searchRequest, 25, 0, 'name.keyword', 'asc');
     this.searchItems(preparedBody);
   }
 

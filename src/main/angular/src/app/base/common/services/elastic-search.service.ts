@@ -7,10 +7,10 @@ import {ConnectionService} from '../../services/connection.service';
 @Injectable()
 export class ElasticSearchService extends ElasticService {
   constructor(
-    messages: MessagesService,
-    conn: ConnectionService
+    protected messagesService: MessagesService,
+    protected connectionService: ConnectionService
   ) {
-    super(messages, conn);
+    super(messagesService, connectionService);
   }
 
   bucketAggregation(index, body, nested, callback): any {
@@ -19,7 +19,7 @@ export class ElasticSearchService extends ElasticService {
       body: body,
     }, (err, res) => {
       if (err) {
-        this.messages.error(err);
+        this.messagesService.error(err);
       } else {
         const buckets = [];
         if (nested) {
@@ -43,7 +43,7 @@ export class ElasticSearchService extends ElasticService {
       body: body,
     }, (err, res) => {
       if (err) {
-        this.messages.error(err);
+        this.messagesService.error(err);
       } else {
         if (nested) {
           res.aggregations.name1.name2.buckets.forEach((bucket) => {
@@ -82,7 +82,7 @@ export class ElasticSearchService extends ElasticService {
       includeDefaults: false,
     }, (error, response) => {
       if (error) {
-        this.messages.error(error);
+        this.messagesService.error(error);
       } else {
         let mapping;
         this.getTheNestedObject(response, type, (found) => mapping = found);
@@ -115,7 +115,7 @@ export class ElasticSearchService extends ElasticService {
       name: alias,
     }, (err, res) => {
       if (err) {
-        this.messages.error(err);
+        this.messagesService.error(err);
       } else {
         const indexName = res[0].index;
         return indexName;

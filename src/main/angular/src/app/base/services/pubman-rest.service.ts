@@ -14,9 +14,9 @@ export class PubmanRestService {
 
   constructor(
     protected client: HttpClient,
-    protected conn: ConnectionService
+    protected connectionService: ConnectionService
   ) {
-    this.conn.conn.subscribe((base) => this.base_url = base);
+    this.connectionService.connectionService.subscribe((base) => this.base_url = base);
   }
 
   getSearchResults(method, url, headers, body): Observable<any> {

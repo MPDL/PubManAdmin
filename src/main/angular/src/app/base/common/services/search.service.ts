@@ -8,10 +8,10 @@ import {ConnectionService} from '../../services/connection.service';
 @Injectable()
 export class SearchService extends PubmanRestService {
   constructor(
-    httpc: HttpClient,
-    conn: ConnectionService
+    protected httpc: HttpClient,
+    protected connectionService: ConnectionService
   ) {
-    super(httpc, conn);
+    super(httpc, connectionService);
   }
 
   buildQueryOnly(request): any {

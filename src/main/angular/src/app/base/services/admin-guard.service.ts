@@ -12,7 +12,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
 
   constructor(
     private authentication: AuthenticationService,
-    private message: MessagesService
+    private messagesService: MessagesService
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
@@ -29,7 +29,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
     if (this.checked) {
       return true;
     }
-    this.message.warning('This site requires admin authorization ...');
+    this.messagesService.warning('This site requires admin authorization ...');
     return false;
   }
 
