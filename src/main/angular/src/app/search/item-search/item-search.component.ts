@@ -57,13 +57,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    for (const agg in itemAggs) {
-      this.aggregationsList.push(agg);
+    for (const itemAgg in itemAggs) {
+      this.aggregationsList.push(itemAgg);
     }
     this.fields2Select = this.elastic.getMappingFields(environment.item_index.name, environment.item_index.type);
-    this.subscription = this.login.token$.subscribe((token) => {
-      this.token = token;
-    });
+    this.subscription = this.login.token$.subscribe((token) => this.token = token);
     this.searchForm = this.fb.group({
       searchTerms: this.fb.array([this.initSearchTerm()]),
     });

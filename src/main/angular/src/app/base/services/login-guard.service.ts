@@ -25,9 +25,7 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   checkLogin(url: string): boolean {
-    this.subscription = this.authentication.isLoggedIn$.subscribe((bool) => {
-      this.checked = bool;
-    });
+    this.subscription = this.authentication.isLoggedIn$.subscribe((bool) => this.checked = bool);
     if (this.checked) {
       return true;
     }

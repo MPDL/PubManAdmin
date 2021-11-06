@@ -23,12 +23,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.login_subscription = this.login.isLoggedIn$.subscribe((bool) => {
-      this.isLoggedIn = bool;
-    });
-    this.host_subscription = this.conn.conn.subscribe((name) => {
-      this.host = name;
-    });
+    this.login_subscription = this.login.isLoggedIn$.subscribe((bool) => this.isLoggedIn = bool);
+    this.host_subscription = this.conn.conn.subscribe((name) => this.host = name);
   }
 
   ngOnDestroy() {

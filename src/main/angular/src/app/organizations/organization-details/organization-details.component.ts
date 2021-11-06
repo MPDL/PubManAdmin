@@ -77,16 +77,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   listPredecessors(id: string, token) {
     const query = '?q=objectId:' + id;
     this.ouSvc.filter(this.ou_rest_url, token, query, 1)
-      .subscribe((ous) => {
-        this.predecessors = ous.list;
-      });
+      .subscribe((ous) => this.predecessors = ous.list);
   }
 
   listChildren(mother: string) {
     this.ouSvc.listChildren4Ou(mother, null)
-      .subscribe((children) => {
-        this.children = children;
-      });
+      .subscribe((children) => this.children = children);
   }
 
   openClose(ou) {

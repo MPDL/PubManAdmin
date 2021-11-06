@@ -58,13 +58,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    for (const agg in userAggs) {
-      this.aggregationsList.push(agg);
+    for (const userAgg in userAggs) {
+      this.aggregationsList.push(userAgg);
     }
     this.fields2Select = this.elastic.getMappingFields(environment.user_index.name, environment.user_index.type);
-    this.subscription = this.login.token$.subscribe((token) => {
-      this.token = token;
-    });
+    this.subscription = this.login.token$.subscribe((token) => this.token = token);
     this.searchForm = this.fb.group({
       searchTerms: this.fb.array([this.initSearchTerm()]),
     });

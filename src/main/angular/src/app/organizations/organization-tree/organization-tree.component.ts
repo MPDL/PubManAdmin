@@ -37,20 +37,11 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.loginService.token$.subscribe((token) => {
-      this.token = token;
-    });
-    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
-      this.isExpandable, this.getChildren);
-
+    this.subscription = this.loginService.token$.subscribe((token) => this.token = token);
+    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OUTreeFlatNode>(this.getLevel, this.isExpandable);
-
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-    this.database.dataChange.subscribe((data) => {
-      this.dataSource.data = data;
-    });
-
+    this.database.dataChange.subscribe((data) => this.dataSource.data = data);
     this.database.initialize();
   }
 

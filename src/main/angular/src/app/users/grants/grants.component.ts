@@ -49,9 +49,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-      this.tokenSubscription = this.loginService.token$.subscribe((token) => {
-        this.token = token;
-      });
+      this.tokenSubscription = this.loginService.token$.subscribe((token) => this.token = token);
       if (this.token != null) {
         this.getNewGrantSelect();
       }
@@ -70,9 +68,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
         });
 
       this.usersService.query(this.ous_url, null, ousBody)
-        .subscribe((ous) => {
-          this.ous = ous.list;
-        });
+        .subscribe((ous) => this.ous = ous.list);
     }
 
     onChangeRole(val) {

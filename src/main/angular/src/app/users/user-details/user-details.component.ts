@@ -48,9 +48,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.loginService.token$.subscribe((token) => {
-      this.token = token;
-    });
+    this.tokenSubscription = this.loginService.token$.subscribe((token) => this.token = token);
 
     this.selected = this.route.snapshot.data['user'];
 
@@ -69,9 +67,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   listOuNames() {
     const body = allOpenedOUs;
     this.usersService.query(this.ous_url, null, body)
-      .subscribe((ous) => {
-        this.ous = ous.list;
-      });
+      .subscribe((ous) => this.ous = ous.list);
   }
 
   onSelectOu(val) {
@@ -123,15 +119,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     } else {
       if (ref.startsWith('ou')) {
         this.usersService.get(this.ous_url, ref, null)
-          .subscribe((ou) => {
-            this.ctxTitle = ou.metadata.name;
-          });
+          .subscribe((ou) => this.ctxTitle = ou.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
           this.usersService.get(this.ctxs_url, ref, null)
-            .subscribe((ctx) => {
-              this.ctxTitle = ctx.name;
-            });
+            .subscribe((ctx) => this.ctxTitle = ctx.name);
         }
       }
     }
@@ -148,9 +140,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   generateRandomPassword(user) {
     this.usersService.generateRandomPassword()
-      .subscribe((pw) => {
-        user.password = pw.toString();
-      });
+      .subscribe((pw) => user.password = pw.toString());
   }
 
   resetPassword(user) {

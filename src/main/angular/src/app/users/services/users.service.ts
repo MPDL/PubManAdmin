@@ -70,15 +70,11 @@ export class UsersService extends PubmanRestService {
     } else {
       if (ref.startsWith('ou')) {
         this.get(this.ous_url, ref, null)
-          .subscribe((ou) => {
-            grant.ctxTitle = ou.metadata.name;
-          });
+          .subscribe((ou) => grant.ctxTitle = ou.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
           this.get(this.ctxs_url, ref, null)
-            .subscribe((ctx) => {
-              grant.ctxTitle = ctx.name;
-            });
+            .subscribe((ctx) => grant.ctxTitle = ctx.name);
         }
       }
     }

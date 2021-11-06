@@ -40,10 +40,8 @@ export class UserDetailsResolverService implements Resolve<User> {
     }
   }
 
-  generateRandomPassword(user) {
+  generateRandomPassword(user: User) {
     this.userSvc.generateRandomPassword()
-      .subscribe((pw) => {
-        user.password = pw.toString();
-      });
+      .subscribe((pw) => user.password = pw.toString());
   }
 }
