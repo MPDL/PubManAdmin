@@ -42,7 +42,7 @@ export class AuthenticationService {
     private messagesService: MessagesService,
     private connectionService: ConnectionService
   ) {
-    this.connectionService.connectionService.subscribe((name) => this.tokenUrl = name + '/rest/login');
+    this.connectionService.connectionService.subscribe((tokenUrl) => this.tokenUrl = tokenUrl + '/rest/login');
   }
 
   login(username, password) {

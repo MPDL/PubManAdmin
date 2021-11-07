@@ -20,28 +20,28 @@ export class AuthenticationComponent implements OnInit {
 
   constructor(
     private messagesService: MessagesService,
-    private authentication: AuthenticationService
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {}
 
   login() {
-    this.authentication.login(this.credentials.username, this.credentials.password)
-      .subscribe(
-        (data) => {
+    this.authenticationService.login(this.credentials.username, this.credentials.password)
+      .subscribe({
+        next: (data) => {
           this.token = data;
           this.who();
           this.loggedIn = true;
         },
-        (error) => {
-          this.messagesService.error(error);
+        error: (e) => {
+          this.messagesService.error(e);
           this.loggedIn = false;
-        }
-      );
+        },
+      });
   }
 
   logout() {
-    this.authentication.logout();
+    this.authenticationService.logout();
     this.credentials.username = '';
     this.credentials.password = '';
     this.loggedIn = false;
@@ -53,19 +53,18 @@ export class AuthenticationComponent implements OnInit {
 
   who() {
     if (this.token !== '') {
-      this.authentication.who(this.token)
-        .subscribe(
-          (data) => {
+      this.authenticationService.who(this.token)
+        .subscribe({
+          next: (data) => {
             this.user = data;
             this.hasToken = true;
-
             this.credentials.username = this.user.name;
           },
-          (error) => {
-            this.messagesService.error(error);
+          error: (e) => {
+            this.messagesService.error(e);
             this.hasToken = false;
-          }
-        );
+          },
+        });
     }
   }
 }

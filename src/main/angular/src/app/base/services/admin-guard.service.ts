@@ -8,7 +8,7 @@ import {MessagesService} from './messages.service';
 @Injectable()
 export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
   checked: boolean = false;
-  subscription: Subscription;
+  adminSubscription: Subscription;
 
   constructor(
     private authentication: AuthenticationService,
@@ -25,7 +25,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   checkLogin(url: string): boolean {
-    this.subscription = this.authentication.isAdmin$.subscribe((bool) => this.checked = bool);
+    this.adminSubscription = this.authentication.isAdmin$.subscribe((checked) => this.checked = checked);
     if (this.checked) {
       return true;
     }
@@ -34,6 +34,6 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.adminSubscription.unsubscribe();
   }
 }

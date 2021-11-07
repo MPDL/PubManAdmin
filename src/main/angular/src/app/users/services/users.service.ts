@@ -10,9 +10,9 @@ import {environment} from 'environments/environment';
 
 @Injectable()
 export class UsersService extends PubmanRestService {
-  usersUrl: string = this.base_url + environment.rest_users;
-  ous_url = environment.rest_ous;
-  ctxs_url = environment.rest_contexts;
+  usersUrl: string = this.baseUrl + environment.rest_users;
+  ousUrl = environment.rest_ous;
+  ctxsUrl = environment.rest_contexts;
 
   users: User[] = [];
   user: User;
@@ -69,11 +69,11 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.get(this.ous_url, ref, null)
+        this.get(this.ousUrl, ref, null)
           .subscribe((ou) => grant.ctxTitle = ou.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.get(this.ctxs_url, ref, null)
+          this.get(this.ctxsUrl, ref, null)
             .subscribe((ctx) => grant.ctxTitle = ctx.name);
         }
       }

@@ -19,7 +19,7 @@ import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/
 })
 export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ounames: any[] = [];
-  subscription: Subscription;
+  tokenSubscription: Subscription;
   token;
   selected: any;
   searchTerm;
@@ -37,7 +37,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OUTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
@@ -46,7 +46,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
   }
 
   getChildren = (node: OUTreeNode): Observable<OUTreeNode[]> => {

@@ -10,7 +10,7 @@ import {ConnectionService} from '../../base/services/connection.service';
 
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
-  ous_rest_url = environment.rest_ous;
+  ousRestUrl = environment.rest_ous;
   ou;
   ous: any;
 
@@ -23,7 +23,7 @@ export class OrganizationsService extends PubmanRestService {
 
   getOuById(id: string, token: string): Observable<any> {
     const headers = this.addHeaders(token, false);
-    const url = this.base_url + this.ous_rest_url + '/' + id;
+    const url = this.baseUrl + this.ousRestUrl + '/' + id;
     return this.httpc.request('GET', url, {
       headers: headers,
     }).pipe(
@@ -39,7 +39,7 @@ export class OrganizationsService extends PubmanRestService {
 
   listChildren4Ou(id: string, token: string): Observable<any[]> {
     const headers = this.addHeaders(token, false);
-    const url = this.base_url + this.ous_rest_url + '/' + id + '/children';
+    const url = this.baseUrl + this.ousRestUrl + '/' + id + '/children';
     return this.httpc.request('GET', url, {
       headers: headers,
     }).pipe(
@@ -54,14 +54,14 @@ export class OrganizationsService extends PubmanRestService {
   }
 
   openOu(ou: any, token: string): Observable<number> {
-    const ouUrl = this.base_url + this.ous_rest_url + '/' + ou.objectId + '/open';
+    const ouUrl = this.baseUrl + this.ousRestUrl + '/' + ou.objectId + '/open';
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);
     return this.getHttpStatus('PUT', ouUrl, headers, body);
   }
 
   closeOu(ou: any, token: string): Observable<number> {
-    const ouUrl = this.base_url + this.ous_rest_url + '/' + ou.objectId + '/close';
+    const ouUrl = this.baseUrl + this.ousRestUrl + '/' + ou.objectId + '/close';
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);
     return this.getHttpStatus('PUT', ouUrl, headers, body);

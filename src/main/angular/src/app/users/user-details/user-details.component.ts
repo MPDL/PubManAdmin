@@ -21,7 +21,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   selected: User;
   ous: any[];
-  ounames: any[] = [];
+  ouNames: any[] = [];
   searchTerm;
   selectedOu: any;
   isNewUser: boolean = false;
@@ -35,7 +35,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ctxTitle: string;
   pw: string;
 
-  subscription: Subscription;
   token: string;
   tokenSubscription: Subscription;
 
@@ -146,14 +145,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   resetPassword(user) {
     if (user.active === true) {
       this.usersService.changePassword(user, this.token)
-        .subscribe(
-          (u) => {
-            this.selected = u;
-            this.messagesService.success(u.loginname + ':  password was reset to ' + user.password);
+        .subscribe({
+          next: (data) => {
+            this.selected = data;
+            this.messagesService.success(data.loginname + ':  password was reset to ' + user.password);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.messagesService.warning('password will not be reset for deactivated user!');
     }
@@ -162,14 +160,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   changePassword(user) {
     if (user.password != null) {
       this.usersService.changePassword(user, this.token)
-        .subscribe(
-          (u) => {
-            this.selected = u;
-            this.messagesService.success(u.loginname + ':  password has changed to ' + user.password);
+        .subscribe({
+          next: (data) => {
+            this.selected = data;
+            this.messagesService.success(data.loginname + ':  password has changed to ' + user.password);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.messagesService.error('password must not be empty!');
     }
@@ -179,24 +176,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected = user;
     if (this.selected.active === true) {
       this.usersService.deactivate(this.selected, this.token)
-        .subscribe(
-          (user2deactivate) => {
-            this.selected = user2deactivate;
+        .subscribe({
+          next: (data) => {
+            this.selected = data;
             this.messagesService.success('Deactivated ' + this.selected.objectId);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.usersService.activate(this.selected, this.token)
-        .subscribe(
-          (user2activate) => {
-            this.selected = user2activate;
+        .subscribe({
+          next: (data) => {
+            this.selected = data;
             this.messagesService.success('Activated ' + this.selected.objectId);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -221,17 +216,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         return;
       }
       this.usersService.post(this.url, this.selected, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('added new user ' + this.selected.loginname + ' with password ' + this.selected.password);
             this.isNewUser = false;
             this.isNewOu = false;
             this.selected = data;
-            // this.gotoList();
           },
-          (error) => {
-            this.messagesService.error(error);
-          }
+          error: (e) => this.messagesService.error(e),
+        }
         );
     } else {
       if (this.isNewOu) {
@@ -246,39 +239,39 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         }
       }
       this.usersService.put(this.url + '/' + this.selected.objectId, this.selected, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('updated ' + this.selected.loginname);
             // this.gotoList();
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.rest_users, data.objectId, this.token)
-              .subscribe((updated) => {
-                this.selected = updated;
+              .subscribe((selected) => {
+                this.selected = selected;
                 if (this.selected.grantList) {
                   this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
                 }
               });
           },
-          (error) => {
-            this.messagesService.error(error);
-          }
-        );
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
   removeGrants() {
-    this.usersService.removeGrants(this.selected, this.selectedGrants, this.token).subscribe((user) => {
-      this.selected = user;
-      if (this.selected.grantList) {
-        this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-      }
-      this.messagesService.success('removed Grants from ' + this.selected.loginname);
-      this.selectedGrants = null;
-      this.grants2remove = false;
-    }, (error) => {
-      this.messagesService.error(error);
-    });
+    this.usersService.removeGrants(this.selected, this.selectedGrants, this.token)
+      .subscribe({
+        next: (data) => {
+          this.selected = data;
+          if (this.selected.grantList) {
+            this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+          }
+          this.messagesService.success('removed Grants from ' + this.selected.loginname);
+          this.selectedGrants = null;
+          this.grants2remove = false;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   delete(user) {
@@ -286,14 +279,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     const id = this.selected.loginname;
     if (confirm('delete '+user.name+' ?')) {
       this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
-        .subscribe(
-          (data) => {
-            this.messagesService.success('deleted ' + id + ' ' + data);
-          },
-          (error) => {
-            this.messagesService.error(error);
-          }
-        );
+        .subscribe({
+          next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
+          error: (e) => this.messagesService.error(e),
+        });
       this.selected = null;
       this.gotoList();
     }
@@ -312,30 +301,29 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.usersService.filter(url, null, queryString, 1)
-      .subscribe(
-        (response) => {
-          response.list.forEach((ou) => {
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((ou) => {
             ouNames.push(ou);
           });
           if (ouNames.length > 0) {
-            this.ounames = ouNames;
+            this.ouNames = ouNames;
           } else {
-            this.ounames = [];
+            this.ouNames = [];
           }
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   close() {
     this.searchTerm = '';
-    this.ounames = [];
+    this.ouNames = [];
   }
 
   select(term) {
     this.searchTerm = term.metadata.name;
     this.selectedOu = term;
-    this.ounames = [];
+    this.ouNames = [];
   }
 }

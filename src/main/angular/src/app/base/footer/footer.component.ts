@@ -12,7 +12,7 @@ export class FooterComponent implements OnInit {
   appVersion;
   appName = 'Pubman Administration';
   appHome;
-  hostname;
+  hostName;
 
   constructor(
     private connectionService: ConnectionService
@@ -21,6 +21,6 @@ export class FooterComponent implements OnInit {
   ngOnInit() {
     this.appVersion = appVersion;
     this.appHome = appHome;
-    this.connectionService.connectionService.subscribe((name) => this.hostname = name);
+    this.connectionService.connectionService.subscribe((hostName) => this.hostName = hostName);
   }
 }

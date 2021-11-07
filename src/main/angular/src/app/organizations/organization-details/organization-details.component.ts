@@ -25,8 +25,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ounames: any[] = [];
   searchTerm;
 
-  subscription: Subscription;
-  loginSubscription: Subscription;
+  routeSubscription: Subscription;
+  tokenSubscription: Subscription;
   isNewOrganization: boolean = false;
 
   constructor(
@@ -38,11 +38,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.route.params
+    this.routeSubscription = this.route.params
       .subscribe((params) => {
-        this.loginSubscription = this.login.token$.subscribe((token) => {
-          this.token = token;
-        });
+        this.tokenSubscription = this.login.token$.subscribe((token) => this.token = token);
         const id = params['id'];
         if (id === 'new org') {
           this.isNewOrganization = true;
@@ -55,15 +53,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.loginSubscription.unsubscribe();
+    this.routeSubscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
   }
 
   getSelectedOu(id, token) {
     this.ouSvc.get(this.ou_rest_url, id, token)
-      .subscribe(
-        (ou) => {
-          this.selected = ou;
+      .subscribe({
+        next: (data) => {
+          this.selected = data;
           if (this.selected.hasPredecessors === true) {
             const preId = this.selected.predecessorAffiliations[0].objectId;
             this.listPredecessors(preId, token);
@@ -71,9 +69,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             this.predecessors = [];
           }
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   listPredecessors(id: string, token) {
@@ -91,24 +88,22 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected = ou;
     if (this.selected.publicStatus === 'CREATED' || this.selected.publicStatus === 'CLOSED') {
       this.ouSvc.openOu(this.selected, this.token)
-        .subscribe(
-          (httpStatus) => {
+        .subscribe({
+          next: (data) => {
             this.getSelectedOu(this.selected.objectId, this.token);
-            this.messagesService.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
+            this.messagesService.success('Opened ' + this.selected.objectId + ' ' + data);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.ouSvc.closeOu(this.selected, this.token)
-        .subscribe(
-          (httpStatus) => {
+        .subscribe({
+          next: (data) => {
             this.getSelectedOu(this.selected.objectId, this.token);
-            this.messagesService.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
+            this.messagesService.success('Closed ' + this.selected.objectId + ' ' + data);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -201,27 +196,24 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
     if (this.isNewOrganization) {
       this.ouSvc.post(this.ou_rest_url, this.selected, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('added new organization ' + this.selected.metadata.name);
             this.isNewOrganization = false;
             this.selected = data;
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       // this.messagesService.success('updating ' + this.selected.objectId);
       this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('updated ' + this.selected.objectId);
             this.selected = data;
           },
-          (error) => {
-            this.messagesService.error(error);
-          }
-        );
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -230,14 +222,13 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     const id = this.selected.objectId;
     if (confirm('delete '+ou.metadata.name+' ?')) {
       this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('deleted ' + id + ' ' + data);
             this.gotoList();
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -281,9 +272,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.ouSvc.filter(url, null, queryString, 1)
-      .subscribe(
-        (response) => {
-          response.list.forEach((ou) => {
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((ou) => {
             ouNames.push(ou);
           });
           if (ouNames.length > 0) {
@@ -292,9 +283,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             this.ounames = [];
           }
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   close() {

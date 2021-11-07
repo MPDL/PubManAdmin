@@ -40,7 +40,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
-  subscription: Subscription;
+  tokensubscription: Subscription;
   token;
   index: string = 'default';
 
@@ -61,7 +61,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       this.aggregationsList.push(itemAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.item_index.name, environment.item_index.type);
-    this.subscription = this.authenticationservice.token$.subscribe((token) => this.token = token);
+    this.tokensubscription = this.authenticationservice.token$.subscribe((token) => this.token = token);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
@@ -89,7 +89,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.tokensubscription.unsubscribe();
   }
 
   onAggregationSelect(agg) {

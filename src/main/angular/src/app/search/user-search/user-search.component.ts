@@ -40,7 +40,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
-  subscription: Subscription;
+  tokenSubscription: Subscription;
   token;
   index: string = 'default';
 
@@ -62,7 +62,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       this.aggregationsList.push(userAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.user_index.name, environment.user_index.type);
-    this.subscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
@@ -90,7 +90,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
   }
 
   onAggregationSelect(agg) {
@@ -114,30 +114,28 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
     this.loading = true;
     this.searchService.query(this.url, this.token, body)
-      .subscribe(
-        (response) => {
-          this.total = response.records;
+      .subscribe({
+        next: (data) => {
+          this.total = data.records;
           this.currentPage = page;
-          this.users = response.list;
+          this.users = data.list;
           this.loading = false;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   searchItems(body) {
     if (this.token !== null) {
       this.currentPage = 1;
       this.searchService.query(this.url, this.token, body)
-        .subscribe(
-          (response) => {
-            this.users = response.list;
-            this.total = response.records;
+        .subscribe({
+          next: (data) => {
+            this.users = data.list;
+            this.total = data.records;
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.messagesService.warning('no login, no users!');
     }
@@ -158,14 +156,13 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
       this.searchService.query(this.url, this.token, body)
       // this.search.filter(this.url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
-        .subscribe(
-          (response) => {
-            this.users = response.list;
-            this.total = response.records;
+        .subscribe({
+          next: (data) => {
+            this.users = data.list;
+            this.total = data.records;
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.messagesService.warning('no login, no users!');
     }
@@ -182,14 +179,13 @@ export class UserSearchComponent implements OnInit, OnDestroy {
         ],
       };
       this.searchService.query(this.url, this.token, body)
-        .subscribe(
-          (response) => {
-            this.users = response.list;
-            this.total = response.records;
+        .subscribe({
+          next: (data) => {
+            this.users = data.list;
+            this.total = data.records;
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.messagesService.warning('no login, no users!');
     }

@@ -20,7 +20,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   selectedImage: any;
   progress: { percentage: number } = {percentage: 0};
   isInProgress = false;
-  loginSubscription: Subscription;
+  tokenSubscriptrion: Subscription;
   token: string;
 
   constructor(
@@ -30,11 +30,11 @@ export class UploadComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loginSubscription = this.login.token$.subscribe((token) => this.token = token);
+    this.tokenSubscriptrion = this.login.token$.subscribe((token) => this.token = token);
   }
 
   ngOnDestroy() {
-    this.loginSubscription.unsubscribe();
+    this.tokenSubscriptrion.unsubscribe();
   }
 
   onFileChange(event) {

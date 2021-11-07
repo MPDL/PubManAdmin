@@ -17,7 +17,7 @@ import {environment} from 'environments/environment';
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
   url = environment.rest_contexts;
-  ous_url = environment.rest_ous;
+  ousUrl = environment.rest_ous;
 
   @ViewChild('f')
     form: any;
@@ -29,8 +29,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectedOu: any;
   ounames: any[] = [];
   searchTerm;
-  subscription: Subscription;
-  loginSubscription: Subscription;
+  tokenSubscription: Subscription;
   genres2display: string[] = [];
   selectedGenres: string[];
   allowedGenres: string[] = [];
@@ -54,7 +53,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.isNewCtx = true;
       this.listOuNames();
     }
-    this.loginSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
     this.genres2display = Object.keys(genres).filter((val) => val.match(/^[A-Z]/));
     this.initializeAllowed(this.ctx);
 
@@ -63,7 +62,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.loginSubscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
   }
 
   initializeAllowed(ctx) {
@@ -84,7 +83,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   listOuNames() {
     const body = allOpenedOUs;
-    this.contextsService.query(this.ous_url, null, body)
+    this.contextsService.query(this.ousUrl, null, body)
       .subscribe((ous) => this.ous = ous.list);
   }
 
@@ -94,13 +93,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   getSelectedCtx(id) {
     this.contextsService.get(this.url, id, this.token)
-      .subscribe(
-        (ctx) => {
-          this.ctx = ctx;
-        },
-        (error) => {
-          this.messagesService.error(error);
-        });
+      .subscribe({
+        next: (data) => this.ctx = data,
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   isSelected(genre) {
@@ -167,24 +163,22 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx = ctx;
     if (this.ctx.state === 'CREATED' || this.ctx.state === 'CLOSED') {
       this.contextsService.openContext(this.ctx, this.token)
-        .subscribe(
-          (httpStatus) => {
+        .subscribe({
+          next: (data) => {
             this.getSelectedCtx(this.ctx.objectId);
-            this.messagesService.success('Opened ' + ctx.objectId + ' ' + httpStatus);
+            this.messagesService.success('Opened ' + ctx.objectId + ' ' + data);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.contextsService.closeContext(this.ctx, this.token)
-        .subscribe(
-          (httpStatus) => {
+        .subscribe({
+          next: (data) => {
             this.getSelectedCtx(this.ctx.objectId);
-            this.messagesService.success('Closed ' + ctx.objectId + ' ' + httpStatus);
+            this.messagesService.success('Closed ' + ctx.objectId + ' ' + data);
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -193,13 +187,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const id = this.ctx.objectId;
     if (confirm('delete '+ctx.name+' ?')) {
       this.contextsService.delete(this.url + '/' + id, this.ctx, this.token)
-        .subscribe(
-          (data) => {
-            this.messagesService.success('deleted ' + id + ' ' + data);
-          },
-          (error) => {
-            this.messagesService.error(error);
-          });
+        .subscribe({
+          next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
+          error: (e) => this.messagesService.error(e),
+        });
       this.gotoList();
     }
   }
@@ -230,36 +221,29 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         return;
       }
       this.contextsService.post(this.url, this.ctx, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('added new context ' + this.ctx.name);
             this.isNewCtx = false;
             this.ctx = data;
             this.initializeAllowed(this.ctx);
-            // this.gotoList();
           },
-          (error) => {
-            this.messagesService.error(error);
-          }
-        );
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       if (this.ctx.allowedGenres.length === 0) {
         this.messagesService.warning('select at least one allowed genre');
         return;
       }
-      // this.messagesService.success('updating ' + this.ctx.objectId);
       this.contextsService.put(this.url + '/' + this.ctx.objectId, this.ctx, this.token)
-        .subscribe(
-          (data) => {
+        .subscribe({
+          next: (data) => {
             this.messagesService.success('updated ' + this.ctx.objectId);
-            // this.gotoList();
             this.ctx = data;
             this.initializeAllowed(this.ctx);
           },
-          (error) => {
-            this.messagesService.error(error);
-          }
-        );
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -276,17 +260,16 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.contextsService.filter(url, null, queryString, 1)
-      .subscribe((response) => {
-        response.list.forEach((ou) => {
-          ouNames.push(ou);
-        });
-        if (ouNames.length > 0) {
-          this.ounames = ouNames;
-        } else {
-          this.ounames = [];
-        }
-      }, (error) => {
-        this.messagesService.error(error);
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((ou) => ouNames.push(ou));
+          if (ouNames.length > 0) {
+            this.ounames = ouNames;
+          } else {
+            this.ounames = [];
+          }
+        },
+        error: (e) => this.messagesService.error(e),
       });
   }
 

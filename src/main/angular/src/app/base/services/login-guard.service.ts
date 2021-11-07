@@ -8,7 +8,7 @@ import {MessagesService} from './messages.service';
 @Injectable()
 export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   checked: boolean = false;
-  subscription: Subscription;
+  loginSubscription: Subscription;
 
   constructor(
     private authentication: AuthenticationService,
@@ -25,7 +25,7 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   checkLogin(url: string): boolean {
-    this.subscription = this.authentication.isLoggedIn$.subscribe((bool) => this.checked = bool);
+    this.loginSubscription = this.authentication.isLoggedIn$.subscribe((checked) => this.checked = checked);
     if (this.checked) {
       return true;
     }
@@ -34,6 +34,6 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.loginSubscription.unsubscribe();
   }
 }

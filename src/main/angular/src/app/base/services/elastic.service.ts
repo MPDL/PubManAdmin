@@ -14,8 +14,8 @@ export class ElasticService {
     protected connectionService: ConnectionService
   ) {
     if (!this.client) {
-      this.connectionService.connectionService.subscribe((name) => {
-        this.uri = name + environment.elastic_url;
+      this.connectionService.connectionService.subscribe((uri) => {
+        this.uri = uri + environment.elastic_url;
         this.connect(this.uri);
       });
     }

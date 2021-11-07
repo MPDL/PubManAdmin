@@ -27,7 +27,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   selectedMapping;
   aliases;
 
-  subscription: Subscription;
+  routeSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,7 +37,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.route.params
+    this.routeSubscription = this.route.params
       .subscribe((params) => {
         const name = params['name'];
         this.index_name = name;
@@ -52,7 +52,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.routeSubscription.unsubscribe();
   }
 
   async getIndex(name) {

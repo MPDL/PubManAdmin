@@ -10,11 +10,11 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  login_subscription: Subscription;
-  host_subscription: Subscription;
+  loginSubscription: Subscription;
+  hostSubscription: Subscription;
 
   isLoggedIn: boolean = false;
-  host: string;
+  hostName: string;
 
   constructor(
     private connectionService: ConnectionService,
@@ -23,13 +23,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.login_subscription = this.login.isLoggedIn$.subscribe((bool) => this.isLoggedIn = bool);
-    this.host_subscription = this.connectionService.connectionService.subscribe((name) => this.host = name);
+    this.loginSubscription = this.login.isLoggedIn$.subscribe((isLoggedIn) => this.isLoggedIn = isLoggedIn);
+    this.hostSubscription = this.connectionService.connectionService.subscribe((hostName) => this.hostName = hostName);
   }
 
   ngOnDestroy() {
-    this.login_subscription.unsubscribe();
-    this.host_subscription.unsubscribe();
+    this.loginSubscription.unsubscribe();
+    this.hostSubscription.unsubscribe();
   }
 
   connect() {

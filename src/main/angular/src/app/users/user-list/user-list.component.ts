@@ -31,14 +31,14 @@ export class UserListComponent implements OnInit, OnDestroy {
   tokenSubscription: Subscription;
   userSubscription: Subscription;
   adminSubscription: Subscription;
-  comingFrom;
+  comingFrom: any;
   total: number;
   pageSize: number = 50;
   currentPage: number = 1;
   usernames: User[] = [];
   ounames: OU[] = [];
-  userSearchTerm;
-  ouSearchTerm;
+  userSearchTerm: any;
+  ouSearchTerm: any;
 
   constructor(private usersService: UsersService,
     private authenticationService: AuthenticationService,
@@ -68,47 +68,44 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.adminSubscription.unsubscribe();
   }
 
-  getAllUsersAsObservable(token, page) {
+  getAllUsersAsObservable(token: string, page: number) {
     this.usersService.getAll(this.url, token, page)
-      .subscribe(
-        (response) => {
-          this.users = response.list;
-          this.total = response.records;
+      .subscribe({
+        next: (data) => {
+          this.users = data.list;
+          this.total = data.records;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   getPage(page: number) {
     if (this.token != null) {
       if (this.selectedOUName === undefined) {
         this.usersService.getAll(this.url, this.token, page)
-          .subscribe(
-            (response) => {
-              this.users = response.list;
-              this.total = response.records;
+          .subscribe({
+            next: (data) => {
+              this.users = data.list;
+              this.total = data.records;
             },
-            (error) => {
-              this.messagesService.error(error);
-            });
+            error: (e) => this.messagesService.error(e),
+          });
         this.currentPage = page;
       } else {
         this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOUName.objectId, page)
-          .subscribe(
-            (response) => {
-              this.users = response.list;
-              this.total = response.records;
+          .subscribe({
+            next: (data) => {
+              this.users = data.list;
+              this.total = data.records;
             },
-            (error) => {
-              this.messagesService.error(error);
-            });
+            error: (e) => this.messagesService.error(e),
+          });
         this.currentPage = page;
       }
     }
   }
 
-  isSelected(user) {
+  isSelected(user: { loginname: any; }) {
     if (this.comingFrom != null) {
       return this.comingFrom === user.loginname;
     } else {
@@ -127,17 +124,14 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/user', userid], {queryParams: {token: 'new'}, skipLocationChange: true});
   }
 
-  delete(user) {
+  delete(user: User) {
     this.selected = user;
-    const id = this.selected.loginname;
+    const loginName = this.selected.loginname;
     this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
-      .subscribe(
-        (data) => {
-          this.messagesService.success('deleted ' + id + ' ' + data);
-        },
-        (error) => {
-          this.messagesService.error(error);
-        });
+      .subscribe({
+        next: (data) => this.messagesService.success('deleted ' + loginName + ' ' + data),
+        error: (e) => this.messagesService.error(e),
+      });
     const index = this.users.indexOf(this.selected);
     this.users.splice(index, 1);
     this.selected = null;
@@ -155,24 +149,21 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedUsers(term) {
+  returnSuggestedUsers(term: string) {
     const userNames: any[] = [];
     const queryString = '?q=name.auto:' + term;
     this.usersService.filter(this.url, this.token, queryString, 1)
-      .subscribe(
-        (response) => {
-          response.list.forEach((user) => {
-            userNames.push(user);
-          });
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((user: User) => userNames.push(user) );
           if (userNames.length > 0) {
             this.usernames = userNames;
           } else {
             this.usernames = [];
           }
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   getOUNames(term: string) {
@@ -181,20 +172,17 @@ export class UserListComponent implements OnInit, OnDestroy {
     body.query.bool.must.term['metadata.name.auto'] = term;
     const url = environment.rest_ous;
     this.usersService.query(url, null, body)
-      .subscribe(
-        (response) => {
-          response.list.forEach((ou) => {
-            ouNames.push(ou);
-          });
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((ou: OU) => ouNames.push(ou));
           if (ouNames.length > 0) {
             this.ounames = ouNames;
           } else {
             this.ounames = [];
           }
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   filter(ou) {
@@ -202,14 +190,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       this.currentPage = 1;
       this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
-        .subscribe(
-          (response) => {
-            this.users = response.list;
-            this.total = response.records;
+        .subscribe({
+          next: (data) => {
+            this.users = data.list;
+            this.total = data.records;
           },
-          (error) => {
-            this.messagesService.error(error);
-          });
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       this.messagesService.warning('no token, no users!');
     }

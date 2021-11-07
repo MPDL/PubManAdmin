@@ -9,7 +9,7 @@ import {ConnectionService} from '../../base/services/connection.service';
 
 @Injectable()
 export class ContextsService extends PubmanRestService {
-  context_url = environment.rest_contexts;
+  contextUrl = environment.rest_contexts;
 
   constructor(
     protected httpc: HttpClient,
@@ -19,14 +19,14 @@ export class ContextsService extends PubmanRestService {
   }
 
   openContext(ctx: Context, token: string): Observable<number> {
-    const ctxUrl = this.base_url + this.context_url + '/' + ctx.objectId + '/open';
+    const ctxUrl = this.baseUrl + this.contextUrl + '/' + ctx.objectId + '/open';
     const body = ctx.lastModificationDate;
     const headers = this.addHeaders(token, true);
     return this.getHttpStatus('PUT', ctxUrl, headers, body);
   }
 
   closeContext(ctx: Context, token: string): Observable<number> {
-    const ctxUrl = this.base_url + this.context_url + '/' + ctx.objectId + '/close';
+    const ctxUrl = this.baseUrl + this.contextUrl + '/' + ctx.objectId + '/close';
     const body = ctx.lastModificationDate;
     const headers = this.addHeaders(token, true);
     return this.getHttpStatus('PUT', ctxUrl, headers, body);

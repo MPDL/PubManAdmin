@@ -1,4 +1,3 @@
-
 import {throwError as observableThrowError, Observable} from 'rxjs';
 import {map, catchError} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
@@ -10,13 +9,13 @@ import {ConnectionService} from './connection.service';
 @Injectable()
 export class PubmanRestService {
   defaultPageSize = 50;
-  base_url;
+  baseUrl: string;
 
   constructor(
     protected client: HttpClient,
     protected connectionService: ConnectionService
   ) {
-    this.connectionService.connectionService.subscribe((base) => this.base_url = base);
+    this.connectionService.connectionService.subscribe((baseUrl) => this.baseUrl = baseUrl);
   }
 
   getSearchResults(method, url, headers, body): Observable<any> {
@@ -107,26 +106,26 @@ export class PubmanRestService {
 
   getAll(path, token: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = this.base_url + path + '?size=' + this.defaultPageSize + '&from=' + offset;
+    const requestUrl = this.baseUrl + path + '?size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
   filter(path, token: string, query: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = this.base_url + path + query + '&size=' + this.defaultPageSize + '&from=' + offset;
+    const requestUrl = this.baseUrl + path + query + '&size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
   query(path, token: string, body): Observable<any> {
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.base_url + path + '/search';
+    const requestUrl = this.baseUrl + path + '/search';
     return this.getSearchResults('POST', requestUrl, headers, body);
   }
 
   get(path, id, token): Observable<any> {
-    const resourceUrl = this.base_url + path + '/' + id;
+    const resourceUrl = this.baseUrl + path + '/' + id;
     const headers = this.addHeaders(token, false);
     return this.getResource('GET', resourceUrl, headers, null);
   }
@@ -134,20 +133,20 @@ export class PubmanRestService {
   post(path, resource, token): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.base_url + path;
+    const requestUrl = this.baseUrl + path;
     return this.getResource('POST', requestUrl, headers, body);
   }
 
   put(path, resource, token): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.base_url + path;
+    const requestUrl = this.baseUrl + path;
     return this.getResource('PUT', requestUrl, headers, body);
   }
 
   delete(path, resource, token): Observable<number> {
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.base_url + path;
+    const requestUrl = this.baseUrl + path;
     return this.getHttpStatus('DELETE', requestUrl, headers, null);
   }
 }
