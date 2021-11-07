@@ -17,17 +17,17 @@ export class ElasticSearchService extends ElasticService {
     return this.client.search({
       index: index,
       body: body,
-    }, (err, res) => {
-      if (err) {
-        this.messagesService.error(err);
+    }, (error, response) => {
+      if (error) {
+        this.messagesService.error(error);
       } else {
         const buckets = [];
         if (nested) {
-          res.aggregations.name1.name2.buckets.forEach((bucket) => {
+          response.aggregations.name1.name2.buckets.forEach((bucket) => {
             buckets.push(bucket);
           });
         } else {
-          res.aggregations.name1.buckets.forEach((bucket) => {
+          response.aggregations.name1.buckets.forEach((bucket) => {
             buckets.push(bucket);
           });
         }
@@ -41,16 +41,16 @@ export class ElasticSearchService extends ElasticService {
     this.client.search({
       index: index,
       body: body,
-    }, (err, res) => {
-      if (err) {
-        this.messagesService.error(err);
+    }, (error, response) => {
+      if (error) {
+        this.messagesService.error(error);
       } else {
         if (nested) {
-          res.aggregations.name1.name2.buckets.forEach((bucket) => {
+          response.aggregations.name1.name2.buckets.forEach((bucket) => {
             buckets.push(bucket);
           });
         } else {
-          res.aggregations.name1.buckets.forEach((bucket) => {
+          response.aggregations.name1.buckets.forEach((bucket) => {
             buckets.push(bucket);
           });
         }
@@ -113,11 +113,11 @@ export class ElasticSearchService extends ElasticService {
     this.client.cat.aliases({
       format: 'json',
       name: alias,
-    }, (err, res) => {
-      if (err) {
-        this.messagesService.error(err);
+    }, (error, response) => {
+      if (error) {
+        this.messagesService.error(error);
       } else {
-        const indexName = res[0].index;
+        const indexName = response[0].index;
         return indexName;
       }
     });

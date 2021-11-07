@@ -61,17 +61,19 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   getSelectedOu(id, token) {
     this.ouSvc.get(this.ou_rest_url, id, token)
-      .subscribe((ou) => {
-        this.selected = ou;
-        if (this.selected.hasPredecessors === true) {
-          const preId = this.selected.predecessorAffiliations[0].objectId;
-          this.listPredecessors(preId, token);
-        } else {
-          this.predecessors = [];
-        }
-      }, (error) => {
-        this.messagesService.error(error);
-      });
+      .subscribe(
+        (ou) => {
+          this.selected = ou;
+          if (this.selected.hasPredecessors === true) {
+            const preId = this.selected.predecessorAffiliations[0].objectId;
+            this.listPredecessors(preId, token);
+          } else {
+            this.predecessors = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   listPredecessors(id: string, token) {
@@ -89,20 +91,24 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected = ou;
     if (this.selected.publicStatus === 'CREATED' || this.selected.publicStatus === 'CLOSED') {
       this.ouSvc.openOu(this.selected, this.token)
-        .subscribe((httpStatus) => {
-          this.getSelectedOu(this.selected.objectId, this.token);
-          this.messagesService.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (httpStatus) => {
+            this.getSelectedOu(this.selected.objectId, this.token);
+            this.messagesService.success('Opened ' + this.selected.objectId + ' ' + httpStatus);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     } else {
       this.ouSvc.closeOu(this.selected, this.token)
-        .subscribe((httpStatus) => {
-          this.getSelectedOu(this.selected.objectId, this.token);
-          this.messagesService.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (httpStatus) => {
+            this.getSelectedOu(this.selected.objectId, this.token);
+            this.messagesService.success('Closed ' + this.selected.objectId + ' ' + httpStatus);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     }
   }
 
@@ -228,7 +234,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           (data) => {
             this.messagesService.success('deleted ' + id + ' ' + data);
             this.gotoList();
-          }, (error) => {
+          },
+          (error) => {
             this.messagesService.error(error);
           });
     }
@@ -274,18 +281,20 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.ouSvc.filter(url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ou) => {
-          ouNames.push(ou);
+      .subscribe(
+        (response) => {
+          response.list.forEach((ou) => {
+            ouNames.push(ou);
+          });
+          if (ouNames.length > 0) {
+            this.ounames = ouNames;
+          } else {
+            this.ounames = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
         });
-        if (ouNames.length > 0) {
-          this.ounames = ouNames;
-        } else {
-          this.ounames = [];
-        }
-      }, (err) => {
-        this.messagesService.error(err);
-      });
   }
 
   close() {

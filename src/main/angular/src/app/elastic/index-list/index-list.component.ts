@@ -86,10 +86,10 @@ export class IndexListComponent implements OnInit {
   async delete(index) {
     if (confirm('you\'re about 2 delete ' + index.index)) {
       try {
-        const res = await this.elasticService.delete(index.index);
+        const response = await this.elasticService.delete(index.index);
         const pos = this.indices.indexOf(index);
         this.indices.splice(pos, 1);
-        this.messagesService.success('deleted ' + index.index + '\n' + JSON.stringify(res));
+        this.messagesService.success('deleted ' + index.index + '\n' + JSON.stringify(response));
       } catch (e) {
         this.messagesService.error(e);
       }
@@ -111,8 +111,8 @@ export class IndexListComponent implements OnInit {
       case 'add': {
         this.elasticService.addAlias(alias.index, alias.alias)
           .then((response) => this.messagesService.info(JSON.stringify(response)))
-          .catch((err) => {
-            this.messagesService.error(err);
+          .catch((error) => {
+            this.messagesService.error(error);
           });
         break;
       }
@@ -125,8 +125,8 @@ export class IndexListComponent implements OnInit {
         }
         this.elasticService.removeAlias(alias.index, a2remove)
           .then((response) => this.messagesService.info(JSON.stringify(response)))
-          .catch((err) => {
-            this.messagesService.error(err);
+          .catch((error) => {
+            this.messagesService.error(error);
           });
         break;
       }

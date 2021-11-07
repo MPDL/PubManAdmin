@@ -43,7 +43,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     reader.readAsText(event.target.files[0]);
     reader.onload = () => {
-      this.file2upload = reader.result;
+      this.file2upload = reader.response;
     }
     */
   }

@@ -110,18 +110,20 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.organizationService.filter(url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ou) => {
-          ouNames.push(ou);
+      .subscribe(
+        (response) => {
+          response.list.forEach((ou) => {
+            ouNames.push(ou);
+          });
+          if (ouNames.length > 0) {
+            this.ounames = ouNames;
+          } else {
+            this.ounames = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
         });
-        if (ouNames.length > 0) {
-          this.ounames = ouNames;
-        } else {
-          this.ounames = [];
-        }
-      }, (err) => {
-        this.messagesService.error(err);
-      });
   }
 
   close() {

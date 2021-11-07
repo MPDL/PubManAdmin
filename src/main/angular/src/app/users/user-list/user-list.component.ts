@@ -70,33 +70,39 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   getAllUsersAsObservable(token, page) {
     this.usersService.getAll(this.url, token, page)
-      .subscribe((result) => {
-        this.users = result.list;
-        this.total = result.records;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (response) => {
+          this.users = response.list;
+          this.total = response.records;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   getPage(page: number) {
     if (this.token != null) {
       if (this.selectedOUName === undefined) {
         this.usersService.getAll(this.url, this.token, page)
-          .subscribe((result) => {
-            this.users = result.list;
-            this.total = result.records;
-          }, (err) => {
-            this.messagesService.error(err);
-          });
+          .subscribe(
+            (response) => {
+              this.users = response.list;
+              this.total = response.records;
+            },
+            (error) => {
+              this.messagesService.error(error);
+            });
         this.currentPage = page;
       } else {
         this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOUName.objectId, page)
-          .subscribe((result) => {
-            this.users = result.list;
-            this.total = result.records;
-          }, (err) => {
-            this.messagesService.error(err);
-          });
+          .subscribe(
+            (response) => {
+              this.users = response.list;
+              this.total = response.records;
+            },
+            (error) => {
+              this.messagesService.error(error);
+            });
         this.currentPage = page;
       }
     }
@@ -125,12 +131,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.selected = user;
     const id = this.selected.loginname;
     this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
-      .subscribe((data) => {
-        this.messagesService.success('deleted ' + id + ' ' + data);
-      },
-      (error) => {
-        this.messagesService.error(error);
-      });
+      .subscribe(
+        (data) => {
+          this.messagesService.success('deleted ' + id + ' ' + data);
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
     const index = this.users.indexOf(this.selected);
     this.users.splice(index, 1);
     this.selected = null;
@@ -152,18 +159,20 @@ export class UserListComponent implements OnInit, OnDestroy {
     const userNames: any[] = [];
     const queryString = '?q=name.auto:' + term;
     this.usersService.filter(this.url, this.token, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((user) => {
-          userNames.push(user);
+      .subscribe(
+        (response) => {
+          response.list.forEach((user) => {
+            userNames.push(user);
+          });
+          if (userNames.length > 0) {
+            this.usernames = userNames;
+          } else {
+            this.usernames = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
         });
-        if (userNames.length > 0) {
-          this.usernames = userNames;
-        } else {
-          this.usernames = [];
-        }
-      }, (err) => {
-        this.messagesService.error(err);
-      });
   }
 
   getOUNames(term: string) {
@@ -172,18 +181,20 @@ export class UserListComponent implements OnInit, OnDestroy {
     body.query.bool.must.term['metadata.name.auto'] = term;
     const url = environment.rest_ous;
     this.usersService.query(url, null, body)
-      .subscribe((res) => {
-        res.list.forEach((ou) => {
-          ouNames.push(ou);
+      .subscribe(
+        (response) => {
+          response.list.forEach((ou) => {
+            ouNames.push(ou);
+          });
+          if (ouNames.length > 0) {
+            this.ounames = ouNames;
+          } else {
+            this.ounames = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
         });
-        if (ouNames.length > 0) {
-          this.ounames = ouNames;
-        } else {
-          this.ounames = [];
-        }
-      }, (err) => {
-        this.messagesService.error(err);
-      });
   }
 
   filter(ou) {
@@ -191,12 +202,14 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       this.currentPage = 1;
       this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
-        .subscribe((res) => {
-          this.users = res.list;
-          this.total = res.records;
-        }, (err) => {
-          this.messagesService.error(err);
-        });
+        .subscribe(
+          (response) => {
+            this.users = response.list;
+            this.total = response.records;
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     } else {
       this.messagesService.warning('no token, no users!');
     }

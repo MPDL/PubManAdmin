@@ -94,12 +94,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   getSelectedCtx(id) {
     this.contextsService.get(this.url, id, this.token)
-      .subscribe((ctx) => {
-        this.ctx = ctx;
-      },
-      (error) => {
-        this.messagesService.error(error);
-      });
+      .subscribe(
+        (ctx) => {
+          this.ctx = ctx;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   isSelected(genre) {
@@ -166,20 +167,24 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx = ctx;
     if (this.ctx.state === 'CREATED' || this.ctx.state === 'CLOSED') {
       this.contextsService.openContext(this.ctx, this.token)
-        .subscribe((httpStatus) => {
-          this.getSelectedCtx(this.ctx.objectId);
-          this.messagesService.success('Opened ' + ctx.objectId + ' ' + httpStatus);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (httpStatus) => {
+            this.getSelectedCtx(this.ctx.objectId);
+            this.messagesService.success('Opened ' + ctx.objectId + ' ' + httpStatus);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     } else {
       this.contextsService.closeContext(this.ctx, this.token)
-        .subscribe((httpStatus) => {
-          this.getSelectedCtx(this.ctx.objectId);
-          this.messagesService.success('Closed ' + ctx.objectId + ' ' + httpStatus);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (httpStatus) => {
+            this.getSelectedCtx(this.ctx.objectId);
+            this.messagesService.success('Closed ' + ctx.objectId + ' ' + httpStatus);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     }
   }
 
@@ -191,7 +196,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe(
           (data) => {
             this.messagesService.success('deleted ' + id + ' ' + data);
-          }, (error) => {
+          },
+          (error) => {
             this.messagesService.error(error);
           });
       this.gotoList();
@@ -270,8 +276,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.contextsService.filter(url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ou) => {
+      .subscribe((response) => {
+        response.list.forEach((ou) => {
           ouNames.push(ou);
         });
         if (ouNames.length > 0) {
@@ -279,8 +285,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.ounames = [];
         }
-      }, (err) => {
-        this.messagesService.error(err);
+      }, (error) => {
+        this.messagesService.error(error);
       });
   }
 

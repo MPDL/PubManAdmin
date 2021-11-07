@@ -6,8 +6,8 @@ import {ConnectionService} from '../../base/services/connection.service';
 
 @Injectable()
 export class ElasticService {
-  public client: Client;
-  public uri: string;
+  client: Client;
+  uri: string;
 
   constructor(
     protected messagesService: MessagesService,

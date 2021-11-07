@@ -50,12 +50,14 @@ export class ContextListComponent implements OnInit, OnDestroy {
   getPage(page: number) {
     this.loading = true;
     this.contextsService.getAll(this.url, this.token, page)
-      .subscribe((result) => {
-        this.ctxs = result.list;
-        this.total = result.records;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (response) => {
+          this.ctxs = response.list;
+          this.total = response.records;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
     this.currentPage = page;
     this.loading = false;
   }
@@ -95,18 +97,20 @@ export class ContextListComponent implements OnInit, OnDestroy {
     const contextNames: any[] = [];
     const queryString = '?q=name.auto:' + term;
     this.contextsService.filter(this.url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ctx) => {
-          contextNames.push(ctx);
+      .subscribe(
+        (response) => {
+          response.list.forEach((ctx) => {
+            contextNames.push(ctx);
+          });
+          if (contextNames.length > 0) {
+            this.contextnames = contextNames;
+          } else {
+            this.contextnames = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
         });
-        if (contextNames.length > 0) {
-          this.contextnames = contextNames;
-        } else {
-          this.contextnames = [];
-        }
-      }, (err) => {
-        this.messagesService.error(err);
-      });
   }
 
   getOUNames(term: string) {
@@ -116,18 +120,20 @@ export class ContextListComponent implements OnInit, OnDestroy {
       body.query.bool.must.term['metadata.name.auto'] = term;
       const url = environment.rest_ous;
       this.contextsService.query(url, null, body)
-        .subscribe((res) => {
-          res.list.forEach((ou) => {
-            ouNames.push(ou);
+        .subscribe(
+          (response) => {
+            response.list.forEach((ou) => {
+              ouNames.push(ou);
+            });
+            if (ouNames.length > 0) {
+              this.ounames = ouNames;
+            } else {
+              this.ounames = [];
+            }
+          },
+          (error) => {
+            this.messagesService.error(error);
           });
-          if (ouNames.length > 0) {
-            this.ounames = ouNames;
-          } else {
-            this.ounames = [];
-          }
-        }, (err) => {
-          this.messagesService.error(err);
-        });
     }
   }
 
@@ -135,16 +141,18 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.selectedOUName = ou;
     this.currentPage = 1;
     this.contextsService.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
-      .subscribe((res) => {
-        this.ctxs = res.list;
-        if (res.records > 0) {
-          this.total = res.records;
-        } else {
-          this.messagesService.info('query did not return any results.');
-        }
-      }, (err) => {
-        this.messagesService.error(JSON.stringify(err));
-      });
+      .subscribe(
+        (response) => {
+          this.ctxs = response.list;
+          if (response.records > 0) {
+            this.total = response.records;
+          } else {
+            this.messagesService.info('query did not return any results.');
+          }
+        },
+        (error) => {
+          this.messagesService.error(JSON.stringify(error));
+        });
     this.title = 'Contexts for ' + this.selectedOUName.name;
     this.closeOUNames();
   }

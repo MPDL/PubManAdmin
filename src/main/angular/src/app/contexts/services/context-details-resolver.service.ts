@@ -33,9 +33,9 @@ export class ContextDetailsResolverService implements Resolve<any> {
       return this.contextsService.get(url, id, token)
         .pipe(
           first(),
-          catchError((err) => {
-            this.messagesService.error(err);
-            return observableThrowError(err);
+          catchError((error) => {
+            this.messagesService.error(error);
+            return observableThrowError(error);
           })
         );
     }

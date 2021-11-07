@@ -121,19 +121,21 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     addGrants() {
       if (this.selectedGrants.length > 0) {
-        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe((user) => {
-          this.selectedUser = user;
-          if (this.selectedUser.grantList) {
-            this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-          }
-          this.selectedUserChange.emit(this.selectedUser);
-          this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
-          this.selectedGrants = null;
-          this.grantsToAdd = '';
-          this.isNewGrantChange.emit(false);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(
+          (user) => {
+            this.selectedUser = user;
+            if (this.selectedUser.grantList) {
+              this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+            }
+            this.selectedUserChange.emit(this.selectedUser);
+            this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
+            this.selectedGrants = null;
+            this.grantsToAdd = '';
+            this.isNewGrantChange.emit(false);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
       } else {
         this.messagesService.warning('no grant(s) selected !');
       }

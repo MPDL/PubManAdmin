@@ -65,8 +65,8 @@ export class AuthenticationService {
           this.messagesService.error(response.status + ' ' + response.statusText);
         }
       }),
-      catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      catchError((error) => {
+        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
       })
     );
   }
@@ -96,8 +96,8 @@ export class AuthenticationService {
         }
         return user;
       }),
-      catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      catchError((error) => {
+        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
       })
     );
   }

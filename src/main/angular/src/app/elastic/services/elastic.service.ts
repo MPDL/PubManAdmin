@@ -29,14 +29,14 @@ export class ElasticService {
     });
   }
 
-  public connect2(url) {
+  connect2(url) {
     this.client = new Client({
       host: url,
       log: ['error', 'warning'],
     });
   }
 
-  public remoteClient(url): Client {
+  remoteClient(url): Client {
     const rc = new Client({
       host: url,
       log: ['error', 'warning'],

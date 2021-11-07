@@ -84,8 +84,8 @@ export class OrganizationTree2Service {
         const nodes = children.map((child) => this.generateNode(child));
         parent.childrenChange.next(nodes);
         this.dataChange.next(this.dataChange.value);
-      }).catch((err) => {
-        this.messagesService.error(err);
+      }).catch((error) => {
+        this.messagesService.error(error);
       });
   }
 
@@ -93,9 +93,9 @@ export class OrganizationTree2Service {
     if (this.nodeMap.has(ou.name)) {
       return this.nodeMap.get(ou.name)!;
     }
-    const result = new OUTreeNode(ou.name, ou.objectId, ou.hasChildren);
-    this.nodeMap.set(ou.name, result);
-    return result;
+    const response = new OUTreeNode(ou.name, ou.objectId, ou.hasChildren);
+    this.nodeMap.set(ou.name, response);
+    return response;
   }
 }
 

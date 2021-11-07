@@ -26,9 +26,9 @@ export class PubmanRestService {
       responseType: 'json',
       body: body,
     }).pipe(
-      map((response: SearchResult) => {
+      map((searchResult: SearchResult) => {
         const result = {list: [], records: 0};
-        const data = response;
+        const data = searchResult;
         const hits = [];
         const records = data.numberOfRecords;
         if (records > 0) {
@@ -40,8 +40,8 @@ export class PubmanRestService {
         }
         return result;
       }),
-      catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      catchError((error) => {
+        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
       })
     );
   }
@@ -55,8 +55,8 @@ export class PubmanRestService {
         const resource = response;
         return resource;
       }),
-      catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      catchError((error) => {
+        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
       })
     );
   }
@@ -67,8 +67,8 @@ export class PubmanRestService {
         const resource = response;
         return resource;
       }),
-      catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      catchError((error) => {
+        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
       })
     );
   }
@@ -84,8 +84,8 @@ export class PubmanRestService {
         const status = response.status;
         return status;
       }),
-      catchError((err) => {
-        return observableThrowError(JSON.stringify(err) || 'UNKNOWN ERROR!');
+      catchError((error) => {
+        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
       })
     );
   }

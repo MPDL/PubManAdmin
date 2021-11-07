@@ -117,25 +117,29 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.title.keyword', 'asc');
     this.loading = true;
     this.searchService.query(this.item_rest_url, this.token, body)
-      .subscribe((res) => {
-        this.total = res.records;
-        this.currentPage = page;
-        this.items = res.list;
-        this.loading = false;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (response) => {
+          this.total = response.records;
+          this.currentPage = page;
+          this.items = response.list;
+          this.loading = false;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   searchItems(body) {
     this.currentPage = 1;
     this.searchService.query(this.item_rest_url, this.token, body)
-      .subscribe((items) => {
-        this.items = items.list;
-        this.total = items.records;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (items) => {
+          this.items = items.list;
+          this.total = items.records;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   onSelectYear(year) {
@@ -152,12 +156,14 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
     this.searchService.query(this.item_rest_url, this.token, body)
     // this.search.filter(this.item_rest_url, this.token, '?q=creationDate:' + year.key_as_string + '||/y', 1)
-      .subscribe((items) => {
-        this.items = items.list;
-        this.total = items.records;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (items) => {
+          this.items = items.list;
+          this.total = items.records;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   onSelectGenre(genre) {
@@ -165,12 +171,14 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'metadata.genre', searchTerm: genre.key}]);
     this.currentPage = 1;
     this.searchService.filter(this.item_rest_url, this.token, '?q=metadata.genre:' + genre.key, 1)
-      .subscribe((items) => {
-        this.items = items.list;
-        this.total = items.records;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (items) => {
+          this.items = items.list;
+          this.total = items.records;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   onSelectPublisher(publisher) {
@@ -182,12 +190,14 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       field: 'metadata.sources.publishingInfo.publisher.keyword', searchTerm: publisher.key}]);
     this.currentPage = 1;
     this.searchService.query(this.item_rest_url, this.token, body)
-      .subscribe((items) => {
-        this.items = items.list;
-        this.total = items.records;
-      }, (err) => {
-        this.messagesService.error(err);
-      });
+      .subscribe(
+        (items) => {
+          this.items = items.list;
+          this.total = items.records;
+        },
+        (error) => {
+          this.messagesService.error(error);
+        });
   }
 
   onSelect(item) {

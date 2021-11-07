@@ -5,14 +5,14 @@ import {Directive, ElementRef, Output, EventEmitter, HostListener} from '@angula
 })
 export class ClickOutsideDirective {
   @Output()
-  public clickoutside = new EventEmitter();
+    clickoutside = new EventEmitter();
 
   constructor(
     private elementRef: ElementRef
   ) {}
 
   @HostListener('document:click', ['$event.target'])
-  public onClick(targetElement) {
+  onClick(targetElement) {
     const clickedInside = this.elementRef.nativeElement.contains(targetElement);
 
     if (!clickedInside) {

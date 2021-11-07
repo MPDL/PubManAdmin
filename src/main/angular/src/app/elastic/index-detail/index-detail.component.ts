@@ -105,7 +105,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async getIndexInfo(index) {
     try {
       this.list = await this.elasticService.listAllIndices();
-      const selected = this.list.filter((result) => result.index === index);
+      const selected = this.list.filter((response) => response.index === index);
       if (selected.length === 1) {
         this.index_info = selected[0];
       }
@@ -185,8 +185,8 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
         const body = {};
         Object.assign(body, this.selectedSettings, this.selectedMapping);
         try {
-          const res = await this.elasticService.create(this.index_name, body);
-          this.messagesService.success('created index ' + this.index_name + '\n' + JSON.stringify(res));
+          const response = await this.elasticService.create(this.index_name, body);
+          this.messagesService.success('created index ' + this.index_name + '\n' + JSON.stringify(response));
         } catch (e) {
           this.messagesService.error(e);
         }

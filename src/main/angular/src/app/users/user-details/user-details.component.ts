@@ -146,12 +146,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   resetPassword(user) {
     if (user.active === true) {
       this.usersService.changePassword(user, this.token)
-        .subscribe((u) => {
-          this.selected = u;
-          this.messagesService.success(u.loginname + ':  password was reset to ' + user.password);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (u) => {
+            this.selected = u;
+            this.messagesService.success(u.loginname + ':  password was reset to ' + user.password);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     } else {
       this.messagesService.warning('password will not be reset for deactivated user!');
     }
@@ -160,12 +162,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   changePassword(user) {
     if (user.password != null) {
       this.usersService.changePassword(user, this.token)
-        .subscribe((u) => {
-          this.selected = u;
-          this.messagesService.success(u.loginname + ':  password has changed to ' + user.password);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (u) => {
+            this.selected = u;
+            this.messagesService.success(u.loginname + ':  password has changed to ' + user.password);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     } else {
       this.messagesService.error('password must not be empty!');
     }
@@ -175,20 +179,24 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selected = user;
     if (this.selected.active === true) {
       this.usersService.deactivate(this.selected, this.token)
-        .subscribe((user2deactivate) => {
-          this.selected = user2deactivate;
-          this.messagesService.success('Deactivated ' + this.selected.objectId);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (user2deactivate) => {
+            this.selected = user2deactivate;
+            this.messagesService.success('Deactivated ' + this.selected.objectId);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     } else {
       this.usersService.activate(this.selected, this.token)
-        .subscribe((user2activate) => {
-          this.selected = user2activate;
-          this.messagesService.success('Activated ' + this.selected.objectId);
-        }, (error) => {
-          this.messagesService.error(error);
-        });
+        .subscribe(
+          (user2activate) => {
+            this.selected = user2activate;
+            this.messagesService.success('Activated ' + this.selected.objectId);
+          },
+          (error) => {
+            this.messagesService.error(error);
+          });
     }
   }
 
@@ -304,18 +312,20 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     const url = environment.rest_ous;
     const queryString = '?q=metadata.name.auto:' + term;
     this.usersService.filter(url, null, queryString, 1)
-      .subscribe((res) => {
-        res.list.forEach((ou) => {
-          ouNames.push(ou);
+      .subscribe(
+        (response) => {
+          response.list.forEach((ou) => {
+            ouNames.push(ou);
+          });
+          if (ouNames.length > 0) {
+            this.ounames = ouNames;
+          } else {
+            this.ounames = [];
+          }
+        },
+        (error) => {
+          this.messagesService.error(error);
         });
-        if (ouNames.length > 0) {
-          this.ounames = ouNames;
-        } else {
-          this.ounames = [];
-        }
-      }, (err) => {
-        this.messagesService.error(err);
-      });
   }
 
   close() {

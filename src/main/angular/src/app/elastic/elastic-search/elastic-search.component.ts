@@ -143,8 +143,8 @@ export class ElasticSearchComponent implements OnInit {
     const dest = this.searchForm.get('target_index').value;
     const body = {source: {index: source}, dest: {index: dest}};
     try {
-      const result = await this.elasticService.reindex(body);
-      this.messagesService.success(JSON.stringify(result));
+      const response = await this.elasticService.reindex(body);
+      this.messagesService.success(JSON.stringify(response));
     } catch (e) {
       this, this.messagesService.error(e);
     }
