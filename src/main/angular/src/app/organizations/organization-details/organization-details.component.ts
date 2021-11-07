@@ -33,14 +33,14 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private ouSvc: OrganizationsService,
-    private login: AuthenticationService,
+    private authenticationService: AuthenticationService,
     private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
     this.routeSubscription = this.route.params
       .subscribe((params) => {
-        this.tokenSubscription = this.login.token$.subscribe((token) => this.token = token);
+        this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
         const id = params['id'];
         if (id === 'new org') {
           this.isNewOrganization = true;

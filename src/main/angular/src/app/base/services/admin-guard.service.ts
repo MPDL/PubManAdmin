@@ -11,7 +11,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
   adminSubscription: Subscription;
 
   constructor(
-    private authentication: AuthenticationService,
+    private authenticationService: AuthenticationService,
     private messagesService: MessagesService
   ) {}
 
@@ -25,7 +25,7 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   checkLogin(url: string): boolean {
-    this.adminSubscription = this.authentication.isAdmin$.subscribe((checked) => this.checked = checked);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((checked) => this.checked = checked);
     if (this.checked) {
       return true;
     }

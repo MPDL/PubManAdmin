@@ -16,7 +16,7 @@ import {allOpenedOUs} from '../../base/common/model/query-bodies';
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
   url = environment.rest_users;
-  ous_url = environment.rest_ous;
+  ousUrl = environment.rest_ous;
   ctxs_url = environment.rest_contexts;
 
   selected: User;
@@ -65,7 +65,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   listOuNames() {
     const body = allOpenedOUs;
-    this.usersService.query(this.ous_url, null, body)
+    this.usersService.query(this.ousUrl, null, body)
       .subscribe((ous) => this.ous = ous.list);
   }
 
@@ -117,7 +117,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.ctxTitle = 'why do you point here?';
     } else {
       if (ref.startsWith('ou')) {
-        this.usersService.get(this.ous_url, ref, null)
+        this.usersService.get(this.ousUrl, ref, null)
           .subscribe((ou) => this.ctxTitle = ou.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {

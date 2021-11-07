@@ -26,7 +26,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Output()
       selectedUserChange = new EventEmitter<User>();
 
-    ous_url = environment.rest_ous;
+    ousUrl = environment.rest_ous;
     ctx_url = environment.rest_contexts;
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER'];
@@ -67,7 +67,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
           this.ctxs_filtered = ctxs.list;
         });
 
-      this.usersService.query(this.ous_url, null, ousBody)
+      this.usersService.query(this.ousUrl, null, ousBody)
         .subscribe((ous) => this.ous = ous.list);
     }
 
