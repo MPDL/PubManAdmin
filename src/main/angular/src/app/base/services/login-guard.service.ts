@@ -1,14 +1,12 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild} from '@angular/router';
-import {Subscription} from 'rxjs';
 
 import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
 @Injectable()
-export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
+export class LoginGuard implements CanActivate, CanActivateChild {
   checked: boolean = false;
-  loginSubscription: Subscription;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -25,15 +23,11 @@ export class LoginGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   checkLogin(url: string): boolean {
-    this.loginSubscription = this.authenticationService.isLoggedIn$.subscribe((checked) => this.checked = checked);
+    this.authenticationService.isLoggedIn$.subscribe((data) => this.checked = data);
     if (this.checked) {
       return true;
     }
     this.messagesService.warning('This site requires you to login ...');
     return false;
-  }
-
-  ngOnDestroy() {
-    this.loginSubscription.unsubscribe();
   }
 }

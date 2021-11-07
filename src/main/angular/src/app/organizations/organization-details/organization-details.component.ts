@@ -39,17 +39,18 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSubscription = this.route.params
-      .subscribe((params) => {
-        this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
-        const id = params['id'];
-        if (id === 'new org') {
-          this.isNewOrganization = true;
-          this.selected = this.prepareNewOU(id);
-        } else {
-          this.getSelectedOu(id, this.token);
-          this.listChildren(id);
-        }
-      });
+      .subscribe(
+        (data) => {
+          this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+          const id = data['id'];
+          if (id === 'new org') {
+            this.isNewOrganization = true;
+            this.selected = this.prepareNewOU(id);
+          } else {
+            this.getSelectedOu(id, this.token);
+            this.listChildren(id);
+          }
+        });
   }
 
   ngOnDestroy() {
@@ -75,13 +76,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   listPredecessors(id: string, token) {
     const query = '?q=objectId:' + id;
-    this.ouSvc.filter(this.ou_rest_url, token, query, 1)
-      .subscribe((ous) => this.predecessors = ous.list);
+    this.ouSvc.filter(this.ou_rest_url, token, query, 1).subscribe((data) => this.predecessors = data.list);
   }
 
   listChildren(mother: string) {
-    this.ouSvc.listChildren4Ou(mother, null)
-      .subscribe((children) => this.children = children);
+    this.ouSvc.listChildren4Ou(mother, null).subscribe((data) => this.children = data);
   }
 
   openClose(ou) {

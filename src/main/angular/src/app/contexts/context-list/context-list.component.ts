@@ -39,7 +39,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.listAllContexts(this.token);
   }
 

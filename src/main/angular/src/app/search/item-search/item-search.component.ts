@@ -61,7 +61,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       this.aggregationsList.push(itemAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.item_index.name, environment.item_index.type);
-    this.tokensubscription = this.authenticationservice.token$.subscribe((token) => this.token = token);
+    this.tokensubscription = this.authenticationservice.token$.subscribe((data) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
@@ -117,29 +117,27 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.title.keyword', 'asc');
     this.loading = true;
     this.searchService.query(this.item_rest_url, this.token, body)
-      .subscribe(
-        (response) => {
-          this.total = response.records;
+      .subscribe({
+        next: (data) => {
+          this.total = data.records;
           this.currentPage = page;
-          this.items = response.list;
+          this.items = data.list;
           this.loading = false;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   searchItems(body) {
     this.currentPage = 1;
     this.searchService.query(this.item_rest_url, this.token, body)
-      .subscribe(
-        (items) => {
-          this.items = items.list;
-          this.total = items.records;
+      .subscribe({
+        next: (data) => {
+          this.items = data.list;
+          this.total = data.records;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onSelectYear(year) {
@@ -155,15 +153,13 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     request.searchTerms = terms;
     const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
     this.searchService.query(this.item_rest_url, this.token, body)
-    // this.search.filter(this.item_rest_url, this.token, '?q=creationDate:' + year.key_as_string + '||/y', 1)
-      .subscribe(
-        (items) => {
-          this.items = items.list;
-          this.total = items.records;
+      .subscribe({
+        next: (data) => {
+          this.items = data.list;
+          this.total = data.records;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onSelectGenre(genre) {
@@ -171,14 +167,13 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'metadata.genre', searchTerm: genre.key}]);
     this.currentPage = 1;
     this.searchService.filter(this.item_rest_url, this.token, '?q=metadata.genre:' + genre.key, 1)
-      .subscribe(
-        (items) => {
-          this.items = items.list;
-          this.total = items.records;
+      .subscribe({
+        next: (data) => {
+          this.items = data.list;
+          this.total = data.records;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onSelectPublisher(publisher) {
@@ -190,14 +185,13 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       field: 'metadata.sources.publishingInfo.publisher.keyword', searchTerm: publisher.key}]);
     this.currentPage = 1;
     this.searchService.query(this.item_rest_url, this.token, body)
-      .subscribe(
-        (items) => {
-          this.items = items.list;
-          this.total = items.records;
+      .subscribe({
+        next: (data) => {
+          this.items = data.list;
+          this.total = data.records;
         },
-        (error) => {
-          this.messagesService.error(error);
-        });
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onSelect(item) {

@@ -49,7 +49,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-      this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+      this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
       if (this.token != null) {
         this.getNewGrantSelect();
       }
@@ -62,13 +62,13 @@ export class GrantsComponent implements OnInit, OnDestroy {
     getNewGrantSelect() {
       const ousBody = allOpenedOUs;
       this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&size=300', 1)
-        .subscribe((ctxs) => {
-          this.ctxs = ctxs.list;
-          this.ctxs_filtered = ctxs.list;
-        });
+        .subscribe(
+          (data) => {
+            this.ctxs = data.list;
+            this.ctxs_filtered = data.list;
+          });
 
-      this.usersService.query(this.ousUrl, null, ousBody)
-        .subscribe((ous) => this.ous = ous.list);
+      this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
     }
 
     onChangeRole(val) {
@@ -121,20 +121,20 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     addGrants() {
       if (this.selectedGrants.length > 0) {
-        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token).subscribe(
-          (user) => {
-            this.selectedUser = user;
-            if (this.selectedUser.grantList) {
-              this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-            }
-            this.selectedUserChange.emit(this.selectedUser);
-            this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
-            this.selectedGrants = null;
-            this.grantsToAdd = '';
-            this.isNewGrantChange.emit(false);
-          },
-          (error) => {
-            this.messagesService.error(error);
+        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token)
+          .subscribe({
+            next: (data) => {
+              this.selectedUser = data;
+              if (this.selectedUser.grantList) {
+                this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+              }
+              this.selectedUserChange.emit(this.selectedUser);
+              this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
+              this.selectedGrants = null;
+              this.grantsToAdd = '';
+              this.isNewGrantChange.emit(false);
+            },
+            error: (e) => this.messagesService.error(e),
           });
       } else {
         this.messagesService.warning('no grant(s) selected !');

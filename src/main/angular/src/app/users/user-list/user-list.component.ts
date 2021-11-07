@@ -47,9 +47,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     private router: Router) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
-    this.userSubscription = this.authenticationService.user$.subscribe((user) => this.loggedInUser = user);
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((admin) => this.isAdmin = admin);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
 
     if (this.token != null) {
       if (this.isAdmin) {

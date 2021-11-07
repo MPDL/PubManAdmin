@@ -1,14 +1,12 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild} from '@angular/router';
-import {Subscription} from 'rxjs';
 
 import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
 @Injectable()
-export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
+export class AdminGuard implements CanActivate, CanActivateChild {
   checked: boolean = false;
-  adminSubscription: Subscription;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -25,15 +23,11 @@ export class AdminGuard implements CanActivate, CanActivateChild, OnDestroy {
   }
 
   checkLogin(url: string): boolean {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((checked) => this.checked = checked);
+    this.authenticationService.isAdmin$.subscribe((data) => this.checked = data);
     if (this.checked) {
       return true;
     }
     this.messagesService.warning('This site requires admin authorization ...');
     return false;
-  }
-
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
   }
 }

@@ -47,7 +47,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
 
     this.selected = this.route.snapshot.data['user'];
 
@@ -65,8 +65,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   listOuNames() {
     const body = allOpenedOUs;
-    this.usersService.query(this.ousUrl, null, body)
-      .subscribe((ous) => this.ous = ous.list);
+    this.usersService.query(this.ousUrl, null, body).subscribe((data) => this.ous = data.list);
   }
 
   onSelectOu(val) {
@@ -117,12 +116,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.ctxTitle = 'why do you point here?';
     } else {
       if (ref.startsWith('ou')) {
-        this.usersService.get(this.ousUrl, ref, null)
-          .subscribe((ou) => this.ctxTitle = ou.metadata.name);
+        this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.ctxTitle = data.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.usersService.get(this.ctxs_url, ref, null)
-            .subscribe((ctx) => this.ctxTitle = ctx.name);
+          this.usersService.get(this.ctxs_url, ref, null).subscribe((data) => this.ctxTitle = data.name);
         }
       }
     }
@@ -138,8 +135,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   generateRandomPassword(user) {
-    this.usersService.generateRandomPassword()
-      .subscribe((pw) => user.password = pw.toString());
+    this.usersService.generateRandomPassword().subscribe((data) => user.password = data.toString());
   }
 
   resetPassword(user) {
@@ -246,8 +242,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.rest_users, data.objectId, this.token)
-              .subscribe((selected) => {
-                this.selected = selected;
+              .subscribe((data) => {
+                this.selected = data;
                 if (this.selected.grantList) {
                   this.selected.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
                 }

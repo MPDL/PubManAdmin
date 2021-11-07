@@ -62,10 +62,14 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       this.aggregationsList.push(userAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.user_index.name, environment.user_index.type);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
+  }
+
+  ngOnDestroy() {
+    this.tokenSubscription.unsubscribe();
   }
 
   get searchTerms(): FormArray {
@@ -87,10 +91,6 @@ export class UserSearchComponent implements OnInit, OnDestroy {
 
   removeSearchTerm(i: number) {
     this.searchTerms.removeAt(i);
-  }
-
-  ngOnDestroy() {
-    this.tokenSubscription.unsubscribe();
   }
 
   onAggregationSelect(agg) {

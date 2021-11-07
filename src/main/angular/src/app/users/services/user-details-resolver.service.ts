@@ -41,7 +41,6 @@ export class UserDetailsResolverService implements Resolve<User> {
   }
 
   generateRandomPassword(user: User) {
-    this.usersService.generateRandomPassword()
-      .subscribe((pw) => user.password = pw.toString());
+    this.usersService.generateRandomPassword().subscribe((data) => user.password = data.toString());
   }
 }

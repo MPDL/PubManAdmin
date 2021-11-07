@@ -38,8 +38,8 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSubscription = this.route.params
-      .subscribe((params) => {
-        const name = params['name'];
+      .subscribe((data) => {
+        const name = data['name'];
         this.index_name = name;
       });
     if (this.index_name !== 'new') {

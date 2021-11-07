@@ -53,7 +53,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.isNewCtx = true;
       this.listOuNames();
     }
-    this.tokenSubscription = this.authenticationService.token$.subscribe((token) => this.token = token);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.genres2display = Object.keys(genres).filter((val) => val.match(/^[A-Z]/));
     this.initializeAllowed(this.ctx);
 
@@ -83,8 +83,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   listOuNames() {
     const body = allOpenedOUs;
-    this.contextsService.query(this.ousUrl, null, body)
-      .subscribe((ous) => this.ous = ous.list);
+    this.contextsService.query(this.ousUrl, null, body).subscribe((data) => this.ous = data.list);
   }
 
   onChangeOu(val) {

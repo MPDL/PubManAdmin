@@ -69,12 +69,10 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.get(this.ousUrl, ref, null)
-          .subscribe((ou) => grant.ctxTitle = ou.metadata.name);
+        this.get(this.ousUrl, ref, null).subscribe((data) => grant.ctxTitle = data.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.get(this.ctxsUrl, ref, null)
-            .subscribe((ctx) => grant.ctxTitle = ctx.name);
+          this.get(this.ctxsUrl, ref, null).subscribe((data) => grant.ctxTitle = data.name);
         }
       }
     }
