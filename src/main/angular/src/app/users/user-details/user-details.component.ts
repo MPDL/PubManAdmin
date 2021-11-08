@@ -127,7 +127,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   gotoList() {
     const userId = this.selected ? this.selected.loginname : null;
-    this.router.navigate(['/users', {id: userId}]);
+    this.router.navigate(['/users', userId]);
   }
 
   notAllowed(whatthehackever) {

@@ -69,11 +69,7 @@ import {HttpErrorInterceptor} from './base/common/http-error.interceptor';
     PubmanRestService,
     AdminGuard,
     LoginGuard,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpErrorInterceptor,
-      multi: true,
-    },
+    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
 })

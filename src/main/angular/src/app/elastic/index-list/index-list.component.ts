@@ -76,7 +76,7 @@ export class IndexListComponent implements OnInit {
   }
 
   goTo(destination) {
-    this.router.navigate(['elastic/index', destination]);
+    this.router.navigate(['elastic', 'index', destination]);
   }
 
   addNewIndex() {

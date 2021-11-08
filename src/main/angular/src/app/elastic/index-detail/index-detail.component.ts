@@ -168,7 +168,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   }
 
   gotoList() {
-    this.router.navigate(['elastic/index']);
+    this.router.navigate(['elastic', 'index']);
   }
 
   remoteList() {
