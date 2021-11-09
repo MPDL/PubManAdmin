@@ -1,4 +1,4 @@
-import {throwError as observableThrowError, Observable, BehaviorSubject} from 'rxjs';
+import {Observable, BehaviorSubject, throwError} from 'rxjs';
 import {map, catchError} from 'rxjs/operators';
 import {share, shareReplay} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
@@ -66,7 +66,7 @@ export class AuthenticationService {
         }
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
       })
     );
   }
@@ -97,7 +97,7 @@ export class AuthenticationService {
         return user;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
       })
     );
   }

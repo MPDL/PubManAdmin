@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError, Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {first, catchError} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
@@ -35,7 +35,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
           first(),
           catchError((error) => {
             this.messagesService.error(error);
-            return observableThrowError(error);
+            return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
           })
         );
     }

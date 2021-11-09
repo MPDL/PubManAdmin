@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError, Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {map, catchError} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
@@ -32,7 +32,7 @@ export class OrganizationsService extends PubmanRestService {
         return this.ou;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'Error getting children 4 ' + id);
+        return throwError(() => new Error(JSON.stringify(error) || 'Error getting children 4 ' + id));
       })
     );
   }
@@ -48,7 +48,7 @@ export class OrganizationsService extends PubmanRestService {
         return this.ous;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'Error getting children 4 ' + id);
+        return throwError(() => new Error(JSON.stringify(error) || 'Error getting children 4 ' + id));
       })
     );
   }

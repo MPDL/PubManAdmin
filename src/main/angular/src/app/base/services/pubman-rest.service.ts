@@ -1,4 +1,4 @@
-import {throwError as observableThrowError, Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {map, catchError} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse, HttpHeaders} from '@angular/common/http';
@@ -40,7 +40,7 @@ export class PubmanRestService {
         return result;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
       })
     );
   }
@@ -55,7 +55,7 @@ export class PubmanRestService {
         return resource;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
       })
     );
   }
@@ -67,7 +67,7 @@ export class PubmanRestService {
         return resource;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
       })
     );
   }
@@ -84,7 +84,7 @@ export class PubmanRestService {
         return status;
       }),
       catchError((error) => {
-        return observableThrowError(JSON.stringify(error) || 'UNKNOWN ERROR!');
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
       })
     );
   }
