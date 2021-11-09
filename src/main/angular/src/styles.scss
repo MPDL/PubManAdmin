@@ -9,4 +9,20 @@
   background: none;
   box-shadow: none !important;
 };
+
 a { cursor: pointer; };
+
+/* VALIDIERUNG */
+// roter Rahmen um fehlerhaftes Eingabefeld
+input.ng-invalid.ng-touched {
+  border: 1px solid #f00;
+}
+// Positionierung für direkten Parent des Eingabefeldes
+.validation-field-parent {
+  position:relative;
+}
+// Positionierung für Fehlermeldung im Eingabefeld
+.validation-message {
+  position:absolute; top: -10%; right: 5px;
+}
+/* END VALIDIERUNG */
