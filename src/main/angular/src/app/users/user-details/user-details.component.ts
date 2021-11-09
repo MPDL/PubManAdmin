@@ -39,7 +39,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   tokenSubscription: Subscription;
 
   constructor(
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private router: Router,
     private usersService: UsersService,
     private messagesService: MessagesService,
@@ -49,10 +49,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
 
-    this.selected = this.route.snapshot.data['user'];
+    this.selected = this.activatedRoute.snapshot.data['user'];
 
-    if (this.route.snapshot.queryParams['admin']) {
-      this.isAdmin = this.route.snapshot.queryParams['admin'];
+    if (this.activatedRoute.snapshot.queryParams['admin']) {
+      this.isAdmin = this.activatedRoute.snapshot.queryParams['admin'];
     }
 
     if (this.selected.loginname === 'new user') {
@@ -127,7 +127,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   gotoList() {
     const userId = this.selected ? this.selected.loginname : null;
-    this.router.navigate(['/users', userId]);
+    this.router.navigate(['/users', {id: userId}]);
   }
 
   notAllowed(whatthehackever) {
