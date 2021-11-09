@@ -8,7 +8,7 @@ import {ItemSearchComponent} from './item-search/item-search.component';
 import {AdminGuard} from '../base/services/admin-guard.service';
 
 const routes: Routes = [
-  {path: 'search', component: SearchComponent,
+  {path: 'search', component: SearchComponent, canActivate: [AdminGuard],
     children: [
       {path: 'users', component: UserSearchComponent, canActivate: [AdminGuard]},
       {path: 'organizations', redirectTo: '/organizations', pathMatch: 'full'},
