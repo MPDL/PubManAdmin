@@ -238,7 +238,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data) => {
             this.messagesService.success('updated ' + this.selected.loginname);
-            // this.gotoList();
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.rest_users, data.objectId, this.token)
