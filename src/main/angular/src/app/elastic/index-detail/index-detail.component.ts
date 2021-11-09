@@ -30,14 +30,14 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription;
 
   constructor(
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private router: Router,
     private elasticService: ElasticService,
     private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
-    this.routeSubscription = this.route.params
+    this.routeSubscription = this.activatedRoute.params
       .subscribe((data) => {
         const name = data['name'];
         this.index_name = name;

@@ -12,9 +12,9 @@ export class UserDetailsResolverService implements Resolve<User> {
     private usersService: UsersService,
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<User> {
+  resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<User> {
     const url = environment.rest_users;
-    const id = route.params['id'];
+    const id = activatedRouteSnapshot.params['id'];
     if (id === 'new user') {
       const user = new User();
       user.loginname = 'new user';
@@ -24,7 +24,7 @@ export class UserDetailsResolverService implements Resolve<User> {
       this.generateRandomPassword(user);
       return of(user);
     } else {
-      const token = route.queryParams['token'];
+      const token = activatedRouteSnapshot.queryParams['token'];
       let user: User;
       return this.usersService.get(url, id, token)
         .pipe(

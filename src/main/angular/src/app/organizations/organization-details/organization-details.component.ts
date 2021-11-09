@@ -31,14 +31,14 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private ouSvc: OrganizationsService,
     private authenticationService: AuthenticationService,
     private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
-    this.routeSubscription = this.route.params
+    this.routeSubscription = this.activatedRoute.params
       .subscribe(
         (data) => {
           this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);

@@ -13,16 +13,15 @@ export class LoginGuard implements CanActivate, CanActivateChild {
     private messagesService: MessagesService
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const url: string = state.url;
-    return this.checkLogin(url);
+  canActivate(_activatedRouteSnapshot: ActivatedRouteSnapshot, _routerStateSnapshot: RouterStateSnapshot): boolean {
+    return this.checkLogin();
   }
 
-  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.canActivate(route, state);
+  canActivateChild(activatedRouteSnapshot: ActivatedRouteSnapshot, routerStateSnapshot: RouterStateSnapshot): boolean {
+    return this.canActivate(activatedRouteSnapshot, routerStateSnapshot);
   }
 
-  checkLogin(url: string): boolean {
+  checkLogin(): boolean {
     this.authenticationService.isLoggedIn$.subscribe((data) => this.checked = data);
     if (this.checked) {
       return true;

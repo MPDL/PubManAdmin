@@ -42,13 +42,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private contextsService: ContextsService,
     private router: Router,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
     private messagesService: MessagesService
   ) {}
 
   ngOnInit() {
-    this.ctx = this.route.snapshot.data['ctx'];
+    this.ctx = this.activatedRoute.snapshot.data['ctx'];
     if (this.ctx.name === 'new ctx') {
       this.isNewCtx = true;
       this.listOuNames();

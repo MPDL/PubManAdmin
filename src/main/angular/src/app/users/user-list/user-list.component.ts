@@ -43,7 +43,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   constructor(private usersService: UsersService,
     private authenticationService: AuthenticationService,
     private messagesService: MessagesService,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private router: Router) {}
 
   ngOnInit() {
@@ -59,7 +59,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
       }
     }
-    this.comingFrom = this.route.snapshot.params['id'];
+    this.comingFrom = this.activatedRoute.snapshot.params['id'];
   }
 
   ngOnDestroy() {
