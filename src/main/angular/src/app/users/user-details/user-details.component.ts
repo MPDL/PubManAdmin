@@ -17,7 +17,7 @@ import {allOpenedOUs} from '../../base/common/model/query-bodies';
 export class UserDetailsComponent implements OnInit, OnDestroy {
   url = environment.restUsers;
   ousUrl = environment.restOus;
-  ctxs_url = environment.restContexts;
+  ctxsUrl = environment.restContexts;
 
   selected: User;
   ous: any[];
@@ -119,7 +119,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.ctxTitle = data.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.usersService.get(this.ctxs_url, ref, null).subscribe((data) => this.ctxTitle = data.name);
+          this.usersService.get(this.ctxsUrl, ref, null).subscribe((data) => this.ctxTitle = data.name);
         }
       }
     }

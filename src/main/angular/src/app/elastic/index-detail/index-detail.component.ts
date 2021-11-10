@@ -17,8 +17,8 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   remote;
   index;
-  index_name;
-  index_info;
+  indexName;
+  indexInfo;
   isNewIndex: boolean = false;
   list: any[];
   settings;
@@ -40,11 +40,11 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.activatedRoute.params
       .subscribe((data) => {
         const name = data['name'];
-        this.index_name = name;
+        this.indexName = name;
       });
-    if (this.index_name !== 'new') {
-      this.getIndex(this.index_name);
-      this.getIndexInfo(this.index_name);
+    if (this.indexName !== 'new') {
+      this.getIndex(this.indexName);
+      this.getIndexInfo(this.indexName);
     } else {
       this.isNewIndex = true;
       this.getList();
@@ -80,7 +80,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async removeAlias(index) {
     try {
       let alias;
-      const aliases = Object.keys(this.index[this.index_name].aliases);
+      const aliases = Object.keys(this.index[this.indexName].aliases);
       if (aliases.length > 1) {
         alias = prompt('which one?');
       } else if (aliases.length === 1) {
@@ -107,7 +107,7 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
       this.list = await this.elasticService.listAllIndices();
       const selected = this.list.filter((response) => response.index === index);
       if (selected.length === 1) {
-        this.index_info = selected[0];
+        this.indexInfo = selected[0];
       }
     } catch (e) {
       this.messagesService.error(e);
@@ -178,15 +178,15 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   async save() {
     if (this.indexform.valid) {
-      let msg = 'saving ' + this.index_name + '\n';
+      let msg = 'saving ' + this.indexName + '\n';
       msg = msg.concat('with seleted settings / mapping');
 
       if (confirm(msg)) {
         const body = {};
         Object.assign(body, this.selectedSettings, this.selectedMapping);
         try {
-          const response = await this.elasticService.create(this.index_name, body);
-          this.messagesService.success('created index ' + this.index_name + '\n' + JSON.stringify(response));
+          const response = await this.elasticService.create(this.indexName, body);
+          this.messagesService.success('created index ' + this.indexName + '\n' + JSON.stringify(response));
         } catch (e) {
           this.messagesService.error(e);
         }

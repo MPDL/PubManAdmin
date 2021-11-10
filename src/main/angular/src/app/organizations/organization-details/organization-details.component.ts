@@ -14,7 +14,7 @@ import {environment} from 'environments/environment';
   styleUrls: ['./organization-details.component.scss'],
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
-  ou_rest_url = environment.restOus;
+  ouRestUrl = environment.restOus;
   token: string;
   selected: OU;
   children: OU[];
@@ -59,7 +59,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedOu(id, token) {
-    this.ouSvc.get(this.ou_rest_url, id, token)
+    this.ouSvc.get(this.ouRestUrl, id, token)
       .subscribe({
         next: (data) => {
           this.selected = data;
@@ -76,7 +76,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   listPredecessors(id: string, token) {
     const query = '?q=objectId:' + id;
-    this.ouSvc.filter(this.ou_rest_url, token, query, 1).subscribe((data) => this.predecessors = data.list);
+    this.ouSvc.filter(this.ouRestUrl, token, query, 1).subscribe((data) => this.predecessors = data.list);
   }
 
   listChildren(mother: string) {
@@ -194,7 +194,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.isNewOrganization) {
-      this.ouSvc.post(this.ou_rest_url, this.selected, this.token)
+      this.ouSvc.post(this.ouRestUrl, this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('added new organization ' + this.selected.metadata.name);
@@ -205,7 +205,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         });
     } else {
       // this.messagesService.success('updating ' + this.selected.objectId);
-      this.ouSvc.put(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
+      this.ouSvc.put(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('updated ' + this.selected.objectId);
@@ -220,7 +220,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected = ou;
     const id = this.selected.objectId;
     if (confirm('delete '+ou.metadata.name+' ?')) {
-      this.ouSvc.delete(this.ou_rest_url + '/' + this.selected.objectId, this.selected, this.token)
+      this.ouSvc.delete(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('deleted ' + id + ' ' + data);

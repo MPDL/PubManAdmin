@@ -14,8 +14,8 @@ export class ElasticSearchComponent implements OnInit {
   searchForm: FormGroup;
   searchRequest: SearchRequest;
   searchResult: any;
-  source_list: any[];
-  target_list: any[];
+  sourceList: any[];
+  targetList: any[];
 
   fields2Select: string[] = [];
 
@@ -28,18 +28,18 @@ export class ElasticSearchComponent implements OnInit {
 
   ngOnInit() {
     this.searchForm = this.formBuilder.group({
-      remote_url: '',
-      source_index: ['', Validators.required],
-      target_index: ['', Validators.required],
+      remoteUrl: '',
+      sourceIndex: ['', Validators.required],
+      targetIndex: ['', Validators.required],
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
     this.getList();
   }
 
   async changeList() {
-    const remoteUrl = this.searchForm.get('remote_url').value;
+    const remoteUrl = this.searchForm.get('remoteUrl').value;
     try {
-      this.source_list = await this.elasticService.listRemoteIndices(remoteUrl);
+      this.sourceList = await this.elasticService.listRemoteIndices(remoteUrl);
     } catch (e) {
       this.messagesService.error(e);
     }
@@ -47,8 +47,8 @@ export class ElasticSearchComponent implements OnInit {
 
   async getList() {
     try {
-      this.source_list = await this.elasticService.listAllIndices();
-      this.target_list = this.source_list;
+      this.sourceList = await this.elasticService.listAllIndices();
+      this.targetList = this.sourceList;
     } catch (e) {
       this.messagesService.error(e);
     }
@@ -84,9 +84,9 @@ export class ElasticSearchComponent implements OnInit {
 
   import() {
     if (this.searchForm.valid) {
-      const url = this.searchForm.get('remote_url').value;
-      const source = this.searchForm.get('source_index').value;
-      const target = this.searchForm.get('target_index').value;
+      const url = this.searchForm.get('remoteUrl').value;
+      const source = this.searchForm.get('sourceIndex').value;
+      const target = this.searchForm.get('targetIndex').value;
       this.searchRequest = this.prepareRequest();
       const body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc');
       this.elasticService.scrollwithcallback(url, source, body, async (cb) => {
@@ -127,20 +127,20 @@ export class ElasticSearchComponent implements OnInit {
 
   searchSelectedIndex(body) {
     let url;
-    if (this.searchForm.get('remote_url').value != '') {
-      url = this.searchForm.get('remote_url').value;
+    if (this.searchForm.get('remoteUrl').value != '') {
+      url = this.searchForm.get('remoteUrl').value;
     } else {
       url = null;
     }
-    const index = this.searchForm.get('source_index').value;
+    const index = this.searchForm.get('sourceIndex').value;
     this.elasticService.scrollwithcallback(url, index, body, (hits) => {
       this.searchResult = hits;
     });
   }
 
   async reindex() {
-    const source = this.searchForm.get('source_index').value;
-    const dest = this.searchForm.get('target_index').value;
+    const source = this.searchForm.get('sourceIndex').value;
+    const dest = this.searchForm.get('targetIndex').value;
     const body = {source: {index: source}, dest: {index: dest}};
     try {
       const response = await this.elasticService.reindex(body);

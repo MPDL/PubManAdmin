@@ -9,7 +9,7 @@
           <label for="remoteurl" class="col-2 col-form-label col-form-label-sm">remote url</label>
           <div class="col-9">
             <input class="form-control form-control-sm" type="text" placeholder="url 2 elastic search (defaults 2 current connection)"
-              formControlName="remote_url" id="remoteurl">
+              formControlName="remoteUrl" id="remoteurl">
           </div>
           <div class="col-1">
               <input type="button" class="btn btn-outline-secondary btn-sm" value="connect" (click)="changeList()"/>
@@ -18,16 +18,16 @@
         <div class="row w-100">
             <label for="sourceindex" class="col-2 col-form-label col-form-label-sm">source index</label>
             <div class="col-10">
-              <select id="sourceindex" class="select form-control form-control-sm" formControlName="source_index">
-                <option [ngValue]="source.index" *ngFor="let source of source_list">{{source.index}}</option>
+              <select id="sourceindex" class="select form-control form-control-sm" formControlName="sourceIndex">
+                <option [ngValue]="source.index" *ngFor="let source of sourceList">{{source.index}}</option>
               </select>
             </div>
           </div>
         <div class="row w-100">
           <label for="targetindex" class="col-2 col-form-label col-form-label-sm">target index</label>
           <div class="col-10">
-              <select id="targetindex" class="select form-control form-control-sm" formControlName="target_index">
-                  <option [ngValue]="target.index" *ngFor="let target of target_list">{{target.index}}</option>
+              <select id="targetindex" class="select form-control form-control-sm" formControlName="targetIndex">
+                  <option [ngValue]="target.index" *ngFor="let target of targetList">{{target.index}}</option>
                 </select>
           </div>
         </div>

@@ -22,7 +22,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchTermComponent)
     components: QueryList<SearchTermComponent>;
 
-  item_rest_url = environment.restItems;
+  itemRestUrl = environment.restItems;
 
   searchForm: FormGroup;
   searchRequest: SearchRequest;
@@ -116,7 +116,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchRequest = this.prepareRequest();
     const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.title.keyword', 'asc');
     this.loading = true;
-    this.searchService.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.itemRestUrl, this.token, body)
       .subscribe({
         next: (data) => {
           this.total = data.records;
@@ -130,7 +130,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
   searchItems(body) {
     this.currentPage = 1;
-    this.searchService.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.itemRestUrl, this.token, body)
       .subscribe({
         next: (data) => {
           this.items = data.list;
@@ -152,7 +152,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     const request = new SearchRequest();
     request.searchTerms = terms;
     const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
-    this.searchService.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.itemRestUrl, this.token, body)
       .subscribe({
         next: (data) => {
           this.items = data.list;
@@ -166,7 +166,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'metadata.genre', searchTerm: genre.key}]);
     this.currentPage = 1;
-    this.searchService.filter(this.item_rest_url, this.token, '?q=metadata.genre:' + genre.key, 1)
+    this.searchService.filter(this.itemRestUrl, this.token, '?q=metadata.genre:' + genre.key, 1)
       .subscribe({
         next: (data) => {
           this.items = data.list;
@@ -184,7 +184,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter',
       field: 'metadata.sources.publishingInfo.publisher.keyword', searchTerm: publisher.key}]);
     this.currentPage = 1;
-    this.searchService.query(this.item_rest_url, this.token, body)
+    this.searchService.query(this.itemRestUrl, this.token, body)
       .subscribe({
         next: (data) => {
           this.items = data.list;

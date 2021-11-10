@@ -31,7 +31,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER'];
     ctxs: Array<any>;
-    ctxs_filtered: Array<any>;
+    ctxsFiltered: Array<any>;
     ous: Array<any>;
     selectedGrant: Grant;
     selectedGrants: Grant[] = [];
@@ -65,7 +65,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
         .subscribe(
           (data) => {
             this.ctxs = data.list;
-            this.ctxs_filtered = data.list;
+            this.ctxsFiltered = data.list;
           });
 
       this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
@@ -142,11 +142,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
     }
 
     filterCtxs(event) {
-      this.ctxs_filtered = this.ctxs;
+      this.ctxsFiltered = this.ctxs;
       if (typeof event === 'string') {
-        this.ctxs_filtered = this.ctxs.filter((c) => c.name.toLowerCase()
+        this.ctxsFiltered = this.ctxs.filter((c) => c.name.toLowerCase()
           .includes(event.toLowerCase()));
-        this.selectedCtx = this.ctxs_filtered[0];
+        this.selectedCtx = this.ctxsFiltered[0];
       }
     }
 }
