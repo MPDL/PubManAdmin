@@ -18,8 +18,4 @@ export const environment = {
     name: 'ous',
     type: 'organization',
   },
-  ctxIndex: {
-    name: 'contexts',
-    type: 'context',
-  },
 };
