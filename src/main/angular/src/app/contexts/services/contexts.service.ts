@@ -12,10 +12,10 @@ export class ContextsService extends PubmanRestService {
   contextUrl = environment.restContexts;
 
   constructor(
-    protected httpc: HttpClient,
+    protected httpClient: HttpClient,
     protected connectionService: ConnectionService
   ) {
-    super(httpc, connectionService);
+    super(httpClient, connectionService);
   }
 
   openContext(ctx: Context, token: string): Observable<number> {

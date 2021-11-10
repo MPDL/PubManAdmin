@@ -34,11 +34,12 @@ export class SuggestionComponent implements OnInit {
   }
 
   getListOfSuggestions(term: Observable<any>, wait = 400) {
-    return term.pipe(
-      debounceTime(wait),
-      distinctUntilChanged(),
-      switchMap((val) => this.search(val))
-    );
+    return term
+      .pipe(
+        debounceTime(wait),
+        distinctUntilChanged(),
+        switchMap((val) => this.search(val))
+      );
   }
 
   search(val) {

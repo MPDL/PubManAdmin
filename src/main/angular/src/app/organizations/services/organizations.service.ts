@@ -15,34 +15,31 @@ export class OrganizationsService extends PubmanRestService {
   ous: any;
 
   constructor(
-    protected httpc: HttpClient,
+    protected httpClient: HttpClient,
     protected connectionService: ConnectionService
   ) {
-    super(httpc, connectionService);
+    super(httpClient, connectionService);
   }
 
   getOuById(id: string, token: string): Observable<any> {
     const headers = this.addHeaders(token, false);
     const url = this.baseUrl + this.ousRestUrl + '/' + id;
-    return this.httpc.request('GET', url, {
-      headers: headers,
-    }).pipe(
-      map((response: HttpResponse<any>) => {
-        this.ou = response;
-        return this.ou;
-      }),
-      catchError((error) => {
-        return throwError(() => new Error(JSON.stringify(error) || 'Error getting children 4 ' + id));
-      })
-    );
+    return this.httpClient.request('GET', url, {headers: headers})
+      .pipe(
+        map((response: HttpResponse<any>) => {
+          this.ou = response;
+          return this.ou;
+        }),
+        catchError((error) => {
+          return throwError(() => new Error(JSON.stringify(error) || 'Error getting children 4 ' + id));
+        })
+      );
   }
 
   listChildren4Ou(id: string, token: string): Observable<any[]> {
     const headers = this.addHeaders(token, false);
     const url = this.baseUrl + this.ousRestUrl + '/' + id + '/children';
-    return this.httpc.request('GET', url, {
-      headers: headers,
-    }).pipe(
+    return this.httpClient.request('GET', url, {headers: headers}).pipe(
       map((response: HttpResponse<any>) => {
         this.ous = response;
         return this.ous;

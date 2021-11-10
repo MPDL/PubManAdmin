@@ -12,14 +12,14 @@ export class PubmanRestService {
   baseUrl: string;
 
   constructor(
-    protected client: HttpClient,
+    protected httpClient: HttpClient,
     protected connectionService: ConnectionService
   ) {
     this.connectionService.connectionService.subscribe((data) => this.baseUrl = data);
   }
 
   getSearchResults(method, url, headers, body): Observable<any> {
-    return this.client.request(method, url, {
+    return this.httpClient.request(method, url, {
       headers: headers,
       observe: 'body',
       responseType: 'json',
@@ -46,7 +46,7 @@ export class PubmanRestService {
   }
 
   getResource(method, url, headers, body): Observable<any> {
-    return this.client.request(method, url, {
+    return this.httpClient.request(method, url, {
       headers: headers,
       body: body,
     }).pipe(
@@ -61,19 +61,20 @@ export class PubmanRestService {
   }
 
   getString(url): Observable<string> {
-    return this.client.get(url, {responseType: 'text'}).pipe(
-      map((response: string) => {
-        const resource = response;
-        return resource;
-      }),
-      catchError((error) => {
-        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
-      })
-    );
+    return this.httpClient.get(url, {responseType: 'text'})
+      .pipe(
+        map((response: string) => {
+          const resource = response;
+          return resource;
+        }),
+        catchError((error) => {
+          return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
+        })
+      );
   }
 
   getHttpStatus(method, url, headers, body): Observable<any> {
-    return this.client.request(method, url, {
+    return this.httpClient.request(method, url, {
       headers: headers,
       body: body,
       observe: 'response',
