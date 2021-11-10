@@ -26,8 +26,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Output()
       selectedUserChange = new EventEmitter<User>();
 
-    ousUrl = environment.rest_ous;
-    ctx_url = environment.rest_contexts;
+    ousUrl = environment.restOus;
+    ctxUrl = environment.restContexts;
     grants: Grant[];
     roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER'];
     ctxs: Array<any>;
@@ -61,7 +61,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     getNewGrantSelect() {
       const ousBody = allOpenedOUs;
-      this.usersService.filter(this.ctx_url, null, '?q=state:OPENED&size=300', 1)
+      this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
         .subscribe(
           (data) => {
             this.ctxs = data.list;

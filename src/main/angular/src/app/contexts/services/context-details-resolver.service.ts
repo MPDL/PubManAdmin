@@ -18,7 +18,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<Context> {
-    const url = environment.rest_contexts;
+    const url = environment.restContexts;
     const id = route.params['id'];
     if (id === 'new ctx') {
       const ctx = new Context();

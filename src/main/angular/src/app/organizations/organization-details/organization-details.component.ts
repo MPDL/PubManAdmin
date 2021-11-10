@@ -14,7 +14,7 @@ import {environment} from 'environments/environment';
   styleUrls: ['./organization-details.component.scss'],
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
-  ou_rest_url = environment.rest_ous;
+  ou_rest_url = environment.restOus;
   token: string;
   selected: OU;
   children: OU[];
@@ -268,7 +268,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   returnSuggestedOUs(term) {
     const ouNames: any[] = [];
-    const url = environment.rest_ous;
+    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
     this.ouSvc.filter(url, null, queryString, 1)
       .subscribe({

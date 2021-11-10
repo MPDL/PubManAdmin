@@ -1,24 +1,24 @@
 export const environment = {
   production: true,
-  base_url: 'https://' + window.location.hostname,
-  elastic_url: '/es',
-  rest_users: '/rest/users',
-  rest_ous: '/rest/ous',
-  rest_contexts: '/rest/contexts',
-  rest_items: '/rest/items',
-  item_index: {
+  baseUrl: 'https://' + window.location.hostname,
+  elasticUrl: '/es',
+  restUsers: '/rest/users',
+  restOus: '/rest/ous',
+  restContexts: '/rest/contexts',
+  restItems: '/rest/items',
+  itemIndex: {
     name: 'items',
     type: 'item',
   },
-  user_index: {
+  userIndex: {
     name: 'users',
     type: 'user',
   },
-  ou_index: {
+  ouIndex: {
     name: 'ous',
     type: 'organization',
   },
-  ctx_index: {
+  ctxIndex: {
     name: 'contexts',
     type: 'context',
   },

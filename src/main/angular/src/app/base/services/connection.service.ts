@@ -4,8 +4,8 @@ import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class ConnectionService {
-  private initial_value = environment.base_url;
-  private connection = new BehaviorSubject<string>(this.initial_value);
+  private initialValue = environment.baseUrl;
+  private connection = new BehaviorSubject<string>(this.initialValue);
   connectionService = this.connection.asObservable();
 
   constructor() {}

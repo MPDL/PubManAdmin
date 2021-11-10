@@ -9,7 +9,7 @@ import {ConnectionService} from '../../base/services/connection.service';
 
 @Injectable()
 export class ContextsService extends PubmanRestService {
-  contextUrl = environment.rest_contexts;
+  contextUrl = environment.restContexts;
 
   constructor(
     protected httpc: HttpClient,

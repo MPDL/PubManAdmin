@@ -22,7 +22,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchTermComponent)
     components: QueryList<SearchTermComponent>;
 
-  item_rest_url = environment.rest_items;
+  item_rest_url = environment.restItems;
 
   searchForm: FormGroup;
   searchRequest: SearchRequest;
@@ -60,7 +60,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     for (const itemAgg in itemAggs) {
       this.aggregationsList.push(itemAgg);
     }
-    this.fields2Select = this.elasticSearchService.getMappingFields(environment.item_index.name, environment.item_index.type);
+    this.fields2Select = this.elasticSearchService.getMappingFields(environment.itemIndex.name, environment.itemIndex.type);
     this.tokensubscription = this.authenticationservice.token$.subscribe((data) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
@@ -96,15 +96,15 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.selectedAggregation = itemAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = this.elasticSearchService.buckets(environment.item_index.name, this.selectedAggregation, false);
+      this.years = this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'genre':
-      this.genres = this.elasticSearchService.buckets(environment.item_index.name, this.selectedAggregation, false);
+      this.genres = this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'publisher':
-      this.publishers = this.elasticSearchService.buckets(environment.item_index.name, this.selectedAggregation, true);
+      this.publishers = this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, true);
       this.selected = agg;
       break;
     default:

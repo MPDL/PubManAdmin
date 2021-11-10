@@ -63,7 +63,7 @@ export class OrganizationTree2Service {
 
   getTopLevelOUs() {
     const body = allTopLevelOUs;
-    const tops = this.organizationService.query(environment.rest_ous, null, body).toPromise();
+    const tops = this.organizationService.query(environment.restOus, null, body).toPromise();
     return tops;
   }
 

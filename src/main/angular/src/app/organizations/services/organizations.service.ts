@@ -10,7 +10,7 @@ import {ConnectionService} from '../../base/services/connection.service';
 
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
-  ousRestUrl = environment.rest_ous;
+  ousRestUrl = environment.restOus;
   ou;
   ous: any;
 

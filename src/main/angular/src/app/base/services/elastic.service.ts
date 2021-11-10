@@ -16,7 +16,7 @@ export class ElasticService {
     if (!this.client) {
       this.connectionService.connectionService.subscribe(
         (data) => {
-          this.uri = data + environment.elastic_url;
+          this.uri = data + environment.elasticUrl;
           this.connect(this.uri);
         });
     }
@@ -54,7 +54,7 @@ export class ElasticService {
 
     if (queryString.length > 0) {
       return this.client.search({
-        index: environment.ou_index.name,
+        index: environment.ouIndex.name,
         // q: 'parentAffiliation.objectId:*' + parent,
         q: queryString,
         _sourceInclude: 'objectId, metadata.name, hasChildren, publicStatus',

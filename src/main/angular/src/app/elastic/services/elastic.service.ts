@@ -16,7 +16,7 @@ export class ElasticService {
   ) {
     if (!this.client) {
       this.connectionService.connectionService.subscribe((data) => {
-        this.url = data + environment.elastic_url;
+        this.url = data + environment.elasticUrl;
         this.connect(this.url);
       });
     }

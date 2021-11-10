@@ -16,8 +16,8 @@ import {environment} from 'environments/environment';
   styleUrls: ['./context-details.component.scss'],
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
-  url = environment.rest_contexts;
-  ousUrl = environment.rest_ous;
+  url = environment.restContexts;
+  ousUrl = environment.restOus;
 
   @ViewChild('f')
     form: any;
@@ -256,7 +256,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   returnSuggestedOUs(term) {
     const ouNames: any[] = [];
-    const url = environment.rest_ous;
+    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
     this.contextsService.filter(url, null, queryString, 1)
       .subscribe({

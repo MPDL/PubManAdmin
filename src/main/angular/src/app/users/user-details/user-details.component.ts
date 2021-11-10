@@ -15,9 +15,9 @@ import {allOpenedOUs} from '../../base/common/model/query-bodies';
   styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
-  url = environment.rest_users;
-  ousUrl = environment.rest_ous;
-  ctxs_url = environment.rest_contexts;
+  url = environment.restUsers;
+  ousUrl = environment.restOus;
+  ctxs_url = environment.restContexts;
 
   selected: User;
   ous: any[];
@@ -240,7 +240,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             this.messagesService.success('updated ' + this.selected.loginname);
             this.isNewOu = false;
             this.isNewGrant = false;
-            this.usersService.get(environment.rest_users, data.objectId, this.token)
+            this.usersService.get(environment.restUsers, data.objectId, this.token)
               .subscribe((data) => {
                 this.selected = data;
                 if (this.selected.grantList) {
@@ -293,7 +293,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   returnSuggestedOUs(term) {
     const ouNames: any[] = [];
-    const url = environment.rest_ous;
+    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
     this.usersService.filter(url, null, queryString, 1)
       .subscribe({

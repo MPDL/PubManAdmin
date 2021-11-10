@@ -13,7 +13,7 @@ export class UserDetailsResolverService implements Resolve<User> {
   ) {}
 
   resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<User> {
-    const url = environment.rest_users;
+    const url = environment.restUsers;
     const id = activatedRouteSnapshot.params['id'];
     if (id === 'new user') {
       const user = new User();

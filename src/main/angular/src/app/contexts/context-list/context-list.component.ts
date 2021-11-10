@@ -14,7 +14,7 @@ import {mpgOus4auto} from '../../base/common/model/query-bodies';
   styleUrls: ['./context-list.component.scss'],
 })
 export class ContextListComponent implements OnInit, OnDestroy {
-  url = environment.rest_contexts;
+  url = environment.restContexts;
   title: string = 'Contexts';
   ctxs: any[];
   contextnames: any[] = [];
@@ -114,7 +114,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     if (term.length > 0) {
       const body = mpgOus4auto;
       body.query.bool.must.term['metadata.name.auto'] = term;
-      const url = environment.rest_ous;
+      const url = environment.restOus;
       this.contextsService.query(url, null, body)
         .subscribe({
           next: (data) => {

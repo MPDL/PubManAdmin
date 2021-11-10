@@ -22,7 +22,7 @@ export class SuggestionComponent implements OnInit {
   @Output()
     selectedSuggestion = new EventEmitter<any>();
 
-  url: string = environment.rest_ous;
+  url: string = environment.restOus;
   searchResult: Observable<any>;
 
   constructor(

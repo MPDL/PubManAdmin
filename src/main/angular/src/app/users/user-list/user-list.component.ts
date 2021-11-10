@@ -16,7 +16,7 @@ import {mpgOus4auto} from '../../base/common/model/query-bodies';
   providers: [],
 })
 export class UserListComponent implements OnInit, OnDestroy {
-  url = environment.rest_users;
+  url = environment.restUsers;
   title: string = 'Users';
   users: User[];
   selected: User;
@@ -170,7 +170,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     const ouNames: OU[] = [];
     const body = mpgOus4auto;
     body.query.bool.must.term['metadata.name.auto'] = term;
-    const url = environment.rest_ous;
+    const url = environment.restOus;
     this.usersService.query(url, null, body)
       .subscribe({
         next: (data) => {

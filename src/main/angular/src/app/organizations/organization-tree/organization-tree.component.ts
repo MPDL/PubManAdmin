@@ -107,7 +107,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
 
   returnSuggestedOUs(term) {
     const ouNames: any[] = [];
-    const url = environment.rest_ous;
+    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
     this.organizationService.filter(url, null, queryString, 1)
       .subscribe({

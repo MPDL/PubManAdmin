@@ -10,9 +10,9 @@ import {environment} from 'environments/environment';
 
 @Injectable()
 export class UsersService extends PubmanRestService {
-  usersUrl: string = this.baseUrl + environment.rest_users;
-  ousUrl = environment.rest_ous;
-  ctxsUrl = environment.rest_contexts;
+  usersUrl: string = this.baseUrl + environment.restUsers;
+  ousUrl = environment.restOus;
+  ctxsUrl = environment.restContexts;
 
   users: User[] = [];
   user: User;

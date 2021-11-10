@@ -23,7 +23,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchTermComponent)
     components: QueryList<SearchTermComponent>;
 
-  url = environment.rest_users;
+  url = environment.restUsers;
   searchForm: FormGroup;
   searchRequest: SearchRequest;
 
@@ -61,7 +61,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     for (const userAgg in userAggs) {
       this.aggregationsList.push(userAgg);
     }
-    this.fields2Select = this.elasticSearchService.getMappingFields(environment.user_index.name, environment.user_index.type);
+    this.fields2Select = this.elasticSearchService.getMappingFields(environment.userIndex.name, environment.userIndex.type);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
@@ -97,11 +97,11 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.selectedAggregation = userAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = this.elasticSearchService.buckets(environment.user_index.name, this.selectedAggregation, false);
+      this.years = this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'organization':
-      this.ous = this.elasticSearchService.buckets(environment.user_index.name, this.selectedAggregation, false);
+      this.ous = this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     default:
