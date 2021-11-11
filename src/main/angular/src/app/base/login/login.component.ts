@@ -6,11 +6,11 @@ import {AuthenticationService} from '../services/authentication.service';
 import {User} from '../common/model/inge';
 
 @Component({
-  selector: 'authentication-component',
-  templateUrl: './authentication.component.html',
-  styleUrls: ['./authentication.component.scss'],
+  selector: 'login-component',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
-export class AuthenticationComponent implements OnInit {
+export class LoginComponent implements OnInit {
   credentials: any = {};
   loggedIn = false;
   hasToken = false;

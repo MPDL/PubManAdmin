@@ -9,7 +9,7 @@ import {Router} from '@angular/router'; // keep 4 diagnostics
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 
-import {AuthenticationComponent} from './base/authentication/authentication.component';
+import {LoginComponent} from './base/login/login.component';
 import {MessagesComponent} from './base/messages/messages.component';
 import {NavigationComponent} from './base/navigation/navigation.component';
 import {HomeComponent} from './base/home/home.component';
@@ -35,7 +35,7 @@ import {HttpErrorInterceptor} from './base/common/http-error.interceptor';
 @NgModule({
   declarations: [
     AppComponent,
-    AuthenticationComponent,
+    LoginComponent,
     MessagesComponent,
     NavigationComponent,
     HomeComponent,
