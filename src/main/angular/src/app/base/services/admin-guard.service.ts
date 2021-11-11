@@ -1,31 +1,32 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild} from '@angular/router';
+import {CanActivate, CanActivateChild} from '@angular/router';
 
 import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
 @Injectable()
-export class AdminGuard implements CanActivate, CanActivateChild {
-  checked: boolean = false;
+export class AdminGuardService implements CanActivate, CanActivateChild {
+  isAdmin: boolean = false;
 
   constructor(
     private authenticationService: AuthenticationService,
     private messagesService: MessagesService
   ) {}
 
-  canActivate(_activatedRouteSnapshot: ActivatedRouteSnapshot, _routerStateSnapshot: RouterStateSnapshot): boolean {
-    return this.checkLogin();
+  canActivate(): boolean {
+    return this.checkAdmin();
   }
 
-  canActivateChild(activatedRouteSnapshot: ActivatedRouteSnapshot, routerStateSnapshot: RouterStateSnapshot): boolean {
-    return this.canActivate(activatedRouteSnapshot, routerStateSnapshot);
+  canActivateChild(): boolean {
+    return this.canActivate();
   }
 
-  checkLogin(): boolean {
-    this.authenticationService.isAdmin$.subscribe((data) => this.checked = data);
-    if (this.checked) {
+  checkAdmin(): boolean {
+    this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    if (this.isAdmin) {
       return true;
     }
+
     this.messagesService.warning('This site requires admin authorization ...');
     return false;
   }

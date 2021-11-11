@@ -47,7 +47,6 @@ export class AuthenticationService {
 
   login(username, password) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    // let body = ''' + username + ':' + password + ''';
     const body = username + ':' + password;
     return this.http.request('POST', this.tokenUrl, {
       body: body,

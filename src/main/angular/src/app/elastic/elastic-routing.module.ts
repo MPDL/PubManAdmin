@@ -6,10 +6,10 @@ import {ElasticStartComponent} from './elastic-start/elastic-start.component';
 import {IndexListComponent} from './index-list/index-list.component';
 import {IndexDetailComponent} from './index-detail/index-detail.component';
 import {ElasticSearchComponent} from './elastic-search/elastic-search.component';
-import {AdminGuard} from '../base/services/admin-guard.service';
+import {AdminGuardService} from '../base/services/admin-guard.service';
 
 const routes: Routes = [
-  {path: 'elastic', component: ElasticComponent, canActivate: [AdminGuard],
+  {path: 'elastic', component: ElasticComponent, canActivate: [AdminGuardService],
     children: [
       {path: 'index', component: IndexListComponent},
       {path: 'index/:name', component: IndexDetailComponent},
