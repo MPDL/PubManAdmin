@@ -1,12 +1,6 @@
-// Ersetzt in node_modules/@angular-devkit/build-angular/src/webpack/configs/browser.js folgende Zeile (62):
-//   target: wco.tsConfig.options.target === typescript_1.ScriptTarget.ES5 || buildBrowserFeatures.isEs5SupportNeeded() durch
-//   target: wco.tsConfig.options.target === typescript_1.ScriptTarget.ES5
-// weil es die ersetzte Funktion offensichtlich nicht mehr gibt
-//
-// Korrigierte browser.js befindet sich in /src/assets/webpack/patch/browser.js
+// Ersetzt in node_modules/@angular-devkit/build-angular/src/webpack/configs/browser.js durch /src/assets/webpack/patch/browser.js
 //
 // Autor: Wilhelm Frank
-// adapted by S.P.
 
 const path = require('path');
 const fs = require('fs');

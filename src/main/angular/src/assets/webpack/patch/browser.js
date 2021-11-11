@@ -6,8 +6,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  * 
- * Polyfill Node.js core modules in Webpack.
+ * Voraussetzung:
  * npm install node-polyfill-webpack-plugin
+ * Aenderungen:
  * const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
  * plugins: new NodePolyfillPlugin({ excludeAliases: ["console"] })
  * node: { global: true }
@@ -15,36 +16,22 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBrowserConfig = void 0;
-const typescript_1 = require("typescript");
-const utils_1 = require("../../utils");
+const webpack_subresource_integrity_1 = require("webpack-subresource-integrity");
 const plugins_1 = require("../plugins");
 const helpers_1 = require("../utils/helpers");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 function getBrowserConfig(wco) {
     const { buildOptions } = wco;
-    const { crossOrigin = 'none', subresourceIntegrity, extractLicenses, vendorChunk, commonChunk, allowedCommonJsDependencies, } = buildOptions;
+    const { crossOrigin = 'none', subresourceIntegrity, vendorChunk, commonChunk, allowedCommonJsDependencies, } = buildOptions;
     const extraPlugins = [];
     const { styles: stylesSourceMap, scripts: scriptsSourceMap, hidden: hiddenSourceMap, } = buildOptions.sourceMap;
     if (subresourceIntegrity) {
-        const SubresourceIntegrityPlugin = require('webpack-subresource-integrity');
-        extraPlugins.push(new SubresourceIntegrityPlugin({
+        extraPlugins.push(new webpack_subresource_integrity_1.SubresourceIntegrityPlugin({
             hashFuncNames: ['sha384'],
         }));
     }
-    if (extractLicenses) {
-        const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
-        extraPlugins.push(new LicenseWebpackPlugin({
-            stats: {
-                warnings: false,
-                errors: false,
-            },
-            perChunkOutput: false,
-            outputFilename: '3rdpartylicenses.txt',
-            skipChildCompilers: true,
-        }));
-    }
     if (scriptsSourceMap || stylesSourceMap) {
-        extraPlugins.push(helpers_1.getSourceMapDevTool(scriptsSourceMap, stylesSourceMap, buildOptions.differentialLoadingNeeded && !buildOptions.watch ? true : hiddenSourceMap, false));
+        extraPlugins.push((0, helpers_1.getSourceMapDevTool)(scriptsSourceMap, stylesSourceMap, hiddenSourceMap, false));
     }
     let crossOriginLoading = false;
     if (subresourceIntegrity && crossOrigin === 'none') {
@@ -53,17 +40,16 @@ function getBrowserConfig(wco) {
     else if (crossOrigin !== 'none') {
         crossOriginLoading = crossOrigin;
     }
-    const buildBrowserFeatures = new utils_1.BuildBrowserFeatures(wco.projectRoot);
     return {
         devtool: false,
         resolve: {
-            mainFields: ['es2015', 'browser', 'module', 'main'],
+            mainFields: ['es2020', 'es2015', 'browser', 'module', 'main'],
+            conditionNames: ['es2020', 'es2015', '...'],
         },
-        target: wco.tsConfig.options.target === typescript_1.ScriptTarget.ES5
-            ? ['web', 'es5']
-            : 'web',
         output: {
             crossOriginLoading,
+            trustedTypes: 'angular#bundler',
+            scriptType: 'module',
         },
         optimization: {
             runtimeChunk: 'single',
