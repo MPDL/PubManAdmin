@@ -56,9 +56,6 @@ import {HttpErrorInterceptor} from './base/common/http-error.interceptor';
     SharedModule,
     AppRoutingModule,
   ],
-  entryComponents: [
-    MessagesComponent,
-  ],
   providers: [
     ConnectionService,
     AuthenticationService,
