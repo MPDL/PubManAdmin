@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
-import {empty, Observable} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
 import {MessagesService} from '../services/messages.service';
@@ -22,7 +22,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           } else {
             this.messagesService.error(`${err.status}: ` + err.error);
           }
-          return empty();
+          return EMPTY;
         })
       );
   }
