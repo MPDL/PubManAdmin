@@ -9,13 +9,13 @@
     </div>
     <div class="row">
       <div class="col-4">
-        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOUNames(ouSearchTerm)"
+        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)"
           placeholder="filter by organization" id="ouSearchTerm" autocomplete="off">
-        <div *ngIf="ounames.length > 0">
-          <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOUNames()">
-            <li *ngFor="let ouname of ounames" class="list-group-item-primary list-group-item-action py-0 text-start" (class.selected)="isSelectedName(ouname)"
-              (click)="filter(ouname)">
-              <small>{{ouname.name}}</small>
+        <div *ngIf="ous.length > 0">
+          <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOus()">
+            <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start"
+              (click)="selectOu(ou)">
+              <small>{{ou.name}}</small>
             </li>
           </ul>
         </div>
@@ -23,13 +23,27 @@
     </div>
     <div class="row">
       <div class="col-4">
-        <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="userSearchTerm" (keyup)="getUserNames(userSearchTerm)"
-          placeholder="search by name" id="searchTerm" autocomplete="off">
-        <div *ngIf="usernames.length > 0">
-          <ul id="user_suggestions" class="list-group" (clickOutside)="closeUserNames()">
-            <li *ngFor="let username of usernames" class="list-group-item-primary list-group-item-action py-0 text-start" (class.selected)="isSelectedName(username)"
-              (click)="select(username)">
-              <small>{{username.name}}</small>
+        <input class="form-control form-control-sm" type="text" name="searchUserNameTerm" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)"
+          placeholder="search by name" id="searchUserNameTerm" autocomplete="off">
+        <div *ngIf="usersByName.length > 0">
+          <ul id="username_suggestions" class="list-group" (clickOutside)="closeUsersByName()">
+            <li *ngFor="let user of usersByName" class="list-group-item-primary list-group-item-action py-0 text-start"
+              (click)="selectUserByName(user)">
+              <small>{{user.name}}</small>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <input class="form-control form-control-sm" type="text" name="searchUserLoginTerm" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)"
+          placeholder="search by login" id="searchUserLoginTerm" autocomplete="off">
+        <div *ngIf="usersByLogin.length > 0">
+          <ul id="userlogin_suggestions" class="list-group" (clickOutside)="closeUsersByLogin()">
+            <li *ngFor="let user of usersByLogin" class="list-group-item-primary list-group-item-action py-0 text-start"
+              (click)="selectUserByLogin(user)">
+              <small>{{user.loginname}}</small>
             </li>
           </ul>
         </div>
@@ -43,7 +57,7 @@
     </div>
     <ul class="list-group">
       <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
-        (click)="onSelect(user)">
+        (click)="selectUser(user)">
         <div class="row">
             <span class="col-8">
                 <label class="col-form-label-sm p-0 ms-2" [innerHtml]="user.name"></label>

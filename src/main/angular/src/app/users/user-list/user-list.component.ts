@@ -1,13 +1,14 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
-import {User, OU} from '../../base/common/model/inge';
+import {User, Ou} from '../../base/common/model/inge';
 import {UsersService} from '../services/users.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {environment} from 'environments/environment';
-import {mpgOus4auto} from '../../base/common/model/query-bodies';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
+import {SearchService} from 'app/base/common/services/search.service';
 
 @Component({
   selector: 'user-list-component',
@@ -19,10 +20,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   url = environment.restUsers;
   title: string = 'Users';
   users: User[];
-  selected: User;
-  selectedUserName: User;
-  selectedOUName: OU;
-  selectedNameIndex = 0;
+  selectedUser: User;
+  selectedOu: Ou;
 
   loggedInUser: User;
   isNewUser: boolean = false;
@@ -31,19 +30,21 @@ export class UserListComponent implements OnInit, OnDestroy {
   tokenSubscription: Subscription;
   userSubscription: Subscription;
   adminSubscription: Subscription;
-  comingFrom: any;
   total: number;
   pageSize: number = 50;
   currentPage: number = 1;
-  usernames: User[] = [];
-  ounames: OU[] = [];
-  userSearchTerm: any;
-  ouSearchTerm: any;
+  usersByName: User[] = [];
+  usersByLogin: User[] = [];
+  ous: Ou[] = [];
+  userNameSearchTerm: string = '';
+  userLoginSearchTerm: string = '';
+  ouSearchTerm: string = '';
 
   constructor(private usersService: UsersService,
     private authenticationService: AuthenticationService,
+    private organizationService: OrganizationsService,
+    private searchService: SearchService,
     private messagesService: MessagesService,
-    private activatedRoute: ActivatedRoute,
     private router: Router) {}
 
   ngOnInit() {
@@ -59,7 +60,6 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
       }
     }
-    this.comingFrom = this.activatedRoute.snapshot.params['id'];
   }
 
   ngOnDestroy() {
@@ -81,7 +81,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     if (this.token != null) {
-      if (this.selectedOUName === undefined) {
+      if (this.selectedOu === undefined) {
         this.usersService.getAll(this.url, this.token, page)
           .subscribe({
             next: (data) => {
@@ -92,7 +92,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           });
         this.currentPage = page;
       } else {
-        this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOUName.objectId, page)
+        this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOu.objectId, page)
           .subscribe({
             next: (data) => {
               this.users = data.list;
@@ -105,17 +105,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  isSelected(user: { loginname: any; }) {
-    if (this.comingFrom != null) {
-      return this.comingFrom === user.loginname;
-    } else {
-      return false;
-    }
-  }
-
-  onSelect(user: User) {
+  selectUser(user: User) {
     this.isNewUser = false;
-    this.selected = user;
+    this.selectedUser = user;
     this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
   }
 
@@ -124,69 +116,97 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/user', userid], {queryParams: {token: 'new'}, skipLocationChange: true});
   }
 
-  delete(user: User) {
-    this.selected = user;
-    const loginName = this.selected.loginname;
-    this.usersService.delete(this.url + '/' + this.selected.objectId, this.selected, this.token)
-      .subscribe({
-        next: (data) => this.messagesService.success('deleted ' + loginName + ' ' + data),
-        error: (e) => this.messagesService.error(e),
-      });
-    const index = this.users.indexOf(this.selected);
-    this.users.splice(index, 1);
-    this.selected = null;
+  getOus(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
+    } else {
+      this.closeOus();
+    }
   }
 
-  getUserNames(term: string) {
+  getUsersByName(term: string) {
     if (this.token != null) {
-      if (term.length > 0 && !term.startsWith('"')) {
-        this.returnSuggestedUsers(term);
-      } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-        this.returnSuggestedUsers(term);
+      const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+      if (convertedSearchTerm.length > 0) {
+        this.returnSuggestedUsersByName(convertedSearchTerm);
+      } else {
+        this.closeUsersByName();
       }
     } else {
       this.messagesService.warning('no token, no users!');
     }
   }
 
-  returnSuggestedUsers(term: string) {
-    const userNames: any[] = [];
-    const queryString = '?q=name.auto:' + term;
+  getUsersByLogin(term: string) {
+    if (this.token != null) {
+      const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+      if (convertedSearchTerm.length > 0) {
+        this.returnSuggestedUsersByLogin(convertedSearchTerm);
+      } else {
+        this.closeUsersByLogin();
+      }
+    } else {
+      this.messagesService.warning('no token, no users!');
+    }
+  }
+
+  returnSuggestedOus(term: string) {
+    const ous: Ou[] = [];
+    const url = environment.restOus;
+    const queryString = '?q=metadata.name.auto:' + term;
+    this.organizationService.filter(url, null, queryString, 1)
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((ou: Ou) => {
+            ous.push(ou);
+          });
+          if (ous.length > 0) {
+            this.ous = ous;
+          } else {
+            this.ous = [];
+          }
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  returnSuggestedUsersByName(userName: string) {
+    const usersByName: User[] = [];
+    const queryString = '?q=name.auto:' + userName;
     this.usersService.filter(this.url, this.token, queryString, 1)
       .subscribe({
         next: (data) => {
-          data.list.forEach((user: User) => userNames.push(user) );
-          if (userNames.length > 0) {
-            this.usernames = userNames;
+          data.list.forEach((user: User) => usersByName.push(user) );
+          if (usersByName.length > 0) {
+            this.usersByName = usersByName;
           } else {
-            this.usernames = [];
+            this.usersByName = [];
           }
         },
         error: (e) => this.messagesService.error(e),
       });
   }
 
-  getOUNames(term: string) {
-    const ouNames: OU[] = [];
-    const body = mpgOus4auto;
-    body.query.bool.must.term['metadata.name.auto'] = term;
-    const url = environment.restOus;
-    this.usersService.query(url, null, body)
+  returnSuggestedUsersByLogin(loginName: string) {
+    const usersByLogin: User[] = [];
+    const queryString = '?q=loginname.auto:' + loginName;
+    this.usersService.filter(this.url, this.token, queryString, 1)
       .subscribe({
         next: (data) => {
-          data.list.forEach((ou: OU) => ouNames.push(ou));
-          if (ouNames.length > 0) {
-            this.ounames = ouNames;
+          data.list.forEach((user: User) => usersByLogin.push(user) );
+          if (usersByLogin.length > 0) {
+            this.usersByLogin = usersByLogin;
           } else {
-            this.ounames = [];
+            this.usersByLogin = [];
           }
         },
         error: (e) => this.messagesService.error(e),
       });
   }
 
-  filter(ou) {
-    this.selectedOUName = ou;
+  selectOu(ou: Ou) {
+    this.selectedOu = ou;
     if (this.token != null) {
       this.currentPage = 1;
       this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
@@ -200,31 +220,42 @@ export class UserListComponent implements OnInit, OnDestroy {
     } else {
       this.messagesService.warning('no token, no users!');
     }
-    this.title = 'Users of ' + this.selectedOUName.name;
-    this.closeOUNames();
+    this.title = 'Users of ' + this.selectedOu.name;
+    this.closeOus();
   }
 
-  closeUserNames() {
-    this.userSearchTerm = '';
-    this.usernames = [];
-  }
-
-  closeOUNames() {
-    this.ouSearchTerm = '';
-    this.ounames = [];
-  }
-
-  select(term) {
-    this.userSearchTerm = term.name;
+  selectUserByName(user: User) {
+    this.userNameSearchTerm = user.name;
     if (this.token != null) {
-      this.router.navigate(['/user', term.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+      this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
     } else {
       this.messagesService.warning('no login, no user !!!');
     }
-    this.usernames = [];
+    this.usersByName = [];
   }
 
-  isSelectedName(user: User) {
-    return this.selectedUserName ? this.selectedUserName.loginname === user.loginname : false;
+  selectUserByLogin(user: User) {
+    this.userLoginSearchTerm = user.loginname;
+    if (this.token != null) {
+      this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+    } else {
+      this.messagesService.warning('no login, no user !!!');
+    }
+    this.usersByLogin = [];
+  }
+
+  closeOus() {
+    this.ouSearchTerm = '';
+    this.ous = [];
+  }
+
+  closeUsersByName() {
+    this.userNameSearchTerm = '';
+    this.usersByName = [];
+  }
+
+  closeUsersByLogin() {
+    this.userLoginSearchTerm = '';
+    this.usersByLogin = [];
   }
 }

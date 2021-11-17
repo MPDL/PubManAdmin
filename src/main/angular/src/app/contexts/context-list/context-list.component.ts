@@ -6,7 +6,9 @@ import {MessagesService} from '../../base/services/messages.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {ContextsService} from '../services/contexts.service';
 import {environment} from 'environments/environment';
-import {mpgOus4auto} from '../../base/common/model/query-bodies';
+import {Context, Ou} from 'app/base/common/model/inge';
+import {SearchService} from 'app/base/common/services/search.service';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
 
 @Component({
   selector: 'context-list-component',
@@ -16,16 +18,16 @@ import {mpgOus4auto} from '../../base/common/model/query-bodies';
 export class ContextListComponent implements OnInit, OnDestroy {
   url = environment.restContexts;
   title: string = 'Contexts';
-  ctxs: any[];
-  contextnames: any[] = [];
+  contexts: Context[] = [];
+  contextsByName: Context[] = [];
   contextSearchTerm: string;
-  ounames: any[] = [];
+  ous: Ou[] = [];
   ouSearchTerm: string;
-  selectedOUName;
-  selected: { objectId: any; };
+  selectedOu: any;
+  selectedContext: { objectId: any; };
   token: string;
   tokenSubscription: Subscription;
-  pagedCtxs: any[];
+  pagedContexts: Context[] = [];
   total: number = 1;
   loading: boolean = false;
   pageSize: number = 50;
@@ -33,6 +35,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   constructor(
     private contextsService: ContextsService,
+    private searchService: SearchService,
+    private organizationService: OrganizationsService,
     private router: Router,
     private messagesService: MessagesService,
     private authenticationService: AuthenticationService,
@@ -52,7 +56,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.contextsService.getAll(this.url, this.token, page)
       .subscribe({
         next: (data) => {
-          this.ctxs = data.list;
+          this.contexts = data.list;
           this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),
@@ -64,108 +68,98 @@ export class ContextListComponent implements OnInit, OnDestroy {
   listAllContexts(token: string) {
     this.contextsService.getAll(this.url, token, 1)
       .subscribe((data) => {
-        this.ctxs = data.list;
+        this.contexts = data.list;
         this.total = data.records;
       });
   }
 
-  goTo(ctx: { objectId: any; }) {
-    const ctxId = ctx.objectId;
-    this.router.navigate(['/context', ctxId]);
-  }
-
-  isSelected(ctx: { objectId: any; }) {
-    this.selected = ctx;
-    return ctx.objectId === this.selected.objectId;
+  selectContext(context: { objectId: any; }) {
+    const contextId = context.objectId;
+    this.router.navigate(['/context', contextId]);
   }
 
   addNewContext() {
-    const ctxId = 'new ctx';
-    this.router.navigate(['/context', ctxId]);
+    const contextId = 'new ctx';
+    this.router.navigate(['/context', contextId]);
   }
 
-  getContextNames(term: string) {
-    if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedContexts(term);
-    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedContexts(term);
+  getContextsByName(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedContexts(convertedSearchTerm);
+    } else {
+      this.closeContextsByName();
     }
   }
 
   returnSuggestedContexts(term: string) {
-    const contextNames: any[] = [];
+    const contextsByName: Context[] = [];
     const queryString = '?q=name.auto:' + term;
     this.contextsService.filter(this.url, null, queryString, 1)
       .subscribe({
         next: (data) => {
-          data.list.forEach((ctx) => contextNames.push(ctx));
-          if (contextNames.length > 0) {
-            this.contextnames = contextNames;
+          data.list.forEach((context: Context) => contextsByName.push(context));
+          if (contextsByName.length > 0) {
+            this.contextsByName = contextsByName;
           } else {
-            this.contextnames = [];
+            this.contextsByName = [];
           }
         },
         error: (e) => this.messagesService.error(e),
       });
   }
 
-  getOUNames(term: string) {
-    const ouNames: any[] = [];
-    if (term.length > 0) {
-      const body = mpgOus4auto;
-      body.query.bool.must.term['metadata.name.auto'] = term;
-      const url = environment.restOus;
-      this.contextsService.query(url, null, body)
-        .subscribe({
-          next: (data) => {
-            data.list.forEach((ou: any) => ouNames.push(ou));
-            if (ouNames.length > 0) {
-              this.ounames = ouNames;
-            } else {
-              this.ounames = [];
-            }
-          },
-          error: (e) => this.messagesService.error(e),
-        });
+  getOus(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
+    } else {
+      this.closeOus();
     }
   }
 
-  filter(ou: { objectId: string; }) {
-    this.selectedOUName = ou;
+  returnSuggestedOus(term: string) {
+    const ous: Ou[] = [];
+    const url = environment.restOus;
+    const queryString = '?q=metadata.name.auto:' + term;
+    this.organizationService.filter(url, null, queryString, 1)
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((ou: Ou) => {
+            ous.push(ou);
+          });
+          if (ous.length > 0) {
+            this.ous = ous;
+          } else {
+            this.ous = [];
+          }
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  selectOu(ou: { objectId: string; }) {
+    this.selectedOu = ou;
     this.currentPage = 1;
     this.contextsService.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe({
         next: (data) => {
-          this.ctxs = data.list;
-          if (data.records > 0) {
-            this.total = data.records;
-          } else {
-            this.messagesService.info('query did not return any results.');
-          }
+          this.contexts = data.list;
+          this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),
       });
-    this.title = 'Contexts for ' + this.selectedOUName.name;
-    this.closeOUNames();
+    this.title = 'Contexts for ' + this.selectedOu.name;
+    this.closeOus();
   }
 
-  close() {
+  closeContextsByName() {
     this.contextSearchTerm = '';
-    this.contextnames = [];
+    this.contextsByName = [];
   }
 
-  closeOUNames() {
+  closeOus() {
     this.ouSearchTerm = '';
-    this.ounames = [];
-  }
-
-  select(term: { name: any; objectId: any; }) {
-    this.contextSearchTerm = term.name;
-    this.router.navigate(['/context', term.objectId]);
-    this.contextnames = [];
-  }
-
-  delete(ctx: { name: string; }) {
-    alert('deleting ' + ctx.name + ' not yet implemented');
+    this.ous = [];
   }
 }

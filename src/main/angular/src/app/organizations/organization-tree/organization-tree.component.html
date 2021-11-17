@@ -9,12 +9,12 @@
     </div>
     <div class="row">
       <div class="col-4 p-3">
-        <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)"
-          placeholder="search by name" id="searchTerm" autocomplete="off">
-        <div *ngIf="ounames.length > 0">
-          <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-            <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="select(name)">
-              <small>{{name.metadata.name}}</small>
+        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)"
+          placeholder="search by name" id="ouSearchTerm" autocomplete="off">
+        <div *ngIf="ous.length > 0">
+          <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="closeOus()">
+            <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="selectOu(ou)">
+              <small>{{ou.name}}</small>
             </li>
           </ul>
         </div>

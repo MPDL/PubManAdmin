@@ -28,17 +28,17 @@ export class User extends BasicRO {
   grantList: Grant[];
 }
 
-export class OU extends BasicRO {
+export class Ou extends BasicRO {
   predecessorAffiliations: BasicRO[];
   hasChildren: boolean = false;
   childAffiliations: BasicRO[];
   hasPredecessors: boolean = false;
   parentAffiliation: BasicRO;
   publicStatus: string;
-  metadata: OUMetadata;
+  metadata: OuMetadata;
 }
 
-export class OUMetadata {
+export class OuMetadata {
   alternativeNames: string[];
   city: string;
   countryCode: string;

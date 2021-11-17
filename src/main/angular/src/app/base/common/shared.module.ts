@@ -3,8 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {SelectedItemColourDirective} from '../directives/selected-item-colour.directive';
-import {ClickOutsideDirective} from '../directives/click-outside.directive';
-import {DocumentClickDirective} from '../directives/documentclick.directive';
+import {ClickOutsideDirective} from '../directives/clickoutside.directive';
 import {ValueNotAllowedDirective} from '../directives/value-not-allowed.directive';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {SearchTermComponent} from '../common/components/search-term/search-term.component';
@@ -21,7 +20,7 @@ import {SuggestionComponent} from './components/suggestion/suggestion.component'
   declarations: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
-    DocumentClickDirective,
+    ClickOutsideDirective,
     ValueNotAllowedDirective,
     SearchTermComponent,
     SuggestionComponent,
@@ -29,7 +28,7 @@ import {SuggestionComponent} from './components/suggestion/suggestion.component'
   exports: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
-    DocumentClickDirective,
+    ClickOutsideDirective,
     ValueNotAllowedDirective,
     NgxPaginationModule,
     SearchTermComponent,

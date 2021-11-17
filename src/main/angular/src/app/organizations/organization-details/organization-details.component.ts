@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
-import {OU, Identifier, BasicRO, UserRO, OUMetadata} from '../../base/common/model/inge';
+import {Ou, Identifier, BasicRO, UserRO, OuMetadata} from '../../base/common/model/inge';
 import {environment} from 'environments/environment';
 
 @Component({
@@ -16,9 +16,9 @@ import {environment} from 'environments/environment';
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ouRestUrl = environment.restOus;
   token: string;
-  selected: OU;
-  children: OU[];
-  predecessors: OU[] = [];
+  selected: Ou;
+  children: Ou[];
+  predecessors: Ou[] = [];
   alternativeName;
   description;
   ouIdentifierId;
@@ -104,10 +104,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     }
-  }
-
-  isSelected(name) {
-    return true;
   }
 
   addName(selected) {
@@ -244,15 +240,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     return JSON.stringify(this.selected);
   }
 
-  prepareNewOU(id): OU {
-    const template = new OU();
+  prepareNewOU(id): Ou {
+    const template = new Ou();
     const creator = new UserRO();
     creator.objectId = '';
     template.creator = creator;
     const parent = new BasicRO();
     parent.objectId = '';
     template.parentAffiliation = parent;
-    const meta = new OUMetadata();
+    const meta = new OuMetadata();
     meta.name = 'new ou';
     template.metadata = meta;
     return template;

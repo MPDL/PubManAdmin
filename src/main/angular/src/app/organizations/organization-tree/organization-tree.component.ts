@@ -1,15 +1,17 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
-
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+
 import {Observable, Subscription} from 'rxjs';
+
 import {OrganizationsService} from '../services/organizations.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {environment} from 'environments/environment';
-// import { OrganizationTreeService, OUTreeFlatNode, OUTreeNode } from '../services/organization-tree.service';
 import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/organization-tree2.service';
+import {Ou} from 'app/base/common/model/inge';
+import {SearchService} from 'app/base/common/services/search.service';
 
 @Component({
   selector: 'organization-tree-component',
@@ -18,11 +20,10 @@ import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/
   providers: [OrganizationTree2Service],
 })
 export class OrganizationTreeComponent implements OnInit, OnDestroy {
-  ounames: any[] = [];
+  ous: Ou[] = [];
   tokenSubscription: Subscription;
-  token;
-  selected: any;
-  searchTerm;
+  token: string;
+  ouSearchTerm: string;
   nodeMap: Map<string, OUTreeFlatNode> = new Map<string, OUTreeFlatNode>();
   treeControl: FlatTreeControl<OUTreeFlatNode>;
   treeFlattener: MatTreeFlattener<OUTreeNode, OUTreeFlatNode>;
@@ -33,6 +34,7 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     private router: Router,
     private authenticationService: AuthenticationService,
     private organizationService: OrganizationsService,
+    private searchService: SearchService,
     private messagesService: MessagesService
   ) {}
 
@@ -88,51 +90,42 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/organization', id]);
   }
 
-  onSelect(ou: any) {
-    const id: string = ou.objectId;
-    this.router.navigate(['/organization', id]);
-  }
-
-  isSelected(ou) {
-    return true;
-  }
-
-  getNames(term) {
-    if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedOUs(term);
-    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedOUs(term);
+  getOus(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
+    } else {
+      this.closeOus();
     }
   }
 
-  returnSuggestedOUs(term) {
-    const ouNames: any[] = [];
+  returnSuggestedOus(term: string) {
+    const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
     this.organizationService.filter(url, null, queryString, 1)
       .subscribe({
         next: (data) => {
-          data.list.forEach((ou) => {
-            ouNames.push(ou);
+          data.list.forEach((ou: Ou) => {
+            ous.push(ou);
           });
-          if (ouNames.length > 0) {
-            this.ounames = ouNames;
+          if (ous.length > 0) {
+            this.ous = ous;
           } else {
-            this.ounames = [];
+            this.ous = [];
           }
         },
         error: (e) => this.messagesService.error(e),
       });
   }
 
-  close() {
-    this.searchTerm = '';
-    this.ounames = [];
+  closeOus() {
+    this.ouSearchTerm = '';
+    this.ous = [];
   }
 
-  select(term) {
-    this.searchTerm = term.metadata.name;
-    this.router.navigate(['/organization', term.objectId]);
-    this.ounames = [];
+  selectOu(ou: Ou) {
+    this.router.navigate(['/organization', ou.objectId]);
+    this.ous = [];
   }
 }

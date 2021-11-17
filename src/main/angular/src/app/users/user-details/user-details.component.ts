@@ -269,7 +269,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  delete(user) {
+  deleteUser(user) {
     this.selected = user;
     const id = this.selected.loginname;
     if (confirm('delete '+user.name+' ?')) {
