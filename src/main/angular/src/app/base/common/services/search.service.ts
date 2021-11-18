@@ -77,11 +77,11 @@ export class SearchService extends PubmanRestService {
       default:
       }
     });
-    query = query.size(limit)
+    const body = query
+      .size(limit)
       .from(offset)
       .sort(sortfield, ascdesc);
-    query = query.build();
-    return query;
+    return body.build();
   }
 
   convertSearchTerm(term: string): string {
