@@ -292,4 +292,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected.parentAffiliation.objectId = term.objectId;
     this.ounames = [];
   }
+
+  isSelected(name) {
+    return true;
+  }
 }

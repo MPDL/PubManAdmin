@@ -23,7 +23,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   contextSearchTerm: string;
   ous: Ou[] = [];
   ouSearchTerm: string;
-  selectedOu: any;
+  selectedOu: Ou;
   selectedContext: { objectId: any; };
   token: string;
   tokenSubscription: Subscription;
@@ -138,7 +138,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
       });
   }
 
-  selectOu(ou: { objectId: string; }) {
+  selectOu(ou: Ou) {
     this.selectedOu = ou;
     this.currentPage = 1;
     this.contextsService.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)

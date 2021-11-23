@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {FormGroup, FormArray, FormBuilder} from '@angular/forms';
 import {Router} from '@angular/router';
 
@@ -19,7 +19,7 @@ import {environment} from 'environments/environment';
   templateUrl: './user-search.component.html',
   styleUrls: ['./user-search.component.scss'],
 })
-export class UserSearchComponent implements OnInit, OnDestroy {
+export class UserSearchComponent implements OnInit {
   @ViewChildren(SearchTermComponent)
     components: QueryList<SearchTermComponent>;
 
@@ -40,7 +40,6 @@ export class UserSearchComponent implements OnInit, OnDestroy {
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
-  tokenSubscription: Subscription;
   token;
   index: string = 'default';
 
@@ -62,14 +61,10 @@ export class UserSearchComponent implements OnInit, OnDestroy {
       this.aggregationsList.push(userAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.userIndex.name, environment.userIndex.type);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.authenticationService.token$.subscribe((data) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
-  }
-
-  ngOnDestroy() {
-    this.tokenSubscription.unsubscribe();
   }
 
   get searchTerms(): FormArray {

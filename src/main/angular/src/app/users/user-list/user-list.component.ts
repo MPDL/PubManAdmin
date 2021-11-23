@@ -188,9 +188,9 @@ export class UserListComponent implements OnInit, OnDestroy {
       });
   }
 
-  returnSuggestedUsersByLogin(loginName: string) {
+  returnSuggestedUsersByLogin(loginname: string) {
     const usersByLogin: User[] = [];
-    const queryString = '?q=loginname.auto:' + loginName;
+    const queryString = '?q=loginname.auto:' + loginname;
     this.usersService.filter(this.url, this.token, queryString, 1)
       .subscribe({
         next: (data) => {

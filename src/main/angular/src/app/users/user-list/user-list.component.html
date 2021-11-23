@@ -10,9 +10,9 @@
     <div class="row">
       <div class="col-4">
         <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)"
-          placeholder="filter by organization" id="ouSearchTerm" autocomplete="off">
+          placeholder="filter by name of organization" id="ouSearchTerm" autocomplete="off">
         <div *ngIf="ous.length > 0">
-          <ul id="ou_suggestions" class="list-group" (clickOutside)="closeOus()">
+          <ul id="ouSuggestions" class="list-group" (clickOutside)="closeOus()">
             <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start"
               (click)="selectOu(ou)">
               <small>{{ou.name}}</small>
@@ -24,9 +24,9 @@
     <div class="row">
       <div class="col-4">
         <input class="form-control form-control-sm" type="text" name="searchUserNameTerm" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)"
-          placeholder="search by name" id="searchUserNameTerm" autocomplete="off">
+          placeholder="search by name of user" id="searchUserNameTerm" autocomplete="off">
         <div *ngIf="usersByName.length > 0">
-          <ul id="username_suggestions" class="list-group" (clickOutside)="closeUsersByName()">
+          <ul id="userNameSuggestions" class="list-group" (clickOutside)="closeUsersByName()">
             <li *ngFor="let user of usersByName" class="list-group-item-primary list-group-item-action py-0 text-start"
               (click)="selectUserByName(user)">
               <small>{{user.name}}</small>
@@ -38,7 +38,7 @@
     <div class="row">
       <div class="col-4">
         <input class="form-control form-control-sm" type="text" name="searchUserLoginTerm" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)"
-          placeholder="search by login" id="searchUserLoginTerm" autocomplete="off">
+          placeholder="search by loginname of user" id="searchUserLoginTerm" autocomplete="off">
         <div *ngIf="usersByLogin.length > 0">
           <ul id="userlogin_suggestions" class="list-group" (clickOutside)="closeUsersByLogin()">
             <li *ngFor="let user of usersByLogin" class="list-group-item-primary list-group-item-action py-0 text-start"

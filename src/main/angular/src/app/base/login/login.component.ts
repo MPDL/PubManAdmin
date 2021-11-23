@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   login() {
-    this.authenticationService.login(this.credentials.username, this.credentials.password)
+    this.authenticationService.login(this.credentials.userName, this.credentials.password)
       .subscribe({
         next: (data) => {
           this.token = data;
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
-    this.credentials.username = '';
+    this.credentials.userName = '';
     this.credentials.password = '';
     this.loggedIn = false;
     // required because ngForm cannot be reset.
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
           next: (data) => {
             this.user = data;
             this.hasToken = true;
-            this.credentials.username = this.user.name;
+            this.credentials.userName = this.user.name;
           },
           error: (e) => {
             this.messagesService.error(e);

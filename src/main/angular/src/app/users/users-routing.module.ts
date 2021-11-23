@@ -4,11 +4,11 @@ import {Routes, RouterModule} from '@angular/router';
 import {UserListComponent} from './user-list/user-list.component';
 import {UserDetailsComponent} from './user-details/user-details.component';
 import {UserDetailsResolverService} from './services/user-details-resolver.service';
-import {LoginGuardService} from '../base/services/login-guard.service';
+import { AdminGuardService } from 'app/base/services/admin-guard.service';
 
 const routes: Routes = [
   {path: 'users', component: UserListComponent},
-  {path: 'user/:id', component: UserDetailsComponent, canActivate: [LoginGuardService], resolve: {user: UserDetailsResolverService}},
+  {path: 'user/:id', component: UserDetailsComponent, canActivate: [AdminGuardService], resolve: {user: UserDetailsResolverService}},
 ];
 
 @NgModule({

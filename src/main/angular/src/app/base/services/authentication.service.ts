@@ -45,9 +45,9 @@ export class AuthenticationService {
     this.connectionService.connectionService.subscribe((data) => this.tokenUrl = data + '/rest/login');
   }
 
-  login(username, password) {
+  login(userName, password) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = username + ':' + password;
+    const body = userName + ':' + password;
     return this.http.request('POST', this.tokenUrl, {
       body: body,
       headers: headers,
