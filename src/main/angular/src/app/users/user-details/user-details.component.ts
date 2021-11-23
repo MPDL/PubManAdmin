@@ -32,7 +32,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedGrant: Grant;
   selectedGrants: Grant[] = [];
   grantsToRemove: string;
-  ctxTitle: string;
+  contextTitle: string;
   pw: string;
 
   token: string;
@@ -104,13 +104,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   viewRefTitle(grant: { objectRef: any; }) {
     const ref = grant.objectRef;
     if (ref === undefined) {
-      this.ctxTitle = 'why do you point here?';
+      this.contextTitle = 'why do you point here?';
     } else {
       if (ref.startsWith('ou')) {
-        this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.ctxTitle = data.metadata.name);
+        this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.contextTitle = data.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.usersService.get(this.ctxsUrl, ref, null).subscribe((data) => this.ctxTitle = data.name);
+          this.usersService.get(this.ctxsUrl, ref, null).subscribe((data) => this.contextTitle = data.name);
         }
       }
     }

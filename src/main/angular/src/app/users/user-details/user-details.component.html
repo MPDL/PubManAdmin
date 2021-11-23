@@ -4,7 +4,7 @@
             <h4 class="card-title">{{selectedUser.loginname}}</h4>
         </div>
         <form class="list-group-item text-primary" name="form" (ngSubmit)="f.form.valid && saveUser()" #f="ngForm" novalidate>
-            <div class="row w-100">
+            <div class="row w-100 mt-3">
                 <label for="selectedLoginName" class="col-2 col-form-label col-form-label-sm">loginname</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="loginname"
@@ -28,7 +28,7 @@
                         id="selectedId" readonly>
                 </div>
             </div>
-            <div class="row w-100">
+            <div class="row w-100 mt-3">
                 <label for="selectedPassword" class="col-2 col-form-label col-form-label-sm">password</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="password" name="password"
@@ -45,7 +45,7 @@
                         (click)="generateRandomPassword(selectedUser)" name="generatePassword" value="generate" />
                 </div>
             </div>
-            <div class="row w-100">
+            <div class="row w-100 mt-3">
                 <label for="selectedActive" class="col-2 col-form-label col-form-label-sm">active</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="active" [(ngModel)]="selectedUser.active"
@@ -57,7 +57,7 @@
                         [value]="selectedUser.active === false ? 'activate' : 'deactivate'" />
                 </div>
             </div>
-            <div class="row w-100">
+            <div class="row w-100 mt-3">
                 <label for="selectedName" class="col-2 col-form-label col-form-label-sm">name</label>
                 <div class="col-10">
                     <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="selectedUser.name"
@@ -69,14 +69,14 @@
                     </div>
                 </div>
             </div>
-            <div class="row w-100">
+            <div class="row w-100 mt-3">
                 <label for="selectedEmail" class="col-2 col-form-label col-form-label-sm">email</label>
                 <div class="col-10">
                     <input class="form-control form-control-sm" type="email" name="email" [(ngModel)]="selectedUser.email"
                         id="selectedEmail">
                 </div>
             </div>
-            <div *ngIf="!isNewOu" class="row w-100">
+            <div *ngIf="!isNewOu" class="row w-100 mt-3">
                 <label for="selectedOu" class="col-2 col-form-label col-form-label-sm">organization</label>
                 <div *ngIf="selectedUser.affiliation" class="col-6">
                     <input class="form-control form-control-sm" type="text" name="ouid"
@@ -87,7 +87,7 @@
                         name="changeOu" value="change" />
                 </div>
             </div>
-            <div *ngIf="isNewUser || isNewOu" class="row w-100">
+            <div *ngIf="isNewUser || isNewOu" class="row w-100 mt-3">
                 <label for="ouSearchTerm" class="col-2 col-form-label col-form-label-sm">organization</label>
                 <div class="col-10">
                     <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)"
@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row w-100">
+            <div class="row w-100 mt-3">
                 <div class="col-3 ms-auto">
                     <input type="button" class="btn btn-outline-primary btn-sm me-2" name="cancel" value="cancel"
                         (click)="gotoUserList()" />
@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div *ngIf="!isNewUser" class="w-100">
-                <div class="row w-100">
+                <div class="row w-100 mt-5">
                     <label for="addGrantButton" class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
                         <ul class="list-group">
@@ -123,10 +123,10 @@
                                     <span class="col-4 text-start text-truncate">
                                         <label class="col-form-label-sm p-0 ms-2" [innerHtml]="usergrant.role"></label>
                                     </span>
-                                    <span class="col-5 text-start text-truncate">
+                                    <span class="col-6 text-start text-truncate">
                                         <label class="col-form-label-sm p-0" [innerHtml]="usergrant.ctxTitle"></label>
                                     </span>
-                                    <span class="col-2 text-start">
+                                    <span class="col-1 text-start">
                                         <!--<label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef" (mouseover)="viewRefTitle(usergrant)" data-bs-toggle="tooltip" data-placement="right" title="{{ctxTitle}}"></label>-->
                                         <label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef"></label>
                                     </span>
@@ -140,21 +140,21 @@
                         </ul>
                     </div>
                 </div>
-                <div *ngIf="!isNewGrant && selectedUser.active === true" class="row w-100">
+                <div *ngIf="!isNewGrant && selectedUser.active === true" class="row w-100 mt-3">
                     <div class="col-2 ms-auto">
                         <input type="button" class="btn btn-outline-primary btn-sm float-end"
                             (click)="addGrant(); $event.stopPropagation()" name="addGrant" value="add grants" />
                     </div>
                 </div>
-                <div *ngIf="isNewGrant" class="row w-100">
+                <div *ngIf="isNewGrant" class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
-                        <grants-component class="row w-100" [(selectedUser)]="selectedUser" [token]="token"
+                        <grants-component class="row w-100 mt-3" [(selectedUser)]="selectedUser" [token]="token"
                             [(isNewGrant)]="isNewGrant"></grants-component>
                     </div>
                 </div>
-                <div *ngIf="grants2remove" class="row w-100">
+                <div *ngIf="grants2remove" class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
-                        <div class="row w-100">
+                        <div class="row w-100 mt-3">
                             <div class="col-9">
                                 <textarea class="form-control form-control-sm" rows="3" name="grantsToRemove"
                                     [(ngModel)]="grantsToRemove" readonly></textarea>
