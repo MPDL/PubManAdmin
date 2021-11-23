@@ -9,8 +9,8 @@
  * Voraussetzung:
  * npm install node-polyfill-webpack-plugin
  * Aenderungen:
- * const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
- * plugins: new NodePolyfillPlugin({ excludeAliases: ["console"] })
+ * const node-polyfill-webpack-plugin = require("node-polyfill-webpack-plugin")
+ * plugins: new node_polyfill_plugin({ excludeAliases: ['console'] })
  * node: { global: true }
  * 
  */
