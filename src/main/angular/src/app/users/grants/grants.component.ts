@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 
 import {MessagesService} from '../../base/services/messages.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
-import {Grant, User} from '../../base/common/model/inge';
+import {Context, Grant, Ou, User} from '../../base/common/model/inge';
 import {UsersService} from '../services/users.service';
 import {environment} from 'environments/environment';
 import {allOpenedOUs} from '../../base/common/model/query-bodies';
@@ -27,18 +27,17 @@ export class GrantsComponent implements OnInit, OnDestroy {
       selectedUserChange = new EventEmitter<User>();
 
     ousUrl = environment.restOus;
-    ctxUrl = environment.restContexts;
-    grants: Grant[];
-    roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER'];
-    ctxs: Array<any>;
-    ctxsFiltered: Array<any>;
-    ous: Array<any>;
-    selectedGrant: Grant;
-    selectedGrants: Grant[] = [];
+    contextUrl = environment.restContexts;
+    roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
+    contexts: Context[] = [];
+    filteredContexts: Context[] = [];
+    ous: Ou[] = [];
+    selectedGrantToAdd: Grant;
+    selectedGrantsToAdd: Grant[] = [];
     grantsToAdd: string;
     selectedRole: string;
-    selectedCtx: any;
-    selectedOu: any;
+    selectedContext: Context;
+    selectedOu: Ou;
     idString: string;
     tokenSubscription: Subscription;
 
@@ -51,7 +50,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     ngOnInit() {
       this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
       if (this.token != null) {
-        this.getNewGrantSelect();
+        this.getContextsAndOus();
       }
     }
 
@@ -59,41 +58,45 @@ export class GrantsComponent implements OnInit, OnDestroy {
       this.tokenSubscription.unsubscribe();
     }
 
-    getNewGrantSelect() {
+    getContextsAndOus() {
       const ousBody = allOpenedOUs;
-      this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
+      this.usersService.filter(this.contextUrl, null, '?q=state:OPENED&size=300', 1)
         .subscribe(
           (data) => {
-            this.ctxs = data.list;
-            this.ctxsFiltered = data.list;
+            this.contexts = data.list;
+            this.filteredContexts = data.list;
           });
-
       this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
     }
 
-    onChangeRole(val) {
+    onChangeRole(val: string) {
       this.selectedRole = val;
     }
 
-    onChangeCtx(val) {
-      this.selectedCtx = val;
+    onChangeContext(context: Context) {
+      this.selectedContext = context;
     }
 
-    onChangeOu(val) {
-      this.selectedOu = val;
+    onChangeOu(ou: Ou) {
+      this.selectedOu = ou;
     }
 
     validateSelection() {
-      const rolename = this.selectedRole;
-
-      if (rolename) {
-        if (rolename.startsWith('CONE') || rolename === 'REPORTER') {
-          this.addGrant(rolename, null);
-        }
-        if (rolename === 'DEPOSITOR' || rolename === 'MODERATOR') {
-          if (this.selectedCtx != null) {
-            const refId = this.selectedCtx.objectId;
-            this.addGrant(rolename, refId);
+      const role = this.selectedRole;
+      if (role) {
+        if (role.startsWith('CONE') || role === 'REPORTER') {
+          this.addGrant(role, null);
+        } else if (role === 'LOCAL_ADMIN') {
+          if (this.selectedOu != null) {
+            const refId = this.selectedOu.objectId;
+            this.addGrant(role, refId);
+          } else {
+            this.messagesService.error('you must select an organization!');
+          }
+        } else if (role === 'DEPOSITOR' || role === 'MODERATOR') {
+          if (this.selectedContext != null) {
+            const refId = this.selectedContext.objectId;
+            this.addGrant(role, refId);
           } else {
             this.messagesService.error('you must select a context!');
           }
@@ -104,24 +107,23 @@ export class GrantsComponent implements OnInit, OnDestroy {
     }
 
     resetGrants() {
-      this.selectedGrants.splice(0, this.selectedGrants.length);
+      this.selectedGrantsToAdd.splice(0, this.selectedGrantsToAdd.length);
       this.grantsToAdd = '';
     }
 
-    addGrant(rolename, refId) {
-      const grant2add = new Grant();
-      grant2add.role = rolename;
-      grant2add.objectRef = refId;
-
-      if (!this.selectedGrants.some((grant) => (grant2add.objectRef === grant.objectRef && grant2add.role === grant.role))) {
-        this.selectedGrants.push(grant2add);
+    addGrant(role: string, refId: string) {
+      const grantToAdd = new Grant();
+      grantToAdd.role = role;
+      grantToAdd.objectRef = refId;
+      if (!this.selectedGrantsToAdd.some((data) => (grantToAdd.objectRef === data.objectRef && grantToAdd.role === data.role))) {
+        this.selectedGrantsToAdd.push(grantToAdd);
       }
-      this.grantsToAdd = JSON.stringify(this.selectedGrants);
+      this.grantsToAdd = JSON.stringify(this.selectedGrantsToAdd);
     }
 
     addGrants() {
-      if (this.selectedGrants.length > 0) {
-        this.usersService.addGrants(this.selectedUser, this.selectedGrants, this.token)
+      if (this.selectedGrantsToAdd.length > 0) {
+        this.usersService.addGrants(this.selectedUser, this.selectedGrantsToAdd, this.token)
           .subscribe({
             next: (data) => {
               this.selectedUser = data;
@@ -130,7 +132,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
               }
               this.selectedUserChange.emit(this.selectedUser);
               this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
-              this.selectedGrants = null;
+              this.selectedGrantsToAdd = null;
               this.grantsToAdd = '';
               this.isNewGrantChange.emit(false);
             },
@@ -141,12 +143,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
       }
     }
 
-    filterCtxs(event) {
-      this.ctxsFiltered = this.ctxs;
+    filterContexts(event: string) {
+      this.filteredContexts = this.contexts;
       if (typeof event === 'string') {
-        this.ctxsFiltered = this.ctxs.filter((c) => c.name.toLowerCase()
-          .includes(event.toLowerCase()));
-        this.selectedCtx = this.ctxsFiltered[0];
+        this.filteredContexts = this.contexts.filter((context) => context.name.toLowerCase().includes(event.toLowerCase()));
+        this.selectedContext = this.filteredContexts[0];
       }
     }
 }

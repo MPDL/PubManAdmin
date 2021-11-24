@@ -34,7 +34,7 @@
                     <input class="form-control form-control-sm" type="password" name="password"
                         [(ngModel)]="selectedUser.password" id="selectedPassword" readonly>
                 </div>
-                <div *ngIf="selectedUser.active == true && selectedUser.password" class="col-4">
+                <div *ngIf="!isNewUser && selectedUser.active == true && selectedUser.password" class="col-4">
                     <input type="button" class="btn btn-outline-primary btn-sm float-end"
                         (click)="resetPassword(selectedUser)" name="resetPassword" value="save" />
                     <input type="button" class="btn btn-outline-primary btn-sm float-end"
@@ -45,7 +45,16 @@
                         (click)="generateRandomPassword(selectedUser)" name="generatePassword" value="generate" />
                 </div>
             </div>
-            <div class="row w-100 mt-3">
+            <div class="row w-100 mt-3" *ngIf="isNewUser">
+                <label class="col-2 col-form-label col-form-label-sm">active</label>
+                <div class="col-6">
+                    <select class="select form-select form-select-sm" [(ngModel)]="selectedUser.active" name="active">
+	    			<option [ngValue]>true</option>
+	    			<option [ngValue]>false</option>
+    			</select>
+                </div>
+            </div>
+            <div class="row w-100 mt-3" *ngIf="!isNewUser">
                 <label for="selectedActive" class="col-2 col-form-label col-form-label-sm">active</label>
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="active" [(ngModel)]="selectedUser.active"
@@ -106,9 +115,9 @@
                 <div class="col-3 ms-auto">
                     <input type="button" class="btn btn-outline-primary btn-sm me-2" name="cancel" value="cancel"
                         (click)="gotoUserList()" />
-                    <input type="button" class="btn btn-outline-primary btn-sm me-2" name="delete" value="delete"
+                    <input *ngIf="!isNewUser" type="button" class="btn btn-outline-primary btn-sm me-2" name="deleteUser" value="delete"
                         (click)="deleteUser(selectedUser)" />
-                    <input type="button" class="btn btn-outline-primary btn-sm" name="save" value="save"
+                    <input type="button" class="btn btn-outline-primary btn-sm" name="saveUser" value="save"
                         (click)="saveUser(selectedUser)" />
                 </div>
             </div>
@@ -118,22 +127,19 @@
                     <div class="col-10 text-end">
                         <ul class="list-group">
                             <li class="list-group-item-primary list-group-item-action py-0 align-items-center"
-                                *ngFor="let usergrant of selectedUser.grantList" (click)="goToRef(usergrant)">
+                                *ngFor="let grant of selectedUser.grantList" (click)="goToRef(grant)">
                                 <div class="row">
                                     <span class="col-4 text-start text-truncate">
-                                        <label class="col-form-label-sm p-0 ms-2" [innerHtml]="usergrant.role"></label>
+                                        <label class="col-form-label-sm p-0 ms-2" [innerHtml]="grant.role"></label>
                                     </span>
                                     <span class="col-6 text-start text-truncate">
-                                        <label class="col-form-label-sm p-0" [innerHtml]="usergrant.ctxTitle"></label>
+                                        <label class="col-form-label-sm p-0" [innerHtml]="grant.ctxTitle"></label>
                                     </span>
                                     <span class="col-1 text-start">
-                                        <!--<label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef" (mouseover)="viewRefTitle(usergrant)" data-bs-toggle="tooltip" data-placement="right" title="{{ctxTitle}}"></label>-->
-                                        <label class="col-form-label-sm p-0" [innerHtml]="usergrant.objectRef"></label>
+                                        <label class="col-form-label-sm p-0" [innerHtml]="grant.objectRef"></label>
                                     </span>
                                     <span class="col-1">
-                                        <input type="button" class="btn btn-outline-primary btn-sm"
-                                            (click)="deleteGrant(usergrant); $event.stopPropagation()"
-                                            name="deleteGrant" value="x" />
+                                        <input type="button" class="btn btn-outline-primary btn-sm" (click)="addToDeleteGrantsList(grant); $event.stopPropagation()" name="addToDeleteGrantsList" value="x" />
                                     </span>
                                 </div>
                             </li>
@@ -142,26 +148,29 @@
                 </div>
                 <div *ngIf="!isNewGrant && selectedUser.active === true" class="row w-100 mt-3">
                     <div class="col-2 ms-auto">
-                        <input type="button" class="btn btn-outline-primary btn-sm float-end"
-                            (click)="addGrant(); $event.stopPropagation()" name="addGrant" value="add grants" />
+                        <input type="button" class="btn btn-outline-primary btn-sm float-end" (click)="addGrant(); $event.stopPropagation()" name="addGrant" value="add grants" />
                     </div>
                 </div>
+
                 <div *ngIf="isNewGrant" class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
-                        <grants-component class="row w-100 mt-3" [(selectedUser)]="selectedUser" [token]="token"
-                            [(isNewGrant)]="isNewGrant"></grants-component>
+                        <grants-component class="row w-100 mt-3" [(selectedUser)]="selectedUser" [token]="token" [(isNewGrant)]="isNewGrant"></grants-component>
                     </div>
                 </div>
+
                 <div *ngIf="grants2remove" class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
                         <div class="row w-100 mt-3">
-                            <div class="col-9">
-                                <textarea class="form-control form-control-sm" rows="3" name="grantsToRemove"
-                                    [(ngModel)]="grantsToRemove" readonly></textarea>
-                            </div>
-                            <div class="col-3">
-                                <input type="button" class="btn btn-outline-primary btn-sm float-start"
-                                    name="removeGrants" value="remove grants" (click)="removeGrants()" />
+                            <div class="container">
+                                <div class="row w-100">
+                                    <div class="col-11">
+                                        <textarea class="form-control form-control-sm" rows="3" name="grantsToRemove" [(ngModel)]="grantsToRemove" readonly></textarea>
+                                    </div>
+                                    <div class="col-1">
+                                        <input type="button" class="btn btn-outline-primary btn-sm float-start" name="removeGrants" value="remove grants" (click)="removeGrants()" />
+                                        <input *ngIf="grantsToRemove" type="button" class="btn btn-outline-primary btn-sm float-start mt-1" name="reset" value="cancel" (click)="resetGrants()" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

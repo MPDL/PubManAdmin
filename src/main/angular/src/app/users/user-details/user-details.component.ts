@@ -22,15 +22,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   selectedUser: User;
   ous: Ou[] = [];
-  ouSearchTerm: string;
+  ouSearchTerm: string = '';
   selectedOu: Ou;
   isNewUser: boolean = false;
   isNewGrant: boolean = false;
   isNewOu: boolean = false;
   isAdmin: boolean = true;
   grants2remove: boolean = false;
-  selectedGrant: Grant;
-  selectedGrants: Grant[] = [];
+  selectedGrantToRemove: Grant;
+  selectedGrantsToRemove: Grant[] = [];
   grantsToRemove: string;
   contextTitle: string;
   pw: string;
@@ -76,18 +76,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.isNewGrant = true;
   }
 
-  deleteGrant(grant2delete: Grant) {
+  addToDeleteGrantsList(grant: Grant) {
     this.grants2remove = true;
-    this.selectedGrant = grant2delete;
-    if (!this.selectedGrants.some((grant) => (grant2delete.objectRef === grant.objectRef && grant2delete.role === grant.role))) {
-      this.selectedGrants.push(grant2delete);
+    this.selectedGrantToRemove = grant;
+    if (!this.selectedGrantsToRemove.some((data) => (data.objectRef === this.selectedGrantToRemove.objectRef && data.role === this.selectedGrantToRemove.role))) {
+      this.selectedGrantsToRemove.push(this.selectedGrantToRemove);
     }
-    this.grantsToRemove = JSON.stringify(this.selectedGrants);
+    this.grantsToRemove = JSON.stringify(this.selectedGrantsToRemove);
   }
 
   goToRef(grant: Grant) {
-    this.selectedGrant = grant;
-    const ref = this.selectedGrant.objectRef;
+    this.selectedGrantToRemove = grant;
+    const ref = this.selectedGrantToRemove.objectRef;
     if (ref === undefined) {
       this.messagesService.warning('the reference of the selected grant is undefined!');
     } else {
@@ -182,8 +182,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveUser(user2save: User) {
-    this.selectedUser = user2save;
+  saveUser(user: User) {
+    this.selectedUser = user;
     if (this.selectedUser.loginname.includes(' ')) {
       this.messagesService.warning('loginname MUST NOT contain spaces');
       return;
@@ -245,7 +245,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeGrants() {
-    this.usersService.removeGrants(this.selectedUser, this.selectedGrants, this.token)
+    this.usersService.removeGrants(this.selectedUser, this.selectedGrantsToRemove, this.token)
       .subscribe({
         next: (data) => {
           this.selectedUser = data;
@@ -253,8 +253,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
           }
           this.messagesService.success('removed Grants from ' + this.selectedUser.loginname);
-          this.selectedGrants = null;
-          this.grants2remove = false;
+          this.resetGrants();
         },
         error: (e) => this.messagesService.error(e),
       });
@@ -313,4 +312,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selectedOu = ou;
     this.ous = [];
   };
+
+  resetGrants() {
+    this.grantsToRemove = '';
+    this.grants2remove = false;
+    this.selectedGrantToRemove = null;
+    this.selectedGrantsToRemove = [];
+  }
 }

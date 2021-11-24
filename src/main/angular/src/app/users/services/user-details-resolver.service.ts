@@ -20,7 +20,7 @@ export class UserDetailsResolverService implements Resolve<User> {
       user.loginname = 'new user';
       user.grantList = [];
       user.affiliation = new BasicRO();
-      user.active = false;
+      user.active = true;
       this.generateRandomPassword(user);
       return of(user);
     } else {
