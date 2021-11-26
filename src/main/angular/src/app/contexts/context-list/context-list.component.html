@@ -5,7 +5,7 @@
     <div class="card text-white bg-success text-end">
         <div class="card-body">
             <h4 class="card-title">{{title}}</h4>
-            <input type="submit" class="btn btn-success btn-sm" name="add" value="+" (click)="addNewContext()" />
+            <input type="submit" class="btn btn-success btn-sm" name="add" value="+" (click)="addNewCtx()" />
         </div>
         <div class="row">
             <div class="col-4">
@@ -23,12 +23,12 @@
         </div>
         <div class="row">
             <div class="col-4">
-                <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="contextSearchTerm" (keyup)="getContextsByName(contextSearchTerm)"
-                    placeholder="search by name of context" id="contextSearchTerm" autocomplete="off">
-                <div *ngIf="contextsByName.length > 0">
-                    <ul class="list-group" (clickOutside)="closeContextsByName()">
-                        <li *ngFor="let context of contextsByName" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectContext(context)">
-                            <small>{{context.name}}</small>
+                <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="ctxSearchTerm" (keyup)="getCtxsByName(ctxSearchTerm)"
+                    placeholder="search by name of context" id="ctxSearchTerm" autocomplete="off">
+                <div *ngIf="ctxsByName.length > 0">
+                    <ul class="list-group" (clickOutside)="closeCtxsByName()">
+                        <li *ngFor="let ctx of ctxsByName" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectCtx(ctx)">
+                            <small>{{ctx.name}}</small>
                         </li>
                     </ul>
                 </div>
@@ -40,9 +40,9 @@
             </div>
         </div>
         <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let context of contexts | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
-                (click)="selectContext(context)">
-                <span class="col-sm-11">{{context.name}}</span>
+            <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let ctx of ctxs | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }"
+                (click)="selectCtx(ctx)">
+                <span class="col-sm-11">{{ctx.name}}</span>
                 <span class="col-sm-1"></span>
             </div>
         </ul>

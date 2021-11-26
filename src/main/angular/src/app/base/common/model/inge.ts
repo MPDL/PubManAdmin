@@ -62,7 +62,7 @@ export class Coordinates {
   longitude: number;
 }
 
-export class Context extends BasicRO {
+export class Ctx extends BasicRO {
   state: string;
   description: string;
   responsibleAffiliations: BasicRO[];

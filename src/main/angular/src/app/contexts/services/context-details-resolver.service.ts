@@ -7,7 +7,7 @@ import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
 
 import {ContextsService} from './contexts.service';
 import {MessagesService} from '../../base/services/messages.service';
-import {Context} from '../../base/common/model/inge';
+import {Ctx} from '../../base/common/model/inge';
 import {environment} from 'environments/environment';
 
 @Injectable()
@@ -17,11 +17,11 @@ export class ContextDetailsResolverService implements Resolve<any> {
     private messagesService: MessagesService
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Context> {
-    const url = environment.restContexts;
+  resolve(route: ActivatedRouteSnapshot): Observable<Ctx> {
+    const url = environment.restCtxs;
     const id = route.params['id'];
     if (id === 'new ctx') {
-      const ctx = new Context();
+      const ctx = new Ctx();
       ctx.name = 'new ctx';
       ctx.responsibleAffiliations = [];
       ctx.allowedGenres = [];

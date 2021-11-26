@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 
 import {MessagesService} from '../../base/services/messages.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
-import {Context, Grant, Ou, User} from '../../base/common/model/inge';
+import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
 import {UsersService} from '../services/users.service';
 import {environment} from 'environments/environment';
 import {allOpenedOUs} from '../../base/common/model/query-bodies';
@@ -17,8 +17,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
     @Input()
       selectedUser: User;
     @Input()
-      token: string;
-    @Input()
       isNewGrant: boolean;
 
     @Output()
@@ -27,18 +25,22 @@ export class GrantsComponent implements OnInit, OnDestroy {
       selectedUserChange = new EventEmitter<User>();
 
     ousUrl = environment.restOus;
-    contextUrl = environment.restContexts;
-    roles: string[] = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
-    contexts: Context[] = [];
-    filteredContexts: Context[] = [];
+    ctxUrl = environment.restCtxs;
+    roles: string[];
+    ctxs: Ctx[] = [];
+    filteredCtxs: Ctx[] = [];
     ous: Ou[] = [];
     selectedGrantToAdd: Grant;
     selectedGrantsToAdd: Grant[] = [];
     grantsToAdd: string;
     selectedRole: string;
-    selectedContext: Context;
+    selectedCtx: Ctx;
     selectedOu: Ou;
     idString: string;
+
+    isAdmin: boolean;
+    adminSubscription: Subscription;
+    token: string;
     tokenSubscription: Subscription;
 
     constructor(
@@ -50,21 +52,28 @@ export class GrantsComponent implements OnInit, OnDestroy {
     ngOnInit() {
       this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
       if (this.token != null) {
-        this.getContextsAndOus();
+        this.getCtxsAndOus();
+      }
+      this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+      if (this.isAdmin) {
+        this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
+      } else {
+        this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
       }
     }
 
     ngOnDestroy() {
+      this.adminSubscription.unsubscribe();
       this.tokenSubscription.unsubscribe();
     }
 
-    getContextsAndOus() {
+    getCtxsAndOus() {
       const ousBody = allOpenedOUs;
-      this.usersService.filter(this.contextUrl, null, '?q=state:OPENED&size=300', 1)
+      this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
         .subscribe(
           (data) => {
-            this.contexts = data.list;
-            this.filteredContexts = data.list;
+            this.ctxs = data.list;
+            this.filteredCtxs = data.list;
           });
       this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
     }
@@ -73,8 +82,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
       this.selectedRole = val;
     }
 
-    onChangeContext(context: Context) {
-      this.selectedContext = context;
+    onChangeCtx(ctx: Ctx) {
+      this.selectedCtx = ctx;
     }
 
     onChangeOu(ou: Ou) {
@@ -94,8 +103,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
             this.messagesService.error('you must select an organization!');
           }
         } else if (role === 'DEPOSITOR' || role === 'MODERATOR') {
-          if (this.selectedContext != null) {
-            const refId = this.selectedContext.objectId;
+          if (this.selectedCtx != null) {
+            const refId = this.selectedCtx.objectId;
             this.addGrant(role, refId);
           } else {
             this.messagesService.error('you must select a context!');
@@ -143,11 +152,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
       }
     }
 
-    filterContexts(event: string) {
-      this.filteredContexts = this.contexts;
+    filterCtxs(event: string) {
+      this.filteredCtxs = this.ctxs;
       if (typeof event === 'string') {
-        this.filteredContexts = this.contexts.filter((context) => context.name.toLowerCase().includes(event.toLowerCase()));
-        this.selectedContext = this.filteredContexts[0];
+        this.filteredCtxs = this.ctxs.filter((ctx) => ctx.name.toLowerCase().includes(event.toLowerCase()));
+        this.selectedCtx = this.filteredCtxs[0];
       }
     }
 }

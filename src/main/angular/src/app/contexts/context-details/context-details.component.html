@@ -4,7 +4,6 @@
       <h4 class="card-title">{{ctx.name}}</h4>
     </div>
     <form class="list-group-item text-success" name="form" (ngSubmit)="f.valid && save(ctx)" #f="ngForm" novalidate>
-
       <div class="row w-100 mt-3">
         <label for="ctx-name" class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-6">
@@ -38,8 +37,7 @@
           <input class="form-control form-control-sm" type="text" name="state" [(ngModel)]="ctx.state" id="ctx-state" readonly>
         </div>
         <div *ngIf="ctx.state" class="col-4">
-          <input type="button" class="btn btn-outline-success btn-sm float-end" (click)="activateContext(ctx)" name="state" [value]="ctx.state === 'CLOSED' || ctx.state === 'CREATED' ? 'open' : 'close'"
-          />
+          <input type="button" class="btn btn-outline-success btn-sm float-end" (click)="activateCtx(ctx)" name="state" [value]="ctx.state === 'CLOSED' || ctx.state === 'CREATED' ? 'open' : 'close'" />
         </div>
       </div>
       <div *ngIf="!isNewCtx" class="row w-100 mt-3">
@@ -60,8 +58,7 @@
       -->
         <label for="searchTerm" class="col-2 col-form-label col-form-label-sm">organization</label>
           <div class="col-10">
-              <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)"
-              placeholder="search by name of context" id="searchTerm" autocomplete="off">
+              <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)" placeholder="search by name of context" id="searchTerm" autocomplete="off">
             <div *ngIf="ounames.length > 0">
               <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
                 <li class="list-group-item-success list-group-item-action py-0 d-flex no-gutters text-start" (click)="select(name)">
@@ -75,8 +72,7 @@
       <div class="row w-100 mt-3">
         <div class="col-3 ms-auto">
           <input type="button" class="btn btn-outline-success btn-sm me-2" name="cancel" value="cancel" (click)="gotoList()" />
-          <input *ngIf="ctx.state === 'CREATED'" type="button" class="btn btn-outline-success btn-sm me-2" name="delete" value="delete"
-            (click)="delete(ctx)" />
+          <input *ngIf="ctx.state === 'CREATED' && !isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" name="delete" value="delete" (click)="delete(ctx)" />
           <input type="button" class="btn btn-outline-success btn-sm" name="save" value="save" (click)="save(ctx)" />
         </div>
       </div>
@@ -91,23 +87,18 @@
               </select>
             </div>
             <div class="col-1 justify-content-start">
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addGenres" value=">>" (click)="addGenres(selectedGenres)"
-              />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllGenres" value="all" (click)="addAllGenres()"
-              />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!"
-                name="clearGenres" value="<<" (click)="clearGenres()" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addGenres" value=">>" (click)="addGenres(selectedGenres)" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllGenres" value="all" (click)="addAllGenres()" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearGenres" value="<<" (click)="clearGenres()" />
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let genre of allowedGenres"
-                  [class.selected]="isSelected(genre)">
+                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let genre of allowedGenres" [class.selected]="isSelected(genre)">
                   <span class="col-11">
                     <label class="col-form-label-sm p-0">{{genre}}</label>
                   </span>
                   <span class="col-1">
-                    <input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteGenre(genre); $event.stopPropagation()"
-                      name="deleteGenre" value="x" />
+                    <input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteGenre(genre); $event.stopPropagation()" name="deleteGenre" value="x" />
                   </span>
                 </div>
               </ul>
@@ -126,23 +117,18 @@
               </select>
             </div>
             <div class="col-1">
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addSubjects" value=">>" (click)="addSubjects(selectedSubjects)"
-              />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllSubjects" value="all" (click)="addAllSubjects()"
-              />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!"
-                name="clearSubjects" value="<<" (click)="clearSubjects()" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addSubjects" value=">>" (click)="addSubjects(selectedSubjects)" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllSubjects" value="all" (click)="addAllSubjects()" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearSubjects" value="<<" (click)="clearSubjects()" />
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let subject of allowedSubjects"
-                  [class.selected]="isSelected(subject)">
+                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let subject of allowedSubjects" [class.selected]="isSelected(subject)">
                   <span class="col-sm-11">
                     <label class="col-form-label-sm p-0">{{subject}}</label>
                   </span>
                   <span class="col-sm-1">
-                    <input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()"
-                      name="deleteSubject" value="x" />
+                    <input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()" name="deleteSubject" value="x" />
                   </span>
                 </div>
               </ul>
@@ -161,7 +147,6 @@
               </select>
             </div>
             <div class="col-1">
-
             </div>
             <div class="col-6">
               <input selected-item-color="#91eed2" class="form-control form-control-sm" type="text" readonly name="allowedWorkflow" [ngModel]="ctx.workflow">

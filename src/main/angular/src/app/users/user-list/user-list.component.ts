@@ -23,13 +23,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   selectedUser: User;
   selectedOu: Ou;
 
-  loggedInUser: User;
   isNewUser: boolean = false;
-  token: string;
-  isAdmin: boolean;
-  tokenSubscription: Subscription;
-  userSubscription: Subscription;
-  adminSubscription: Subscription;
   total: number;
   pageSize: number = 50;
   currentPage: number = 1;
@@ -40,6 +34,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   userLoginSearchTerm: string = '';
   ouSearchTerm: string = '';
 
+  adminSubscription: Subscription;
+  isAdmin: boolean;
+  tokenSubscription: Subscription;
+  token: string;
+  userSubscription: Subscription;
+  loggedInUser: User;
+
   constructor(private usersService: UsersService,
     private authenticationService: AuthenticationService,
     private organizationService: OrganizationsService,
@@ -48,24 +49,23 @@ export class UserListComponent implements OnInit, OnDestroy {
     private router: Router) {}
 
   ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
 
     if (this.token != null) {
       if (this.isAdmin) {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
-        this.messagesService.warning('Only admins are allowed to view the list');
-        this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token, admin: false}, skipLocationChange: true});
+        this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
       }
     }
   }
 
   ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
-    this.adminSubscription.unsubscribe();
   }
 
   getAllUsersAsObservable(token: string, page: number) {

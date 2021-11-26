@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs';
 import {ContextsService} from '../services/contexts.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
-import {BasicRO, Context, genres, subjects, workflow} from '../../base/common/model/inge';
+import {BasicRO, Ctx, genres, subjects, User, workflow} from '../../base/common/model/inge';
 import {allOpenedOUs} from '../../base/common/model/query-bodies';
 
 import {environment} from 'environments/environment';
@@ -16,20 +16,18 @@ import {environment} from 'environments/environment';
   styleUrls: ['./context-details.component.scss'],
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
-  url = environment.restContexts;
+  url = environment.restCtxs;
   ousUrl = environment.restOus;
 
   @ViewChild('f')
     form: any;
 
-  token: string;
-  ctx: Context;
+  ctx: Ctx;
   isNewCtx: boolean = false;
   ous: any[];
   selectedOu: any;
   ounames: any[] = [];
   searchTerm;
-  tokenSubscription: Subscription;
   genres2display: string[] = [];
   selectedGenres: string[];
   allowedGenres: string[] = [];
@@ -38,6 +36,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   allowedSubjects: string[] = [];
   workflows2display: string[] = [];
   selectedWorkflow: string;
+
+  adminSubscription: Subscription;
+  isAdmin: boolean;
+  tokenSubscription: Subscription;
+  token: string;
+  userSubscription: Subscription;
+  loggedInUser: User;
 
   constructor(
     private contextsService: ContextsService,
@@ -48,12 +53,15 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+
     this.ctx = this.activatedRoute.snapshot.data['ctx'];
     if (this.ctx.name === 'new ctx') {
       this.isNewCtx = true;
       this.listOuNames();
     }
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.genres2display = Object.keys(genres).filter((val) => val.match(/^[A-Z]/));
     this.initializeAllowed(this.ctx);
 
@@ -62,7 +70,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   initializeAllowed(ctx) {
@@ -158,10 +168,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx.workflow = value;
   }
 
-  activateContext(ctx) {
+  activateCtx(ctx) {
     this.ctx = ctx;
     if (this.ctx.state === 'CREATED' || this.ctx.state === 'CLOSED') {
-      this.contextsService.openContext(this.ctx, this.token)
+      this.contextsService.openCtx(this.ctx, this.token)
         .subscribe({
           next: (data) => {
             this.getSelectedCtx(this.ctx.objectId);
@@ -170,7 +180,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.contextsService.closeContext(this.ctx, this.token)
+      this.contextsService.closeCtx(this.ctx, this.token)
         .subscribe({
           next: (data) => {
             this.getSelectedCtx(this.ctx.objectId);

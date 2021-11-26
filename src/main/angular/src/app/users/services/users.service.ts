@@ -12,7 +12,7 @@ import {environment} from 'environments/environment';
 export class UsersService extends PubmanRestService {
   usersUrl: string = this.baseUrl + environment.restUsers;
   ousUrl = environment.restOus;
-  ctxsUrl = environment.restContexts;
+  ctxsUrl = environment.restCtxs;
 
   users: User[] = [];
   user: User;

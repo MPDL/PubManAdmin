@@ -4,7 +4,7 @@ export const environment = {
   elasticUrl: '/es',
   restUsers: '/rest/users',
   restOus: '/rest/ous',
-  restContexts: '/rest/contexts',
+  restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   itemIndex: {
     name: 'items',

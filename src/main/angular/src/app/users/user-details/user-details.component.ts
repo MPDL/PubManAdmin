@@ -18,7 +18,7 @@ import {OrganizationsService} from 'app/organizations/services/organizations.ser
 export class UserDetailsComponent implements OnInit, OnDestroy {
   url = environment.restUsers;
   ousUrl = environment.restOus;
-  ctxsUrl = environment.restContexts;
+  ctxsUrl = environment.restCtxs;
 
   selectedUser: User;
   ous: Ou[] = [];
@@ -27,16 +27,19 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   isNewUser: boolean = false;
   isNewGrant: boolean = false;
   isNewOu: boolean = false;
-  isAdmin: boolean = true;
   grants2remove: boolean = false;
   selectedGrantToRemove: Grant;
   selectedGrantsToRemove: Grant[] = [];
   grantsToRemove: string;
-  contextTitle: string;
+  ctxTitle: string;
   pw: string;
 
-  token: string;
+  adminSubscription: Subscription;
+  isAdmin: boolean;
   tokenSubscription: Subscription;
+  token: string;
+  userSubscription: Subscription;
+  loggedInUser: User;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -49,13 +52,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
     this.selectedUser = this.activatedRoute.snapshot.data['user'];
-
-    if (this.activatedRoute.snapshot.queryParams['admin']) {
-      this.isAdmin = this.activatedRoute.snapshot.queryParams['admin'];
-    }
 
     if (this.selectedUser.loginname === 'new user') {
       this.isNewUser = true;
@@ -69,7 +70,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   addGrant() {
@@ -104,13 +107,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   viewRefTitle(grant: { objectRef: any; }) {
     const ref = grant.objectRef;
     if (ref === undefined) {
-      this.contextTitle = 'why do you point here?';
+      this.ctxTitle = 'why do you point here?';
     } else {
       if (ref.startsWith('ou')) {
-        this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.contextTitle = data.metadata.name);
+        this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.ctxTitle = data.metadata.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.usersService.get(this.ctxsUrl, ref, null).subscribe((data) => this.contextTitle = data.name);
+          this.usersService.get(this.ctxsUrl, ref, null).subscribe((data) => this.ctxTitle = data.name);
         }
       }
     }

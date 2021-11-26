@@ -6,7 +6,7 @@ import {MessagesService} from '../../base/services/messages.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {ContextsService} from '../services/contexts.service';
 import {environment} from 'environments/environment';
-import {Context, Ou} from 'app/base/common/model/inge';
+import {Ctx, Ou} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 
@@ -16,18 +16,18 @@ import {OrganizationsService} from 'app/organizations/services/organizations.ser
   styleUrls: ['./context-list.component.scss'],
 })
 export class ContextListComponent implements OnInit, OnDestroy {
-  url = environment.restContexts;
+  url = environment.restCtxs;
   title: string = 'Contexts';
-  contexts: Context[] = [];
-  contextsByName: Context[] = [];
-  contextSearchTerm: string;
+  ctxs: Ctx[] = [];
+  ctxsByName: Ctx[] = [];
+  ctxSearchTerm: string;
   ous: Ou[] = [];
   ouSearchTerm: string;
   selectedOu: Ou;
-  selectedContext: { objectId: any; };
+  selectedCtx: { objectId: any; };
   token: string;
   tokenSubscription: Subscription;
-  pagedContexts: Context[] = [];
+  pagedCtxs: Ctx[] = [];
   total: number = 1;
   loading: boolean = false;
   pageSize: number = 50;
@@ -44,7 +44,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.listAllContexts(this.token);
+    this.listAllCtxs(this.token);
   }
 
   ngOnDestroy() {
@@ -56,7 +56,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.contextsService.getAll(this.url, this.token, page)
       .subscribe({
         next: (data) => {
-          this.contexts = data.list;
+          this.ctxs = data.list;
           this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),
@@ -65,44 +65,44 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  listAllContexts(token: string) {
+  listAllCtxs(token: string) {
     this.contextsService.getAll(this.url, token, 1)
       .subscribe((data) => {
-        this.contexts = data.list;
+        this.ctxs = data.list;
         this.total = data.records;
       });
   }
 
-  selectContext(context: { objectId: any; }) {
-    const contextId = context.objectId;
-    this.router.navigate(['/context', contextId]);
+  selectCtx(ctx: { objectId: any; }) {
+    const ctxId = ctx.objectId;
+    this.router.navigate(['/context', ctxId]);
   }
 
-  addNewContext() {
-    const contextId = 'new ctx';
-    this.router.navigate(['/context', contextId]);
+  addNewCtx() {
+    const ctxId = 'new ctx';
+    this.router.navigate(['/context', ctxId]);
   }
 
-  getContextsByName(term: string) {
+  getCtxsByName(term: string) {
     const convertedSearchTerm = this.searchService.convertSearchTerm(term);
     if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedContexts(convertedSearchTerm);
+      this.returnSuggestedCtxs(convertedSearchTerm);
     } else {
-      this.closeContextsByName();
+      this.closeCtxsByName();
     }
   }
 
-  returnSuggestedContexts(term: string) {
-    const contextsByName: Context[] = [];
+  returnSuggestedCtxs(term: string) {
+    const ctxsByName: Ctx[] = [];
     const queryString = '?q=name.auto:' + term;
     this.contextsService.filter(this.url, null, queryString, 1)
       .subscribe({
         next: (data) => {
-          data.list.forEach((context: Context) => contextsByName.push(context));
-          if (contextsByName.length > 0) {
-            this.contextsByName = contextsByName;
+          data.list.forEach((ctx: Ctx) => ctxsByName.push(ctx));
+          if (ctxsByName.length > 0) {
+            this.ctxsByName = ctxsByName;
           } else {
-            this.contextsByName = [];
+            this.ctxsByName = [];
           }
         },
         error: (e) => this.messagesService.error(e),
@@ -144,7 +144,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.contextsService.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe({
         next: (data) => {
-          this.contexts = data.list;
+          this.ctxs = data.list;
           this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),
@@ -153,9 +153,9 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.closeOus();
   }
 
-  closeContextsByName() {
-    this.contextSearchTerm = '';
-    this.contextsByName = [];
+  closeCtxsByName() {
+    this.ctxSearchTerm = '';
+    this.ctxsByName = [];
   }
 
   closeOus() {

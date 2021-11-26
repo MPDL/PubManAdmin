@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
-import {Ou, Identifier, BasicRO, UserRO, OuMetadata} from '../../base/common/model/inge';
+import {Ou, Identifier, BasicRO, UserRO, OuMetadata, User} from '../../base/common/model/inge';
 import {environment} from 'environments/environment';
 
 @Component({
@@ -15,7 +15,6 @@ import {environment} from 'environments/environment';
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ouRestUrl = environment.restOus;
-  token: string;
   selected: Ou;
   children: Ou[];
   predecessors: Ou[] = [];
@@ -25,9 +24,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ounames: any[] = [];
   searchTerm;
 
+  isNewOrganization: boolean = false;
+
+  adminSubscription: Subscription;
+  isAdmin: boolean;
   routeSubscription: Subscription;
   tokenSubscription: Subscription;
-  isNewOrganization: boolean = false;
+  token: string;
+  userSubscription: Subscription;
+  loggedInUser: User;
 
   constructor(
     private router: Router,
@@ -38,10 +43,13 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+
     this.routeSubscription = this.activatedRoute.params
       .subscribe(
         (data) => {
-          this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
           const id = data['id'];
           if (id === 'new org') {
             this.isNewOrganization = true;
@@ -54,8 +62,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
     this.routeSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   getSelectedOu(id, token) {
