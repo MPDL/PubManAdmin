@@ -40,7 +40,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     isAdmin: boolean;
     adminSubscription: Subscription;
-    token: string;
+    @Input() // TODO: Warum muss das ein Input sein ???
+      token: string;
     tokenSubscription: Subscription;
 
     constructor(
@@ -51,12 +52,10 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
       this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-      if (this.token != null) {
-        this.getCtxsAndOus();
-      }
       this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
       if (this.isAdmin) {
         this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
+        this.getCtxsAndOus();
       } else {
         this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
       }
