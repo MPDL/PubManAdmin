@@ -11,8 +11,8 @@ export class ElasticService {
   url: string;
 
   constructor(
+    private connectionService: ConnectionService,
     private messagesService: MessagesService,
-    private connectionService: ConnectionService
   ) {
     if (!this.client) {
       this.connectionService.connectionService.subscribe((data) => {

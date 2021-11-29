@@ -18,6 +18,7 @@ export const mpgOus4auto = {
     {'metadata.name.keyword': {'order': 'asc'}},
   ],
 };
+
 export const allOpenedOUs = {
   'size': 300,
   'query': {
@@ -40,6 +41,7 @@ export const allOpenedOUs = {
     {'metadata.name.keyword': {'order': 'asc'}},
   ],
 };
+
 export const allTopLevelOUs = {
   'size': 100,
   'query': {

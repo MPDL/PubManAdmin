@@ -1,12 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-
+import {BasicRO, Identifier, Ou, OuMetadata, User, UserRO} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
-import {Ou, Identifier, BasicRO, UserRO, OuMetadata, User} from '../../base/common/model/inge';
-import {environment} from 'environments/environment';
 
 @Component({
   selector: 'organization-details-component',
@@ -35,11 +34,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   loggedInUser: User;
 
   constructor(
-    private router: Router,
     private activatedRoute: ActivatedRoute,
-    private organizationService: OrganizationsService,
     private authenticationService: AuthenticationService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
+    private organizationService: OrganizationsService,
+    private router: Router,
   ) {}
 
   ngOnInit() {

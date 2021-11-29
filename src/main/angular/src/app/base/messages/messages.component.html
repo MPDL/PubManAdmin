@@ -1,4 +1,4 @@
-<div class="d-flex flex-sm-row border" *ngIf="message"
+<div *ngIf="message" class="d-flex flex-sm-row border"
     [ngClass]="{ 'alert': message, 'alert-success border-success': message.type === 'success', 'alert-warning border-warning': message.type === 'warning', 'alert-danger border-danger': message.type === 'error' }">
     <div class="col-sm-11">
         <span><small>{{message.text}}</small></span>

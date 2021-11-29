@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 
 import * as bodyBuilder from 'bodybuilder';
 import {PubmanRestService} from '../../services/pubman-rest.service';
 import {ConnectionService} from '../../services/connection.service';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class SearchService extends PubmanRestService {
   constructor(
+    protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
-    protected connectionService: ConnectionService
   ) {
-    super(httpClient, connectionService);
+    super(connectionService, httpClient);
   }
 
   buildQueryOnly(request): any {

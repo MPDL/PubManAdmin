@@ -25,8 +25,8 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
+    private login: AuthenticationService,
     private messagesService: MessagesService,
-    private login: AuthenticationService
   ) {}
 
   ngOnInit() {

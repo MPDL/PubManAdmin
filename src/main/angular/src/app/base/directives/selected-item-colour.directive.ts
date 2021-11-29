@@ -10,7 +10,7 @@ export class SelectedItemColourDirective {
     defaultColor: string;
 
   constructor(
-    private elemRef: ElementRef
+    private elemRef: ElementRef,
   ) {}
 
   @HostListener('mouseenter') onMouseEnter() {

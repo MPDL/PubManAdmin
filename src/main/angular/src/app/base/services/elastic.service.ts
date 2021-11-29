@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Client} from 'elasticsearch';
 import {environment} from 'environments/environment';
-import {MessagesService} from './messages.service';
 import {ConnectionService} from '../../base/services/connection.service';
+import {MessagesService} from './messages.service';
 
 @Injectable()
 export class ElasticService {
@@ -10,8 +10,8 @@ export class ElasticService {
   uri: string;
 
   constructor(
+    protected connectionService: ConnectionService,
     protected messagesService: MessagesService,
-    protected connectionService: ConnectionService
   ) {
     if (!this.client) {
       this.connectionService.connectionService.subscribe(

@@ -13,7 +13,7 @@ export class ElasticStartComponent implements OnInit {
 
   constructor(
     private elasticService: ElasticService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {}
 
   ngOnInit() {

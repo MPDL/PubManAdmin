@@ -1,14 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {SearchService} from 'app/base/common/services/search.service';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
+import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-
-import {User, Ou} from '../../base/common/model/inge';
-import {UsersService} from '../services/users.service';
+import {Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
-import {environment} from 'environments/environment';
-import {OrganizationsService} from 'app/organizations/services/organizations.service';
-import {SearchService} from 'app/base/common/services/search.service';
+import {UsersService} from '../services/users.service';
 
 @Component({
   selector: 'user-list-component',
@@ -17,22 +16,26 @@ import {SearchService} from 'app/base/common/services/search.service';
   providers: [],
 })
 export class UserListComponent implements OnInit, OnDestroy {
-  url = environment.restUsers;
+  usersUrl = environment.restUsers;
+
   title: string = 'Users';
+
   users: User[];
   selectedUser: User;
-  selectedOu: Ou;
 
-  isNewUser: boolean = false;
+  selectedOu: Ou;
+  ous: Ou[] = [];
+  ouSearchTerm: string = '';
+
   total: number;
   pageSize: number = 50;
   currentPage: number = 1;
+
   usersByName: User[] = [];
-  usersByLogin: User[] = [];
-  ous: Ou[] = [];
   userNameSearchTerm: string = '';
+
+  usersByLogin: User[] = [];
   userLoginSearchTerm: string = '';
-  ouSearchTerm: string = '';
 
   adminSubscription: Subscription;
   isAdmin: boolean;
@@ -41,12 +44,14 @@ export class UserListComponent implements OnInit, OnDestroy {
   userSubscription: Subscription;
   loggedInUser: User;
 
-  constructor(private usersService: UsersService,
+  constructor(
     private authenticationService: AuthenticationService,
-    private organizationService: OrganizationsService,
-    private searchService: SearchService,
     private messagesService: MessagesService,
-    private router: Router) {}
+    private organizationService: OrganizationsService,
+    private router: Router,
+    private searchService: SearchService,
+    private usersService: UsersService,
+  ) {}
 
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
@@ -69,7 +74,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getAllUsersAsObservable(token: string, page: number) {
-    this.usersService.getAll(this.url, token, page)
+    this.usersService.getAll(this.usersUrl, token, page)
       .subscribe({
         next: (data) => {
           this.users = data.list;
@@ -82,7 +87,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   getPage(page: number) {
     if (this.token != null) {
       if (this.selectedOu === undefined) {
-        this.usersService.getAll(this.url, this.token, page)
+        this.usersService.getAll(this.usersUrl, this.token, page)
           .subscribe({
             next: (data) => {
               this.users = data.list;
@@ -92,7 +97,7 @@ export class UserListComponent implements OnInit, OnDestroy {
           });
         this.currentPage = page;
       } else {
-        this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + this.selectedOu.objectId, page)
+        this.usersService.filter(this.usersUrl, this.token, '?q=affiliation.objectId:' + this.selectedOu.objectId, page)
           .subscribe({
             next: (data) => {
               this.users = data.list;
@@ -106,7 +111,6 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   selectUser(user: User) {
-    this.isNewUser = false;
     this.selectedUser = user;
     this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
   }
@@ -114,15 +118,6 @@ export class UserListComponent implements OnInit, OnDestroy {
   addNewUser() {
     const userid = 'new user';
     this.router.navigate(['/user', userid], {queryParams: {token: 'new'}, skipLocationChange: true});
-  }
-
-  getOus(term: string) {
-    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
-    if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedOus(convertedSearchTerm);
-    } else {
-      this.closeOus();
-    }
   }
 
   getUsersByName(term: string) {
@@ -151,6 +146,49 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
+  returnSuggestedUsersByName(userName: string) {
+    const usersByName: User[] = [];
+    const queryString = '?q=name.auto:' + userName;
+    this.usersService.filter(this.usersUrl, this.token, queryString, 1)
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((user: User) => usersByName.push(user) );
+          if (usersByName.length > 0) {
+            this.usersByName = usersByName;
+          } else {
+            this.usersByName = [];
+          }
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  returnSuggestedUsersByLogin(loginname: string) {
+    const usersByLogin: User[] = [];
+    const queryString = '?q=loginname.auto:' + loginname;
+    this.usersService.filter(this.usersUrl, this.token, queryString, 1)
+      .subscribe({
+        next: (data) => {
+          data.list.forEach((user: User) => usersByLogin.push(user) );
+          if (usersByLogin.length > 0) {
+            this.usersByLogin = usersByLogin;
+          } else {
+            this.usersByLogin = [];
+          }
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  getOus(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
+    } else {
+      this.closeOus();
+    }
+  }
+
   returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
@@ -171,45 +209,11 @@ export class UserListComponent implements OnInit, OnDestroy {
       });
   }
 
-  returnSuggestedUsersByName(userName: string) {
-    const usersByName: User[] = [];
-    const queryString = '?q=name.auto:' + userName;
-    this.usersService.filter(this.url, this.token, queryString, 1)
-      .subscribe({
-        next: (data) => {
-          data.list.forEach((user: User) => usersByName.push(user) );
-          if (usersByName.length > 0) {
-            this.usersByName = usersByName;
-          } else {
-            this.usersByName = [];
-          }
-        },
-        error: (e) => this.messagesService.error(e),
-      });
-  }
-
-  returnSuggestedUsersByLogin(loginname: string) {
-    const usersByLogin: User[] = [];
-    const queryString = '?q=loginname.auto:' + loginname;
-    this.usersService.filter(this.url, this.token, queryString, 1)
-      .subscribe({
-        next: (data) => {
-          data.list.forEach((user: User) => usersByLogin.push(user) );
-          if (usersByLogin.length > 0) {
-            this.usersByLogin = usersByLogin;
-          } else {
-            this.usersByLogin = [];
-          }
-        },
-        error: (e) => this.messagesService.error(e),
-      });
-  }
-
   selectOu(ou: Ou) {
     this.selectedOu = ou;
     if (this.token != null) {
       this.currentPage = 1;
-      this.usersService.filter(this.url, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
+      this.usersService.filter(this.usersUrl, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
         .subscribe({
           next: (data) => {
             this.users = data.list;

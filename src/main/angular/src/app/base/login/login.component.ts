@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-
-import {MessagesService} from '../services/messages.service';
-import {AuthenticationService} from '../services/authentication.service';
-
 import {User} from '../common/model/inge';
+import {AuthenticationService} from '../services/authentication.service';
+import {MessagesService} from '../services/messages.service';
 
 @Component({
   selector: 'login-component',
@@ -18,8 +16,8 @@ export class LoginComponent implements OnInit {
   user: User;
 
   constructor(
+    private authenticationService: AuthenticationService,
     private messagesService: MessagesService,
-    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {}

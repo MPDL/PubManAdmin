@@ -1,10 +1,10 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {distinctUntilChanged, switchMap, debounceTime} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
+import {environment} from '../../../../../environments/environment';
 import {PubmanRestService} from '../../../services/pubman-rest.service';
 import {mpgOus4auto} from '../../model/query-bodies';
-import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'suggestion-component',
@@ -26,7 +26,7 @@ export class SuggestionComponent implements OnInit {
   searchResult: Observable<any>;
 
   constructor(
-    private pubmanRestService: PubmanRestService
+    private pubmanRestService: PubmanRestService,
   ) {}
 
   ngOnInit() {

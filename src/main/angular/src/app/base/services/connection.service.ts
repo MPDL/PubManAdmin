@@ -8,7 +8,8 @@ export class ConnectionService {
   private connection = new BehaviorSubject<string>(this.initialValue);
   connectionService = this.connection.asObservable();
 
-  constructor() {}
+  constructor(
+  ) {}
 
   setConnection(connectionService: string) {
     this.connection.next(connectionService);

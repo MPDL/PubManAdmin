@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, CanActivateChild} from '@angular/router';
-
 import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
@@ -10,7 +9,7 @@ export class AdminGuardService implements CanActivate, CanActivateChild {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {}
 
   canActivate(): boolean {

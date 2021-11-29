@@ -1,12 +1,10 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-
-import {User, Grant} from '../../base/common/model/inge';
-import {PubmanRestService} from '../../base/services/pubman-rest.service';
-import {ConnectionService} from '../../base/services/connection.service';
+import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
-
+import {Observable} from 'rxjs';
+import {Grant, User} from '../../base/common/model/inge';
+import {ConnectionService} from '../../base/services/connection.service';
+import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class UsersService extends PubmanRestService {
@@ -18,10 +16,10 @@ export class UsersService extends PubmanRestService {
   user: User;
 
   constructor(
+    protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
-    protected connectionService: ConnectionService
   ) {
-    super(httpClient, connectionService);
+    super(connectionService, httpClient);
   }
 
   activate(user: User, token: string): Observable<User> {

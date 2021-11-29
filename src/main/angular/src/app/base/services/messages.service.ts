@@ -7,7 +7,7 @@ export class MessagesService {
   messageDialogRef: MatDialogRef<MessagesComponent>;
 
   constructor(
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   displayMessage(message?) {

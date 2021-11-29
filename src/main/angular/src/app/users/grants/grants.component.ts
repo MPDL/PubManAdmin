@@ -1,12 +1,11 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnDestroy} from '@angular/core';
-import {Subscription} from 'rxjs';
-
-import {MessagesService} from '../../base/services/messages.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
-import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
-import {UsersService} from '../services/users.service';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {environment} from 'environments/environment';
+import {Subscription} from 'rxjs';
+import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
 import {allOpenedOUs} from '../../base/common/model/query-bodies';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {UsersService} from '../services/users.service';
 
 @Component({
   selector: 'grants-component',
@@ -26,16 +25,20 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
     ousUrl = environment.restOus;
     ctxUrl = environment.restCtxs;
+
     roles: string[];
+    selectedRole: string;
+
     ctxs: Ctx[] = [];
     filteredCtxs: Ctx[] = [];
+    selectedCtx: Ctx;
+
     ous: Ou[] = [];
+    selectedOu: Ou;
+
     selectedGrantToAdd: Grant;
     selectedGrantsToAdd: Grant[] = [];
     grantsToAdd: string;
-    selectedRole: string;
-    selectedCtx: Ctx;
-    selectedOu: Ou;
     idString: string;
 
     isAdmin: boolean;
@@ -45,8 +48,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
     tokenSubscription: Subscription;
 
     constructor(
-        private messagesService: MessagesService,
-        private authenticationService: AuthenticationService,
+      private authenticationService: AuthenticationService,
+      private messagesService: MessagesService,
         private usersService: UsersService,
     ) {}
 

@@ -45,11 +45,11 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   index: string = 'default';
 
   constructor(
-    private elasticSearchService: ElasticSearchService,
-    private searchService: SearchService,
-    private messagesService: MessagesService,
     private authenticationservice: AuthenticationService,
-    private formBuilder: FormBuilder
+    private elasticSearchService: ElasticSearchService,
+    private formBuilder: FormBuilder,
+    private messagesService: MessagesService,
+    private searchService: SearchService,
   ) {}
 
   get diagnostic() {

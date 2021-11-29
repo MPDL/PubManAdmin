@@ -18,9 +18,9 @@ export class IndexListComponent implements OnInit {
 
   constructor(
     private elasticService: ElasticService,
-    private messagesService: MessagesService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private messagesService: MessagesService,
+    private router: Router,
   ) {}
 
   ngOnInit() {

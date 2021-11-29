@@ -10,8 +10,8 @@ export class MessagesComponent implements OnInit {
   message;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) private data,
     private dialog: MatDialogRef<MessagesComponent>,
-    @Inject(MAT_DIALOG_DATA) private data
   ) {}
 
   ngOnInit() {

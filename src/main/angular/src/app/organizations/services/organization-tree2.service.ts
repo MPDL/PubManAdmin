@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {OrganizationsService} from './organizations.service';
-import {MessagesService} from '../../base/services/messages.service';
 import {environment} from '../../../environments/environment';
 import {allTopLevelOUs} from '../../base/common/model/query-bodies';
+import {MessagesService} from '../../base/services/messages.service';
+import {OrganizationsService} from './organizations.service';
 
 export class OUTreeNode {
   childrenChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
@@ -16,7 +16,7 @@ export class OUTreeNode {
     public ouName: string,
     public ouId: string,
     public hasChildren: boolean = false,
-    public parentOUId: string | null = null
+    public parentOUId: string | null = null,
   ) {}
 }
 
@@ -26,7 +26,7 @@ export class OUTreeFlatNode {
     public ouId: string,
     public level: number = 1,
     public expandable: boolean = false,
-    public parentOUId: string | null = null
+    public parentOUId: string | null = null,
   ) {}
 }
 
@@ -40,8 +40,8 @@ export class OrganizationTree2Service {
   }
 
   constructor(
+    private messagesService: MessagesService,
     private organizationService: OrganizationsService,
-    private messagesService: MessagesService
   ) {}
 
   async initialize() {

@@ -1,12 +1,11 @@
 
-import {Observable, throwError} from 'rxjs';
-import {map, catchError} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-
+import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
-import {PubmanRestService} from '../../base/services/pubman-rest.service';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {ConnectionService} from '../../base/services/connection.service';
+import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
@@ -15,10 +14,10 @@ export class OrganizationsService extends PubmanRestService {
   ous: any;
 
   constructor(
+    protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
-    protected connectionService: ConnectionService
   ) {
-    super(httpClient, connectionService);
+    super(connectionService, httpClient);
   }
 
   getOuById(id: string, token: string): Observable<any> {

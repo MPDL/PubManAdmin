@@ -1,10 +1,9 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-
-import {UserListComponent} from './user-list/user-list.component';
-import {UserDetailsComponent} from './user-details/user-details.component';
-import {UserDetailsResolverService} from './services/user-details-resolver.service';
+import {RouterModule, Routes} from '@angular/router';
 import {LoginGuardService} from 'app/base/services/login-guard.service';
+import {UserDetailsResolverService} from './services/user-details-resolver.service';
+import {UserDetailsComponent} from './user-details/user-details.component';
+import {UserListComponent} from './user-list/user-list.component';
 
 const routes: Routes = [
   {path: 'users', component: UserListComponent, canActivate: [LoginGuardService]},

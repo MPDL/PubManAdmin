@@ -3,6 +3,7 @@
     <div class="card-body">
       <h4 class="card-title">{{selected.metadata.name}}</h4>
     </div>
+
     <form class="list-group-item text-info" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
       <div class="row w-100 mt-3">
         <label for="selected-ou-id" class="col-2 col-form-label col-form-label-sm">ouid</label>
@@ -21,6 +22,7 @@
           <input type="button" class="btn btn-outline-info btn-sm float-end" (click)="openClose(selected)" name="openClose" [value]="selected.publicStatus === 'OPENED' ? 'close' : 'open'" />
         </div>
       </div>
+
       <div class="row w-100 mt-3">
           <label for="selected-parent" class="col-2 col-form-label col-form-label-sm">parent</label>
           <div class="col-7">
@@ -41,6 +43,7 @@
             </ng-template>
           </div>
       </div>
+
       <div class="row w-100 mt-3">
         <label for="selected-ou-type" class="col-2 col-form-label col-form-label-sm">type</label>
         <div class="col-4">
@@ -55,6 +58,7 @@
           <input class="form-control form-control-sm" type="text" name="end" [(ngModel)]="selected.metadata.endDate" id="selected-end-date">
         </div>
       </div>
+
       <div class="row w-100 mt-3">
         <label for="selected-name" class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-10">
@@ -72,6 +76,7 @@
           </div>
         </div>
       </div>
+
       <div class="row w-100 mt-3">
         <label for="selected-city" class="col-2 col-form-label col-form-label-sm">address</label>
         <div class="col-7">
@@ -82,13 +87,15 @@
           <input class="form-control form-control-sm" type="text" name="country" [(ngModel)]="selected.metadata.countryCode" id="selected-city">
         </div>
       </div>
+
       <div class="row w-100 mt-3">
-          <div class="col-3 ms-auto">
-            <input type="button" class="btn btn-outline-info btn-sm me-2" name="cancel" value="cancel" (click)="gotoList()" />
-            <input *ngIf="!isNewUser && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" name="delete" value="delete" (click)="delete(selected)" />
-            <input type="button" class="btn btn-outline-info btn-sm" name="save" value="save" (click)="save(selected)" />
-          </div>
+        <div class="col-3 ms-auto">
+          <input type="button" class="btn btn-outline-info btn-sm me-2" name="cancel" value="cancel" (click)="gotoList()" />
+          <input *ngIf="!isNewUser && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" name="delete" value="delete" (click)="delete(selected)" />
+          <input type="button" class="btn btn-outline-info btn-sm" name="save" value="save" (click)="save(selected)" />
         </div>
+      </div>
+
       <div class="row w-100 mt-3">
         <label for="alternativeNames" class="col-2 col-form-label col-form-label-sm">alternative names</label>
         <div class="col-10 text-end">
@@ -117,6 +124,7 @@
           </div>
         </div>
       </div>
+
       <div class="row w-100 mt-3">
         <label for="descriptions" class="col-2 col-form-label col-form-label-sm">descriptions</label>
         <div class="col-10 text-end">
@@ -131,6 +139,7 @@
           </div>
         </div>
       </div>
+
       <div class="row w-100 mt-3">
         <div class="col-10 ms-auto">
           <div class="row">
@@ -149,6 +158,7 @@
           </div>
         </div>
       </div>
+
       <div class="row w-100 mt-3">
         <label for="ouIdentifiers" class="col-2 col-form-label col-form-label-sm">identifiers</label>
         <div class="col-10 text-end">
@@ -177,6 +187,7 @@
           </div>
         </div>
       </div>
+
       <div *ngIf="selected.hasChildren === true" class="row w-100 mt-3">
         <label for="childrenTable" class="col-2 col-form-label col-form-label-sm">children</label>
         <div class="col-10">
@@ -197,6 +208,7 @@
           </ul>
         </div>
       </div>
+      
       <div *ngIf="selected.hasPredecessors === true" class="row w-100 mt-3">
         <label for="predecessorsTable" class="col-2 col-form-label col-form-label-sm">predecessors</label>
         <div class="col-10">

@@ -7,10 +7,10 @@
       <h4 class="card-title">Organizations</h4>
       <input type="submit" class="btn btn-info btn-sm" name="add" value="+" (click)="addNewOrganization()" />
     </div>
+
     <div class="row">
       <div class="col-4 p-3">
-        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)"
-          placeholder="search by name of organization" id="ouSearchTerm" autocomplete="off">
+        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" placeholder="search by name of organization" id="ouSearchTerm" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="closeOus()">
             <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="selectOu(ou)">
@@ -20,6 +20,7 @@
         </div>
       </div>
     </div>
+
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
         <!-- &#8288; is &NoBreak; it is invisible, but required for padding-->
@@ -34,5 +35,4 @@
       </cdk-tree-node>
     </cdk-tree>
   </div>
-  
 </div>

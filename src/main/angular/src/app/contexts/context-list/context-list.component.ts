@@ -1,14 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-
-import {MessagesService} from '../../base/services/messages.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
-import {ContextsService} from '../services/contexts.service';
-import {environment} from 'environments/environment';
 import {Ctx, Ou} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
+import {environment} from 'environments/environment';
+import {Subscription} from 'rxjs';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {ContextsService} from '../services/contexts.service';
 
 @Component({
   selector: 'context-list-component',
@@ -16,30 +15,36 @@ import {OrganizationsService} from 'app/organizations/services/organizations.ser
   styleUrls: ['./context-list.component.scss'],
 })
 export class ContextListComponent implements OnInit, OnDestroy {
-  url = environment.restCtxs;
+  ctxsUrl = environment.restCtxs;
+
   title: string = 'Contexts';
+
   ctxs: Ctx[] = [];
   ctxsByName: Ctx[] = [];
   ctxSearchTerm: string;
+  selectedCtx: Ctx;
+
   ous: Ou[] = [];
   ouSearchTerm: string;
   selectedOu: Ou;
-  selectedCtx: { objectId: any; };
-  token: string;
-  tokenSubscription: Subscription;
+
   pagedCtxs: Ctx[] = [];
   total: number = 1;
-  loading: boolean = false;
   pageSize: number = 50;
   currentPage: number = 1;
 
+  loading: boolean = false;
+
+  tokenSubscription: Subscription;
+  token: string;
+
   constructor(
+    private authenticationService: AuthenticationService,
     private contextsService: ContextsService,
-    private searchService: SearchService,
+    private messagesService: MessagesService,
     private organizationService: OrganizationsService,
     private router: Router,
-    private messagesService: MessagesService,
-    private authenticationService: AuthenticationService,
+    private searchService: SearchService,
   ) {}
 
   ngOnInit() {
@@ -53,7 +58,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   getPage(page: number) {
     this.loading = true;
-    this.contextsService.getAll(this.url, this.token, page)
+    this.contextsService.getAll(this.ctxsUrl, this.token, page)
       .subscribe({
         next: (data) => {
           this.ctxs = data.list;
@@ -66,16 +71,16 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   listAllCtxs(token: string) {
-    this.contextsService.getAll(this.url, token, 1)
+    this.contextsService.getAll(this.ctxsUrl, token, 1)
       .subscribe((data) => {
         this.ctxs = data.list;
         this.total = data.records;
       });
   }
 
-  selectCtx(ctx: { objectId: any; }) {
-    const ctxId = ctx.objectId;
-    this.router.navigate(['/context', ctxId]);
+  selectCtx(ctx: Ctx) {
+    this.selectedCtx = ctx;
+    this.router.navigate(['/context', ctx.objectId]);
   }
 
   addNewCtx() {
@@ -95,7 +100,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   returnSuggestedCtxs(term: string) {
     const ctxsByName: Ctx[] = [];
     const queryString = '?q=name.auto:' + term;
-    this.contextsService.filter(this.url, null, queryString, 1)
+    this.contextsService.filter(this.ctxsUrl, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ctx: Ctx) => ctxsByName.push(ctx));
@@ -141,7 +146,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.selectedOu = ou;
     this.currentPage = 1;
-    this.contextsService.filter(this.url, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
+    this.contextsService.filter(this.ctxsUrl, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe({
         next: (data) => {
           this.ctxs = data.list;

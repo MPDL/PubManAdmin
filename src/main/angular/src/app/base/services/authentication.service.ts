@@ -1,12 +1,10 @@
-import {Observable, BehaviorSubject, throwError} from 'rxjs';
-import {map, catchError} from 'rxjs/operators';
-import {share, shareReplay} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {catchError, map, share, shareReplay} from 'rxjs/operators';
 import {User} from '../common/model/inge';
-import {MessagesService} from './messages.service';
 import {ConnectionService} from './connection.service';
+import {MessagesService} from './messages.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -38,9 +36,9 @@ export class AuthenticationService {
   }
 
   constructor(
+    private connectionService: ConnectionService,
     private http: HttpClient,
     private messagesService: MessagesService,
-    private connectionService: ConnectionService
   ) {
     this.connectionService.connectionService.subscribe((data) => this.tokenUrl = data + '/rest/login');
   }
@@ -97,11 +95,7 @@ export class AuthenticationService {
             allowed = true;
           }
         }
-        if (allowed) {
-          return user;
-        } else {
-          return null;
-        }
+        return allowed ? user : null;
       }),
       catchError((error) => {
         return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));

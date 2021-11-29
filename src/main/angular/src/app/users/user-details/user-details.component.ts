@@ -1,14 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-
-import {User, Grant, BasicRO, Ou} from '../../base/common/model/inge';
-import {UsersService} from '../services/users.service';
-import {MessagesService} from '../../base/services/messages.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
-import {environment} from 'environments/environment';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
+import {environment} from 'environments/environment';
+import {Subscription} from 'rxjs';
+import {BasicRO, Grant, Ou, User} from '../../base/common/model/inge';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {UsersService} from '../services/users.service';
 
 @Component({
   selector: 'user-details-component',
@@ -16,22 +15,26 @@ import {OrganizationsService} from 'app/organizations/services/organizations.ser
   styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
-  url = environment.restUsers;
-  ousUrl = environment.restOus;
   ctxsUrl = environment.restCtxs;
+  ousUrl = environment.restOus;
+  usersUrl = environment.restUsers;
 
-  selectedUser: User;
+  user: User;
+  isNewUser: boolean = false;
+
   ous: Ou[] = [];
   ouSearchTerm: string = '';
   selectedOu: Ou;
-  isNewUser: boolean = false;
-  isNewGrant: boolean = false;
   isNewOu: boolean = false;
+
+  isNewGrant: boolean = false;
   grants2remove: boolean = false;
   selectedGrantToRemove: Grant;
   selectedGrantsToRemove: Grant[] = [];
   grantsToRemove: string;
+
   ctxTitle: string;
+
   pw: string;
 
   adminSubscription: Subscription;
@@ -43,12 +46,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private authenticationService: AuthenticationService,
+    private messagesService: MessagesService,
+    private organizationService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
-    private organizationService: OrganizationsService,
     private usersService: UsersService,
-    private messagesService: MessagesService,
-    private authenticationService: AuthenticationService,
   ) {}
 
   ngOnInit() {
@@ -56,17 +59,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
-    this.selectedUser = this.activatedRoute.snapshot.data['user'];
+    this.user = this.activatedRoute.snapshot.data['user'];
 
-    if (this.selectedUser.loginname === 'new user') {
+    if (this.user.loginname === 'new user') {
       this.isNewUser = true;
       this.isNewOu = true;
     }
-  }
-
-  changeOu() {
-    this.isNewOu = true;
-    this.selectedUser.affiliation = null;
   }
 
   ngOnDestroy() {
@@ -120,7 +118,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   gotoUserList() {
-    const userId = this.selectedUser ? this.selectedUser.loginname : null;
+    const userId = this.user ? this.user.loginname : null;
     this.router.navigate(['/users', {id: userId}]);
   }
 
@@ -137,7 +135,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe({
           next: (data) => {
-            this.selectedUser = data;
+            this.user = data;
             this.messagesService.success(data.loginname + ':  password was reset to ' + user.password);
           },
           error: (e) => this.messagesService.error(e),
@@ -152,7 +150,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe({
           next: (data) => {
-            this.selectedUser = data;
+            this.user = data;
             this.messagesService.success(data.loginname + ':  password has changed to ' + user.password);
           },
           error: (e) => this.messagesService.error(e),
@@ -163,22 +161,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   activateUser(user: User) {
-    this.selectedUser = user;
-    if (this.selectedUser.active === true) {
-      this.usersService.deactivate(this.selectedUser, this.token)
+    this.user = user;
+    if (this.user.active === true) {
+      this.usersService.deactivate(this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.selectedUser = data;
-            this.messagesService.success('Deactivated ' + this.selectedUser.objectId);
+            this.user = data;
+            this.messagesService.success('Deactivated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.usersService.activate(this.selectedUser, this.token)
+      this.usersService.activate(this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.selectedUser = data;
-            this.messagesService.success('Activated ' + this.selectedUser.objectId);
+            this.user = data;
+            this.messagesService.success('Activated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -186,59 +184,51 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   saveUser(user: User) {
-    this.selectedUser = user;
-    if (this.selectedUser.loginname.includes(' ')) {
+    this.user = user;
+
+    if (this.user.loginname.includes(' ')) {
       this.messagesService.warning('loginname MUST NOT contain spaces');
       return;
     }
-    if (this.selectedUser.name == null) {
+    if (this.user.name == null) {
       this.messagesService.warning('name MUST NOT be empty');
       return;
     }
+
+    if (this.selectedOu != null && this.isNewOu) {
+      const ouId = this.selectedOu.objectId;
+      const aff = new BasicRO();
+      aff.objectId = ouId;
+      this.user.affiliation = aff;
+    } else if (!this.user.affiliation) {
+      this.messagesService.warning('you MUST select an organization');
+      return;
+    }
+
     if (this.isNewUser) {
-      if (this.selectedOu != null) {
-        const ouId = this.selectedOu.objectId;
-        const aff = new BasicRO();
-        aff.objectId = ouId;
-        this.selectedUser.affiliation = aff;
-      } else {
-        this.messagesService.warning('you MUST select an organization');
-        return;
-      }
-      this.usersService.post(this.url, this.selectedUser, this.token)
+      this.usersService.post(this.usersUrl, this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('added new user ' + this.selectedUser.loginname + ' with password ' + this.selectedUser.password);
+            this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + this.user.password);
             this.isNewUser = false;
             this.isNewOu = false;
-            this.selectedUser = data;
+            this.user = data;
           },
           error: (e) => this.messagesService.error(e),
         }
         );
     } else {
-      if (this.isNewOu) {
-        if (this.selectedOu != null) {
-          const ouId = this.selectedOu.objectId;
-          const aff = new BasicRO();
-          aff.objectId = ouId;
-          this.selectedUser.affiliation = aff;
-        } else {
-          this.messagesService.warning('you MUST select an organization');
-          return;
-        }
-      }
-      this.usersService.put(this.url + '/' + this.selectedUser.objectId, this.selectedUser, this.token)
+      this.usersService.put(this.usersUrl + '/' + this.user.objectId, this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('updated ' + this.selectedUser.loginname);
+            this.messagesService.success('updated ' + this.user.loginname);
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.restUsers, data.objectId, this.token)
               .subscribe((data) => {
-                this.selectedUser = data;
-                if (this.selectedUser.grantList) {
-                  this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+                this.user = data;
+                if (this.user.grantList) {
+                  this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
                 }
               });
           },
@@ -248,14 +238,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeGrants() {
-    this.usersService.removeGrants(this.selectedUser, this.selectedGrantsToRemove, this.token)
+    this.usersService.removeGrants(this.user, this.selectedGrantsToRemove, this.token)
       .subscribe({
         next: (data) => {
-          this.selectedUser = data;
-          if (this.selectedUser.grantList) {
-            this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+          this.user = data;
+          if (this.user.grantList) {
+            this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
           }
-          this.messagesService.success('removed Grants from ' + this.selectedUser.loginname);
+          this.messagesService.success('removed Grants from ' + this.user.loginname);
           this.resetGrants();
         },
         error: (e) => this.messagesService.error(e),
@@ -263,15 +253,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteUser(user: User) {
-    this.selectedUser = user;
-    const id = this.selectedUser.loginname;
+    this.user = user;
+    const id = this.user.loginname;
     if (confirm('delete '+user.name+' ?')) {
-      this.usersService.delete(this.url + '/' + this.selectedUser.objectId, this.selectedUser, this.token)
+      this.usersService.delete(this.usersUrl + '/' + this.user.objectId, this.user, this.token)
         .subscribe({
           next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
           error: (e) => this.messagesService.error(e),
         });
-      this.selectedUser = null;
+      this.user = null;
       this.gotoUserList();
     }
   }
@@ -315,6 +305,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.selectedOu = ou;
     this.ous = [];
   };
+
+  changeOu() {
+    this.isNewOu = true;
+    this.user.affiliation = null;
+  }
 
   resetGrants() {
     this.grantsToRemove = '';

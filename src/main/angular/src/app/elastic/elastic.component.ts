@@ -6,7 +6,8 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./elastic.component.scss'],
 })
 export class ElasticComponent implements OnInit {
-  constructor() {}
+  constructor(
+  ) {}
 
   ngOnInit() {}
 }

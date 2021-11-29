@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import {ConnectionService} from '../services/connection.service';
+
 const {version: appVersion} = require('../../../../package.json');
 const {homepage: appHome} = require('../../../../package.json');
-import {ConnectionService} from '../services/connection.service';
 
 @Component({
   selector: 'footer-component',
@@ -15,7 +16,7 @@ export class FooterComponent implements OnInit {
   hostName;
 
   constructor(
-    private connectionService: ConnectionService
+    private connectionService: ConnectionService,
   ) {}
 
   ngOnInit() {

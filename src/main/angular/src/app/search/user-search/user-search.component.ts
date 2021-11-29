@@ -44,12 +44,12 @@ export class UserSearchComponent implements OnInit {
   index: string = 'default';
 
   constructor(
-    private elasticSearchService: ElasticSearchService,
-    private searchService: SearchService,
-    private messagesService: MessagesService,
     private authenticationService: AuthenticationService,
+    private elasticSearchService: ElasticSearchService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private messagesService: MessagesService,
+    private router: Router,
+    private searchService: SearchService,
   ) {}
 
   get diagnostic() {

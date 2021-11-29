@@ -20,7 +20,8 @@ export class IndexAliasComponent implements OnInit {
   filteredIndices: string[] = [];
   actions: string[] = actionTypes;
 
-  constructor() {}
+  constructor(
+  ) {}
 
   ngOnInit() {}
 

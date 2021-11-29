@@ -1,20 +1,18 @@
 
-import {Observable, of, throwError} from 'rxjs';
-import {first, catchError} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
-import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
-
-
-import {ContextsService} from './contexts.service';
-import {MessagesService} from '../../base/services/messages.service';
-import {Ctx} from '../../base/common/model/inge';
+import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
 import {environment} from 'environments/environment';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, first} from 'rxjs/operators';
+import {Ctx} from '../../base/common/model/inge';
+import {MessagesService} from '../../base/services/messages.service';
+import {ContextsService} from './contexts.service';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
   constructor(
     private contextsService: ContextsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<Ctx> {

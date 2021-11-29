@@ -20,10 +20,10 @@ export class ElasticSearchComponent implements OnInit {
   fields2Select: string[] = [];
 
   constructor(
-    private formBuilder : FormBuilder,
     private elasticService: ElasticService,
+    private formBuilder : FormBuilder,
+    private messagesService: MessagesService,
     private searchservice: SearchService,
-    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {

@@ -8,7 +8,7 @@ export class ClickOutsideDirective {
     clickOutside: EventEmitter<any> = new EventEmitter();
 
   constructor(
-    private _elementRef: ElementRef
+    private _elementRef: ElementRef,
   ) {}
 
   @HostListener('document:click', ['$event.target']) onMouseEnter(targetElement) {

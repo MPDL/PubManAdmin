@@ -31,9 +31,9 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private router: Router,
     private elasticService: ElasticService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
+    private router: Router,
   ) {}
 
   ngOnInit() {

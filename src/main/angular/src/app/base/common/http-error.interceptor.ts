@@ -8,7 +8,7 @@ import {MessagesService} from '../services/messages.service';
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

@@ -1,17 +1,15 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
 import {FlatTreeControl} from '@angular/cdk/tree';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-
-import {Observable, Subscription} from 'rxjs';
-
-import {OrganizationsService} from '../services/organizations.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
-import {MessagesService} from '../../base/services/messages.service';
-import {environment} from 'environments/environment';
-import {OrganizationTree2Service, OUTreeNode, OUTreeFlatNode} from '../services/organization-tree2.service';
+import {Router} from '@angular/router';
 import {Ou} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
+import {environment} from 'environments/environment';
+import {Observable, Subscription} from 'rxjs';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
+import {OrganizationTree2Service, OUTreeFlatNode, OUTreeNode} from '../services/organization-tree2.service';
+import {OrganizationsService} from '../services/organizations.service';
 
 @Component({
   selector: 'organization-tree-component',
@@ -21,21 +19,23 @@ import {SearchService} from 'app/base/common/services/search.service';
 })
 export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ous: Ou[] = [];
-  tokenSubscription: Subscription;
-  token: string;
   ouSearchTerm: string;
+
   nodeMap: Map<string, OUTreeFlatNode> = new Map<string, OUTreeFlatNode>();
   treeControl: FlatTreeControl<OUTreeFlatNode>;
   treeFlattener: MatTreeFlattener<OUTreeNode, OUTreeFlatNode>;
   dataSource: MatTreeFlatDataSource<OUTreeNode, OUTreeFlatNode>;
 
+  tokenSubscription: Subscription;
+  token: string;
+
   constructor(
-    private database: OrganizationTree2Service,
-    private router: Router,
     private authenticationService: AuthenticationService,
+    private database: OrganizationTree2Service,
+    private messagesService: MessagesService,
     private organizationService: OrganizationsService,
+    private router: Router,
     private searchService: SearchService,
-    private messagesService: MessagesService
   ) {}
 
   ngOnInit() {

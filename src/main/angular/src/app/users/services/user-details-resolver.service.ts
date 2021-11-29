@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
+import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
+import {environment} from 'environments/environment';
 import {Observable, of} from 'rxjs';
 import {first, map} from 'rxjs/operators';
+import {BasicRO, User} from '../../base/common/model/inge';
 import {UsersService} from './users.service';
-import {User, BasicRO} from '../../base/common/model/inge';
-import {environment} from 'environments/environment';
 
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {

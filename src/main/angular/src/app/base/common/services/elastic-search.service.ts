@@ -7,10 +7,10 @@ import {ConnectionService} from '../../services/connection.service';
 @Injectable()
 export class ElasticSearchService extends ElasticService {
   constructor(
+    protected connectionService: ConnectionService,
     protected messagesService: MessagesService,
-    protected connectionService: ConnectionService
   ) {
-    super(messagesService, connectionService);
+    super(connectionService, messagesService);
   }
 
   bucketAggregation(index, body, nested, callback): any {

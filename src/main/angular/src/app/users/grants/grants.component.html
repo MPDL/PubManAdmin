@@ -5,13 +5,13 @@
 				<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
 			</select>
 		</div>
-		<div class="input-group col12" *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')">
+		<div *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')" class="input-group col12">
 			<input class="form-control form-control-sm" placeholder="filter by name of context" type="text"	(ngModelChange)="filterCtxs($event)" [(ngModel)]="filterText" />
 			<select class="select form-select form-select-sm" [(ngModel)]="selectedCtx"	(ngModelChange)="onChangeCtx($event)" name="selectedCtx">
 				<option [ngValue]="ctx" *ngFor="let ctx of filteredCtxs">{{ctx.name}} {{ctx.objectId}}</option>
 			</select>
 		</div>
-		<div class="col-7" *ngIf="selectedRole && selectedRole === 'LOCAL_ADMIN'">
+		<div *ngIf="selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-7">
 			<select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)" name="selectedOu">
 				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.name}} {{ou.objectId}}</option>
 			</select>

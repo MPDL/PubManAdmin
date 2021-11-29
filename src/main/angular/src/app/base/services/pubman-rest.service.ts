@@ -1,8 +1,7 @@
-import {Observable, throwError} from 'rxjs';
-import {map, catchError} from 'rxjs/operators';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse, HttpHeaders} from '@angular/common/http';
-
+import {Observable, throwError} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {SearchResult} from '../common/model/inge';
 import {ConnectionService} from './connection.service';
 
@@ -12,8 +11,8 @@ export class PubmanRestService {
   baseUrl: string;
 
   constructor(
+    protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
-    protected connectionService: ConnectionService
   ) {
     this.connectionService.connectionService.subscribe((data) => this.baseUrl = data);
   }
