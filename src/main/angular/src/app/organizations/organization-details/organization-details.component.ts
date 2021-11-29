@@ -37,7 +37,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private ouSvc: OrganizationsService,
+    private organizationService: OrganizationsService,
     private authenticationService: AuthenticationService,
     private messagesService: MessagesService
   ) {}
@@ -69,7 +69,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   getSelectedOu(id, token) {
-    this.ouSvc.get(this.ouRestUrl, id, token)
+    this.organizationService.get(this.ouRestUrl, id, token)
       .subscribe({
         next: (data) => {
           this.selected = data;
@@ -86,17 +86,17 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   listPredecessors(id: string, token) {
     const query = '?q=objectId:' + id;
-    this.ouSvc.filter(this.ouRestUrl, token, query, 1).subscribe((data) => this.predecessors = data.list);
+    this.organizationService.filter(this.ouRestUrl, token, query, 1).subscribe((data) => this.predecessors = data.list);
   }
 
   listChildren(mother: string) {
-    this.ouSvc.listChildren4Ou(mother, null).subscribe((data) => this.children = data);
+    this.organizationService.listChildren4Ou(mother, null).subscribe((data) => this.children = data);
   }
 
   openClose(ou) {
     this.selected = ou;
     if (this.selected.publicStatus === 'CREATED' || this.selected.publicStatus === 'CLOSED') {
-      this.ouSvc.openOu(this.selected, this.token)
+      this.organizationService.openOu(this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.getSelectedOu(this.selected.objectId, this.token);
@@ -105,7 +105,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.ouSvc.closeOu(this.selected, this.token)
+      this.organizationService.closeOu(this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.getSelectedOu(this.selected.objectId, this.token);
@@ -200,7 +200,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.isNewOrganization) {
-      this.ouSvc.post(this.ouRestUrl, this.selected, this.token)
+      this.organizationService.post(this.ouRestUrl, this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('added new organization ' + this.selected.metadata.name);
@@ -211,7 +211,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         });
     } else {
       // this.messagesService.success('updating ' + this.selected.objectId);
-      this.ouSvc.put(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
+      this.organizationService.put(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('updated ' + this.selected.objectId);
@@ -226,7 +226,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected = ou;
     const id = this.selected.objectId;
     if (confirm('delete '+ou.metadata.name+' ?')) {
-      this.ouSvc.delete(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
+      this.organizationService.delete(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('deleted ' + id + ' ' + data);
@@ -276,7 +276,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     const ouNames: any[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.ouSvc.filter(url, null, queryString, 1)
+    this.organizationService.filter(url, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou) => {
