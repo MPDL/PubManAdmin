@@ -13,7 +13,6 @@ import {User} from '../common/model/inge';
 export class LoginComponent implements OnInit {
   credentials: any = {};
   loggedIn = false;
-  hasToken = false;
   empty = true;
   token = '';
   user: User;
@@ -35,7 +34,6 @@ export class LoginComponent implements OnInit {
         },
         error: (e) => {
           this.messagesService.error(e);
-          this.loggedIn = false;
         },
       });
   }
@@ -45,6 +43,7 @@ export class LoginComponent implements OnInit {
     this.credentials.userName = '';
     this.credentials.password = '';
     this.loggedIn = false;
+
     // required because ngForm cannot be reset.
     // restore 'pristine' class state.
     this.empty = false;
@@ -57,12 +56,15 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: (data) => {
             this.user = data;
-            this.hasToken = true;
-            this.credentials.userName = this.user.name;
+            if (this.user == null) {
+              this.logout();
+              this.messagesService.error('You are not allowed to login...');
+            } else {
+              this.credentials.userName = this.user.name;
+            }
           },
           error: (e) => {
             this.messagesService.error(e);
-            this.hasToken = false;
           },
         });
     }

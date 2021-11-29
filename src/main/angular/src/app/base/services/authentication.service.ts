@@ -10,7 +10,7 @@ import {ConnectionService} from './connection.service';
 
 @Injectable()
 export class AuthenticationService {
-  private tokenUrl;
+  private tokenUrl: string;
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
   private isLoggedIn = new BehaviorSubject<boolean>(false);
@@ -21,19 +21,19 @@ export class AuthenticationService {
   isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
   isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
 
-  setToken(token) {
+  setToken(token: string) {
     this.token.next(token);
   }
 
-  setUser(user) {
+  setUser(user: User) {
     this.user.next(user);
   }
 
-  setIsLoggedIn(isLoggedIn) {
+  setIsLoggedIn(isLoggedIn: boolean) {
     this.isLoggedIn.next(isLoggedIn);
   }
 
-  setIsAdmin(isAdmin) {
+  setIsAdmin(isAdmin: boolean) {
     this.isAdmin.next(isAdmin);
   }
 
@@ -45,7 +45,7 @@ export class AuthenticationService {
     this.connectionService.connectionService.subscribe((data) => this.tokenUrl = data + '/rest/login');
   }
 
-  login(userName, password) {
+  login(userName: string, password: string) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const body = userName + ':' + password;
     return this.http.request('POST', this.tokenUrl, {
@@ -77,10 +77,11 @@ export class AuthenticationService {
     this.setUser(null);
   }
 
-  who(token): Observable<User> {
+  who(token: string | string[]): Observable<User> {
     const headers = new HttpHeaders().set('Authorization', token);
     const whoUrl = this.tokenUrl + '/who';
     let user: User;
+    let allowed = false;
     return this.http.request<User>('GET', whoUrl, {
       headers: headers,
       observe: 'body',
@@ -91,9 +92,16 @@ export class AuthenticationService {
         if (user.grantList != null) {
           if (user.grantList.find((grant) => grant.role === 'SYSADMIN')) {
             this.setIsAdmin(true);
+            allowed = true;
+          } else if (user.grantList.find((grant) => grant.role === 'LOCAL_ADMIN')) {
+            allowed = true;
           }
         }
-        return user;
+        if (allowed) {
+          return user;
+        } else {
+          return null;
+        }
       }),
       catchError((error) => {
         return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
