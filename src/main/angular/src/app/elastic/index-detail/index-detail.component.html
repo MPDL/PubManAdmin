@@ -2,7 +2,7 @@
   <div *ngIf="!isNewIndex; else new_index">
     <div class="card border-secondary text-secondary mt-2">
       <div class="card-header border-secondary text-end bg-white">
-        <h4 class="text-secondary card-title">{{index_name}}</h4>
+        <h4 class="text-secondary card-title">{{indexName}}</h4>
       </div>
       <div class="row mt-2">
         <div class="col-2">
@@ -51,14 +51,14 @@
 <ng-template #new_index>
     <div class="card border-secondary text-secondary">
         <div class="card-header border-secondary bg-white">
-          <h4 class="text-secondary card-title">details 4 {{index_name}}</h4>
+          <h4 class="text-secondary card-title">details 4 {{indexName}}</h4>
         </div>
   <form class="list-group-item text-secondary" name="new_index_form" (ngSubmit)="new_index_form.valid && save()" #new_index_form="ngForm"
     novalidate>
     <div class="row w-100">
       <label for="index-name" class="col-2 col-form-label col-form-label-sm">name</label>
       <div class="col-10">
-        <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="index_name" id="index-name" required minlength="4"
+        <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="indexName" id="index-name" required minlength="4"
           valueNotAllowed="new" #name="ngModel">
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
           <div *ngIf="name.errors.required">
