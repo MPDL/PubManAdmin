@@ -13,153 +13,150 @@ import {UsersService} from '../services/users.service';
   styleUrls: ['./grants.component.scss'],
 })
 export class GrantsComponent implements OnInit, OnDestroy {
-    @Input()
-      selectedUser: User;
-    @Input()
-      isNewGrant: boolean;
+  @Input()
+    isNewGrant: boolean;
+  @Input()
+    user: User;
+  @Input()
+    token: string;
 
-    @Output()
-      isNewGrantChange = new EventEmitter<boolean>();
-    @Output()
-      selectedUserChange = new EventEmitter<User>();
+  @Output()
+    isNewGrantChange = new EventEmitter<boolean>();
+  @Output()
+    userChange = new EventEmitter<User>();
 
-    ousUrl = environment.restOus;
-    ctxUrl = environment.restCtxs;
+  ousUrl = environment.restOus;
+  ctxUrl = environment.restCtxs;
 
-    roles: string[];
-    selectedRole: string;
+  roles: string[];
+  selectedRole: string;
 
-    ctxs: Ctx[] = [];
-    filteredCtxs: Ctx[] = [];
-    selectedCtx: Ctx;
+  ctxs: Ctx[] = [];
+  filteredCtxs: Ctx[] = [];
+  selectedCtx: Ctx;
 
-    ous: Ou[] = [];
-    selectedOu: Ou;
+  ous: Ou[] = [];
+  selectedOu: Ou;
 
-    selectedGrantToAdd: Grant;
-    selectedGrantsToAdd: Grant[] = [];
-    grantsToAdd: string;
-    idString: string;
+  selectedGrantToAdd: Grant;
+  selectedGrantsToAdd: Grant[] = [];
+  grantsToAdd: string;
+  idString: string;
 
-    isAdmin: boolean;
-    adminSubscription: Subscription;
-    @Input() // TODO: Warum muss das ein Input sein ???
-      token: string;
-    tokenSubscription: Subscription;
+  isAdmin: boolean;
+  adminSubscription: Subscription;
 
-    constructor(
-      private authenticationService: AuthenticationService,
-      private messagesService: MessagesService,
-        private usersService: UsersService,
-    ) {}
+  constructor(
+    private authenticationService: AuthenticationService,
+    private messagesService: MessagesService,
+    private usersService: UsersService,
+  ) {}
 
-    ngOnInit() {
-      this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-      this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-      if (this.isAdmin) {
-        this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
-        this.getCtxsAndOus();
-      } else {
-        this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
-      }
+  ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    if (this.isAdmin) {
+      this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
+      this.getCtxsAndOus();
+    } else {
+      this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
     }
+  }
 
-    ngOnDestroy() {
-      this.adminSubscription.unsubscribe();
-      this.tokenSubscription.unsubscribe();
-    }
+  ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
+  }
 
-    getCtxsAndOus() {
-      const ousBody = allOpenedOUs;
-      this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
-        .subscribe(
-          (data) => {
-            this.ctxs = data.list;
-            this.filteredCtxs = data.list;
-          });
-      this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
-    }
+  getCtxsAndOus() {
+    const ousBody = allOpenedOUs;
+    this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
+      .subscribe(
+        (data) => {
+          this.ctxs = data.list;
+          this.filteredCtxs = data.list;
+        });
+    this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
+  }
 
-    onChangeRole(val: string) {
-      this.selectedRole = val;
-    }
+  onChangeRole(val: string) {
+    this.selectedRole = val;
+  }
 
-    onChangeCtx(ctx: Ctx) {
-      this.selectedCtx = ctx;
-    }
+  onChangeCtx(ctx: Ctx) {
+    this.selectedCtx = ctx;
+  }
 
-    onChangeOu(ou: Ou) {
-      this.selectedOu = ou;
-    }
+  onChangeOu(ou: Ou) {
+    this.selectedOu = ou;
+  }
 
-    validateSelection() {
-      const role = this.selectedRole;
-      if (role) {
-        if (role.startsWith('CONE') || role === 'REPORTER') {
-          this.addGrant(role, null);
-        } else if (role === 'LOCAL_ADMIN') {
-          if (this.selectedOu != null) {
-            const refId = this.selectedOu.objectId;
-            this.addGrant(role, refId);
-          } else {
-            this.messagesService.error('you must select an organization!');
-          }
-        } else if (role === 'DEPOSITOR' || role === 'MODERATOR') {
-          if (this.selectedCtx != null) {
-            const refId = this.selectedCtx.objectId;
-            this.addGrant(role, refId);
-          } else {
-            this.messagesService.error('you must select a context!');
-          }
+  validateSelection() {
+    const role = this.selectedRole;
+    if (role) {
+      if (role.startsWith('CONE') || role === 'REPORTER') {
+        this.addGrant(role, null);
+      } else if (role === 'LOCAL_ADMIN') {
+        if (this.selectedOu != null) {
+          const refId = this.selectedOu.objectId;
+          this.addGrant(role, refId);
+        } else {
+          this.messagesService.error('you must select an organization!');
         }
-      } else {
-        this.messagesService.error('ROLE!!!');
+      } else if (role === 'DEPOSITOR' || role === 'MODERATOR') {
+        if (this.selectedCtx != null) {
+          const refId = this.selectedCtx.objectId;
+          this.addGrant(role, refId);
+        } else {
+          this.messagesService.error('you must select a context!');
+        }
       }
+    } else {
+      this.messagesService.error('ROLE!!!');
     }
+  }
 
-    resetGrants() {
-      this.selectedGrantsToAdd.splice(0, this.selectedGrantsToAdd.length);
-      this.grantsToAdd = '';
-    }
+  resetGrants() {
+    this.selectedGrantsToAdd.splice(0, this.selectedGrantsToAdd.length);
+    this.grantsToAdd = '';
+  }
 
-    addGrant(role: string, refId: string) {
-      const grantToAdd = new Grant();
-      grantToAdd.role = role;
-      grantToAdd.objectRef = refId;
-      if (!this.selectedGrantsToAdd.some((data) => (grantToAdd.objectRef === data.objectRef && grantToAdd.role === data.role))) {
-        this.selectedGrantsToAdd.push(grantToAdd);
-      }
-      this.grantsToAdd = JSON.stringify(this.selectedGrantsToAdd);
+  addGrant(role: string, refId: string) {
+    const grantToAdd = new Grant();
+    grantToAdd.role = role;
+    grantToAdd.objectRef = refId;
+    if (!this.selectedGrantsToAdd.some((data) => (grantToAdd.objectRef === data.objectRef && grantToAdd.role === data.role))) {
+      this.selectedGrantsToAdd.push(grantToAdd);
     }
+    this.grantsToAdd = JSON.stringify(this.selectedGrantsToAdd);
+  }
 
-    addGrants() {
-      if (this.selectedGrantsToAdd.length > 0) {
-        this.usersService.addGrants(this.selectedUser, this.selectedGrantsToAdd, this.token)
-          .subscribe({
-            next: (data) => {
-              this.selectedUser = data;
-              if (this.selectedUser.grantList) {
-                this.selectedUser.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-              }
-              this.selectedUserChange.emit(this.selectedUser);
-              this.messagesService.success('added Grants to ' + this.selectedUser.loginname);
-              this.selectedGrantsToAdd = null;
-              this.grantsToAdd = '';
-              this.isNewGrantChange.emit(false);
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      } else {
-        this.messagesService.warning('no grant(s) selected !');
-      }
+  addGrants() {
+    if (this.selectedGrantsToAdd.length > 0) {
+      this.usersService.addGrants(this.user, this.selectedGrantsToAdd, this.token)
+        .subscribe({
+          next: (data) => {
+            this.user = data;
+            if (this.user.grantList) {
+              this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
+            }
+            this.userChange.emit(this.user);
+            this.isNewGrantChange.emit(false);
+            this.messagesService.success('added Grants to ' + this.user.loginname);
+            this.selectedGrantsToAdd = [];
+            this.grantsToAdd = '';
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.messagesService.warning('no grant(s) selected !');
     }
+  }
 
-    filterCtxs(event: string) {
-      this.filteredCtxs = this.ctxs;
-      if (typeof event === 'string') {
-        this.filteredCtxs = this.ctxs.filter((ctx) => ctx.name.toLowerCase().includes(event.toLowerCase()));
-        this.selectedCtx = this.filteredCtxs[0];
-      }
+  filterCtxs(event: string) {
+    this.filteredCtxs = this.ctxs;
+    if (typeof event === 'string') {
+      this.filteredCtxs = this.ctxs.filter((ctx) => ctx.name.toLowerCase().includes(event.toLowerCase()));
+      this.selectedCtx = this.filteredCtxs[0];
     }
+  }
 }
 

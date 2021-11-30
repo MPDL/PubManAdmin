@@ -86,7 +86,7 @@
               </select>
             </div>
             <div class="col-1 justify-content-start">
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addGenres" value=">>" (click)="addGenres(selectedGenres)" />
+              <input type="button" [disabled]="!selectedGenres" class="btn btn-outline-success btn-sm m-1" name="addGenres" value=">>" title="ADD selected" (click)="addGenres(selectedGenres)" />
               <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllGenres" value="all" title="ADD ALL!" (click)="addAllGenres()" />
               <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearGenres" value="<<" (click)="clearGenres()" />
             </div>
@@ -116,7 +116,7 @@
               </select>
             </div>
             <div class="col-1">
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addSubjects" value=">>" (click)="addSubjects(selectedSubjects)" />
+              <input type="button" [disabled]="!selectedSubjects" class="btn btn-outline-success btn-sm m-1" name="addSubjects" value=">>" title="ADD selected" (click)="addSubjects(selectedSubjects)" />
               <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllSubjects" value="all" title="ADD ALL!" (click)="addAllSubjects()" />
               <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearSubjects" value="<<" (click)="clearSubjects()" />
             </div>
