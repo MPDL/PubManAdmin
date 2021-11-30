@@ -1,10 +1,9 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
-
 import {MessagesService} from '../../base/services/messages.service';
 import {ElasticService} from '../services/elastic.service';
-import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'index-detail-component',

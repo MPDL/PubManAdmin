@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Client} from 'elasticsearch';
-
-import {MessagesService} from '../../base/services/messages.service';
-import {ConnectionService} from '../../base/services/connection.service';
 import {environment} from 'environments/environment';
+import {ConnectionService} from '../../base/services/connection.service';
+import {MessagesService} from '../../base/services/messages.service';
 
 @Injectable()
 export class ElasticService {

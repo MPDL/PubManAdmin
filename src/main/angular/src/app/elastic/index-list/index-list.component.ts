@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-
-import {ElasticService} from '../services/elastic.service';
 import {MessagesService} from '../../base/services/messages.service';
-import {FormGroup, FormBuilder, FormArray} from '@angular/forms';
+import {ElasticService} from '../services/elastic.service';
 
 @Component({
   selector: 'index-list-component',

@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
-import {HttpClient, HttpResponse, HttpEventType, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpEventType, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
-import {MessagesService} from '../../base/services/messages.service';
 import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
 
 @Component({
   selector: 'upload-component',

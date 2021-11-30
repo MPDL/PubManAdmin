@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormArray, FormBuilder, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
+import {SearchService} from '../../base/common/services/search.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {ElasticService} from '../services/elastic.service';
-import {SearchService} from '../../base/common/services/search.service';
-import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
 
 @Component({
   selector: 'elastic-search-component',

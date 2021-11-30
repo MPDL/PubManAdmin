@@ -1,11 +1,10 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-
+import {RouterModule, Routes} from '@angular/router';
+import {AdminGuardService} from '../base/services/admin-guard.service';
+import {ItemSearchComponent} from './item-search/item-search.component';
+import {SearchInfoComponent} from './search-info/search-info.component';
 import {SearchComponent} from './search.component';
 import {UserSearchComponent} from './user-search/user-search.component';
-import {SearchInfoComponent} from './search-info/search-info.component';
-import {ItemSearchComponent} from './item-search/item-search.component';
-import {AdminGuardService} from '../base/services/admin-guard.service';
 
 const routes: Routes = [
   {path: 'search', component: SearchComponent, canActivate: [AdminGuardService],

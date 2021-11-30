@@ -1,17 +1,14 @@
-import {Component, OnInit, OnDestroy, QueryList, ViewChildren} from '@angular/core';
-import {FormGroup, FormArray, FormBuilder} from '@angular/forms';
-
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-
-import {MessagesService} from '../../base/services/messages.service';
-import {AuthenticationService} from '../../base/services/authentication.service';
+import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
+import {itemAggs} from '../../base/common/components/search-term/search.aggregations';
+import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
 import {ElasticSearchService} from '../../base/common/services/elastic-search.service';
 import {SearchService} from '../../base/common/services/search.service';
-import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
-import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
-import {itemAggs} from '../../base/common/components/search-term/search.aggregations';
-
-import {environment} from 'environments/environment';
+import {AuthenticationService} from '../../base/services/authentication.service';
+import {MessagesService} from '../../base/services/messages.service';
 
 @Component({
   selector: 'item-search-component',
