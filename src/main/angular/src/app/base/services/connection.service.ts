@@ -6,12 +6,9 @@ import {environment} from '../../../environments/environment';
 export class ConnectionService {
   private initialValue = environment.baseUrl;
   private connection = new BehaviorSubject<string>(this.initialValue);
+
   connectionService = this.connection.asObservable();
 
   constructor(
   ) {}
-
-  setConnection(connectionService: string) {
-    this.connection.next(connectionService);
-  }
 }

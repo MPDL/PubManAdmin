@@ -8,16 +8,17 @@ import {MessagesService} from './messages.service';
 
 @Injectable()
 export class AuthenticationService {
-  private tokenUrl: string;
+  private isAdmin = new BehaviorSubject<boolean>(false);
+  private isLoggedIn = new BehaviorSubject<boolean>(false);
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
-  private isLoggedIn = new BehaviorSubject<boolean>(false);
-  private isAdmin = new BehaviorSubject<boolean>(false);
 
+  isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
+  isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
   token$ = this.token.asObservable().pipe(share());
   user$ = this.user.asObservable().pipe(share());
-  isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
-  isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
+
+  private tokenUrl: string;
 
   setToken(token: string) {
     this.token.next(token);

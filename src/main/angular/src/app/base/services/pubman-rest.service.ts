@@ -2,7 +2,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
-import {SearchResult} from '../common/model/inge';
+import {Ctx, Ou, SearchResult, User} from '../common/model/inge';
 import {ConnectionService} from './connection.service';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class PubmanRestService {
     this.connectionService.connectionService.subscribe((data) => this.baseUrl = data);
   }
 
-  getSearchResults(method, url, headers, body): Observable<any> {
+  getSearchResults(method: string, url: string, headers: HttpHeaders, body: any): Observable<any> {
     return this.httpClient.request(method, url, {
       headers: headers,
       observe: 'body',
@@ -44,7 +44,7 @@ export class PubmanRestService {
     );
   }
 
-  getResource(method, url, headers, body): Observable<any> {
+  getResource(method: string, url: string, headers: HttpHeaders, body: string | Date): Observable<any> {
     return this.httpClient.request(method, url, {
       headers: headers,
       body: body,
@@ -59,7 +59,7 @@ export class PubmanRestService {
     );
   }
 
-  getString(url): Observable<string> {
+  getString(url: string): Observable<string> {
     return this.httpClient.get(url, {responseType: 'text'})
       .pipe(
         map((response: string) => {
@@ -72,7 +72,7 @@ export class PubmanRestService {
       );
   }
 
-  getHttpStatus(method, url, headers, body): Observable<any> {
+  getHttpStatus(method: string, url: string, headers: HttpHeaders, body: Date): Observable<any> {
     return this.httpClient.request(method, url, {
       headers: headers,
       body: body,
@@ -89,7 +89,7 @@ export class PubmanRestService {
     );
   }
 
-  addHeaders(token, ct: boolean): HttpHeaders {
+  addHeaders(token: string | string[], ct: boolean): HttpHeaders {
     if (token != null) {
       if (ct) {
         const headers = new HttpHeaders()
@@ -104,47 +104,47 @@ export class PubmanRestService {
     }
   }
 
-  getAll(path, token: string, page: number): Observable<any> {
+  getAll(path: string, token: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
     const requestUrl = this.baseUrl + path + '?size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
-  filter(path, token: string, query: string, page: number): Observable<any> {
+  filter(path: string, token: string, query: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
     const requestUrl = this.baseUrl + path + query + '&size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
     return this.getSearchResults('GET', requestUrl, headers, null);
   }
 
-  query(path, token: string, body): Observable<any> {
+  query(path: string, token: string, body: object): Observable<any> {
     const headers = this.addHeaders(token, true);
     const requestUrl = this.baseUrl + path + '/search';
     return this.getSearchResults('POST', requestUrl, headers, body);
   }
 
-  get(path, id, token): Observable<any> {
+  get(path: string, id: string, token: string): Observable<any> {
     const resourceUrl = this.baseUrl + path + '/' + id;
     const headers = this.addHeaders(token, false);
     return this.getResource('GET', resourceUrl, headers, null);
   }
 
-  post(path, resource, token): Observable<any> {
+  post(path: string, resource: User | Ctx | Ou, token: string): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
     const requestUrl = this.baseUrl + path;
     return this.getResource('POST', requestUrl, headers, body);
   }
 
-  put(path, resource, token): Observable<any> {
+  put(path: string, resource: User | Ctx | Ou, token: string): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
     const requestUrl = this.baseUrl + path;
     return this.getResource('PUT', requestUrl, headers, body);
   }
 
-  delete(path, resource, token): Observable<number> {
+  delete(path: string, token: string): Observable<number> {
     const headers = this.addHeaders(token, true);
     const requestUrl = this.baseUrl + path;
     return this.getHttpStatus('DELETE', requestUrl, headers, null);

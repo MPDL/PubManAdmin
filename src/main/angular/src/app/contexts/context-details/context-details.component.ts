@@ -97,7 +97,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSelectedCtx(id: string) {
+  private getSelectedCtx(id: string) {
     this.contextsService.get(this.ctxsUrl, id, this.token)
       .subscribe({
         next: (data) => this.ctx = data,
@@ -188,7 +188,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx = ctx;
     const id = this.ctx.objectId;
     if (confirm('delete ' + ctx.name + ' ?')) {
-      this.contextsService.delete(this.ctxsUrl + '/' + id, this.ctx, this.token)
+      this.contextsService.delete(this.ctxsUrl + '/' + id, this.token)
         .subscribe({
           next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
           error: (e) => this.messagesService.error(e),

@@ -17,6 +17,7 @@ export class Grant {
   role: string;
   grantType: string;
   objectRef: string;
+  objectName: string;
 }
 
 export class User extends BasicRO {

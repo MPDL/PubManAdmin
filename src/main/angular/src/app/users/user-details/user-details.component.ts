@@ -102,28 +102,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  viewRefTitle(grant: { objectRef: any; }) {
-    const ref = grant.objectRef;
-    if (ref === undefined) {
-      this.ctxTitle = 'why do you point here?';
-    } else {
-      if (ref.startsWith('ou')) {
-        this.usersService.get(this.ousUrl, ref, null).subscribe((data) => this.ctxTitle = data.metadata.name);
-      } else {
-        if (ref.startsWith('ctx')) {
-          this.usersService.get(this.ctxsUrl, ref, null).subscribe((data) => this.ctxTitle = data.name);
-        }
-      }
-    }
-  }
-
   gotoUserList() {
     const userId = this.user ? this.user.loginname : null;
     this.router.navigate(['/users', {id: userId}]);
-  }
-
-  notAllowed(whatthehackever) {
-    this.messagesService.warning('you\'re not authorized !');
   }
 
   generateRandomPassword(user: { password: string; }) {
@@ -256,7 +237,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.user = user;
     const id = this.user.loginname;
     if (confirm('delete '+user.name+' ?')) {
-      this.usersService.delete(this.usersUrl + '/' + this.user.objectId, this.user, this.token)
+      this.usersService.delete(this.usersUrl + '/' + this.user.objectId, this.token)
         .subscribe({
           next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
           error: (e) => this.messagesService.error(e),

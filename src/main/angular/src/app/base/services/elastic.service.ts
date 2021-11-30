@@ -22,14 +22,14 @@ export class ElasticService {
     }
   }
 
-  private connect(uri) {
+  private connect(uri: string) {
     this.client = new Client({
       host: uri,
       log: ['error', 'warning'],
     });
   }
 
-  count(index: string, callback): any {
+  count(index: string, callback: (arg0: number) => void): any {
     return this.client.search({
       index: index,
       size: 0,
@@ -44,7 +44,7 @@ export class ElasticService {
     });
   }
 
-  listOuNames(parent: string, id: string, callback): any {
+  listOuNames(parent: string, id: string, callback: (arg0: any[]) => void): any {
     let queryString: string;
     if (parent.match('parent')) {
       queryString = 'parentAffiliation.objectId:*' + id + ' AND publicStatus:OPENED';

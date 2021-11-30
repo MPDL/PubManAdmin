@@ -62,15 +62,15 @@ export class UsersService extends PubmanRestService {
     return this.getString(userUrl);
   }
 
-  addNamesOfGrantRefs(grant) {
+  addNamesOfGrantRefs(grant: Grant) {
     const ref = grant.objectRef;
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.get(this.ousUrl, ref, null).subscribe((data) => grant.ctxTitle = data.metadata.name);
+        this.get(this.ousUrl, ref, null).subscribe((data) => grant.objectName = data.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.get(this.ctxsUrl, ref, null).subscribe((data) => grant.ctxTitle = data.name);
+          this.get(this.ctxsUrl, ref, null).subscribe((data) => grant.objectName = data.name);
         }
       }
     }

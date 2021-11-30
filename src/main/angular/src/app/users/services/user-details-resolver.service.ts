@@ -21,7 +21,7 @@ export class UserDetailsResolverService implements Resolve<User> {
       user.grantList = [];
       user.affiliation = new BasicRO();
       user.active = true;
-      this.generateRandomPassword(user);
+      this.usersService.generateRandomPassword().subscribe((data) => user.password = data.toString());
       return of(user);
     } else {
       const token = activatedRouteSnapshot.queryParams['token'];
@@ -38,9 +38,5 @@ export class UserDetailsResolverService implements Resolve<User> {
           })
         );
     }
-  }
-
-  generateRandomPassword(user: User) {
-    this.usersService.generateRandomPassword().subscribe((data) => user.password = data.toString());
   }
 }

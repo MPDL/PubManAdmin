@@ -10,8 +10,8 @@ import {MessagesService} from '../services/messages.service';
 })
 export class LoginComponent implements OnInit {
   credentials: any = {};
-  loggedIn = false;
   empty = true;
+  loggedIn = false;
   token = '';
   user: User;
 

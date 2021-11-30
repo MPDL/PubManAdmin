@@ -24,23 +24,23 @@
         <div class="col-10">
           <div class="tab-content" id="index-tabContent">
             <div class="tab-pane fade" id="index-settings" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary" type="button" value="update" (click)="notyet(index_name)" />
+              <input class="btn btn-sm btn-outline-secondary" type="button" value="update" (click)="notyet(indexName)" />
               <pre class="m-3">{{settings | json}}</pre>
             </div>
             <div class="tab-pane fade" id="index-mapping" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="update" (click)="notyet(index_name)" />
-              <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="notyet(index_name)" />
+              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="update" (click)="notyet(indexName)" />
+              <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="notyet(indexName)" />
               <pre class="m-3">{{mapping | json}}</pre>
             </div>
             <div class="tab-pane fade" id="index-aliases" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="add" (click)="addAlias(index_name)" />
-              <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="removeAlias(index_name)" />
+              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="add" (click)="addAlias(indexName)" />
+              <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="removeAlias(indexName)" />
               <pre class="m-3">{{aliases | json}}</pre>
             </div>
             <div class="tab-pane fade show active" id="index-info" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary me-2" type="button" [value]="index_info?.status === 'open' ? 'close' : 'open'"
-                (click)="openOrClose(index_info)" />
-              <pre class="m-3">{{index_info | json}}</pre>
+              <input class="btn btn-sm btn-outline-secondary me-2" type="button" [value]="indexInfo?.status === 'open' ? 'close' : 'open'"
+                (click)="openOrClose(indexInfo)" />
+              <pre class="m-3">{{indexInfo | json}}</pre>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit {
-  message;
+  message: any;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data,

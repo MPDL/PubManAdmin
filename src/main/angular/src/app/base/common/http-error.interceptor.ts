@@ -1,8 +1,7 @@
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
 import {EMPTY, Observable} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-
 import {MessagesService} from '../services/messages.service';
 
 @Injectable()

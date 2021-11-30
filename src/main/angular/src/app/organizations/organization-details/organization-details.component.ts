@@ -225,7 +225,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.selected = ou;
     const id = this.selected.objectId;
     if (confirm('delete '+ou.metadata.name+' ?')) {
-      this.organizationService.delete(this.ouRestUrl + '/' + this.selected.objectId, this.selected, this.token)
+      this.organizationService.delete(this.ouRestUrl + '/' + this.selected.objectId, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('deleted ' + id + ' ' + data);

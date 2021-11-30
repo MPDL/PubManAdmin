@@ -9,6 +9,7 @@ import {Subscription} from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   hostSubscription: Subscription;
+
   hostName: string;
 
   constructor(
