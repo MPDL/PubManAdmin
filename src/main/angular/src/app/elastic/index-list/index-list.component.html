@@ -8,13 +8,12 @@
     <div class="list-group-flush">
       <div class="list-group-item list-group-item-secondary list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center"
         *ngFor="let index of indices" (click)="goTo(index.index)">
-        <span class="col-sm-1 text-end me-2" [innerHtml]="index['docs.count']"></span>
-        <span class="col-sm-4 text-start text-truncate" [innerHtml]="index.index || index"></span>
-        <span class="col-sm-3 text-start text-truncate" [innerHtml]="index.status"></span>
-        <span class="col-sm-3 text-start text-truncate" [innerHtml]="index.alias"></span>
+        <span class="col-sm-1 text-end me-2">{{index['docs.count']}}</span>
+        <span class="col-sm-4 text-start text-truncate">{{index.index || index}}</span>
+        <span class="col-sm-3 text-start text-truncate">{{index.status}}</span>
+        <span class="col-sm-3 text-start text-truncate">{{index.alias}}</span>
         <div class="col-sm-1">
-          <input type="submit" class="btn btn-outline-secondary btn-sm float-end" (click)="delete(index); $event.stopPropagation()"
-            name="delete" value="x" />
+          <input type="submit" class="btn btn-outline-secondary btn-sm float-end" (click)="delete(index); $event.stopPropagation()" name="delete" value="x" />
         </div>
       </div>
     </div>

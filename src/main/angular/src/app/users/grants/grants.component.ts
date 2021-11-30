@@ -77,8 +77,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
     this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
   }
 
-  onChangeRole(val: string) {
-    this.selectedRole = val;
+  onChangeRole(role: string) {
+    this.selectedRole = role;
   }
 
   onChangeCtx(ctx: Ctx) {

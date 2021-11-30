@@ -1,7 +1,7 @@
 <div [formGroup]="indexAliasForm">
   <div class="row w-100 mx-1">
     <div class="col-2">
-    <select class="select form-control form-control-sm border-secondary" formControlName="action" (change)="onActionSelect($event.target.value)">
+    <select class="select form-select form-select-sm border-secondary" formControlName="action" (change)="onActionSelect($event.target.value)">
       <option *ngFor="let action of actions" [value]="action">{{action}}</option>
     </select>
     </div>
@@ -16,7 +16,7 @@
     </div>
     -->
     <div class="col-5">
-      <select class="select form-control form-control-sm border-secondary" formControlName="index" (change)="onIndexSelect($event.target.value)">
+      <select class="select form-select form-select-sm border-secondary" formControlName="index" (change)="onIndexSelect($event.target.value)">
         <option [value]=null></option>
         <option *ngFor="let index of indexList" [value]="index.index">{{index.index}}</option>
       </select>
@@ -25,7 +25,7 @@
       <input class="form-control form-control-sm border-secondary" type="text" formControlName="alias" id="alias">
     </div>
     <div *ngIf="indexAliasForm.get('action').value === 'remove'" class="col-4">
-      <select class="select form-control form-control-sm border-secondary" formControlName="alias" (change)="onAliasSelect($event.target.value)">
+      <select class="select form-select form-select-sm border-secondary" formControlName="alias" (change)="onAliasSelect($event.target.value)">
         <option *ngFor="let index of indexList" [value]="index.alias">{{index.alias}}</option>
       </select>
     </div>

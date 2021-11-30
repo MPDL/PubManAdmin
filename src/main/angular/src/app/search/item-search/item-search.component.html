@@ -29,7 +29,7 @@
                 <div class="row">
                     <label for="aggregationSelect" class="col-4 col-form-label col-form-label-sm"><span class="align-bottom">group by</span></label>
                     <div class="col-8">
-                        <select class="select form-control form-control-sm" name="aggregationSelect" (change)="onAggregationSelect($event.target.value)">
+                        <select class="select form-select form-select-sm" name="aggregationSelect" (change)="onAggregationSelect($event.target.value)">
                             <option *ngFor="let agg of aggregationsList" [value]="agg">{{agg}}</option>
                         </select>
                     </div>

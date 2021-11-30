@@ -10,15 +10,9 @@
                 <div class="col-6">
                     <input class="form-control form-control-sm" type="text" name="loginname" [(ngModel)]="user.loginname" id="loginName" required minlength="4" value-not-allowed="new user" #loginname="ngModel" [readonly]="!isNewUser">
                     <div *ngIf="loginname.invalid && (loginname.dirty || loginname.touched)" class="text-danger">
-                        <div *ngIf="loginname.errors.required">
-                            loginname is required.
-                        </div>
-                        <div *ngIf="loginname.errors.minlength">
-                            loginname must be at least 4 characters long.
-                        </div>
-                        <div *ngIf="loginname.errors.value-not-allowed">
-                            loginname MUST NOT be new user.
-                        </div>
+                        <div *ngIf="loginname.errors.required">loginname is required.</div>
+                        <div *ngIf="loginname.errors.minlength">loginname must be at least 4 characters long.</div>
+                        <div *ngIf="loginname.errors.value-not-allowed">loginname MUST NOT be new user.</div>
                     </div>
                 </div>
                 <label *ngIf="!isNewUser" for="userId" class="col-1 col-form-label col-form-label-sm">id</label>
@@ -66,9 +60,7 @@
                 <div class="col-10">
                     <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="user.name" id="name" required #name="ngModel">
                     <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-                        <div *ngIf="name.errors.required">
-                            name is required.
-                        </div>
+                        <div *ngIf="name.errors.required">name is required.</div>
                     </div>
                 </div>
             </div>
@@ -119,18 +111,10 @@
                         <ul class="list-group">
                             <li class="list-group-item-primary list-group-item-action py-0 align-items-center" *ngFor="let grant of user.grantList" (click)="goToRef(grant)">
                                 <div class="row">
-                                    <span class="col-4 text-start text-truncate">
-                                        <label class="col-form-label-sm p-0 ms-2" [innerHtml]="grant.role"></label>
-                                    </span>
-                                    <span class="col-6 text-start text-truncate">
-                                        <label class="col-form-label-sm p-0" [innerHtml]="grant.objectName"></label>
-                                    </span>
-                                    <span class="col-1 text-start">
-                                        <label class="col-form-label-sm p-0" [innerHtml]="grant.objectRef"></label>
-                                    </span>
-                                    <span class="col-1">
-                                        <input type="button" class="btn btn-outline-primary btn-sm" (click)="addToDeleteGrantsList(grant); $event.stopPropagation()" name="addToDeleteGrantsList" value="x" />
-                                    </span>
+                                    <span class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0 ms-2">{{grant.role}}</label></span>
+                                    <span class="col-6 text-start text-truncate"><label class="col-form-label-sm p-0">{{grant.objectName}}</label></span>
+                                    <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{grant.objectRef}}</label></span>
+                                    <span class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="addToDeleteGrantsList(grant); $event.stopPropagation()" name="addToDeleteGrantsList" value="x" /></span>
                                 </div>
                             </li>
                         </ul>

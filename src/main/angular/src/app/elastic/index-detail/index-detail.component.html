@@ -76,8 +76,7 @@
     <div class="row w-100">
       <label for="index-settings" class="col-2 col-form-label col-form-label-sm">settings</label>
       <div class="col-10">
-        <select id="index-settings" class="select form-control form-control-sm" ngModel (ngModelChange)="onChangeSettings($event)"
-          name="Settings">
+        <select id="index-settings" class="select form-select form-select-sm" ngModel (ngModelChange)="onChangeSettings($event)" name="Settings">
           <option [ngValue]="setting.index" *ngFor="let setting of list">{{setting.index}}</option>
         </select>
       </div>
@@ -85,8 +84,7 @@
     <div class="row w-100">
       <label for="index-mappings" class="col-2 col-form-label col-form-label-sm">mappings</label>
       <div class="col-10">
-        <select id="index-mappings" class="select form-control form-control-sm" ngModel (ngModelChange)="onChangeMappings($event)"
-          name="Mapping">
+        <select id="index-mappings" class="select form-select form-select-sm" ngModel (ngModelChange)="onChangeMappings($event)" name="Mapping">
           <option [ngValue]="mapping.index" *ngFor="let mapping of list">{{mapping.index}}</option>
         </select>
       </div>

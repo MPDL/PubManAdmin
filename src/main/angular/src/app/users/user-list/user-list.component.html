@@ -56,13 +56,13 @@
       <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="selectUser(user)">
         <div class="row">
             <span class="col-8">
-                <label class="col-form-label-sm p-0 ms-2" [innerHtml]="user.name"></label>
+                <label class="col-form-label-sm p-0 ms-2">{{user.name}}</label>
             </span>
             <span class="col-2 text-start text-truncate">
-                <label class="col-form-label-sm p-0" [innerHtml]="user.loginname"></label>
+                <label class="col-form-label-sm p-0">{{user.loginname}}</label>
             </span>
             <span class="col-2 text-start">
-                <label class="col-form-label-sm p-0" [innerHtml]="user.active === true ? 'active' : 'deactivated'"></label>
+                <label class="col-form-label-sm p-0">{{user.active === true ? 'active' : 'deactivated'}}</label>
             </span>
         </div>
       </div>
