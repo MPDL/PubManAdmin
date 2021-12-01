@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {environment} from '../../../environments/environment';
-import {allTopLevelOUs} from '../../base/common/model/query-bodies';
+import {allTopLevelOus as allTopLevelOus} from '../../base/common/model/query-bodies';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from './organizations.service';
 
-export class OUTreeNode {
-  childrenChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
+export class OuTreeNode {
+  childrenChange: BehaviorSubject<OuTreeNode[]> = new BehaviorSubject<OuTreeNode[]>([]);
 
-  get children(): OUTreeNode[] {
+  get children(): OuTreeNode[] {
     return this.childrenChange.value;
   }
 
@@ -16,26 +16,26 @@ export class OUTreeNode {
     public ouName: string,
     public ouId: string,
     public hasChildren: boolean = false,
-    public parentOUId: string | null = null,
+    public parentOuId: string | null = null,
   ) {}
 }
 
-export class OUTreeFlatNode {
+export class OuTreeFlatNode {
   constructor(
     public ouName: string,
     public ouId: string,
     public level: number = 1,
     public expandable: boolean = false,
-    public parentOUId: string | null = null,
+    public parentOuId: string | null = null,
   ) {}
 }
 
 @Injectable()
 export class OrganizationTree2Service {
-  dataChange: BehaviorSubject<OUTreeNode[]> = new BehaviorSubject<OUTreeNode[]>([]);
-  nodeMap: Map<string, OUTreeNode> = new Map<string, OUTreeNode>();
+  dataChange: BehaviorSubject<OuTreeNode[]> = new BehaviorSubject<OuTreeNode[]>([]);
+  nodeMap: Map<string, OuTreeNode> = new Map<string, OuTreeNode>();
 
-  get data(): OUTreeNode[] {
+  get data(): OuTreeNode[] {
     return this.dataChange.value;
   }
 
@@ -53,21 +53,21 @@ export class OrganizationTree2Service {
       data.push(this.generateNode(mpg));
       data.push(this.generateNode(ext));
       */
-      const tlous = await this.getTopLevelOUs();
-      tlous.list.forEach((ou) => data.push(this.generateNode(ou)));
+      const topLevelOus = await this.getTopLevelOus();
+      topLevelOus.list.forEach((ou: any) => data.push(this.generateNode(ou)));
       this.dataChange.next(data);
     } catch (e) {
       this.messagesService.error(e);
     }
   }
 
-  getTopLevelOUs() {
-    const body = allTopLevelOUs;
+  getTopLevelOus() {
+    const body = allTopLevelOus;
     const tops = this.organizationService.query(environment.restOus, null, body).toPromise();
     return tops;
   }
 
-  getChildren4OU(id) {
+  getChildren4Ou(id: string) {
     const resp = this.organizationService.listChildren4Ou(id, null).toPromise();
     return resp;
   }
@@ -78,7 +78,7 @@ export class OrganizationTree2Service {
     }
     const parent = this.nodeMap.get(ouName)!;
     let children = [];
-    this.getChildren4OU(ouId)
+    this.getChildren4Ou(ouId)
       .then((resp) => {
         children = resp;
         const nodes = children.map((child) => this.generateNode(child));
@@ -89,11 +89,11 @@ export class OrganizationTree2Service {
       });
   }
 
-  private generateNode(ou: any): OUTreeNode {
+  private generateNode(ou: any): OuTreeNode {
     if (this.nodeMap.has(ou.name)) {
       return this.nodeMap.get(ou.name)!;
     }
-    const response = new OUTreeNode(ou.name, ou.objectId, ou.hasChildren);
+    const response = new OuTreeNode(ou.name, ou.objectId, ou.hasChildren);
     this.nodeMap.set(ou.name, response);
     return response;
   }

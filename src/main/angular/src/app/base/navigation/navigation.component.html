@@ -8,10 +8,10 @@
       <ul class="navbar-nav me-auto" routerLinkActive="active">
         <li class="nav-item"><a class="nav-link" routerLink="/home">Home</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/users">Users</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/organizations">OUs</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/organizations">Ous</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/contexts">Contexts</a></li>
-        <li class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/search">Search</a></li>
-        <li class="nav-item" *ngIf="isAdmin"><a class="nav-link" routerLink="/elastic">ESAdmin</a></li>
+        <li *ngIf="isAdmin" class="nav-item"><a class="nav-link" routerLink="/search">Search</a></li>
+        <li *ngIf="isAdmin" class="nav-item"><a class="nav-link" routerLink="/elastic">ESAdmin</a></li>
       </ul>
       <login-component></login-component>
     </div>

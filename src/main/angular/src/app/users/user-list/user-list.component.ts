@@ -110,9 +110,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectUser(user: User) {
+  gotoUser(user: User) {
     this.selectedUser = user;
-    this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+    this.router.navigate(['/user', this.selectedUser.objectId], {queryParams: {token: this.token}});
   }
 
   addNewUser() {

@@ -33,7 +33,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   allowedSubjects: string[] = [];
 
   workflows2display: string[] = [];
-  selectedWorkflow: string;
+  workflow: string;
 
   ous: Ou[] = [];
   selectedOu: Ou;
@@ -72,7 +72,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.initializeAllowed(this.ctx);
 
     this.workflows2display = Object.keys(workflow).filter((val) => val.match(/^[A-Z]/));
-    this.selectedWorkflow = this.ctx.workflow;
+    this.workflow = this.ctx.workflow;
   }
 
   ngOnDestroy() {
@@ -161,7 +161,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx.workflow = value;
   }
 
-  activateCtx(ctx: Ctx) {
+  openCtx(ctx: Ctx) {
     this.ctx = ctx;
     if (this.ctx.state === 'CLOSED') {
       this.contextsService.openCtx(this.ctx, this.token)

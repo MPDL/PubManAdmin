@@ -1,20 +1,20 @@
-<form #f1="ngForm" [hidden]="loggedIn" *ngIf="empty">
+<form #form1="ngForm" [hidden]="loggedIn" *ngIf="empty">
   <div class="row g-1">
     <div class="col validation-field-parent">
-      <input type="text" class="form-control form-control-sm py-0" name="userName" [(ngModel)]="credentials.userName" #userName="ngModel" placeholder="loginname" required />
+      <input type="text" class="form-control form-control-sm py-0" placeholder="loginname" [(ngModel)]="credentials.userName" name="_userName" #userName="ngModel" required />
       <div *ngIf="userName.invalid && userName.touched" class="form-text text-danger validation-message">required*</div>
     </div>
     <div class="col validation-field-parent">
-      <input type="password" class="form-control form-control-sm" name="password" [(ngModel)]="credentials.password" #password="ngModel" placeholder="password" required />
+      <input type="password" class="form-control form-control-sm" placeholder="password" [(ngModel)]="credentials.password" name="_password" #password="ngModel" required />
       <div *ngIf="password.invalid && password.touched" class="form-text text-danger validation-message">required*</div>
     </div>
     <div class="col-auto">
-      <input type="submit" [disabled]="f1.invalid" class="btn btn-outline-primary btn-sm" name="login" value="login" (click)="login()" />
+      <input type="submit" [disabled]="form1.invalid" class="btn btn-outline-primary btn-sm" (click)="login()"value="login" />
     </div>
   </div>
 </form>
 
-<form #f2="ngForm" [hidden]="!loggedIn">
+<form #form2="ngForm" [hidden]="!loggedIn">
   <div class="row g-1">
     <div class="col align-self-center">
       <small class="form-text text-primary"><span>Welcome</span></small>

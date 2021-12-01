@@ -19,7 +19,7 @@ export const mpgOus4auto = {
   ],
 };
 
-export const allOpenedOUs = {
+export const allOpenedOus = {
   'size': 300,
   'query': {
     'bool': {
@@ -42,7 +42,7 @@ export const allOpenedOUs = {
   ],
 };
 
-export const allTopLevelOUs = {
+export const allTopLevelOus = {
   'size': 100,
   'query': {
     'bool': {

@@ -1,51 +1,51 @@
 <div class="container">
 	<div class="row w-100">
 		<div class="col-4">
-			<select class="select form-select form-select-sm" [(ngModel)]="selectedRole" (ngModelChange)="onChangeRole($event)" name="selectedRole">
+			<select class="select form-select form-select-sm" [(ngModel)]="selectedRole" (ngModelChange)="onChangeRole($event)">
 				<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
 			</select>
 		</div>
 		<div *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')" class="input-group col12">
-			<input class="form-control form-control-sm" placeholder="filter by name of context" type="text"	(ngModelChange)="filterCtxs($event)" [(ngModel)]="filterText" />
-			<select class="select form-select form-select-sm" [(ngModel)]="selectedCtx"	(ngModelChange)="onChangeCtx($event)" name="selectedCtx">
+			<input type="text" class="form-control form-control-sm" placeholder="filter by name of context" [(ngModel)]="filterText" (ngModelChange)="filterCtxs($event)" />
+			<select class="select form-select form-select-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)">
 				<option [ngValue]="ctx" *ngFor="let ctx of filteredCtxs">{{ctx.name}} {{ctx.objectId}}</option>
 			</select>
 		</div>
 		<div *ngIf="selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-7">
-			<select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)" name="selectedOu">
+			<select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)">
 				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.name}} {{ou.objectId}}</option>
 			</select>
 		</div>
 		<div *ngIf="!selectedRole" class="col-7">
-			<input class="form-control form-control-sm" type="text" name="placeholder2" id="placeholder2" value="select a role ..." readonly />
+			<input type="text" class="form-control form-control-sm" value="select a role ..." readonly />
 		</div>
 	</div>
 
 	<div class="row w-100 mt-1">
 		<div *ngIf="selectedOu && selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm float-start" name="add" value="add" (click)="validateSelection()" />
+			<input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
 		</div>
 	</div>
 
 	<div class="row w-100 mt-1">
 		<div *ngIf="selectedCtx && selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')" class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm float-start" name="add" value="add" (click)="validateSelection()" />
+			<input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
 		</div>
 	</div>
 
 	<div class="row w-100 mt-1">
 		<div *ngIf="selectedRole && (selectedRole.startsWith('CONE') || selectedRole === 'REPORTER')" class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm float-start" name="add" value="add" (click)="validateSelection()" />
+			<input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
 		</div>
 	</div>
 
 	<div class="row w-100 mt-1">
 		<div class="col-11">
-			<textarea class="form-control form-control-sm" rows="3" id="selectedGrants" [(ngModel)]="grantsToAdd" readonly></textarea>
+			<textarea class="form-control form-control-sm" rows="3" [(ngModel)]="grantsToAdd" readonly></textarea>
 		</div>
 		<div class="col-1">
-			<input *ngIf="grantsToAdd" type="button" class="btn btn-outline-primary btn-sm float-start" name="addGrants" value="add grants" (click)="addGrants()" />
-			<input *ngIf="grantsToAdd" type="button" class="btn btn-outline-primary btn-sm float-start mt-1" name="reset" value="clear list" (click)="resetGrants()" />
+			<input *ngIf="grantsToAdd" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="addGrants()" value="add grants" />
+			<input *ngIf="grantsToAdd" type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetGrants()" value="clear list" />
 		</div>
 	</div>
 </div>

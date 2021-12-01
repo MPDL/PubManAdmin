@@ -1,108 +1,88 @@
 <div class="container">
-  <div *ngIf="!isNewIndex; else new_index">
+  <div *ngIf="isNewIndex; then tmplNewIndex else tmplNoNewIndex"></div>
+
+  <ng-template #tmplNewIndex>
+    <div class="card border-secondary text-secondary">
+      <div class="card-header border-secondary bg-white">
+        <h4 class="text-secondary card-title">details 4 {{indexName}}</h4>
+      </div>
+      <form #form="ngForm" class="list-group-item text-secondary" (ngSubmit)="form.valid && save()" novalidate>
+        <div class="row w-100">
+          <label class="col-2 col-form-label col-form-label-sm">name</label>
+          <div class="col-10">
+            <input class="form-control form-control-sm" type="text" [(ngModel)]="indexName" name="_IndexName" required minlength="4" valueNotAllowed="new">
+            <div *ngIf="indexName.invalid && (indexName.dirty || indexName.touched)" class="text-danger">
+              <div *ngIf="indexName.errors.required">name is required.</div>
+              <div *ngIf="indexName.errors.minlength">name must be at least 4 characters long.</div>
+              <div *ngIf="indexName.errors.valueNotAllowed">name MUST NOT be 'new'.</div>
+            </div>
+          </div>
+        </div>
+        <div class="row w-100">
+          <label class="col-2 col-form-label col-form-label-sm">settings</label>
+          <div class="col-10">
+            <select class="select form-select form-select-sm" ngModel name="_settings" (ngModelChange)="onChangeSettings($event)">
+              <option [ngValue]="setting.index" *ngFor="let setting of list">{{setting.index}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row w-100">
+          <label class="col-2 col-form-label col-form-label-sm">mappings</label>
+          <div class="col-10">
+            <select class="select form-select form-select-sm" ngModel name="_mapping" (ngModelChange)="onChangeMappings($event)">
+              <option [ngValue]="mapping.index" *ngFor="let mapping of list">{{mapping.index}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row w-100">
+          <div class="col-2"></div>
+          <div class="col-3">
+            <input type="button" class="btn btn-outline-secondary btn-sm me-2" (click)="remoteList()" value="connect" />
+            <input type="button" class="btn btn-outline-secondary btn-sm me-2" (click)="gotoList()" value="cancel" />
+            <input type="button" class="btn btn-outline-secondary btn-sm" (click)="save()" value="save" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #tmplNoNewIndex>
     <div class="card border-secondary text-secondary mt-2">
       <div class="card-header border-secondary text-end bg-white">
         <h4 class="text-secondary card-title">{{indexName}}</h4>
       </div>
       <div class="row mt-2">
         <div class="col-2">
-          <ul class="nav flex-column nav-pills" id="index-tabs" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="index-info-tab" data-bs-toggle="pill" data-bs-target="#index-info" role="tab">Info</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="index-settings-tab" data-bs-toggle="pill" data-bs-target="#index-settings" role="tab">Settings</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="index-mapping-tab" data-bs-toggle="pill" data-bs-target="#index-mapping" role="tab">Mapping</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="index-aliases-tab" data-bs-toggle="pill" data-bs-target="#index-aliases" role="tab">Aliases</a>
-            </li>
+          <ul class="nav flex-column nav-pills" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" data-bs-target="#index-info" role="tab">Info</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" data-bs-target="#index-settings" role="tab">Settings</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" data-bs-target="#index-mapping" role="tab">Mapping</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" data-bs-target="#index-aliases" role="tab">Aliases</a></li>
           </ul>
         </div>
         <div class="col-10">
-          <div class="tab-content" id="index-tabContent">
+          <div class="tab-content">
             <div class="tab-pane fade" id="index-settings" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary" type="button" value="update" (click)="notyet(indexName)" />
+              <input type="button" class="btn btn-sm btn-outline-secondary" (click)="notyet(indexName)" value="update" />
               <pre class="m-3">{{settings | json}}</pre>
             </div>
             <div class="tab-pane fade" id="index-mapping" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="update" (click)="notyet(indexName)" />
-              <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="notyet(indexName)" />
+              <input type="button" class="btn btn-sm btn-outline-secondary me-2" (click)="notyet(indexName)" value="update" />
+              <input type="button" class="btn btn-sm btn-outline-secondary" (click)="notyet(indexName)" value="remove" />
               <pre class="m-3">{{mapping | json}}</pre>
             </div>
             <div class="tab-pane fade" id="index-aliases" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary me-2" type="button" value="add" (click)="addAlias(indexName)" />
-              <input class="btn btn-sm btn-outline-secondary" type="button" value="remove" (click)="removeAlias(indexName)" />
+              <input type="button" class="btn btn-sm btn-outline-secondary me-2" (click)="addAlias(indexName)" value="add" />
+              <input type="button" class="btn btn-sm btn-outline-secondary" (click)="removeAlias(indexName)" value="remove" />
               <pre class="m-3">{{aliases | json}}</pre>
             </div>
             <div class="tab-pane fade show active" id="index-info" role="tabpanel">
-              <input class="btn btn-sm btn-outline-secondary me-2" type="button" [value]="indexInfo?.status === 'open' ? 'close' : 'open'"
-                (click)="openOrClose(indexInfo)" />
+              <input type="button" class="btn btn-sm btn-outline-secondary me-2" (click)="openOrClose(indexInfo)" [value]="indexInfo?.status === 'open' ? 'close' : 'open'" />
               <pre class="m-3">{{indexInfo | json}}</pre>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  
-<ng-template #new_index>
-    <div class="card border-secondary text-secondary">
-        <div class="card-header border-secondary bg-white">
-          <h4 class="text-secondary card-title">details 4 {{indexName}}</h4>
-        </div>
-  <form class="list-group-item text-secondary" name="new_index_form" (ngSubmit)="new_index_form.valid && save()" #new_index_form="ngForm"
-    novalidate>
-    <div class="row w-100">
-      <label for="index-name" class="col-2 col-form-label col-form-label-sm">name</label>
-      <div class="col-10">
-        <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="indexName" id="index-name" required minlength="4"
-          valueNotAllowed="new" #name="ngModel">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-          <div *ngIf="name.errors.required">
-            name is required.
-          </div>
-          <div *ngIf="name.errors.minlength">
-            name must be at least 4 characters long.
-          </div>
-          <div *ngIf="name.errors.valueNotAllowed">
-            name MUST NOT be new.
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row w-100">
-      <label for="index-settings" class="col-2 col-form-label col-form-label-sm">settings</label>
-      <div class="col-10">
-        <select id="index-settings" class="select form-select form-select-sm" ngModel (ngModelChange)="onChangeSettings($event)" name="Settings">
-          <option [ngValue]="setting.index" *ngFor="let setting of list">{{setting.index}}</option>
-        </select>
-      </div>
-    </div>
-    <div class="row w-100">
-      <label for="index-mappings" class="col-2 col-form-label col-form-label-sm">mappings</label>
-      <div class="col-10">
-        <select id="index-mappings" class="select form-select form-select-sm" ngModel (ngModelChange)="onChangeMappings($event)" name="Mapping">
-          <option [ngValue]="mapping.index" *ngFor="let mapping of list">{{mapping.index}}</option>
-        </select>
-      </div>
-    </div>
-    <div class="row w-100">
-      <div class="col-2"></div>
-      <div class="col-3">
-        <input type="button" class="btn btn-outline-secondary btn-sm me-2" name="connect" value="connect" (click)="remoteList()" />
-        <input type="button" class="btn btn-outline-secondary btn-sm me-2" name="cancel" value="cancel" (click)="gotoList()" />
-        <input type="button" class="btn btn-outline-secondary btn-sm" name="save" value="save" (click)="save()" />
-      </div>
-    </div>
-  </form>
-  <!--
-  <pre>{{f.value | json}}</pre>
-  <pre>{{selectedSettings | json}}</pre>
-  <pre>{{selectedMapping | json}}</pre>
-  -->
-  </div>
-</ng-template>
+  </ng-template>
 </div>

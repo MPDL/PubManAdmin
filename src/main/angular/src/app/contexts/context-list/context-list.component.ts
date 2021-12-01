@@ -78,9 +78,9 @@ export class ContextListComponent implements OnInit, OnDestroy {
       });
   }
 
-  selectCtx(ctx: Ctx) {
+  gotoCtx(ctx: Ctx) {
     this.selectedCtx = ctx;
-    this.router.navigate(['/context', ctx.objectId]);
+    this.router.navigate(['/context', this.selectedCtx.objectId]);
   }
 
   addNewCtx() {

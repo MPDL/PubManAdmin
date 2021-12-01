@@ -1,122 +1,102 @@
-<div class="container" *ngIf="selected">
+<div *ngIf="ou" class="container">
   <div class="card text-white bg-info text-end">
     <div class="card-body">
-      <h4 class="card-title">{{selected.metadata.name}}</h4>
+      <h4 class="card-title">{{ou.name}}</h4>
     </div>
 
-    <form class="list-group-item text-info" name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
+    <form #form="ngForm" class="list-group-item text-info" (ngSubmit)="form.valid && saveOu()" novalidate>
       <div class="row w-100 mt-3">
-        <label for="selected-ou-id" class="col-2 col-form-label col-form-label-sm">ouid</label>
-        <div class="col-2">
-          <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="selected.objectId" id="selected-ou-id" readonly>
-        </div>
-        <label for="selected-creator-id" class="col-1 col-form-label col-form-label-sm">creator</label>
-        <div class="col-2">
-          <input class="form-control form-control-sm" type="text" name="creator" [(ngModel)]="selected.creator.objectId" id="selected-creator-id" readonly>
-        </div>
-        <label for="selected-state" class="col-1 col-form-label col-form-label-sm">state</label>
-        <div class="col-2">
-          <input class="form-control form-control-sm" type="text" name="state" [(ngModel)]="selected.publicStatus" id="selected-state" readonly>
-        </div>
-        <div class="col-2">
-          <input type="button" class="btn btn-outline-info btn-sm float-end" (click)="openClose(selected)" name="openClose" [value]="selected.publicStatus === 'OPENED' ? 'close' : 'open'" />
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-          <label for="selected-parent" class="col-2 col-form-label col-form-label-sm">parent</label>
-          <div class="col-7">
-              <input class="form-control form-control-sm" type="text" name="searchTerm" [(ngModel)]="searchTerm" (keyup)="getNames(searchTerm)" placeholder="search by name of organization" id="searchTerm" autocomplete="off">
-            <div *ngIf="ounames.length > 0">
-              <ul class="list-group" *ngFor="let name of ounames" (clickOutside)="close()">
-                <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="select(name)">
-                  <small>{{name.metadata.name}}</small>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <label for="selected-parent-id" class="col-1 col-form-label col-form-label-sm">parentId</label>
-          <div class="col-2">
-              <input *ngIf="selected?.parentAffiliation; else no_parent_id" class="form-control form-control-sm" type="text" name="parentid" [(ngModel)]="selected.parentAffiliation.objectId" id="selected-parent-id" required #parentid="ngModel">
-            <ng-template #no_parent_id>
-              <input class="form-control form-control-sm" type="text" [readonly]="!isNewOrganization">
-            </ng-template>
-          </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label for="selected-ou-type" class="col-2 col-form-label col-form-label-sm">type</label>
-        <div class="col-4">
-          <input class="form-control form-control-sm" type="text" name="type" [(ngModel)]="selected.metadata.type" id="selected-ou-type" [readonly]="!isNewOrganization">
-        </div>
-        <label for="selected-start-date" class="col-1 col-form-label col-form-label-sm">start</label>
-        <div class="col-2">
-          <input class="form-control form-control-sm" type="text" name="start" [(ngModel)]="selected.metadata.startDate" id="selected-start-date">
-        </div>
-        <label for="selected-end-date" class="col-1 col-form-label col-form-label-sm">end</label>
-        <div class="col-2">
-          <input class="form-control form-control-sm" type="text" name="end" [(ngModel)]="selected.metadata.endDate" id="selected-end-date">
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label for="selected-name" class="col-2 col-form-label col-form-label-sm">name</label>
-        <div class="col-10">
-          <input class="form-control form-control-sm" type="text" name="ouname" [(ngModel)]="selected.metadata.name" id="selected-name" required minlength="4" value-not-allowed="new ou" #ouname="ngModel">
-           <div *ngIf="ouname.invalid && (ouname.dirty || ouname.touched)" class="text-danger">
-            <div *ngIf="ouname.errors.required">
-              name is required.
-            </div>
-            <div *ngIf="ouname.errors.minlength">
-              name must be at least 4 characters long.
-            </div>
-            <div *ngIf="ouname.errors.value-not-allowed">
-              name MUST NOT be new ou.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label for="selected-city" class="col-2 col-form-label col-form-label-sm">address</label>
+        <label class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-7">
-          <input class="form-control form-control-sm" type="text" name="address" [(ngModel)]="selected.metadata.city" id="selected-city">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.name" name="_ouName" #ouName="ngModel" required minlength="4" value-not-allowed="new ou">
+          <div *ngIf="ouName.invalid && (ouname.dirty || ouName.touched)" class="text-danger">
+            <div *ngIf="ouName.errors.required">name is required.</div>
+            <div *ngIf="ouName.errors.minlength">name must be at least 4 characters long.</div>
+            <div *ngIf="ouName.errors.value-not-allowed">name MUST NOT be 'new ou'.</div>
+          </div>
         </div>
-        <label for="selected-country" class="col-1 col-form-label col-form-label-sm">country</label>
+        <label *ngIf="!isNewOu" class="col-1 col-form-label col-form-label-sm">id</label>
+        <div *ngIf="!isNewOu" class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.objectId" name="_ouId" readonly>
+        </div>
+      </div>
+
+      <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">parent</label>
+        <div class="col-6">
+            <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
+          <div *ngIf="ous.length > 0">
+            <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="close()">
+              <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="selectOu(ou)">
+                <small>{{ou.name}}</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div *ngIf="ou.publicStatus === 'OPENED'" class="col-1">
+          <input type="button" class="btn btn-outline-info btn-sm float-start" (click)="changeOu()" value="change" />
+        </div>
+        <label *ngIf="!isNewOu" class="col-1 col-form-label col-form-label-sm">parentId</label>
+        <div *ngIf="!isNewOu" class="col-2">
+          <input *ngIf="ou?.parentAffiliation" type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" readonly>
+          <input *ngIf="!ou?.parentAffiliation" type="text" class="form-control form-control-sm" readonly>
+        </div>
+      </div>
+
+      <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">state</label>
         <div class="col-2">
-          <input class="form-control form-control-sm" type="text" name="country" [(ngModel)]="selected.metadata.countryCode" id="selected-city">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
+        </div>
+        <div class="col-2">
+          <input type="button" class="btn btn-outline-info btn-sm float-start" (click)="openOu(ou)" [value]="ou.publicStatus === 'OPENED' ? 'close' : 'open'" />
         </div>
       </div>
 
       <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">address</label>
+        <div class="col-4">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.city" name="_address">
+        </div>
+        <label class="col-1 col-form-label col-form-label-sm">country</label>
+        <div class="col-1">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.countryCode" name="_country">
+        </div>
+        <label class="col-1 col-form-label col-form-label-sm">start</label>
+        <div class="col-1">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.startDate" name="_startDate">
+        </div>
+        <label class="col-1 col-form-label col-form-label-sm">end</label>
+        <div class="col-1">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.endDate" name="_endDate">
+        </div>
+      </div>
+
+      <div class="row w-100 mt-4">
         <div class="col-3 ms-auto">
-          <input type="button" class="btn btn-outline-info btn-sm me-2" name="cancel" value="cancel" (click)="gotoList()" />
-          <input *ngIf="!isNewUser && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" name="delete" value="delete" (click)="delete(selected)" />
-          <input type="button" class="btn btn-outline-info btn-sm" name="save" value="save" (click)="save(selected)" />
+          <input type="button" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
+          <input *ngIf="!isNewOu && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu(ou)" value="delete" />
+          <input type="button" class="btn btn-outline-info btn-sm" (click)="saveOu(ou)" value="save" />
         </div>
       </div>
 
       <div class="row w-100 mt-3">
-        <label for="alternativeNames" class="col-2 col-form-label col-form-label-sm">alternative names</label>
+        <label class="col-2 col-form-label col-form-label-sm">alternative names</label>
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <input class="form-control form-control-sm" type="text" name="altName" [(ngModel)]="alternativeName" id="alternativeNames">
+              <input class="form-control form-control-sm" type="text" [(ngModel)]="alternativeName" name="_alternativeName">
             </div>
             <div class="col-1 justify-content-start">
-              <input type="button" class="btn btn-outline-info btn-sm m-1" name="addNames" value=">>" (click)="addName(alternativeName)" />
-              <input type="button" class="btn btn-outline-info btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearNames" value="<<" (click)="clearNames()" />
+              <input type="button" [disabled]="!alternativeName" class="btn btn-outline-info btn-sm m-1" (click)="addAlternativeName(alternativeName)" value=">>" />
+              <input type="button" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearAlternativeNames()" value="<<" />
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let name of selected.metadata.alternativeNames" [class.selected]="isSelected(name)">
+                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let name of ou.metadata.alternativeNames">
                   <div class="row">
-                    <span class="col-11">
-                      <label class="col-form-label-sm p-0">{{name}}</label>
-                    </span>
-                    <span class="col-1">
-                      <input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteName(name); $event.stopPropagation()" name="deleteName" value="x" />
-                    </span>
+                    <span class="col-11"><label class="col-form-label-sm">{{name}}</label></span>
+                    <span class="col-1"><input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteAlternativeName(name); $event.stopPropagation()" value="x" /></span>
                   </div>
                 </div>
               </ul>
@@ -126,15 +106,15 @@
       </div>
 
       <div class="row w-100 mt-3">
-        <label for="descriptions" class="col-2 col-form-label col-form-label-sm">descriptions</label>
+        <label class="col-2 col-form-label col-form-label-sm">descriptions</label>
         <div class="col-10 text-end">
           <div class="row">
-            <div class="col-10">
-              <textarea class="form-control form-control-sm" type="text" name="descs" [(ngModel)]="description" id="descriptions"></textarea>
+            <div class="col-11">
+              <textarea type="text" class="form-control form-control-sm" [(ngModel)]="description" name="_descriptions"></textarea>
             </div>
-            <div class="col-2 justify-content-start">
-              <input type="button" class="btn btn-outline-info btn-sm m-1" name="addDescs" value=">>" (click)="addDesc(description)" />
-              <input type="button" class="btn btn-outline-info btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearDescs" value="<<" (click)="clearDescs()" />
+            <div class="col-1 justify-content-start">
+              <input type="button" [disabled]="!description" class="btn btn-outline-info btn-sm m-1" (click)="addDescription(description)" value=">>" />
+              <input type="button" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearDescriptions()" value="<<" />
             </div>
           </div>
         </div>
@@ -142,44 +122,34 @@
 
       <div class="row w-100 mt-3">
         <div class="col-10 ms-auto">
-          <div class="row">
-            <ul class="list-group">
-              <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let desc of selected.metadata.descriptions" [class.selected]="isSelected(desc)">
-                <div class="row">
-                  <span class="col-11 pt-0 pb-0">
-                    <label class="col-form-label-sm p-0">{{desc}}</label>
-                  </span>
-                  <span class="col-1">
-                    <input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteDesc(desc); $event.stopPropagation()" name="deleteDesc" value="x" />
-                  </span>
-                </div>
+          <ul class="list-group">
+            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let desc of ou.metadata.descriptions">
+              <div class="row">
+                <span class="col-11 pt-0 pb-0"><label align="left" class="col-form-label-sm p-0">{{desc}}</label></span>
+                <span class="col-1"><input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteDescription(desc); $event.stopPropagation()" value="x" /></span>
               </div>
-            </ul>
-          </div>
+            </div>
+          </ul>
         </div>
       </div>
 
       <div class="row w-100 mt-3">
-        <label for="ouIdentifiers" class="col-2 col-form-label col-form-label-sm">identifiers</label>
+        <label class="col-2 col-form-label col-form-label-sm">identifiers</label>
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <input class="form-control form-control-sm" type="text" name="ouIdentifierId" [(ngModel)]="ouIdentifierId" id="ouIdentifierId">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="ouIdentifierId" name="_ouIdentifierId">
             </div>
             <div class="col-1 justify-content-start">
-              <input type="button" class="btn btn-outline-info btn-sm m-1" name="addIdentifiers" value=">>" (click)="addIdentifier(ouIdentifierId)" />
-              <input type="button" class="btn btn-outline-info btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearIdentifiers" value="<<" (click)="clearIdentifiers()" />
+              <input type="button" [disabled]="!ouIdentifierId" class="btn btn-outline-info btn-sm m-1" (click)="addIdentifier(ouIdentifierId)" value=">>" />
+              <input type="button" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearIdentifiers()" value="<<" />
             </div>
             <div class="col-6">
               <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let id of selected.metadata.identifiers" [class.selected]="isSelected(id)">
+                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let id of ou.metadata.identifiers">
                   <div class="row">
-                    <span class="col-11">
-                      <label class="col-form-label-sm p-0">{{id.id}}</label>
-                    </span>
-                    <span class="col-1">
-                      <input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteIdentifier(id); $event.stopPropagation()" name="deleteIdentifier" value="x" />
-                    </span>
+                    <span class="col-11"><label class="col-form-label-sm p-0">{{id.id}}</label></span>
+                    <span class="col-1"><input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteIdentifier(id); $event.stopPropagation()" value="x" /></span>
                   </div>
                 </div>
               </ul>
@@ -188,42 +158,30 @@
         </div>
       </div>
 
-      <div *ngIf="selected.hasChildren === true" class="row w-100 mt-3">
-        <label for="childrenTable" class="col-2 col-form-label col-form-label-sm">children</label>
+      <div *ngIf="ou.hasChildren" class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">children</label>
         <div class="col-10">
           <ul class="list-group">
             <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let child of children" (click)="showDetails(child.objectId)">
               <div class="row">
-                <span class="col-3">
-                  <label class="col-form-label-sm p-0">{{child.objectId}}</label>
-                </span>
-                <span class="col-2">
-                  <label class="col-form-label-sm p-0">{{child.publicStatus}}</label>
-                </span>
-                <span class="col-7">
-                  <label class="col-form-label-sm p-0">{{child.metadata.name}}</label>
-                </span>
+                <span class="col-3"><label class="col-form-label-sm p-0">{{child.objectId}}</label></span>
+                <span class="col-2"><label class="col-form-label-sm p-0">{{child.publicStatus}}</label></span>
+                <span class="col-7"><label class="col-form-label-sm p-0">{{child.metadata.name}}</label></span>
               </div>
             </div>
           </ul>
         </div>
       </div>
       
-      <div *ngIf="selected.hasPredecessors === true" class="row w-100 mt-3">
-        <label for="predecessorsTable" class="col-2 col-form-label col-form-label-sm">predecessors</label>
+      <div *ngIf="ou.hasPredecessors" class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">predecessors</label>
         <div class="col-10">
           <ul class="list-group">
             <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let predecessor of predecessors" (click)="showDetails(predecessor.objectId)">
               <div class="row">
-                <span class="col-3">
-                  <label class="col-form-label-sm">{{predecessor.objectId}}</label>
-                </span>
-                <span class="col-2">
-                  <label class="col-form-label-sm">{{predecessor.publicStatus}}</label>
-                </span>
-                <span class="col-7">
-                  <label class="col-form-label-sm">{{predecessor.metadata.name}}</label>
-                </span>
+                <span class="col-3"><label class="col-form-label-sm">{{predecessor.objectId}}</label></span>
+                <span class="col-2"><label class="col-form-label-sm">{{predecessor.publicStatus}}</label></span>
+                <span class="col-7"><label class="col-form-label-sm">{{predecessor.metadata.name}}</label></span>
               </div>
             </div>
           </ul>

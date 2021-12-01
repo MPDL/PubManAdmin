@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
-import {allOpenedOUs} from '../../base/common/model/query-bodies';
+import {allOpenedOus} from '../../base/common/model/query-bodies';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
@@ -67,7 +67,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
   }
 
   getCtxsAndOus() {
-    const ousBody = allOpenedOUs;
+    const ousBody = allOpenedOus;
     this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
       .subscribe(
         (data) => {

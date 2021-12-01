@@ -1,7 +1,7 @@
 <p></p>
-<div *ngIf="info; then thenBlock else elseBlock"></div>
+<div *ngIf="info; then tmplInfo else tmplNoInfo"></div>
 
-<ng-template #thenBlock>
+<ng-template #tmplInfo>
   <div class="alert alert-secondary alert-dismissible fade show" role="alert">
     <p>
       You're connected to a cluster called <strong>{{info.cluster_name}}</strong>
@@ -12,7 +12,7 @@
   </div>
 </ng-template>
 
-<ng-template #elseBlock>
+<ng-template #tmplNoInfo>
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
     <p>
       You're not connected to a cluster.
@@ -22,15 +22,15 @@
 </ng-template>
 
 
-<form #f1="ngForm">
+<form #form="ngForm">
   <div class="row g-2">
     <div class="col-3">
-      <label for="connect">connect 2</label>
-      <input type="text" id="connect" name="connect" #connect="ngModel" [(ngModel)]="host" class="form-control form-control-sm" required>
+      <label>connect 2</label>
+      <input type="text" class="form-control form-control-sm" [(ngModel)]="host" name="_connect" #connect="ngModel" required>
       <div *ngIf="connect.invalid && (connect.dirty || connect.touched)" class="text-danger">connection is required</div>
     </div>
     <div class="col-12">
-      <input type="button" [disabled]="f1.invalid" class="btn btn-outline-secondary" (click)="connect2(host)" value="connect">
+      <input type="button" [disabled]="form.invalid" class="btn btn-outline-secondary" (click)="connect2(host)" value="connect">
     </div>
   </div>
 </form>

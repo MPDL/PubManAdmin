@@ -1,65 +1,59 @@
-<div class="container" *ngIf="ctx">
+<div *ngIf="ctx" class="container">
   <div class="card text-white bg-success text-end">
     <div class="card-body">
       <h4 class="card-title">{{ctx.name}}</h4>
     </div>
     
-    <form class="list-group-item text-success" name="form" (ngSubmit)="f.valid && save(ctx)" #f="ngForm" novalidate>
+    <form #form="ngForm" class="list-group-item text-success" (ngSubmit)="form.valid && save(ctx)" novalidate>
       <div class="row w-100 mt-3">
-        <label for="ctxName" class="col-2 col-form-label col-form-label-sm">name</label>
-        <div class="col-6">
-          <input class="form-control form-control-sm" type="text" name="name" [(ngModel)]="ctx.name" id="ctxName" required minlength="4" value-not-allowed="new ctx" #name="ngModel">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">
-            <div *ngIf="name.errors.required">
-              name is required.
-            </div>
-            <div *ngIf="name.errors.minlength">
-              name must be at least 4 characters long.
-            </div>
-            <div *ngIf="name.errors.value-not-allowed">
-              name MUST NOT be new ctx.
-            </div>
+        <label class="col-2 col-form-label col-form-label-sm">name</label>
+        <div class="col-7">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.name" name="_ctxName" #ctxName="ngModel" required minlength="4" value-not-allowed="new ctx">
+          <div *ngIf="ctxName.invalid && (ctxName.dirty || ctxName.touched)" class="text-danger">
+            <div *ngIf="ctxName.errors.required">name is required.</div>
+            <div *ngIf="ctxName.errors.minlength">name must be at least 4 characters long.</div>
+            <div *ngIf="ctxName.errors.value-not-allowed">name MUST NOT be 'new ctx'.</div>
           </div>
         </div>
-        <label *ngIf="!isNewCtx" for="ctxId" class="col-1 col-form-label col-form-label-sm">id</label>
-        <div *ngIf="!isNewCtx" class="col-3">
-          <input class="form-control form-control-sm" type="text" name="id" [(ngModel)]="ctx.objectId" id="ctxId" readonly>
+        <label *ngIf="!isNewCtx" class="col-1 col-form-label col-form-label-sm">id</label>
+        <div *ngIf="!isNewCtx" class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.objectId" name="_ctxId" readonly>
         </div>
       </div>
 
       <div class="row w-100 mt-3">
-        <label for="ctxDescription" class="col-2 col-form-label col-form-label-sm">description</label>
-        <div class="col-10">
-          <input class="form-control form-control-sm" type="text" name="description" [(ngModel)]="ctx.description" id="ctxDescription">
+        <label class="col-2 col-form-label col-form-label-sm">description</label>
+        <div class="col-7">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.description" name="_ctxDescription">
         </div>
       </div>
 
       <div class="row w-100 mt-3">
-        <label for="ctxState" class="col-2 col-form-label col-form-label-sm">state</label>
-        <div class="col-6">
-          <input class="form-control form-control-sm" type="text" name="state" [(ngModel)]="ctx.state" id="ctxState" readonly>
+        <label class="col-2 col-form-label col-form-label-sm">state</label>
+        <div class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
         </div>
-        <div *ngIf="ctx.state && !isNewOu" class="col-4">
-          <input type="button" class="btn btn-outline-success btn-sm float-end" (click)="activateCtx(ctx)" name="state" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
+        <div *ngIf="ctx.state && !isNewOu" class="col-2">
+          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="openCtx(ctx)" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
         </div>
       </div>
 
       <div *ngIf="!isNewOu" class="row w-100 mt-3">
-        <label for="ctxOu" class="col-2 col-form-label col-form-label-sm">organization</label>
+        <label class="col-2 col-form-label col-form-label-sm">organization</label>
         <div *ngIf="ctx.responsibleAffiliations" class="col-6">
-            <input class="form-control form-control-sm" type="text" name="ouid" [(ngModel)]="ctx.responsibleAffiliations[0].name" id="ctxOu" readonly>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
         </div>
-        <div *ngIf="ctx.state === 'OPENED'" class="col-4">
-            <input type="button" class="btn btn-outline-success btn-sm float-end" (click)="changeOu()" name="changeOu" value="change" />
+        <div *ngIf="ctx.state === 'OPENED'" class="col-1">
+            <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeOu()" value="change" />
         </div>
     </div>
 
       <div *ngIf="isNewCtx || isNewOu" class="row w-100 mt-3">
-        <label for="ouSearchTerm" class="col-2 col-form-label col-form-label-sm">organization</label>
-          <div class="col-10">
-            <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" placeholder="search by name of organization" id="ouSearchTerm" autocomplete="off">
+        <label class="col-2 col-form-label col-form-label-sm">organization</label>
+          <div class="col-7">
+            <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
             <div *ngIf="ous.length > 0">
-                <ul id="ouSuggestions" class="list-group" (clickOutside)="closeOus()">
+                <ul class="list-group" (clickOutside)="closeOus()">
                     <li *ngFor="let ou of ous" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectOu(ou)">
                         <small>{{ou.name}}</small>
                     </li>
@@ -68,37 +62,33 @@
         </div>
       </div>
 
-      <div class="row w-100 mt-3">
+      <div class="row w-100 mt-4">
         <div class="col-3 ms-auto">
-          <input type="button" class="btn btn-outline-success btn-sm me-2" name="cancel" value="cancel" (click)="gotoCtxList()" />
-          <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" name="delete" value="delete" (click)="deleteCtx(ctx)" />
-          <input type="button" class="btn btn-outline-success btn-sm" name="save" value="save" (click)="saveCtx(ctx)" />
+          <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
+          <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx(ctx)" value="delete" />
+          <input type="button" class="btn btn-outline-success btn-sm" (click)="saveCtx(ctx)" value="save" />
         </div>
       </div>
 
       <div *ngIf="ctx.state !== 'CLOSED'" class="row w-100 mt-3">
-        <label for="allowedGenres" class="col-2 col-form-label col-form-label-sm">allowed genres</label>
+        <label class="col-2 col-form-label col-form-label-sm">allowed genres</label>
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <select class="select form-control form-control-sm" size="10" multiple name="selectedGenres" [(ngModel)]="selectedGenres">
+              <select class="select form-control form-control-sm" size="10" multiple [(ngModel)]="selectedGenres" name="_selectedGenres">
                 <option *ngFor="let genre of genres2display" [value]="genre">{{genre}}</option>
               </select>
             </div>
             <div class="col-1 justify-content-start">
-              <input type="button" [disabled]="!selectedGenres" class="btn btn-outline-success btn-sm m-1" name="addGenres" value=">>" title="ADD selected" (click)="addGenres(selectedGenres)" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllGenres" value="all" title="ADD ALL!" (click)="addAllGenres()" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearGenres" value="<<" (click)="clearGenres()" />
+              <input type="button" [disabled]="!selectedGenres" class="btn btn-outline-success btn-sm m-1" (click)="addGenres(selectedGenres)" value=">>" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" title="ADD ALL!" (click)="addAllGenres()" value="all" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" title="REMOVE ALL!" (click)="clearGenres()" value="<<" />
             </div>
             <div class="col-6">
               <ul class="list-group">
                 <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let genre of allowedGenres">
-                  <span class="col-11">
-                    <label class="col-form-label-sm me-2">{{genre}}</label>
-                  </span>
-                  <span class="col-1">
-                    <input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteGenre(genre); $event.stopPropagation()" name="deleteGenre" value="x" />
-                  </span>
+                  <span class="col-11"><label class="col-form-label-sm me-2">{{genre}}</label></span>
+                  <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteGenre(genre); $event.stopPropagation()" value="x" /></span>
                 </div>
               </ul>
             </div>
@@ -107,28 +97,24 @@
       </div>
 
       <div *ngIf="ctx.state !== 'CLOSED'" class="row w-100 mt-3">
-        <label for="allowedSubjects" class="col-2 col-form-label col-form-label-sm">subject classifications</label>
+        <label class="col-2 col-form-label col-form-label-sm">subject classifications</label>
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <select class="select form-control form-control-sm" size="10" multiple name="subjects2display" [(ngModel)]="selectedSubjects">
+              <select class="select form-control form-control-sm" size="10" multiple [(ngModel)]="selectedSubjects" name="_selectedSubjects">
                 <option *ngFor="let subject of subjects2display" [value]="subject">{{subject}}</option>
               </select>
             </div>
             <div class="col-1">
-              <input type="button" [disabled]="!selectedSubjects" class="btn btn-outline-success btn-sm m-1" name="addSubjects" value=">>" title="ADD selected" (click)="addSubjects(selectedSubjects)" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" name="addAllSubjects" value="all" title="ADD ALL!" (click)="addAllSubjects()" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" data-bs-toggle="tooltip" data-placement="top" title="REMOVE ALL!" name="clearSubjects" value="<<" (click)="clearSubjects()" />
+              <input type="button" [disabled]="!selectedSubjects" class="btn btn-outline-success btn-sm m-1" title="ADD selected" (click)="addSubjects(selectedSubjects)" value=">>" />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" title="ADD ALL!" (click)="addAllSubjects()"value="all"  />
+              <input type="button" class="btn btn-outline-success btn-sm m-1" title="REMOVE ALL!" (click)="clearSubjects()" value="<<" />
             </div>
             <div class="col-6">
               <ul class="list-group">
                 <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let subject of allowedSubjects">
-                  <span class="col-sm-11">
-                    <label class="col-form-label-sm me-2">{{subject}}</label>
-                  </span>
-                  <span class="col-1">
-                    <input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()" name="deleteSubject" value="x" />
-                  </span>
+                  <span class="col-sm-11"><label class="col-form-label-sm me-2">{{subject}}</label></span>
+                  <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()" value="x" /></span>
                 </div>
               </ul>
             </div>
@@ -137,11 +123,11 @@
       </div>
 
       <div *ngIf="ctx.state !== 'CLOSED'" class="row w-100 mt-3">
-        <label for="selectedWorkflow" class="col-2 col-form-label col-form-label-sm">workflow</label>
+        <label class="col-2 col-form-label col-form-label-sm">workflow</label>
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <select class="select form-select form-select-sm" name="workflows2display" [(ngModel)]="selectedWorkflow" (change)="onChangedWorkflow($event.target.value)">
+              <select class="select form-select form-select-sm" [(ngModel)]="workflow" name="_workflow" (change)="onChangedWorkflow($event.target.value)">
                 <option *ngFor="let workflow of workflows2display" [value]="workflow">{{workflow}}</option>
               </select>
             </div>
@@ -150,11 +136,11 @@
       </div>
 
       <div class="row w-100 mt-3">
-        <label for="contactEmail" class="col-2 col-form-label col-form-label-sm">contact email</label>
+        <label class="col-2 col-form-label col-form-label-sm">contact email</label>
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <input class="form-control form-control-sm" type="text" name="contactEmail" #contactEmail="ngModel" [(ngModel)]="ctx.contactEmail">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.contactEmail" name="_contactEmail">
             </div>
             <div class="col-1">
             </div>

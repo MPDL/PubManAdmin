@@ -5,12 +5,12 @@
   <div class="card text-white bg-info text-end">
     <div class="card-body">
       <h4 class="card-title">Organizations</h4>
-      <input type="submit" class="btn btn-info btn-sm" name="add" value="+" (click)="addNewOrganization()" />
+      <input type="submit" class="btn btn-info btn-sm" (click)="addNewOu()" value="+" />
     </div>
 
     <div class="row">
       <div class="col-4 p-3">
-        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" placeholder="search by name of organization" id="ouSearchTerm" autocomplete="off">
+        <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="closeOus()">
             <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="selectOu(ou)">
@@ -22,15 +22,11 @@
     </div>
 
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
-      <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
-        <!-- &#8288; is &NoBreak; it is invisible, but required for padding-->
-        <span class="mr-3 boldandlarger">&#8288;</span>
+      <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
         {{node.ouName}}
       </cdk-tree-node>
-      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding (click)="gotoDetails(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
-        <span class="mr-2 boldandlarger" cdkTreeNodeToggle (click)="loadChildren(node)">
-          {{treeControl.isExpanded(node) ? '&#8213;' : '>'}}
-        </span>
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
+        <span class="mr-2 boldandlarger" cdkTreeNodeToggle (click)="loadChildren(node)">{{treeControl.isExpanded(node) ? '&horbar;&NonBreakingSpace;' : '>&NonBreakingSpace;'}}</span>
         {{node.ouName}}
       </cdk-tree-node>
     </cdk-tree>

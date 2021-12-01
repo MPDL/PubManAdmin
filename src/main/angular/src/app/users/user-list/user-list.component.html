@@ -5,14 +5,14 @@
   <div class="card text-white bg-primary text-end">
     <div class="card-body">
       <h4 class="card-title">{{title}}</h4>
-      <input type="submit" class="btn btn-primary btn-sm" name="add" value="+" (click)="addNewUser()" />
+      <input type="submit" class="btn btn-primary btn-sm" value="+" (click)="addNewUser()" />
     </div>
 
     <div class="row">
       <div class="col-4">
-        <input class="form-control form-control-sm" type="text" name="ouSearchTerm" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" placeholder="filter by name of organization" id="ouSearchTerm" autocomplete="off">
+        <input class="form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
-          <ul id="ouSuggestions" class="list-group" (clickOutside)="closeOus()">
+          <ul class="list-group" (clickOutside)="closeOus()">
             <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectOu(ou)">
               <small>{{ou.name}}</small>
             </li>
@@ -23,9 +23,9 @@
 
     <div class="row">
       <div class="col-4">
-        <input class="form-control form-control-sm" type="text" name="searchUserNameTerm" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" placeholder="search by name of user" id="searchUserNameTerm" autocomplete="off">
+        <input class="form-control form-control-sm" type="text" placeholder="search by name of user" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" autocomplete="off">
         <div *ngIf="usersByName.length > 0">
-          <ul id="userNameSuggestions" class="list-group" (clickOutside)="closeUsersByName()">
+          <ul class="list-group" (clickOutside)="closeUsersByName()">
             <li *ngFor="let user of usersByName" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectUserByName(user)">
               <small>{{user.name}}</small>
             </li>
@@ -36,9 +36,9 @@
 
     <div class="row">
       <div class="col-4">
-        <input class="form-control form-control-sm" type="text" name="searchUserLoginTerm" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" placeholder="search by loginname of user" id="searchUserLoginTerm" autocomplete="off">
+        <input class="form-control form-control-sm" type="text" placeholder="search by loginname of user" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" autocomplete="off">
         <div *ngIf="usersByLogin.length > 0">
-          <ul id="userlogin_suggestions" class="list-group" (clickOutside)="closeUsersByLogin()">
+          <ul class="list-group" (clickOutside)="closeUsersByLogin()">
             <li *ngFor="let user of usersByLogin" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectUserByLogin(user)">
               <small>{{user.loginname}}</small>
             </li>
@@ -47,23 +47,17 @@
       </div>
       <div class="col-8">
         <div *ngIf="total > 0" class="has-text-centered">
-          <pagination-controls class="admin-pagination" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="getPage($event)" id="paginator"></pagination-controls>
+          <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="getPage($event)"></pagination-controls>
         </div>
       </div>
     </div>
 
     <ul class="list-group">
-      <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'paginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="selectUser(user)">
+      <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
         <div class="row">
-            <span class="col-8">
-                <label class="col-form-label-sm p-0 ms-2">{{user.name}}</label>
-            </span>
-            <span class="col-2 text-start text-truncate">
-                <label class="col-form-label-sm p-0">{{user.loginname}}</label>
-            </span>
-            <span class="col-2 text-start">
-                <label class="col-form-label-sm p-0">{{user.active === true ? 'active' : 'deactivated'}}</label>
-            </span>
+            <span class="col-8"><label class="col-form-label-sm p-0 ms-2">{{user.name}}</label></span>
+            <span class="col-2 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.loginname}}</label></span>
+            <span class="col-2 text-start"><label class="col-form-label-sm p-0">{{user.active === true ? 'active' : 'deactivated'}}</label></span>
         </div>
       </div>
     </ul>

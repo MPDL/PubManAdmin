@@ -49,10 +49,6 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
   ) {}
 
-  get diagnostic() {
-    return JSON.stringify(this.years);
-  }
-
   ngOnInit() {
     for (const itemAgg in itemAggs) {
       this.aggregationsList.push(itemAgg);

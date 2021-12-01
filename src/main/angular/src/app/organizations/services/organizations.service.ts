@@ -10,7 +10,7 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
   ousRestUrl = environment.restOus;
-  ou;
+  ou: HttpResponse<any>;
   ous: any;
 
   constructor(

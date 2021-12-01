@@ -1,14 +1,13 @@
 import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {Router} from '@angular/router';
 import {Ou} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
 import {environment} from 'environments/environment';
-import {Observable, Subscription} from 'rxjs';
-import {AuthenticationService} from '../../base/services/authentication.service';
+import {Observable} from 'rxjs';
 import {MessagesService} from '../../base/services/messages.service';
-import {OrganizationTree2Service, OUTreeFlatNode, OUTreeNode} from '../services/organization-tree2.service';
+import {OrganizationTree2Service, OuTreeFlatNode, OuTreeNode} from '../services/organization-tree2.service';
 import {OrganizationsService} from '../services/organizations.service';
 
 @Component({
@@ -17,20 +16,16 @@ import {OrganizationsService} from '../services/organizations.service';
   styleUrls: ['organization-tree.component.scss'],
   providers: [OrganizationTree2Service],
 })
-export class OrganizationTreeComponent implements OnInit, OnDestroy {
+export class OrganizationTreeComponent implements OnInit {
   ous: Ou[] = [];
   ouSearchTerm: string;
 
-  nodeMap: Map<string, OUTreeFlatNode> = new Map<string, OUTreeFlatNode>();
-  treeControl: FlatTreeControl<OUTreeFlatNode>;
-  treeFlattener: MatTreeFlattener<OUTreeNode, OUTreeFlatNode>;
-  dataSource: MatTreeFlatDataSource<OUTreeNode, OUTreeFlatNode>;
-
-  tokenSubscription: Subscription;
-  token: string;
+  dataSource: MatTreeFlatDataSource<OuTreeNode, OuTreeFlatNode>;
+  nodeMap: Map<string, OuTreeFlatNode> = new Map<string, OuTreeFlatNode>();
+  treeControl: FlatTreeControl<OuTreeFlatNode>;
+  treeFlattener: MatTreeFlattener<OuTreeNode, OuTreeFlatNode>;
 
   constructor(
-    private authenticationService: AuthenticationService,
     private database: OrganizationTree2Service,
     private messagesService: MessagesService,
     private organizationService: OrganizationsService,
@@ -39,53 +34,47 @@ export class OrganizationTreeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
-    this.treeControl = new FlatTreeControl<OUTreeFlatNode>(this.getLevel, this.isExpandable);
+    this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
     this.database.dataChange.subscribe((data) => this.dataSource.data = data);
     this.database.initialize();
   }
 
-  ngOnDestroy() {
-    this.tokenSubscription.unsubscribe();
-  }
-
-  getChildren = (node: OUTreeNode): Observable<OUTreeNode[]> => {
+  getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {
     return node.childrenChange;
   };
 
-  transformer = (node: OUTreeNode, level: number) => {
+  transformer = (node: OuTreeNode, level: number) => {
     if (this.nodeMap.has(node.ouName)) {
       return this.nodeMap.get(node.ouName)!;
     }
-    const newNode = new OUTreeFlatNode(node.ouName, node.ouId, level, node.hasChildren, node.parentOUId);
+    const newNode = new OuTreeFlatNode(node.ouName, node.ouId, level, node.hasChildren, node.parentOuId);
     this.nodeMap.set(node.ouName, newNode);
     return newNode;
   };
 
-  getLevel = (node: OUTreeFlatNode) => {
+  getLevel = (node: OuTreeFlatNode) => {
     return node.level;
   };
 
-  isExpandable = (node: OUTreeFlatNode) => {
+  isExpandable = (node: OuTreeFlatNode) => {
     return node.expandable;
   };
 
-  hasChild = (_: number, _nodeData: OUTreeFlatNode) => {
-    return _nodeData.expandable;
+  hasChild = (_: number, nodeData: OuTreeFlatNode) => {
+    return nodeData.expandable;
   };
 
-  loadChildren(node: OUTreeFlatNode) {
+  loadChildren(node: OuTreeFlatNode) {
     this.database.loadChildren(node.ouName, node.ouId);
   }
 
-  gotoDetails(node) {
-    const id: string = node.ouId;
-    this.router.navigate(['/organization', id]);
+  gotoOu(node: { ouId: string; }) {
+    this.router.navigate(['/organization', node.ouId]);
   }
 
-  addNewOrganization() {
+  addNewOu() {
     const id = 'new org';
     this.router.navigate(['/organization', id]);
   }

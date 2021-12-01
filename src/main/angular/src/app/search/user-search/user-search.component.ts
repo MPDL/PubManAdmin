@@ -48,10 +48,6 @@ export class UserSearchComponent implements OnInit {
     private searchService: SearchService,
   ) {}
 
-  get diagnostic() {
-    return JSON.stringify(this.years);
-  }
-
   ngOnInit() {
     for (const userAgg in userAggs) {
       this.aggregationsList.push(userAgg);
