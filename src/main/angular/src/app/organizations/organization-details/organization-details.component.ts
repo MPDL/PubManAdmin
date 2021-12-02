@@ -16,11 +16,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ouRestUrl = environment.restOus;
 
   ou: Ou;
-  ous: Ou[] = [];
-  ouSearchTerm: string = '';
   isNewOu: boolean = false;
 
-  ouIdentifierId: string;
+  parentOus: Ou[] = [];
+  parentOuSearchTerm: string = '';
+  isNewParentOu: boolean = false;
+  parentOuId: string;
 
   children: Ou[];
   predecessors: Ou[] = [];
@@ -55,6 +56,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           const id = data['id'];
           if (id === 'new org') {
             this.isNewOu = true;
+            this.isNewParentOu = true;
             this.ou = this.prepareNewOu();
           } else {
             this.getOu(id, this.token);
@@ -76,7 +78,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         next: (data) => {
           this.ou = data;
           if (this.ou.parentAffiliation) {
-            this.ouSearchTerm = this.ou.parentAffiliation.name;
+            this.parentOuSearchTerm = this.ou.parentAffiliation.name;
           }
           if (this.ou.hasPredecessors) {
             const preId = this.ou.predecessorAffiliations[0].objectId;
@@ -182,7 +184,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.ou.metadata.identifiers.push(ouid);
       }
     }
-    this.ouIdentifierId = '';
+    this.parentOuId = '';
   }
 
   deleteIdentifier(selected: Identifier) {
@@ -215,7 +217,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      // this.messagesService.success('updating ' + this.selected.objectId);
       this.organizationService.put(this.ouRestUrl + '/' + this.ou.objectId, this.ou, this.token)
         .subscribe({
           next: (data) => {
@@ -264,15 +265,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     return template;
   }
 
-  getOus(term: string) {
+  getParentOus(term: string) {
     if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedOus(term);
+      this.returnSuggestedParentOus(term);
     } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedOus(term);
+      this.returnSuggestedParentOus(term);
     }
   }
 
-  returnSuggestedOus(term: string) {
+  returnSuggestedParentOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
@@ -283,23 +284,34 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             ous.push(ou);
           });
           if (ous.length > 0) {
-            this.ous = ous;
+            this.parentOus = ous;
           } else {
-            this.ous = [];
+            this.parentOus = [];
           }
+          this.ou.parentAffiliation = new BasicRO();
         },
         error: (e) => this.messagesService.error(e),
       });
   }
 
-  closeOus() {
-    this.ouSearchTerm = '';
-    this.ous = [];
+  closeParentOus() {
+    this.parentOuSearchTerm = '';
+    this.parentOus = [];
   }
 
-  selectOu(ou: Ou) {
-    this.ouSearchTerm = ou.name;
+  selectParentOu(ou: Ou) {
+    this.parentOuSearchTerm = ou.name;
     this.ou.parentAffiliation.objectId = ou.objectId;
-    this.ous = [];
+    this.parentOus = [];
   };
+
+  changeParentOu() {
+    this.isNewParentOu = true;
+    this.closeParentOus();
+    this.ou.parentAffiliation = new BasicRO();
+  }
+
+  clearParentOuSearchTerm() {
+    this.parentOuSearchTerm = '';
+  }
 }

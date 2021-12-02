@@ -1,7 +1,7 @@
 <div *ngIf="ou" class="container">
   <div class="card text-white bg-info text-end">
     <div class="card-body">
-      <h4 class="card-title">{{ou.name}}</h4>
+      <h4 class="card-title">{{ou.metadata.name}}</h4>
     </div>
 
     <form #form="ngForm" class="list-group-item text-info" (ngSubmit)="form.valid && saveOu()" novalidate>
@@ -9,7 +9,7 @@
         <label class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-7">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.name" name="_ouName" #ouName="ngModel" required minlength="4" value-not-allowed="new ou">
-          <div *ngIf="ouName.invalid && (ouname.dirty || ouName.touched)" class="text-danger">
+          <div *ngIf="ouName.invalid && (ouName.dirty || ouName.touched)" class="text-danger">
             <div *ngIf="ouName.errors.required">name is required.</div>
             <div *ngIf="ouName.errors.minlength">name must be at least 4 characters long.</div>
             <div *ngIf="ouName.errors.value-not-allowed">name MUST NOT be 'new ou'.</div>
@@ -21,25 +21,40 @@
         </div>
       </div>
 
-      <div class="row w-100 mt-3">
+
+      <div *ngIf="!isNewOu && !isNewParentOu" class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">parent</label>
-        <div class="col-6">
-            <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
-          <div *ngIf="ous.length > 0">
-            <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="close()">
-              <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="selectOu(ou)">
-                <small>{{ou.name}}</small>
-              </li>
-            </ul>
-          </div>
+        <div *ngIf="ou.publicStatus === 'OPENED'" class="col-6">
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="parentOuSearchTerm" name="_parentOu" readonly>
         </div>
         <div *ngIf="ou.publicStatus === 'OPENED'" class="col-1">
-          <input type="button" class="btn btn-outline-info btn-sm float-start" (click)="changeOu()" value="change" />
+            <input type="button" class="btn btn-outline-info btn-sm float-start" (click)="changeParentOu()" value="change" />
         </div>
-        <label *ngIf="!isNewOu" class="col-1 col-form-label col-form-label-sm">parentId</label>
-        <div *ngIf="!isNewOu" class="col-2">
+        <div *ngIf="ou.publicStatus !== 'OPENED'" class="col-7">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="parentOuSearchTerm" name="_parentOu" readonly>
+        </div>
+        <label class="col-1 col-form-label col-form-label-sm">parentId</label>
+        <div class="col-2">
           <input *ngIf="ou?.parentAffiliation" type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" readonly>
           <input *ngIf="!ou?.parentAffiliation" type="text" class="form-control form-control-sm" readonly>
+        </div>
+      </div>
+
+      <div *ngIf="isNewOu || isNewParentOu" class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">parent</label>
+        <div class="col-7">
+            <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="parentOuSearchTerm" name="_parentOuSearchTerm" (keyup)="getParentOus(parentOuSearchTerm)" autocomplete="off">
+            <div *ngIf="parentOus.length > 0">
+                <ul class="list-group" (clickOutside)="closeParentOus()">
+                    <li *ngFor="let ou of parentOus" class="list-group-item-info list-group-item-action py-0 text-start" (click)="selectParentOu(ou)">
+                        <small>{{ou.metadata.name}}</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <label *ngIf="isAdmin" class="col-1 col-form-label col-form-label-sm">parentId</label>
+        <div *ngIf="isAdmin" class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" (keyup)="clearParentOuSearchTerm()">
         </div>
       </div>
 
@@ -48,7 +63,7 @@
         <div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
         </div>
-        <div class="col-2">
+        <div *ngIf="!isNewOu && !isNewParentOu" class="col-2">
           <input type="button" class="btn btn-outline-info btn-sm float-start" (click)="openOu(ou)" [value]="ou.publicStatus === 'OPENED' ? 'close' : 'open'" />
         </div>
       </div>
@@ -125,7 +140,7 @@
           <ul class="list-group">
             <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let desc of ou.metadata.descriptions">
               <div class="row">
-                <span class="col-11 pt-0 pb-0"><label align="left" class="col-form-label-sm p-0">{{desc}}</label></span>
+                <span class="col-11 pt-0 pb-0"><label class="col-form-label-sm p-0 text-start">{{desc}}</label></span>
                 <span class="col-1"><input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteDescription(desc); $event.stopPropagation()" value="x" /></span>
               </div>
             </div>

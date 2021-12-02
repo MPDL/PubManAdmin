@@ -14,7 +14,7 @@
                 <div *ngIf="ous.length > 0">
                     <ul class="list-group" (clickOutside)="closeOus()">
                         <li *ngFor="let ou of ous" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-                            <small>{{ou.name}}</small>
+                            <small>{{ou.metadata.name}}</small>
                         </li>
                     </ul>
                 </div>

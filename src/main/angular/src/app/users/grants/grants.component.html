@@ -13,7 +13,7 @@
 		</div>
 		<div *ngIf="selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-7">
 			<select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)">
-				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.name}} {{ou.objectId}}</option>
+				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.metadata.name}} {{ou.objectId}}</option>
 			</select>
 		</div>
 		<div *ngIf="!selectedRole" class="col-7">

@@ -27,11 +27,11 @@
                     <input type="password" class="form-control form-control-sm" [(ngModel)]="user.password" name="_password" readonly>
                 </div>
                 <div *ngIf="!isNewUser && user.active == true && user.password" class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword(user)" value="generate" />
+                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword(user)" value="reset" />
                     <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="resetPassword(user)" value="save" />
                 </div>
                 <div *ngIf="user.active == true && !user.password" class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword(user)" value="generate" />
+                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword(user)" value="reset" />
                 </div>
             </div>
 
@@ -51,7 +51,7 @@
                     <input type="text" class="form-control form-control-sm" [(ngModel)]="user.active" name="_active" readonly>
                 </div>
                 <div class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="activateUser(user)" [value]="user.active === false ? 'activate' : 'deactivate'" />
+                    <input *ngIf="!isNewOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="activateUser(user)" [value]="user.active === false ? 'activate' : 'deactivate'" />
                 </div>
             </div>
 
@@ -74,7 +74,10 @@
 
             <div *ngIf="!isNewOu" class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">organization</label>
-                <div *ngIf="user.affiliation" class="col-6">
+                <div *ngIf="user.affiliation && user.active !== true" class="col-7">
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
+                </div>
+                <div *ngIf="user.affiliation && user.active === true" class="col-6">
                     <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
                 </div>
                 <div *ngIf="user.active === true" class="col-1">
@@ -89,7 +92,7 @@
                     <div *ngIf="ous.length > 0">
                         <ul class="list-group" (clickOutside)="closeOus()">
                             <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-                                <small>{{ou.name}}</small>
+                                <small>{{ou.metadata.name}}</small>
                             </li>
                         </ul>
                     </div>
