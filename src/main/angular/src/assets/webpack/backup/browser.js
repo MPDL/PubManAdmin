@@ -5,21 +5,12 @@
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
- * 
- * Voraussetzung:
- * npm install node-polyfill-webpack-plugin
- * Aenderungen:
- * const node-polyfill-webpack-plugin = require("node-polyfill-webpack-plugin")
- * plugins: new node_polyfill_plugin({ excludeAliases: ['console'] })
- * node: { global: true }
- * 
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBrowserConfig = void 0;
 const webpack_subresource_integrity_1 = require("webpack-subresource-integrity");
 const plugins_1 = require("../plugins");
 const helpers_1 = require("../utils/helpers");
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 function getBrowserConfig(wco) {
     const { buildOptions } = wco;
     const { crossOrigin = 'none', subresourceIntegrity, vendorChunk, commonChunk, allowedCommonJsDependencies, } = buildOptions;
@@ -82,14 +73,9 @@ function getBrowserConfig(wco) {
             new plugins_1.CommonJsUsageWarnPlugin({
                 allowedDependencies: allowedCommonJsDependencies,
             }),
-            new NodePolyfillPlugin({
-                excludeAliases: ['console']
-            }),
             ...extraPlugins,
         ],
-        node: {
-            global: true,
-        }
+        node: false,
     };
 }
 exports.getBrowserConfig = getBrowserConfig;
