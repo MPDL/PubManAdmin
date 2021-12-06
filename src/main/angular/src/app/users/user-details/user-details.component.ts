@@ -167,11 +167,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   saveUser(user: User) {
     this.user = user;
 
+    if (this.user.loginname.includes('new user')) {
+      this.messagesService.warning('name MUST NOT be new user');
+      return;
+    }
+
     if (this.user.loginname.includes(' ')) {
       this.messagesService.warning('loginname MUST NOT contain spaces');
       return;
     }
-    if (this.user.name == null) {
+    if (!this.user.name) {
       this.messagesService.warning('name MUST NOT be empty');
       return;
     }
@@ -202,7 +207,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.put(this.usersUrl + '/' + this.user.objectId, this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('updated ' + this.user.loginname);
+            this.messagesService.success('updated user ' + this.user.loginname);
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.restUsers, data.objectId, this.token)
@@ -278,6 +283,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   closeOus() {
     this.ouSearchTerm = '';
+    this.selectedOu = null;
     this.ous = [];
   }
 
@@ -289,6 +295,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   changeOu() {
     this.isNewOu = true;
+    this.closeOus();
     this.user.affiliation = null;
   }
 

@@ -75,8 +75,7 @@ export class OrganizationTreeComponent implements OnInit {
   }
 
   addNewOu() {
-    const id = 'new org';
-    this.router.navigate(['/organization', id]);
+    this.router.navigate(['/organization', 'new org']);
   }
 
   getOus(term: string) {

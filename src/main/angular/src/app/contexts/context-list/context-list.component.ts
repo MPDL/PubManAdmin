@@ -84,8 +84,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   addNewCtx() {
-    const ctxId = 'new ctx';
-    this.router.navigate(['/context', ctxId]);
+    this.router.navigate(['/context', 'new ctx']);
   }
 
   getCtxsByName(term: string) {

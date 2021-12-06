@@ -89,9 +89,9 @@ export class PubmanRestService {
     );
   }
 
-  addHeaders(token: string | string[], ct: boolean): HttpHeaders {
+  addHeaders(token: string | string[], contentType: boolean): HttpHeaders {
     if (token != null) {
-      if (ct) {
+      if (contentType) {
         const headers = new HttpHeaders()
           .set('Content-Type', 'application/json')
           .set('Authorization', token);

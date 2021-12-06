@@ -62,7 +62,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       if (this.isAdmin) {
         this.getAllUsersAsObservable(this.token, this.currentPage);
       } else if (this.loggedInUser != null) {
-        this.router.navigate(['/user', this.loggedInUser.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+        this.router.navigate(['/user', this.loggedInUser.objectId]);
       }
     }
   }
@@ -112,12 +112,11 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   gotoUser(user: User) {
     this.selectedUser = user;
-    this.router.navigate(['/user', this.selectedUser.objectId], {queryParams: {token: this.token}});
+    this.router.navigate(['/user', this.selectedUser.objectId]);
   }
 
   addNewUser() {
-    const userid = 'new user';
-    this.router.navigate(['/user', userid], {queryParams: {token: 'new'}, skipLocationChange: true});
+    this.router.navigate(['/user', 'new user']);
   }
 
   getUsersByName(term: string) {
@@ -231,7 +230,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   selectUserByName(user: User) {
     this.userNameSearchTerm = user.name;
     if (this.token != null) {
-      this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+      this.router.navigate(['/user', user.objectId]);
     } else {
       this.messagesService.warning('no login, no user !!!');
     }
@@ -241,7 +240,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   selectUserByLogin(user: User) {
     this.userLoginSearchTerm = user.loginname;
     if (this.token != null) {
-      this.router.navigate(['/user', user.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+      this.router.navigate(['/user', user.objectId]);
     } else {
       this.messagesService.warning('no login, no user !!!');
     }

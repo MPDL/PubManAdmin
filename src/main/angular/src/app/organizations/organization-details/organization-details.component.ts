@@ -20,6 +20,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   parentOus: Ou[] = [];
   parentOuSearchTerm: string = '';
+
   isNewParentOu: boolean = false;
   parentOuId: string;
 
@@ -198,20 +199,33 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   saveOu(ou: Ou) {
     this.ou = ou;
-    if (this.ou.parentAffiliation.objectId === '') {
-      this.messagesService.warning('parent id MUST NOT be empty');
-      return;
-    }
+
     if (this.ou.metadata.name.includes('new ou')) {
       this.messagesService.warning('name MUST NOT be new ou');
       return;
     }
+
+    if (this.ou.metadata.name == null) {
+      this.messagesService.warning('name MUST NOT be empty');
+      return;
+    }
+
+    if (this.isNewParentOu && this.ou.parentAffiliation.objectId === '' && !this.isAdmin) {
+      this.messagesService.warning('you MUST select an organization');
+      return;
+    }
+
+    if (this.ou.parentAffiliation.objectId === '') {
+      this.ou.parentAffiliation = null;
+    }
+
     if (this.isNewOu) {
       this.organizationService.post(this.ouRestUrl, this.ou, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('added new organization ' + this.ou.metadata.name);
             this.isNewOu = false;
+            this.isNewParentOu = false;
             this.ou = data;
           },
           error: (e) => this.messagesService.error(e),
@@ -220,7 +234,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.organizationService.put(this.ouRestUrl + '/' + this.ou.objectId, this.ou, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('updated ' + this.ou.objectId);
+            this.messagesService.success('updated organization ' + this.ou.objectId);
+            this.isNewParentOu = false;
             this.ou = data;
           },
           error: (e) => this.messagesService.error(e),
@@ -251,18 +266,15 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/organizations']);
   }
 
-  prepareNewOu(): Ou {
-    const template = new Ou();
-    const creator = new UserRO();
-    creator.objectId = '';
-    template.creator = creator;
+  private prepareNewOu(): Ou {
+    const ou = new Ou();
     const parent = new BasicRO();
     parent.objectId = '';
-    template.parentAffiliation = parent;
+    ou.parentAffiliation = parent;
     const meta = new OuMetadata();
     meta.name = 'new ou';
-    template.metadata = meta;
-    return template;
+    ou.metadata = meta;
+    return ou;
   }
 
   getParentOus(term: string) {
@@ -288,7 +300,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           } else {
             this.parentOus = [];
           }
-          this.ou.parentAffiliation = new BasicRO();
         },
         error: (e) => this.messagesService.error(e),
       });
@@ -308,7 +319,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   changeParentOu() {
     this.isNewParentOu = true;
     this.closeParentOus();
-    this.ou.parentAffiliation = new BasicRO();
+    const parent = new BasicRO();
+    parent.objectId = '';
+    this.ou.parentAffiliation = parent;
   }
 
   clearParentOuSearchTerm() {

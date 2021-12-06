@@ -180,7 +180,7 @@ export class UserSearchComponent implements OnInit {
 
   onSelect(item) {
     if (confirm('wanna edit it?')) {
-      this.router.navigate(['/user', item.objectId], {queryParams: {token: this.token}, skipLocationChange: true});
+      this.router.navigate(['/user', item.objectId]);
     }
   }
 

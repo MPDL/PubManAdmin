@@ -209,12 +209,17 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.ctx.name == null) {
+      this.messagesService.warning('name MUST NOT be empty');
+      return;
+    }
+
     if (this.selectedOu != null && this.isNewOu) {
       const ouId = this.selectedOu.objectId;
       const aff = new BasicRO();
       aff.objectId = ouId;
       this.ctx.responsibleAffiliations.push(aff);
-    } else if (!this.ctx.responsibleAffiliations[0]) {
+    } else if (this.ctx.responsibleAffiliations.length === 0) {
       this.messagesService.warning('you MUST select an organization');
       return;
     }
@@ -240,7 +245,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.contextsService.put(this.ctxsUrl + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('updated ' + this.ctx.objectId);
+            this.messagesService.success('updated context ' + this.ctx.objectId);
             this.ctx = data;
             this.isNewOu = false;
             this.initializeAllowed(this.ctx);
@@ -281,6 +286,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   closeOus() {
     this.ouSearchTerm = '';
+    this.selectedOu = null;
     this.ous = [];
   }
 
@@ -292,6 +298,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   changeOu() {
     this.isNewOu = true;
+    this.closeOus();
     this.ctx.responsibleAffiliations = [];
   }
 }

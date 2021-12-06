@@ -17,8 +17,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
     isNewGrant: boolean;
   @Input()
     user: User;
-  @Input()
-    token: string;
 
   @Output()
     isNewGrantChange = new EventEmitter<boolean>();
@@ -45,6 +43,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   isAdmin: boolean;
   adminSubscription: Subscription;
+  tokenSubscription: Subscription;
+  token: string;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -54,6 +54,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+
     if (this.isAdmin) {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
       this.getCtxsAndOus();
@@ -64,6 +66,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.adminSubscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
   }
 
   getCtxsAndOus() {

@@ -1,8 +1,9 @@
 
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
+import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
-import {Observable, of, throwError} from 'rxjs';
+import {Observable, of, Subscription, throwError} from 'rxjs';
 import {catchError, first} from 'rxjs/operators';
 import {Ctx} from '../../base/common/model/inge';
 import {MessagesService} from '../../base/services/messages.service';
@@ -10,10 +11,16 @@ import {ContextsService} from './contexts.service';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
+  tokenSubscription: Subscription;
+  token: string;
+
   constructor(
+    private authenticationService: AuthenticationService,
     private contextsService: ContextsService,
     private messagesService: MessagesService,
-  ) {}
+  ) {
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+  }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Ctx> {
     const url = environment.restCtxs;
@@ -27,8 +34,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
       ctx.workflow = 'STANDARD';
       return of(ctx);
     } else {
-      const token = route.params['token'];
-      return this.contextsService.get(url, id, token)
+      return this.contextsService.get(url, id, this.token)
         .pipe(
           first(),
           catchError((error) => {
