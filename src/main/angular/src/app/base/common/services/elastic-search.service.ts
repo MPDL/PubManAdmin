@@ -12,29 +12,6 @@ export class ElasticSearchService extends ElasticService {
     super(connectionService, messagesService);
   }
 
-  bucketAggregation(index, body, nested, callback): any {
-    return this.client.search({
-      index: index,
-      body: body,
-    }, (error, response) => {
-      if (error) {
-        this.messagesService.error(error);
-      } else {
-        const buckets = [];
-        if (nested) {
-          response.aggregations.name1.name2.buckets.forEach((bucket) => {
-            buckets.push(bucket);
-          });
-        } else {
-          response.aggregations.name1.buckets.forEach((bucket) => {
-            buckets.push(bucket);
-          });
-        }
-        callback(buckets);
-      }
-    });
-  }
-
   buckets(index, body, nested): any[] {
     const buckets = [];
     this.client.search({
@@ -58,7 +35,7 @@ export class ElasticSearchService extends ElasticService {
     return buckets;
   }
 
-  getTheNestedObject(obj, key2find, callback): any {
+  private getTheNestedObject(obj, key2find, callback): any {
     let found;
     Object.keys(obj).forEach((key) => {
       if (key === key2find) {
@@ -106,19 +83,5 @@ export class ElasticSearchService extends ElasticService {
       }
     });
     return fields;
-  }
-
-  getIndex4Alias(alias): any {
-    this.client.cat.aliases({
-      format: 'json',
-      name: alias,
-    }, (error, response) => {
-      if (error) {
-        this.messagesService.error(error);
-      } else {
-        const indexName = response[0].index;
-        return indexName;
-      }
-    });
   }
 }

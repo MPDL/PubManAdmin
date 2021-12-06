@@ -13,47 +13,6 @@ export class SearchService extends PubmanRestService {
     super(connectionService, httpClient);
   }
 
-  buildQueryOnly(request): any {
-    let must; let mustNot; let filter; let should;
-    request.searchTerms.forEach((element) => {
-      const field = element.field;
-      const value: string = element.searchTerm;
-      switch (element.type) {
-      case 'must':
-        if (must) {
-          must.push({match: {[field]: value}});
-        } else {
-          must = [{match: {[field]: value}}];
-        }
-        break;
-      case 'must_not':
-        if (mustNot) {
-          mustNot.push({term: {[field]: value}});
-        } else {
-          mustNot = [{term: {[field]: value}}];
-        }
-        break;
-      case 'filter':
-        if (filter) {
-          filter.push({term: {[field]: value}});
-        } else {
-          filter = [{term: {[field]: value}}];
-        }
-        break;
-      case 'should':
-        if (should) {
-          should.push({term: {[field]: value}});
-        } else {
-          should = [{term: {[field]: value}}];
-        }
-        break;
-      default:
-      }
-    });
-    const body = {bool: {must, mustNot, filter, should}};
-    return body;
-  }
-
   buildQuery(request, limit, offset, sortfield, ascdesc) {
     let query = bodyBuilder();
 
