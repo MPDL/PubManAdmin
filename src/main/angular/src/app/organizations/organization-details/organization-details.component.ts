@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-import {BasicRO, Identifier, Ou, User} from '../../base/common/model/inge';
+import {Identifier, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
@@ -56,7 +56,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.isNewOu = true;
       this.isNewParentOu = true;
     } else {
-      if (this.ou.parentAffiliation.objectId != '') {
+      if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId != '') {
         this.parentOuSearchTerm = this.ou.parentAffiliation.name;
       }
       this.listChildren(this.ou.objectId);
@@ -212,7 +212,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             this.messagesService.success('updated organization ' + this.ou.objectId);
             this.isNewParentOu = false;
             this.ou = data;
-            if (this.ou.parentAffiliation.objectId != '') {
+            if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId != '') {
               this.parentOuSearchTerm = this.ou.parentAffiliation.name;
             }
           },
@@ -228,7 +228,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.organizationService.delete(this.ouRestUrl + '/' + this.ou.objectId, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('deleted ' + id + ' ' + data);
+            this.messagesService.success('deleted organization ' + id);
             this.gotoOrganizationList();
           },
           error: (e) => this.messagesService.error(e),
@@ -287,9 +287,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   changeParentOu() {
     this.isNewParentOu = true;
     this.closeParentOus();
-    const parent = new BasicRO();
-    parent.objectId = '';
-    this.ou.parentAffiliation = parent;
+    this.ou.parentAffiliation = this.organizationService.makeAffiliation('');
   }
 
   clearParentOuSearchTerm() {

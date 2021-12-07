@@ -1,7 +1,7 @@
 
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Ou} from 'app/base/common/model/inge';
+import {BasicRO, Ou, OuMetadata} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
@@ -62,5 +62,17 @@ export class OrganizationsService extends PubmanRestService {
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);
     return this.getResource('PUT', ouUrl, headers, body);
+  }
+
+  makeAffiliation(id: string): BasicRO {
+    const aff = new BasicRO();
+    aff.objectId = id;
+    return aff;
+  }
+
+  makeMetadata(name: string): OuMetadata {
+    const meta = new OuMetadata();
+    meta.name = name;
+    return meta;
   }
 }

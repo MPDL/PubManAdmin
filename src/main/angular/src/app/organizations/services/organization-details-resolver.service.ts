@@ -5,7 +5,7 @@ import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
 import {Observable, of, Subscription, throwError} from 'rxjs';
 import {catchError, first} from 'rxjs/operators';
-import {BasicRO, Ou, OuMetadata} from '../../base/common/model/inge';
+import {Ou} from '../../base/common/model/inge';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from './organizations.service';
 
@@ -27,12 +27,8 @@ export class OrganizationDetailsResolverService implements Resolve<any> {
     const id = route.params['id'];
     if (id === 'new org') {
       const ou = new Ou();
-      const parent = new BasicRO();
-      parent.objectId = '';
-      ou.parentAffiliation = parent;
-      const meta = new OuMetadata();
-      meta.name = 'new ou';
-      ou.metadata = meta;
+      ou.parentAffiliation = this.organizationsService.makeAffiliation('');
+      ou.metadata = this.organizationsService.makeMetadata('new ou');
       return of(ou);
     } else {
       return this.organizationsService.get(url, id, this.token)

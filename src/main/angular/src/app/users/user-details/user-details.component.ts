@@ -4,7 +4,7 @@ import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-import {BasicRO, Grant, Ou, User} from '../../base/common/model/inge';
+import {Grant, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
@@ -176,18 +176,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.messagesService.warning('loginname MUST NOT contain spaces');
       return;
     }
-    if (!this.user.name) {
-      this.messagesService.warning('name MUST NOT be empty');
+
+    if (!this.user.affiliation) {
+      this.messagesService.warning('you MUST select an organization');
       return;
     }
 
-    if (this.selectedOu != null && this.isNewOu) {
-      const ouId = this.selectedOu.objectId;
-      const aff = new BasicRO();
-      aff.objectId = ouId;
-      this.user.affiliation = aff;
-    } else if (!this.user.affiliation) {
-      this.messagesService.warning('you MUST select an organization');
+    if (!this.user.name) {
+      this.messagesService.warning('name MUST NOT be empty');
       return;
     }
 
@@ -244,7 +240,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (confirm('delete '+user.name+' ?')) {
       this.usersService.delete(this.usersUrl + '/' + this.user.objectId, this.token)
         .subscribe({
-          next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
+          next: (data) => this.messagesService.success('deleted user ' + id),
           error: (e) => this.messagesService.error(e),
         });
       this.user = null;
@@ -276,6 +272,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           } else {
             this.ous = [];
           }
+          this.user.affiliation = null;
         },
         error: (e) => this.messagesService.error(e),
       });
@@ -290,6 +287,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
+    this.user.affiliation = this.organizationService.makeAffiliation(this.selectedOu.objectId);
+
     this.ous = [];
   };
 

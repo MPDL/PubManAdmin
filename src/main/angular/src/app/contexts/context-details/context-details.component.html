@@ -21,33 +21,23 @@
         </div>
       </div>
 
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">description</label>
-        <div class="col-7">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.description" name="_ctxDescription">
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">state</label>
-        <div class="col-2">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
-        </div>
-        <div *ngIf="ctx.state && !isNewOu" class="col-2">
-          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="openCtx(ctx)" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
-        </div>
-      </div>
-
-      <div *ngIf="!isNewOu" class="row w-100 mt-3">
+      <div *ngIf="!isNewUser && !isNewOu" class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">organization</label>
-        <div *ngIf="ctx.responsibleAffiliations && ctx.state !== 'OPENED'" class="col-7">
+        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0] && ctx.state !== 'OPENED'" class="col-7">
             <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
         </div>
-        <div *ngIf="ctx.responsibleAffiliations && ctx.state === 'OPENED'" class="col-6">
+        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0] && ctx.state === 'OPENED'" class="col-6">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
-      </div>
-      <div *ngIf="ctx.state === 'OPENED'" class="col-1">
+        </div>
+        <div *ngIf="ctx.state === 'OPENED'" class="col-1">
           <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeOu()" value="change" />
+        </div>
+        <label class="col-1 col-form-label col-form-label-sm">ouId</label>
+        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
+        </div>
+        <div *ngIf="!ctx.responsibleAffiliations[0]" class="col-2">
+          <input type="text" class="form-control form-control-sm" readonly>
         </div>
       </div>
 
@@ -62,6 +52,30 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <label class="col-1 col-form-label col-form-label-sm">ouId</label>
+        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
+        </div>
+        <div *ngIf="!ctx.responsibleAffiliations[0]" class="col-2">
+            <input type="text" class="form-control form-control-sm" readonly>
+        </div>
+      </div>
+
+      <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">description</label>
+        <div class="col-7">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.description" name="_ctxDescription">
+        </div>
+      </div>
+
+      <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">state</label>
+        <div class="col-2">
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
+        </div>
+        <div *ngIf="ctx.state && !isNewOu" class="col-2">
+          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="openCtx(ctx)" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
         </div>
       </div>
 

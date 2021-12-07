@@ -4,7 +4,7 @@ import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-import {BasicRO, Ctx, genres, Ou, subjects, User, workflow} from '../../base/common/model/inge';
+import {Ctx, genres, Ou, subjects, User, workflow} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from '../services/contexts.service';
@@ -183,7 +183,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     if (confirm('delete ' + ctx.name + ' ?')) {
       this.contextsService.delete(this.ctxsUrl + '/' + id, this.token)
         .subscribe({
-          next: (data) => this.messagesService.success('deleted ' + id + ' ' + data),
+          next: (data) => this.messagesService.success('deleted context ' + id),
           error: (e) => this.messagesService.error(e),
         });
       this.gotoCtxList();
@@ -207,12 +207,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.selectedOu != null && this.isNewOu) {
-      const ouId = this.selectedOu.objectId;
-      const aff = new BasicRO();
-      aff.objectId = ouId;
-      this.ctx.responsibleAffiliations.push(aff);
-    } else if (this.ctx.responsibleAffiliations.length === 0) {
+    if (this.ctx.responsibleAffiliations.length === 0) {
       this.messagesService.warning('you MUST select an organization');
       return;
     }
@@ -272,6 +267,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           } else {
             this.ous = [];
           }
+          this.ctx.responsibleAffiliations = [];
         },
         error: (e) => this.messagesService.error(e),
       });
@@ -286,6 +282,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
+    this.ctx.responsibleAffiliations.push(this.organizationService.makeAffiliation(this.selectedOu.objectId));
+
     this.ous = [];
   };
 
