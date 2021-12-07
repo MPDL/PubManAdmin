@@ -1,6 +1,7 @@
 
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Ou} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
@@ -49,17 +50,17 @@ export class OrganizationsService extends PubmanRestService {
     );
   }
 
-  openOu(ou: any, token: string): Observable<number> {
+  openOu(ou: any, token: string): Observable<Ou> {
     const ouUrl = this.baseUrl + this.ousRestUrl + '/' + ou.objectId + '/open';
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('PUT', ouUrl, headers, body);
+    return this.getResource('PUT', ouUrl, headers, body);
   }
 
-  closeOu(ou: any, token: string): Observable<number> {
+  closeOu(ou: any, token: string): Observable<Ou> {
     const ouUrl = this.baseUrl + this.ousRestUrl + '/' + ou.objectId + '/close';
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('PUT', ouUrl, headers, body);
+    return this.getResource('PUT', ouUrl, headers, body);
   }
 }

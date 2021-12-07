@@ -4,7 +4,7 @@ import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
 import {Observable, of, Subscription} from 'rxjs';
 import {first, map} from 'rxjs/operators';
-import {BasicRO, User} from '../../base/common/model/inge';
+import {User} from '../../base/common/model/inge';
 import {UsersService} from './users.service';
 
 @Injectable()

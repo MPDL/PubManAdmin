@@ -17,18 +17,18 @@ export class ContextsService extends PubmanRestService {
     super(connectionService, httpClient);
   }
 
-  openCtx(ctx: Ctx, token: string): Observable<number> {
+  openCtx(ctx: Ctx, token: string): Observable<Ctx> {
     const ctxUrl = this.baseUrl + this.ctxUrl + '/' + ctx.objectId + '/open';
     const body = ctx.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('PUT', ctxUrl, headers, body);
+    return this.getResource('PUT', ctxUrl, headers, body);
   }
 
-  closeCtx(ctx: Ctx, token: string): Observable<number> {
+  closeCtx(ctx: Ctx, token: string): Observable<Ctx> {
     const ctxUrl = this.baseUrl + this.ctxUrl + '/' + ctx.objectId + '/close';
     const body = ctx.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getHttpStatus('PUT', ctxUrl, headers, body);
+    return this.getResource('PUT', ctxUrl, headers, body);
   }
 }
 

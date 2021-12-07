@@ -63,6 +63,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
     this.ctx = this.activatedRoute.snapshot.data['ctx'];
+
     if (this.ctx.name === 'new ctx') {
       this.isNewCtx = true;
       this.isNewOu = true;
@@ -95,14 +96,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctx.allowedSubjectClassifications = [];
       this.allowedSubjects = this.ctx.allowedSubjectClassifications;
     }
-  }
-
-  private getSelectedCtx(id: string) {
-    this.contextsService.get(this.ctxsUrl, id, this.token)
-      .subscribe({
-        next: (data) => this.ctx = data,
-        error: (e) => this.messagesService.error(e),
-      });
   }
 
   deleteGenre(genre: string) {
@@ -167,8 +160,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.contextsService.openCtx(this.ctx, this.token)
         .subscribe({
           next: (data) => {
-            this.getSelectedCtx(this.ctx.objectId);
-            this.messagesService.success('Opened ' + ctx.objectId + ' ' + data);
+            this.ctx = data;
+            this.messagesService.success('Opened ' + ctx.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -176,8 +169,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.contextsService.closeCtx(this.ctx, this.token)
         .subscribe({
           next: (data) => {
-            this.getSelectedCtx(this.ctx.objectId);
-            this.messagesService.success('Closed ' + ctx.objectId + ' ' + data);
+            this.ctx = data;
+            this.messagesService.success('Closed ' + ctx.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });

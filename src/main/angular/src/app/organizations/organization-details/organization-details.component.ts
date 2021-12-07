@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-import {BasicRO, Identifier, Ou, OuMetadata, User, UserRO} from '../../base/common/model/inge';
+import {BasicRO, Identifier, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
@@ -32,7 +32,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   adminSubscription: Subscription;
   isAdmin: boolean;
-  routeSubscription: Subscription;
   tokenSubscription: Subscription;
   token: string;
   userSubscription: Subscription;
@@ -51,45 +50,23 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
-    this.routeSubscription = this.activatedRoute.params
-      .subscribe(
-        (data) => {
-          const id = data['id'];
-          if (id === 'new org') {
-            this.isNewOu = true;
-            this.isNewParentOu = true;
-            this.ou = this.prepareNewOu();
-          } else {
-            this.getOu(id, this.token);
-            this.listChildren(id);
-          }
-        });
+    this.ou = this.activatedRoute.snapshot.data['ou'];
+
+    if (this.ou.metadata.name === 'new ou') {
+      this.isNewOu = true;
+      this.isNewParentOu = true;
+    } else {
+      if (this.ou.parentAffiliation.objectId != '') {
+        this.parentOuSearchTerm = this.ou.parentAffiliation.name;
+      }
+      this.listChildren(this.ou.objectId);
+    }
   }
 
   ngOnDestroy() {
     this.adminSubscription.unsubscribe();
-    this.routeSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
-  }
-
-  getOu(id: string, token: string) {
-    this.organizationService.get(this.ouRestUrl, id, token)
-      .subscribe({
-        next: (data) => {
-          this.ou = data;
-          if (this.ou.parentAffiliation) {
-            this.parentOuSearchTerm = this.ou.parentAffiliation.name;
-          }
-          if (this.ou.hasPredecessors) {
-            const preId = this.ou.predecessorAffiliations[0].objectId;
-            this.listPredecessors(preId, token);
-          } else {
-            this.predecessors = [];
-          }
-        },
-        error: (e) => this.messagesService.error(e),
-      });
   }
 
   listPredecessors(id: string, token: string) {
@@ -107,8 +84,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.organizationService.openOu(this.ou, this.token)
         .subscribe({
           next: (data) => {
-            this.getOu(this.ou.objectId, this.token);
-            this.messagesService.success('Opened ' + this.ou.objectId + ' ' + data);
+            this.ou = data;
+            this.messagesService.success('Opened ' + this.ou.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -116,8 +93,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.organizationService.closeOu(this.ou, this.token)
         .subscribe({
           next: (data) => {
-            this.getOu(this.ou.objectId, this.token);
-            this.messagesService.success('Closed ' + this.ou.objectId + ' ' + data);
+            this.ou = data;
+            this.messagesService.success('Closed ' + this.ou.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -135,7 +112,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.ou.metadata.alternativeNames.push(selected);
       }
     }
-
     this.alternativeName = '';
   }
 
@@ -159,7 +135,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.ou.metadata.descriptions.push(selected);
       }
     }
-
     this.description = '';
   }
 
@@ -237,6 +212,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             this.messagesService.success('updated organization ' + this.ou.objectId);
             this.isNewParentOu = false;
             this.ou = data;
+            if (this.ou.parentAffiliation.objectId != '') {
+              this.parentOuSearchTerm = this.ou.parentAffiliation.name;
+            }
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -266,17 +244,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/organizations']);
   }
 
-  private prepareNewOu(): Ou {
-    const ou = new Ou();
-    const parent = new BasicRO();
-    parent.objectId = '';
-    ou.parentAffiliation = parent;
-    const meta = new OuMetadata();
-    meta.name = 'new ou';
-    ou.metadata = meta;
-    return ou;
-  }
-
   getParentOus(term: string) {
     if (term.length > 0 && !term.startsWith('"')) {
       this.returnSuggestedParentOus(term);
@@ -300,6 +267,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           } else {
             this.parentOus = [];
           }
+          this.ou.parentAffiliation.objectId = '';
         },
         error: (e) => this.messagesService.error(e),
       });
