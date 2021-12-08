@@ -48,7 +48,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
     private messagesService: MessagesService,
-    private organizationService: OrganizationsService,
+    private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
     private usersService: UsersService,
@@ -260,7 +260,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(url, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {
@@ -286,7 +286,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
-    this.user.affiliation = this.organizationService.makeAffiliation(this.selectedOu.objectId);
+    this.user.affiliation = this.organizationsService.makeAffiliation(this.selectedOu.objectId);
 
     this.ous = [];
   };

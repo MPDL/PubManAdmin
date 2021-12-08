@@ -49,7 +49,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private contextsService: ContextsService,
     private messagesService: MessagesService,
-    private organizationService: OrganizationsService,
+    private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
   ) {}
@@ -253,7 +253,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(url, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {
@@ -279,7 +279,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
-    this.ctx.responsibleAffiliations.push(this.organizationService.makeAffiliation(this.selectedOu.objectId));
+    this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId));
 
     this.ous = [];
   };

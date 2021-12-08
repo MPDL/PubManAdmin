@@ -28,7 +28,7 @@ export class OrganizationTreeComponent implements OnInit {
   constructor(
     private database: OrganizationTree2Service,
     private messagesService: MessagesService,
-    private organizationService: OrganizationsService,
+    private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
   ) {}
@@ -91,7 +91,7 @@ export class OrganizationTreeComponent implements OnInit {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(url, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {

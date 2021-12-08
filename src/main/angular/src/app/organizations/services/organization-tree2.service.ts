@@ -43,7 +43,7 @@ export class OrganizationTree2Service {
 
   constructor(
     private messagesService: MessagesService,
-    private organizationService: OrganizationsService,
+    private organizationsService: OrganizationsService,
   ) {}
 
   async initialize() {
@@ -65,12 +65,12 @@ export class OrganizationTree2Service {
 
   getTopLevelOus() {
     const body = allTopLevelOus;
-    const tops = this.organizationService.query(environment.restOus, null, body).toPromise();
+    const tops = this.organizationsService.query(environment.restOus, null, body).toPromise();
     return tops;
   }
 
   getChildren4Ou(id: string) {
-    const resp = this.organizationService.listChildren4Ou(id, null).toPromise();
+    const resp = this.organizationsService.listChildren4Ou(id, null).toPromise();
     return resp;
   }
 
