@@ -51,7 +51,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
     this.ou = this.activatedRoute.snapshot.data['ou'];
+    this.initOu();
+  }
 
+  private initOu() {
     if (this.ou.metadata.name === 'new ou') {
       this.isNewOu = true;
       this.isNewParentOu = true;
@@ -242,7 +245,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  showDetails(id: any) {
+  gotoRef(id: any) {
     this.router.navigate(['/organization', id]);
   }
 

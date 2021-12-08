@@ -181,7 +181,7 @@
         <label class="col-2 col-form-label col-form-label-sm">children</label>
         <div class="col-10">
           <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let child of children" (click)="showDetails(child.objectId)">
+            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let child of children" (click)="gotoRef(child.objectId)">
               <div class="row">
                 <span class="col-3"><label class="col-form-label-sm p-0">{{child.objectId}}</label></span>
                 <span class="col-2"><label class="col-form-label-sm p-0">{{child.publicStatus}}</label></span>
@@ -196,7 +196,7 @@
         <label class="col-2 col-form-label col-form-label-sm">predecessors</label>
         <div class="col-10">
           <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let predecessor of predecessors" (click)="showDetails(predecessor.objectId)">
+            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let predecessor of predecessors" (click)="gotoRef(predecessor.objectId)">
               <div class="row">
                 <span class="col-3"><label class="col-form-label-sm">{{predecessor.objectId}}</label></span>
                 <span class="col-2"><label class="col-form-label-sm">{{predecessor.publicStatus}}</label></span>
