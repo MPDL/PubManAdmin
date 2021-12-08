@@ -16,7 +16,7 @@ export class OrganizationDetailsResolverService implements Resolve<any> {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private organizationsService: OrganizationsService,
+    private organizationService: OrganizationsService,
     private messagesService: MessagesService,
   ) {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
@@ -27,11 +27,11 @@ export class OrganizationDetailsResolverService implements Resolve<any> {
     const id = route.params['id'];
     if (id === 'new org') {
       const ou = new Ou();
-      ou.parentAffiliation = this.organizationsService.makeAffiliation('');
-      ou.metadata = this.organizationsService.makeMetadata('new ou');
+      ou.parentAffiliation = this.organizationService.makeAffiliation('');
+      ou.metadata = this.organizationService.makeMetadata('new ou');
       return of(ou);
     } else {
-      return this.organizationsService.get(url, id, this.token)
+      return this.organizationService.get(url, id, this.token)
         .pipe(
           first(),
           catchError((error) => {
