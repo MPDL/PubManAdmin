@@ -64,7 +64,7 @@
 
       <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">description</label>
-        <div class="col-7">
+        <div class="col-10">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.description" name="_ctxDescription">
         </div>
       </div>
@@ -79,6 +79,34 @@
         </div>
       </div>
 
+      <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">workflow</label>
+        <div class="col-10 text-end">
+          <div class="row">
+            <div class="col-5">
+              <select class="select form-select form-select-sm" [(ngModel)]="workflow" name="_workflow" (change)="onChangedWorkflow($event.target.value)">
+                <option *ngFor="let workflow of workflows2display" [value]="workflow">{{workflow}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm">contact email</label>
+        <div class="col-10 text-end">
+          <div class="row">
+            <div class="col-5">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.contactEmail" name="_contactEmail">
+            </div>
+            <div class="col-1">
+            </div>
+            <div class="col-6">
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div class="row w-100 mt-4">
         <div class="col-3 ms-auto">
           <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
@@ -87,7 +115,7 @@
         </div>
       </div>
 
-      <div *ngIf="ctx.state !== 'CLOSED'" class="row w-100 mt-3">
+      <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">allowed genres</label>
         <div class="col-10 text-end">
           <div class="row">
@@ -113,7 +141,7 @@
         </div>
       </div>
 
-      <div *ngIf="ctx.state !== 'CLOSED'" class="row w-100 mt-3">
+      <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">subject classifications</label>
         <div class="col-10 text-end">
           <div class="row">
@@ -134,34 +162,6 @@
                   <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()" value="x" /></span>
                 </div>
               </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="ctx.state !== 'CLOSED'" class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">workflow</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <select class="select form-select form-select-sm" [(ngModel)]="workflow" name="_workflow" (change)="onChangedWorkflow($event.target.value)">
-                <option *ngFor="let workflow of workflows2display" [value]="workflow">{{workflow}}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">contact email</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.contactEmail" name="_contactEmail">
-            </div>
-            <div class="col-1">
-            </div>
-            <div class="col-6">
             </div>
           </div>
         </div>

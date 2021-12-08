@@ -20,7 +20,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   parentOus: Ou[] = [];
   parentOuSearchTerm: string = '';
-
   isNewParentOu: boolean = false;
   parentOuId: string;
 
@@ -29,6 +28,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   alternativeName: string;
   description: string;
+  identifier: string;
 
   adminSubscription: Subscription;
   isAdmin: boolean;
@@ -60,6 +60,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.parentOuSearchTerm = this.ou.parentAffiliation.name;
       }
       this.listChildren(this.ou.objectId);
+      if (this.ou.hasPredecessors) {
+        const preId = this.ou.predecessorAffiliations[0].objectId;
+        this.listPredecessors(preId, this.token);
+      } else {
+        this.predecessors = [];
+      }
     }
   }
 
@@ -160,7 +166,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         this.ou.metadata.identifiers.push(ouid);
       }
     }
-    this.parentOuId = '';
+    this.identifier = '';
   }
 
   deleteIdentifier(selected: Identifier) {
@@ -190,7 +196,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.ou.parentAffiliation.objectId === '') {
+    if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId === '') {
       this.ou.parentAffiliation = null;
     }
 

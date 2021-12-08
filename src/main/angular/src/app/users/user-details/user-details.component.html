@@ -128,8 +128,8 @@
                         <ul class="list-group">
                             <li class="list-group-item-primary list-group-item-action py-0 align-items-center" *ngFor="let grant of user.grantList" (click)="goToRef(grant)">
                                 <div class="row">
-                                    <span class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0 ms-2">{{grant.role}}</label></span>
-                                    <span class="col-6 text-start text-truncate"><label class="col-form-label-sm p-0">{{grant.objectName}}</label></span>
+                                    <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0 ms-2">{{grant.role}}</label></span>
+                                    <span class="col-7 text-start text-truncate"><label class="col-form-label-sm p-0">{{grant.objectName}}</label></span>
                                     <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{grant.objectRef}}</label></span>
                                     <span class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="addToDeleteGrantsList(grant); $event.stopPropagation()" value="x" /></span>
                                 </div>
@@ -138,7 +138,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="!isNewGrant && user.active === true" class="row w-100 mt-3">
+                <div *ngIf="!isNewGrant" class="row w-100 mt-3">
                     <div class="col-2 ms-auto">
                         <input type="button" class="btn btn-outline-primary btn-sm float-end" (click)="addGrant(); $event.stopPropagation()" value="add grants" />
                     </div>

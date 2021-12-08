@@ -49,7 +49,7 @@ export class OrganizationTreeComponent implements OnInit {
     if (this.nodeMap.has(node.ouName)) {
       return this.nodeMap.get(node.ouName)!;
     }
-    const newNode = new OuTreeFlatNode(node.ouName, node.ouId, level, node.hasChildren, node.parentOuId);
+    const newNode = new OuTreeFlatNode(node.ouName, node.ouStatus, node.ouId, level, node.hasChildren, node.parentOuId);
     this.nodeMap.set(node.ouName, newNode);
     return newNode;
   };

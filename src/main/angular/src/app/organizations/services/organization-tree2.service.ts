@@ -14,6 +14,7 @@ export class OuTreeNode {
 
   constructor(
     public ouName: string,
+    public ouStatus: string,
     public ouId: string,
     public hasChildren: boolean = false,
     public parentOuId: string | null = null,
@@ -23,6 +24,7 @@ export class OuTreeNode {
 export class OuTreeFlatNode {
   constructor(
     public ouName: string,
+    public ouStatus: string,
     public ouId: string,
     public level: number = 1,
     public expandable: boolean = false,
@@ -93,7 +95,7 @@ export class OrganizationTree2Service {
     if (this.nodeMap.has(ou.name)) {
       return this.nodeMap.get(ou.name)!;
     }
-    const response = new OuTreeNode(ou.name, ou.objectId, ou.hasChildren);
+    const response = new OuTreeNode(ou.name, ou.publicStatus, ou.objectId, ou.hasChildren);
     this.nodeMap.set(ou.name, response);
     return response;
   }

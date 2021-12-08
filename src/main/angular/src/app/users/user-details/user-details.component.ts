@@ -103,8 +103,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   gotoUserList() {
-    const userId = this.user ? this.user.loginname : null;
-    this.router.navigate(['/users', {id: userId}]);
+    this.router.navigate(['/users']);
   }
 
   generateRandomPassword(user: { password: string; }) {

@@ -144,7 +144,7 @@
           <ul class="list-group">
             <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let desc of ou.metadata.descriptions">
               <div class="row">
-                <span class="col-11 pt-0 pb-0"><label class="col-form-label-sm p-0 text-start">{{desc}}</label></span>
+                <label class="col-11 col-form-label-sm text-start">{{desc}}</label>
                 <span class="col-1"><input type="button" class="btn btn-outline-info btn-sm float-end" (click)="deleteDescription(desc); $event.stopPropagation()" value="x" /></span>
               </div>
             </div>
@@ -157,10 +157,10 @@
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <input type="text" class="form-control form-control-sm" [(ngModel)]="ouIdentifierId" name="_ouIdentifierId">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="identifier" name="_identifier">
             </div>
             <div class="col-1 justify-content-start">
-              <input type="button" [disabled]="!ouIdentifierId" class="btn btn-outline-info btn-sm m-1" (click)="addIdentifier(ouIdentifierId)" value=">>" />
+              <input type="button" [disabled]="!identifier" class="btn btn-outline-info btn-sm m-1" (click)="addIdentifier(identifier)" value=">>" />
               <input type="button" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearIdentifiers()" value="<<" />
             </div>
             <div class="col-6">
