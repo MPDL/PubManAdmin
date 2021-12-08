@@ -73,7 +73,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
-  getAllUsersAsObservable(token: string, page: number) {
+  private getAllUsersAsObservable(token: string, page: number) {
     this.usersService.getAll(this.usersUrl, token, page)
       .subscribe({
         next: (data) => {
@@ -145,7 +145,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedUsersByName(userName: string) {
+  private returnSuggestedUsersByName(userName: string) {
     const usersByName: User[] = [];
     const queryString = '?q=name.auto:' + userName;
     this.usersService.filter(this.usersUrl, this.token, queryString, 1)
@@ -162,7 +162,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       });
   }
 
-  returnSuggestedUsersByLogin(loginname: string) {
+  private returnSuggestedUsersByLogin(loginname: string) {
     const usersByLogin: User[] = [];
     const queryString = '?q=loginname.auto:' + loginname;
     this.usersService.filter(this.usersUrl, this.token, queryString, 1)
@@ -188,7 +188,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedOus(term: string) {
+  private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;

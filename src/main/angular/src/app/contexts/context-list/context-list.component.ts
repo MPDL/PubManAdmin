@@ -96,7 +96,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedCtxs(term: string) {
+  private returnSuggestedCtxs(term: string) {
     const ctxsByName: Ctx[] = [];
     const queryString = '?q=name.auto:' + term;
     this.contextsService.filter(this.ctxsUrl, null, queryString, 1)
@@ -122,7 +122,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedOus(term: string) {
+  private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;

@@ -49,12 +49,6 @@ export class OrganizationTree2Service {
   async initialize() {
     const data: any[] = [];
     try {
-      /*
-      const mpg = await this.service.getOuById('ou_persistent13', null).toPromise();
-      const ext = await this.service.getOuById('ou_persistent22', null).toPromise();
-      data.push(this.generateNode(mpg));
-      data.push(this.generateNode(ext));
-      */
       const topLevelOus = await this.getTopLevelOus();
       topLevelOus.list.forEach((ou: any) => data.push(this.generateNode(ou)));
       this.dataChange.next(data);
@@ -63,13 +57,13 @@ export class OrganizationTree2Service {
     }
   }
 
-  getTopLevelOus() {
+  private getTopLevelOus() {
     const body = allTopLevelOus;
     const tops = this.organizationsService.query(environment.restOus, null, body).toPromise();
     return tops;
   }
 
-  getChildren4Ou(id: string) {
+  private getChildren4Ou(id: string) {
     const resp = this.organizationsService.listChildren4Ou(id, null).toPromise();
     return resp;
   }

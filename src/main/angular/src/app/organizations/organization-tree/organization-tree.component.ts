@@ -25,6 +25,19 @@ export class OrganizationTreeComponent implements OnInit {
   treeControl: FlatTreeControl<OuTreeFlatNode>;
   treeFlattener: MatTreeFlattener<OuTreeNode, OuTreeFlatNode>;
 
+  transformer = (node: OuTreeNode, level: number) => {
+    if (this.nodeMap.has(node.ouName)) {
+      return this.nodeMap.get(node.ouName)!;
+    }
+    const newNode = new OuTreeFlatNode(node.ouName, node.ouStatus, node.ouId, level, node.hasChildren, node.parentOuId);
+    this.nodeMap.set(node.ouName, newNode);
+    return newNode;
+  };
+
+  hasChild = (_: number, nodeData: OuTreeFlatNode) => {
+    return nodeData.expandable;
+  };
+
   constructor(
     private database: OrganizationTree2Service,
     private messagesService: MessagesService,
@@ -41,29 +54,16 @@ export class OrganizationTreeComponent implements OnInit {
     this.database.initialize();
   }
 
-  getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {
+  private getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {
     return node.childrenChange;
   };
 
-  transformer = (node: OuTreeNode, level: number) => {
-    if (this.nodeMap.has(node.ouName)) {
-      return this.nodeMap.get(node.ouName)!;
-    }
-    const newNode = new OuTreeFlatNode(node.ouName, node.ouStatus, node.ouId, level, node.hasChildren, node.parentOuId);
-    this.nodeMap.set(node.ouName, newNode);
-    return newNode;
-  };
-
-  getLevel = (node: OuTreeFlatNode) => {
+  private getLevel = (node: OuTreeFlatNode) => {
     return node.level;
   };
 
-  isExpandable = (node: OuTreeFlatNode) => {
+  private isExpandable = (node: OuTreeFlatNode) => {
     return node.expandable;
-  };
-
-  hasChild = (_: number, nodeData: OuTreeFlatNode) => {
-    return nodeData.expandable;
   };
 
   loadChildren(node: OuTreeFlatNode) {
@@ -87,7 +87,7 @@ export class OrganizationTreeComponent implements OnInit {
     }
   }
 
-  returnSuggestedOus(term: string) {
+  private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;

@@ -256,7 +256,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedOus(term: string) {
+  private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;

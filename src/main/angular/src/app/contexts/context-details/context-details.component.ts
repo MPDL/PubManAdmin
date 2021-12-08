@@ -79,7 +79,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
-  initializeAllowed(ctx: Ctx) {
+  private initializeAllowed(ctx: Ctx) {
     if (ctx.allowedGenres != null) {
       this.allowedGenres = this.ctx.allowedGenres || [];
     } else {
@@ -249,7 +249,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedOus(term: string) {
+  private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;

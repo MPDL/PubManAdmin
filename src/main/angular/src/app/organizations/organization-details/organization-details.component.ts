@@ -24,6 +24,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   parentOuId: string;
 
   children: Ou[];
+  hasOpenChildren: boolean;
   predecessors: Ou[] = [];
 
   alternativeName: string;
@@ -52,6 +53,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           const id = data['id'];
+          this.hasOpenChildren = false;
           if (id === 'new org') {
             this.isNewOu = true;
             this.isNewParentOu = true;
@@ -65,6 +67,13 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
   }
 
+  ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
+    this.routeSubscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
+  }
+
   private prepareNewOu(): Ou {
     const ou = new Ou();
     ou.parentAffiliation = this.organizationsService.makeAffiliation('');
@@ -72,7 +81,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     return ou;
   }
 
-  getOu(id: string, token: string) {
+  private getOu(id: string, token: string) {
     this.organizationsService.get(this.ouRestUrl, id, token)
       .subscribe({
         next: (data) => {
@@ -91,20 +100,24 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.routeSubscription.unsubscribe();
-    this.tokenSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
-  }
-
-  listPredecessors(id: string, token: string) {
+  private listPredecessors(id: string, token: string) {
     const query = '?q=objectId:' + id;
     this.organizationsService.filter(this.ouRestUrl, token, query, 1).subscribe((data) => this.predecessors = data.list);
   }
 
-  listChildren(mother: string) {
-    this.organizationsService.listChildren4Ou(mother, null).subscribe((data) => this.children = data);
+  private listChildren(mother: string) {
+    this.organizationsService.listChildren4Ou(mother, null)
+      .subscribe({
+        next: (data) => {
+          this.children = data;
+          this.children.forEach((child) => {
+            if (child.publicStatus === 'OPENED') {
+              this.hasOpenChildren = true;
+            }
+          });
+        },
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   openOu(ou: Ou) {
@@ -281,7 +294,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  returnSuggestedParentOus(term: string) {
+  private returnSuggestedParentOus(term: string) {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
