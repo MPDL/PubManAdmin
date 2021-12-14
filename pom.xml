@@ -4,7 +4,7 @@
 	
 	<groupId>de.mpg.mpdl.inge</groupId>
 	<artifactId>admintool</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>8.4.4-SNAPSHOT</version>
 	<packaging>war</packaging>
 	
 	<repositories>
