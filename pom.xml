@@ -186,6 +186,14 @@
 					</plugin>
 				</plugins>
 			</build>
+			<properties>
+				<jboss.deploy.port>8889</jboss.deploy.port>
+				<jboss.host>vm44.mpdl.mpg.de</jboss.host>
+				<jboss.install.dir>/srv/web/inge/wildfly</jboss.install.dir>
+				<jboss.tmp.deploy>/srv/web/inge</jboss.tmp.deploy>
+				<jboss.user.scp>jboss@vm44.mpdl.mpg.de</jboss.user.scp>
+				<jboss.username>jboss</jboss.username>
+			</properties>
 		</profile>
 	</profiles>
 </project>
