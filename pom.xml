@@ -7,6 +7,19 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<url>https://rd.mpdl.mpg.de/nexus3/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
 	<build>
 		<plugins>
 			<plugin>
