@@ -171,6 +171,13 @@
 								</configuration>
 							</execution>
 						</executions>
+						<dependencies>		
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.10.12</version>
+							</dependency>						
+						</dependencies>		
 					</plugin>
 				</plugins>
 			</build>
