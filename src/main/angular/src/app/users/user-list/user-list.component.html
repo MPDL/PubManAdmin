@@ -9,12 +9,12 @@
     </div>
 
     <div class="row">
-      <div class="col-4">
+      <div class="col-7">
         <input class="form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" (clickOutside)="closeOus()">
             <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-              <small>{{ou.metadata.name}} - {{ou.objectId}}</small>
+              <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}}</small>
             </li>
           </ul>
         </div>
@@ -22,7 +22,7 @@
     </div>
 
     <div class="row">
-      <div class="col-4">
+      <div class="col-7">
         <input class="form-control form-control-sm" type="text" placeholder="search by name of user" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" autocomplete="off">
         <div *ngIf="usersByName.length > 0">
           <ul class="list-group" (clickOutside)="closeUsersByName()">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="row">
-      <div class="col-4">
+      <div class="col-7">
         <input class="form-control form-control-sm" type="text" placeholder="search by loginname of user" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" autocomplete="off">
         <div *ngIf="usersByLogin.length > 0">
           <ul class="list-group" (clickOutside)="closeUsersByLogin()">
@@ -47,7 +47,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-8">
+      <div class="col-5">
         <div *ngIf="total > 0" class="has-text-centered">
           <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="getPage($event)"></pagination-controls>
         </div>
