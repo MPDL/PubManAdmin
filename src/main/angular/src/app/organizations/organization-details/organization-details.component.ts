@@ -163,7 +163,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   clearAlternativeNames() {
-    this.ou.metadata.alternativeNames.splice(0, this.ou.metadata.alternativeNames.length);
+    if (confirm('remove all subject alternative names ?')) {
+      this.ou.metadata.alternativeNames.splice(0, this.ou.metadata.alternativeNames.length);
+    }
   }
 
   addDescription(selected: string) {
@@ -186,7 +188,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   clearDescriptions() {
-    this.ou.metadata.descriptions.splice(0, this.ou.metadata.descriptions.length);
+    if (confirm('remove all descriptions ?')) {
+      this.ou.metadata.descriptions.splice(0, this.ou.metadata.descriptions.length);
+    }
   }
 
   addIdentifier(selected: string) {
@@ -211,7 +215,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   clearIdentifiers() {
-    this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
+    if (confirm('remove all identificators ?')) {
+      this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
+    }
   }
 
   saveOu(ou: Ou) {

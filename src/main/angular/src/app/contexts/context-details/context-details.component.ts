@@ -140,11 +140,15 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   clearGenres() {
-    this.allowedGenres.splice(0, this.allowedGenres.length);
+    if (confirm('remove all genres ?')) {
+      this.allowedGenres.splice(0, this.allowedGenres.length);
+    }
   }
 
   clearSubjects() {
-    this.allowedSubjects.splice(0, this.allowedSubjects.length);
+    if (confirm('remove all subject classifications ?')) {
+      this.allowedSubjects.splice(0, this.allowedSubjects.length);
+    }
   }
 
   onChangedWorkflow(value: string) {

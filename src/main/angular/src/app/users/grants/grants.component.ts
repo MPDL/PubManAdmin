@@ -71,13 +71,14 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   getCtxsAndOus() {
     const ousBody = allOpenedOus;
+    this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
+
     this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
       .subscribe(
         (data) => {
           this.ctxs = data.list;
           this.filteredCtxs = data.list;
         });
-    this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
   }
 
   onChangeRole(role: string) {

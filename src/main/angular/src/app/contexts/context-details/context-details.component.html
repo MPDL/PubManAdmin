@@ -48,7 +48,7 @@
             <div *ngIf="ous.length > 0">
                 <ul class="list-group" (clickOutside)="closeOus()">
                     <li *ngFor="let ou of ous" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-                        <small>{{ou.metadata.name}}</small>
+                        <small>{{ou.metadata.name}} - {{ou.objectId}}</small>
                     </li>
                 </ul>
             </div>
@@ -116,6 +116,10 @@
       </div>
 
       <div class="row w-100 mt-3">
+        <label *ngIf="allowedGenres.length" class="col-12 col-form-label col-form-label-sm text-warning text-end">(attention: the genre to be deleted must not be included in the organization's publication stock!)</label>
+      </div>
+
+      <div class="row w-100 mt-1">
         <label class="col-2 col-form-label col-form-label-sm">allowed genres</label>
         <div class="col-10 text-end">
           <div class="row">

@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Ctx, Ou} from 'app/base/common/model/inge';
+import {Ctx, Ou, User} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
+import {UsersService} from 'app/users/services/users.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {AuthenticationService} from '../../base/services/authentication.service';
@@ -35,8 +36,12 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   loading: boolean = false;
 
+  adminSubscription: Subscription;
+  isAdmin: boolean;
   tokenSubscription: Subscription;
   token: string;
+  userSubscription: Subscription;
+  loggedInUser: User;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -45,20 +50,39 @@ export class ContextListComponent implements OnInit, OnDestroy {
     private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
+    private usersService: UsersService,
   ) {}
 
   ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.listAllCtxs(this.token);
+    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+
+    if (this.token != null) {
+      if (this.isAdmin) {
+        this.listAllCtxs(1);
+      } else if (this.loggedInUser != null) {
+        this.listCtxs(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'responsibleAffiliations.objectId'), 1);
+      }
+    } else {
+      this.messagesService.warning('no token, no contexts!');
+    }
   }
 
   ngOnDestroy() {
     this.tokenSubscription.unsubscribe();
   }
 
-  getPage(page: number) {
-    this.loading = true;
+  listAllCtxs(page: number) {
     this.contextsService.getAll(this.ctxsUrl, this.token, page)
+      .subscribe((data) => {
+        this.ctxs = data.list;
+        this.total = data.records;
+      });
+  }
+
+  private listCtxs(searchTerm: string, page: number) {
+    this.contextsService.filter(this.ctxsUrl, null, '?q=' + searchTerm, page)
       .subscribe({
         next: (data) => {
           this.ctxs = data.list;
@@ -66,16 +90,21 @@ export class ContextListComponent implements OnInit, OnDestroy {
         },
         error: (e) => this.messagesService.error(e),
       });
-    this.currentPage = page;
-    this.loading = false;
   }
 
-  listAllCtxs(token: string) {
-    this.contextsService.getAll(this.ctxsUrl, token, 1)
-      .subscribe((data) => {
-        this.ctxs = data.list;
-        this.total = data.records;
-      });
+  getPage(page: number) {
+    this.loading = true;
+    if (this.selectedOu === undefined) {
+      if (this.isAdmin) {
+        this.listAllCtxs(page);
+      } else if (this.loggedInUser != null) {
+        this.listCtxs(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'responsibleAffiliations.objectId'), page);
+      }
+    } else {
+      this.listCtxs(this.selectedOu.objectId, page);
+    }
+    this.currentPage = page;
+    this.loading = false;
   }
 
   gotoCtx(ctx: Ctx) {

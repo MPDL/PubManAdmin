@@ -60,10 +60,12 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     if (this.token != null) {
       if (this.isAdmin) {
-        this.getAllUsersAsObservable(this.token, this.currentPage);
+        this.listAllUsers(1);
       } else if (this.loggedInUser != null) {
-        this.router.navigate(['/user', this.loggedInUser.objectId]);
+        this.listUsers(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'affiliation.objectId'), 1);
       }
+    } else {
+      this.messagesService.warning('no token, no users!');
     }
   }
 
@@ -73,8 +75,19 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
-  private getAllUsersAsObservable(token: string, page: number) {
-    this.usersService.getAll(this.usersUrl, token, page)
+  private listAllUsers(page: number) {
+    this.usersService.getAll(this.usersUrl, this.token, page)
+      .subscribe({
+        next: (data) => {
+          this.users = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  private listUsers(searchTerm: string, page: number) {
+    this.usersService.filter(this.usersUrl, this.token, '?q=' + searchTerm, page)
       .subscribe({
         next: (data) => {
           this.users = data.list;
@@ -85,29 +98,19 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getPage(page: number) {
-    if (this.token != null) {
-      if (this.selectedOu === undefined) {
-        this.usersService.getAll(this.usersUrl, this.token, page)
-          .subscribe({
-            next: (data) => {
-              this.users = data.list;
-              this.total = data.records;
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-        this.currentPage = page;
-      } else {
-        this.usersService.filter(this.usersUrl, this.token, '?q=affiliation.objectId:' + this.selectedOu.objectId, page)
-          .subscribe({
-            next: (data) => {
-              this.users = data.list;
-              this.total = data.records;
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-        this.currentPage = page;
+    if (this.selectedOu === undefined) {
+      if (this.isAdmin) {
+        this.listAllUsers(page);
+      } else if (this.loggedInUser != null) {
+        this.listUsers(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'affiliation.objectId'), page);
       }
+    } else {
+      this.listUsers(this.selectedOu.objectId, page);
     }
+    this.users.forEach((user) => {
+      console.log(user.name + ':' + user.affiliation.objectId +',' + user.affiliation.creator +',' + user.affiliation.creationDate +',' + user.affiliation.lastModificationDate +',' + user.affiliation.modifier + ',' + user.affiliation.name);
+    });
+    this.currentPage = page;
   }
 
   gotoUser(user: User) {
@@ -120,28 +123,20 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   getUsersByName(term: string) {
-    if (this.token != null) {
-      const convertedSearchTerm = this.searchService.convertSearchTerm(term);
-      if (convertedSearchTerm.length > 0) {
-        this.returnSuggestedUsersByName(convertedSearchTerm);
-      } else {
-        this.closeUsersByName();
-      }
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedUsersByName(convertedSearchTerm);
     } else {
-      this.messagesService.warning('no token, no users!');
+      this.closeUsersByName();
     }
   }
 
   getUsersByLogin(term: string) {
-    if (this.token != null) {
-      const convertedSearchTerm = this.searchService.convertSearchTerm(term);
-      if (convertedSearchTerm.length > 0) {
-        this.returnSuggestedUsersByLogin(convertedSearchTerm);
-      } else {
-        this.closeUsersByLogin();
-      }
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedUsersByLogin(convertedSearchTerm);
     } else {
-      this.messagesService.warning('no token, no users!');
+      this.closeUsersByLogin();
     }
   }
 
@@ -210,40 +205,28 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   selectOu(ou: Ou) {
     this.selectedOu = ou;
-    if (this.token != null) {
-      this.currentPage = 1;
-      this.usersService.filter(this.usersUrl, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
-        .subscribe({
-          next: (data) => {
-            this.users = data.list;
-            this.total = data.records;
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.warning('no token, no users!');
-    }
+    this.currentPage = 1;
+    this.usersService.filter(this.usersUrl, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
+      .subscribe({
+        next: (data) => {
+          this.users = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
     this.title = 'Users of ' + this.selectedOu.name;
     this.closeOus();
   }
 
   selectUserByName(user: User) {
     this.userNameSearchTerm = user.name;
-    if (this.token != null) {
-      this.router.navigate(['/user', user.objectId]);
-    } else {
-      this.messagesService.warning('no login, no user !!!');
-    }
+    this.router.navigate(['/user', user.objectId]);
     this.usersByName = [];
   }
 
   selectUserByLogin(user: User) {
     this.userLoginSearchTerm = user.loginname;
-    if (this.token != null) {
-      this.router.navigate(['/user', user.objectId]);
-    } else {
-      this.messagesService.warning('no login, no user !!!');
-    }
+    this.router.navigate(['/user', user.objectId]);
     this.usersByLogin = [];
   }
 

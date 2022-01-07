@@ -11,7 +11,6 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
   ousRestUrl = environment.restOus;
-  ou: HttpResponse<any>;
   ous: any;
 
   constructor(
@@ -21,7 +20,21 @@ export class OrganizationsService extends PubmanRestService {
     super(connectionService, httpClient);
   }
 
-  listChildren4Ou(id: string, token: string): Observable<any[]> {
+  getTopLevelOus(token: string): Observable<Ou[]> {
+    const headers = this.addHeaders(token, false);
+    const url = this.baseUrl + this.ousRestUrl + '/toplevel';
+    return this.httpClient.request('GET', url, {headers: headers}).pipe(
+      map((response: HttpResponse<any>) => {
+        this.ous = response;
+        return this.ous;
+      }),
+      catchError((error) => {
+        return throwError(() => new Error(JSON.stringify(error)));
+      })
+    );
+  }
+
+  listChildren4Ou(id: string, token: string): Observable<Ou[]> {
     const headers = this.addHeaders(token, false);
     const url = this.baseUrl + this.ousRestUrl + '/' + id + '/children';
     return this.httpClient.request('GET', url, {headers: headers}).pipe(
@@ -35,14 +48,14 @@ export class OrganizationsService extends PubmanRestService {
     );
   }
 
-  openOu(ou: any, token: string): Observable<Ou> {
+  openOu(ou: Ou, token: string): Observable<Ou> {
     const ouUrl = this.baseUrl + this.ousRestUrl + '/' + ou.objectId + '/open';
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);
     return this.getResource('PUT', ouUrl, headers, body);
   }
 
-  closeOu(ou: any, token: string): Observable<Ou> {
+  closeOu(ou: Ou, token: string): Observable<Ou> {
     const ouUrl = this.baseUrl + this.ousRestUrl + '/' + ou.objectId + '/close';
     const body = ou.lastModificationDate;
     const headers = this.addHeaders(token, true);

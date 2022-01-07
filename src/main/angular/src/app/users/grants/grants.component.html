@@ -5,15 +5,15 @@
 				<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
 			</select>
 		</div>
-		<div *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')" class="input-group col12">
+		<div *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')">
 			<input type="text" class="form-control form-control-sm" placeholder="filter by name of context" [(ngModel)]="filterText" (ngModelChange)="filterCtxs($event)" />
 			<select class="select form-select form-select-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)">
-				<option [ngValue]="ctx" *ngFor="let ctx of filteredCtxs">{{ctx.name}} {{ctx.objectId}}</option>
+				<option [ngValue]="ctx" *ngFor="let ctx of filteredCtxs">{{ctx.name}} - {{ctx.objectId}} - {{ctx.responsibleAffiliations[0].name}}</option>
 			</select>
 		</div>
 		<div *ngIf="selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-7">
 			<select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)">
-				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.metadata.name}} {{ou.objectId}}</option>
+				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.metadata.name}} - {{ou.objectId}}</option>
 			</select>
 		</div>
 		<div *ngIf="!selectedRole" class="col-7">

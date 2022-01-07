@@ -42,20 +42,4 @@ export const allOpenedOus = {
   ],
 };
 
-export const allTopLevelOus = {
-  'size': 100,
-  'query': {
-    'bool': {
-      'must_not': {
-        'exists': {
-          'field': 'parentAffiliation',
-        },
-      },
-    },
-  },
-  'sort': [
-    {'metadata.name.keyword': {'order': 'desc'}},
-  ],
-};
-
 

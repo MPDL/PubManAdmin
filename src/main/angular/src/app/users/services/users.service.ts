@@ -53,7 +53,7 @@ export class UsersService extends PubmanRestService {
   changePassword(user: User, token: string): Observable<User> {
     const userUrl = this.usersUrl + '/' + user.objectId + '/password';
     const body = user.password;
-    const headers = this.addHeaders(token, false);
+    const headers = this.addHeaders(token, true);
     return this.getResource('PUT', userUrl, headers, body);
   }
 
@@ -74,5 +74,18 @@ export class UsersService extends PubmanRestService {
         }
       }
     }
+  }
+
+  getListOfOusForLocalAdmin(grants: Grant[], searchField: string): string {
+    let lst: string = '';
+    grants.forEach((grant) => {
+      if (grant.role === 'LOCAL_ADMIN') {
+        if (lst.length > 0) {
+          lst = lst + '+';
+        }
+        lst = lst + searchField + ':' + grant.objectRef;
+      }
+    });
+    return lst;
   }
 }

@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {environment} from '../../../environments/environment';
-import {allTopLevelOus as allTopLevelOus} from '../../base/common/model/query-bodies';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from './organizations.service';
 
@@ -34,6 +33,8 @@ export class OuTreeFlatNode {
 
 @Injectable()
 export class OrganizationTree2Service {
+  ousUrl = environment.restOus;
+
   dataChange: BehaviorSubject<OuTreeNode[]> = new BehaviorSubject<OuTreeNode[]>([]);
   nodeMap: Map<string, OuTreeNode> = new Map<string, OuTreeNode>();
 
@@ -50,6 +51,17 @@ export class OrganizationTree2Service {
     const data: any[] = [];
     try {
       const topLevelOus = await this.getTopLevelOus();
+      topLevelOus.forEach((ou: any) => data.push(this.generateNode(ou)));
+      this.dataChange.next(data);
+    } catch (e) {
+      this.messagesService.error(e);
+    }
+  }
+
+  async initializeForLocalAdmin(lst: string) {
+    const data: any[] = [];
+    try {
+      const topLevelOus = await this.getTopLevelOusForLocalAdmin(lst);
       topLevelOus.list.forEach((ou: any) => data.push(this.generateNode(ou)));
       this.dataChange.next(data);
     } catch (e) {
@@ -58,8 +70,12 @@ export class OrganizationTree2Service {
   }
 
   private getTopLevelOus() {
-    const body = allTopLevelOus;
-    const tops = this.organizationsService.query(environment.restOus, null, body).toPromise();
+    const tops = this.organizationsService.getTopLevelOus(null).toPromise();
+    return tops;
+  }
+
+  private getTopLevelOusForLocalAdmin(searchTerm: string) {
+    const tops = this.organizationsService.filter(this.ousUrl, null, '?q=' + searchTerm, 1).toPromise();
     return tops;
   }
 

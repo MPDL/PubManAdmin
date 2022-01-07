@@ -16,7 +16,7 @@ export class AuthenticationService {
   isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
   isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
   token$ = this.token.asObservable().pipe(shareReplay(1));
-  user$ = this.user.asObservable().pipe(share());
+  user$ = this.user.asObservable().pipe(shareReplay(1));
 
   private tokenUrl: string;
 

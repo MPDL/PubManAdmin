@@ -2,10 +2,12 @@ import {FlatTreeControl} from '@angular/cdk/tree';
 import {Component, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {Router} from '@angular/router';
-import {Ou} from 'app/base/common/model/inge';
+import {Ou, User} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
+import {AuthenticationService} from 'app/base/services/authentication.service';
+import {UsersService} from 'app/users/services/users.service';
 import {environment} from 'environments/environment';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationTree2Service, OuTreeFlatNode, OuTreeNode} from '../services/organization-tree2.service';
 import {OrganizationsService} from '../services/organizations.service';
@@ -38,20 +40,34 @@ export class OrganizationTreeComponent implements OnInit {
     return nodeData.expandable;
   };
 
+  adminSubscription: Subscription;
+  isAdmin: boolean;
+  userSubscription: Subscription;
+  loggedInUser: User;
+
   constructor(
+    private authenticationService: AuthenticationService,
     private database: OrganizationTree2Service,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
+    private usersService: UsersService,
   ) {}
 
   ngOnInit() {
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
     this.database.dataChange.subscribe((data) => this.dataSource.data = data);
-    this.database.initialize();
+    if (this.isAdmin) {
+      this.database.initialize();
+    } else if (this.loggedInUser != null) {
+      this.database.initializeForLocalAdmin(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'objectId'));
+    }
   }
 
   private getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {

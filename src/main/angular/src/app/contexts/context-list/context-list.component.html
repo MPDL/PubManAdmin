@@ -14,7 +14,7 @@
                 <div *ngIf="ous.length > 0">
                     <ul class="list-group" (clickOutside)="closeOus()">
                         <li *ngFor="let ou of ous" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-                            <small>{{ou.metadata.name}}</small>
+                            <small>{{ou.metadata.name}} - {{ou.objectId}}</small>
                         </li>
                     </ul>
                 </div>
@@ -27,7 +27,7 @@
                 <div *ngIf="ctxsByName.length > 0">
                     <ul class="list-group" (clickOutside)="closeCtxsByName()">
                         <li *ngFor="let ctx of ctxsByName" class="list-group-item-success list-group-item-action py-0 text-start" (click)="gotoCtx(ctx)">
-                            <small>{{ctx.name}}</small>
+                            <small>{{ctx.name}} - {{ctx.responsibleAffiliations[0].name}}</small>
                         </li>
                     </ul>
                 </div>
@@ -41,9 +41,10 @@
         <ul class="list-group">
             <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let ctx of ctxs | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoCtx(ctx)">
                 <div class="row">
-                    <span class="col-10"><label class="col-form-label-sm p-0 ms-2">{{ctx.name}}</label></span>
+                    <span class="col-7"><label class="col-form-label-sm p-0 ms-2">{{ctx.name}}</label></span>
                     <span class="col-1"><label class="col-form-label-sm p-0 ms-2">{{ctx.objectId}}</label></span>
                     <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{ctx.state}}</label></span>
+                    <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{ctx.responsibleAffiliations[0].name}}</label></span>
                 </div>
             </div>
         </ul>
