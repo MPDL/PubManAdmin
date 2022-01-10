@@ -1,10 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ous4localAdmin} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
+import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-import {Grant, Ou, User} from '../../base/common/model/inge';
+import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
@@ -22,7 +24,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   user: User;
   isNewUser: boolean = false;
 
+  ou: Ou;
   ous: Ou[] = [];
+  ouPath: string;
   ouSearchTerm: string = '';
   selectedOu: Ou;
   isNewOu: boolean = false;
@@ -33,12 +37,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedGrantsToRemove: Grant[] = [];
   grantsToRemove: string;
 
+  ctx: Ctx;
   ctxTitle: string;
 
   pw: string;
 
   adminSubscription: Subscription;
   isAdmin: boolean;
+  localAdminOusSubscription: Subscription;
+  localAdminOus: string[];
   tokenSubscription: Subscription;
   token: string;
   userSubscription: Subscription;
@@ -47,6 +54,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
+    private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
@@ -56,10 +64,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.localAdminOusSubscription = this.authenticationService.localAdminOus$.subscribe((data) => this.localAdminOus = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
-    this.user = this.activatedRoute.snapshot.data['user'];
+    this.setUser(this.activatedRoute.snapshot.data['user']);
 
     if (this.user.loginname === 'new user') {
       this.isNewUser = true;
@@ -115,7 +124,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe({
           next: (data) => {
-            this.user = data;
+            this.setUser(data);
             this.messagesService.success(data.loginname + ':  password was reset to ' + user.password);
           },
           error: (e) => this.messagesService.error(e),
@@ -130,7 +139,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.changePassword(user, this.token)
         .subscribe({
           next: (data) => {
-            this.user = data;
+            this.setUser(data);
             this.messagesService.success(data.loginname + ':  password has changed to ' + user.password);
           },
           error: (e) => this.messagesService.error(e),
@@ -146,7 +155,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.deactivate(this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.user = data;
+            this.setUser(data);
             this.messagesService.success('Deactivated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
@@ -155,7 +164,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.activate(this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.user = data;
+            this.setUser(data);
             this.messagesService.success('Activated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
@@ -193,7 +202,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + this.user.password);
             this.isNewUser = false;
             this.isNewOu = false;
-            this.user = data;
+            this.setUser(data);
           },
           error: (e) => this.messagesService.error(e),
         }
@@ -207,7 +216,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             this.isNewGrant = false;
             this.usersService.get(environment.restUsers, data.objectId, this.token)
               .subscribe((data) => {
-                this.user = data;
+                this.setUser(data);
                 if (this.user.grantList) {
                   this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
                 }
@@ -222,7 +231,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.usersService.removeGrants(this.user, this.selectedGrantsToRemove, this.token)
       .subscribe({
         next: (data) => {
-          this.user = data;
+          this.setUser(data);
           if (this.user.grantList) {
             this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
           }
@@ -260,21 +269,42 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     const ous: Ou[] = [];
     const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(url, null, queryString, 1)
-      .subscribe({
-        next: (data) => {
-          data.list.forEach((ou: Ou) => {
-            ous.push(ou);
-          });
-          if (ous.length > 0) {
-            this.ous = ous;
-          } else {
-            this.ous = [];
-          }
-          this.user.affiliation = null;
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+    if (this.isAdmin) {
+      this.organizationsService.filter(url, null, queryString, 1)
+        .subscribe({
+          next: (data) => {
+            data.list.forEach((ou: Ou) => {
+              ous.push(ou);
+            });
+            if (ous.length > 0) {
+              this.ous = ous;
+            } else {
+              this.ous = [];
+            }
+            this.user.affiliation = null;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      const body = ous4localAdmin;
+      body.query.bool.filter.terms['objectId'] = this.localAdminOus;
+      body.query.bool.must.term['metadata.name.auto'] = term;
+      this.organizationsService.query(url, null, body)
+        .subscribe({
+          next: (data) => {
+            data.list.forEach((ou: Ou) => {
+              ous.push(ou);
+            });
+            if (ous.length > 0) {
+              this.ous = ous;
+            } else {
+              this.ous = [];
+            }
+            this.user.affiliation = null;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
   }
 
   closeOus() {
@@ -287,7 +317,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
     this.user.affiliation = this.organizationsService.makeAffiliation(this.selectedOu.objectId);
-
     this.ous = [];
   };
 
@@ -302,5 +331,29 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.grants2remove = false;
     this.selectedGrantToRemove = null;
     this.selectedGrantsToRemove = [];
+  }
+
+  private setUser(user: User) {
+    this.user = user;
+    this.updateParents();
+  }
+
+  private updateParents() {
+    this.user.grantList.forEach((grant) => {
+      if (grant.objectRef != null && grant.objectRef.startsWith('ou')) {
+        this.organizationsService.get(this.ousUrl, grant.objectRef, this.token).subscribe((data) => {
+          this.ou = data;
+          grant.parentName = this.ou.parentAffiliation.name;
+        });
+      } else if (grant.objectRef != null && grant.objectRef.startsWith('ctx')) {
+        this.contextsService.get(this.ctxsUrl, grant.objectRef, this.token).subscribe((data1) => {
+          this.ctx = data1;
+          this.organizationsService.getOuPath(this.ctx.responsibleAffiliations[0].objectId, this.token).subscribe((data2) => {
+            this.ouPath = data2;
+            grant.parentName = this.ouPath;
+          });
+        });
+      }
+    });
   }
 }

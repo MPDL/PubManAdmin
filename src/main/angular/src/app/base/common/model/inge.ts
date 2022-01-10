@@ -18,6 +18,7 @@ export class Grant {
   grantType: string;
   objectRef: string;
   objectName: string;
+  parentName: string;
 }
 
 export class User extends BasicRO {

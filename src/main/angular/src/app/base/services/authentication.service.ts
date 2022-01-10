@@ -12,28 +12,34 @@ export class AuthenticationService {
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private token = new BehaviorSubject<string>(null);
   private user = new BehaviorSubject<User>(null);
+  private localAdminOus = new BehaviorSubject<string[]>(null);
 
   isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
   isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
   token$ = this.token.asObservable().pipe(shareReplay(1));
   user$ = this.user.asObservable().pipe(shareReplay(1));
+  localAdminOus$ = this.localAdminOus.asObservable().pipe(shareReplay(1));
 
   private tokenUrl: string;
 
-  setToken(token: string) {
+  private setToken(token: string) {
     this.token.next(token);
   }
 
-  setUser(user: User) {
+  private setUser(user: User) {
     this.user.next(user);
   }
 
-  setIsLoggedIn(isLoggedIn: boolean) {
+  private setIsLoggedIn(isLoggedIn: boolean) {
     this.isLoggedIn.next(isLoggedIn);
   }
 
-  setIsAdmin(isAdmin: boolean) {
+  private setIsAdmin(isAdmin: boolean) {
     this.isAdmin.next(isAdmin);
+  }
+
+  private setLocalAdminOus(ous: string[]) {
+    this.localAdminOus.next(ous);
   }
 
   constructor(
@@ -74,6 +80,7 @@ export class AuthenticationService {
     this.setIsAdmin(false);
     this.setToken(null);
     this.setUser(null);
+    this.setLocalAdminOus(null);
   }
 
   who(token: string | string[]): Observable<User> {
@@ -81,6 +88,7 @@ export class AuthenticationService {
     const whoUrl = this.tokenUrl + '/who';
     let user: User;
     let allowed = false;
+    const ous: string[] = [];
     return this.http.request<User>('GET', whoUrl, {
       headers: headers,
       observe: 'body',
@@ -94,6 +102,12 @@ export class AuthenticationService {
             allowed = true;
           } else if (user.grantList.find((grant) => grant.role === 'LOCAL_ADMIN')) {
             allowed = true;
+            user.grantList.forEach((grant) => {
+              if (grant.role === 'LOCAL_ADMIN') {
+                ous.push(grant.objectRef);
+              }
+            });
+            this.setLocalAdminOus(ous);
           }
         }
         return allowed ? user : null;

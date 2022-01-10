@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ContextsService} from 'app/contexts/services/contexts.service';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
-import {allOpenedOus} from '../../base/common/model/query-bodies';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
@@ -24,15 +25,18 @@ export class GrantsComponent implements OnInit, OnDestroy {
     userChange = new EventEmitter<User>();
 
   ousUrl = environment.restOus;
-  ctxUrl = environment.restCtxs;
+  ctxsUrl = environment.restCtxs;
 
   roles: string[];
   selectedRole: string;
 
+  ctx: Ctx;
   ctxs: Ctx[] = [];
   filteredCtxs: Ctx[] = [];
   selectedCtx: Ctx;
 
+  ou: Ou;
+  ouPath: string;
   ous: Ou[] = [];
   selectedOu: Ou;
 
@@ -48,7 +52,9 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   constructor(
     private authenticationService: AuthenticationService,
+    private contextsService: ContextsService,
     private messagesService: MessagesService,
+    private organizationsService: OrganizationsService,
     private usersService: UsersService,
   ) {}
 
@@ -70,10 +76,9 @@ export class GrantsComponent implements OnInit, OnDestroy {
   }
 
   getCtxsAndOus() {
-    const ousBody = allOpenedOus;
-    this.usersService.query(this.ousUrl, null, ousBody).subscribe((data) => this.ous = data.list);
+    this.organizationsService.getFirstLevelOus(this.token).subscribe((data) => this.ous = data);
 
-    this.usersService.filter(this.ctxUrl, null, '?q=state:OPENED&size=300', 1)
+    this.usersService.filter(this.ctxsUrl, null, '?q=state:OPENED&size=300', 1)
       .subscribe(
         (data) => {
           this.ctxs = data.list;
@@ -138,7 +143,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
       this.usersService.addGrants(this.user, this.selectedGrantsToAdd, this.token)
         .subscribe({
           next: (data) => {
-            this.user = data;
+            this.setUser(data);
             if (this.user.grantList) {
               this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
             }
@@ -162,5 +167,28 @@ export class GrantsComponent implements OnInit, OnDestroy {
       this.selectedCtx = this.filteredCtxs[0];
     }
   }
-}
 
+  private setUser(user: User) {
+    this.user = user;
+    this.updateParents();
+  }
+
+  private updateParents() {
+    this.user.grantList.forEach((grant) => {
+      if (grant.objectRef != null && grant.objectRef.startsWith('ou')) {
+        this.organizationsService.get(this.ousUrl, grant.objectRef, this.token).subscribe((data) => {
+          this.ou = data;
+          grant.parentName = this.ou.parentAffiliation.name;
+        });
+      } else if (grant.objectRef != null && grant.objectRef.startsWith('ctx')) {
+        this.contextsService.get(this.ctxsUrl, grant.objectRef, this.token).subscribe((data1) => {
+          this.ctx = data1;
+          this.organizationsService.getOuPath(this.ctx.responsibleAffiliations[0].objectId, this.token).subscribe((data2) => {
+            this.ouPath = data2;
+            grant.parentName = this.ouPath;
+          });
+        });
+      }
+    });
+  }
+}

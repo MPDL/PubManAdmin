@@ -12,6 +12,7 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 export class OrganizationsService extends PubmanRestService {
   ousRestUrl = environment.restOus;
   ous: any;
+  ouPath: any;
 
   constructor(
     protected connectionService: ConnectionService,
@@ -34,6 +35,20 @@ export class OrganizationsService extends PubmanRestService {
     );
   }
 
+  getFirstLevelOus(token: string): Observable<Ou[]> {
+    const headers = this.addHeaders(token, false);
+    const url = this.baseUrl + this.ousRestUrl + '/firstlevel';
+    return this.httpClient.request('GET', url, {headers: headers}).pipe(
+      map((response: HttpResponse<any>) => {
+        this.ous = response;
+        return this.ous;
+      }),
+      catchError((error) => {
+        return throwError(() => new Error(JSON.stringify(error)));
+      })
+    );
+  }
+
   listChildren4Ou(id: string, token: string): Observable<Ou[]> {
     const headers = this.addHeaders(token, false);
     const url = this.baseUrl + this.ousRestUrl + '/' + id + '/children';
@@ -44,6 +59,20 @@ export class OrganizationsService extends PubmanRestService {
       }),
       catchError((error) => {
         return throwError(() => new Error(JSON.stringify(error) || 'Error getting children 4 ' + id));
+      })
+    );
+  }
+
+  getOuPath(id: string, token: string): Observable<string> {
+    const headers = this.addHeaders(token, false);
+    const url = this.baseUrl + this.ousRestUrl + '/' + id + '/ouPath';
+    return this.httpClient.request('GET', url, {headers: headers, responseType: 'text'}).pipe(
+      map((response) => {
+        this.ouPath = response;
+        return this.ouPath;
+      }),
+      catchError((error) => {
+        return throwError(() => new Error(JSON.stringify(error) || 'Error getting ouPath ' + id));
       })
     );
   }

@@ -19,27 +19,23 @@ export const mpgOus4auto = {
   ],
 };
 
-export const allOpenedOus = {
-  'size': 300,
+export const ous4localAdmin = {
+  'size': 25,
   'query': {
     'bool': {
-      'filter':
-            {
-              'terms': {
-                'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22'],
-              },
-            },
+      'filter': {
+        'terms': {
+          'objectId': ['terms'],
+        },
+      },
       'must': {
         'term': {
-          'publicStatus.keyword': 'OPENED',
+          'metadata.name.auto': 'term',
         },
       },
     },
   },
   'sort': [
-    {'parentAffiliation.objectId': {'order': 'asc'}},
     {'metadata.name.keyword': {'order': 'asc'}},
   ],
 };
-
-
