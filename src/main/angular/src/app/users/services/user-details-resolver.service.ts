@@ -28,7 +28,7 @@ export class UserDetailsResolverService implements Resolve<User> {
       user.grantList = [];
       user.affiliation = null;
       user.active = true;
-      this.usersService.generateRandomPassword().subscribe((data) => user.password = data.toString());
+      this.usersService.generateRandomPassword(this.token).subscribe((data) => user.password = data);
       return of(user);
     } else {
       let user: User;

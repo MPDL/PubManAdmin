@@ -17,8 +17,9 @@ export class PubmanRestService {
     this.connectionService.connectionService.subscribe((data) => this.baseUrl = data);
   }
 
-  getSearchResults(method: string, url: string, headers: HttpHeaders, body: any): Observable<any> {
-    return this.httpClient.request(method, url, {
+  getSearchResults(method: string, path: string, headers: HttpHeaders, body: any): Observable<any> {
+    const requestUrl = this.baseUrl + path;
+    return this.httpClient.request(method, requestUrl, {
       headers: headers,
       observe: 'body',
       responseType: 'json',
@@ -44,12 +45,13 @@ export class PubmanRestService {
     );
   }
 
-  getResource(method: string, url: string, headers: HttpHeaders, body: string | Date): Observable<any> {
-    return this.httpClient.request(method, url, {
+  getStringResource(method: string, path: string, headers: HttpHeaders): Observable<any> {
+    const requestUrl = this.baseUrl + path;
+    return this.httpClient.request(method, requestUrl, {
       headers: headers,
-      body: body,
+      responseType: 'text',
     }).pipe(
-      map((response: HttpResponse<any>) => {
+      map((response: any) => {
         const resource = response;
         return resource;
       }),
@@ -59,10 +61,13 @@ export class PubmanRestService {
     );
   }
 
-  getString(url: string): Observable<string> {
-    return this.httpClient.get(url, {responseType: 'text'})
-      .pipe(
-        map((response: string) => {
+  getResource(method: string, path: string, headers: HttpHeaders, body: string | Date): Observable<any> {
+    const requestUrl = this.baseUrl + path;
+    if (body == null) {
+      return this.httpClient.request(method, requestUrl, {
+        headers: headers,
+      }).pipe(
+        map((response: HttpResponse<any>) => {
           const resource = response;
           return resource;
         }),
@@ -70,23 +75,20 @@ export class PubmanRestService {
           return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
         })
       );
-  }
-
-  getHttpStatus(method: string, url: string, headers: HttpHeaders, body: Date): Observable<any> {
-    return this.httpClient.request(method, url, {
-      headers: headers,
-      body: body,
-      observe: 'response',
-      responseType: 'text',
-    }).pipe(
-      map((response) => {
-        const status = response.status;
-        return status;
-      }),
-      catchError((error) => {
-        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
-      })
-    );
+    } else {
+      return this.httpClient.request(method, requestUrl, {
+        headers: headers,
+        body: body,
+      }).pipe(
+        map((response: HttpResponse<any>) => {
+          const resource = response;
+          return resource;
+        }),
+        catchError((error) => {
+          return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
+        })
+      );
+    }
   }
 
   addHeaders(token: string | string[], contentType: boolean): HttpHeaders {
@@ -106,47 +108,61 @@ export class PubmanRestService {
 
   getAll(path: string, token: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = this.baseUrl + path + '?size=' + this.defaultPageSize + '&from=' + offset;
+    const requestPath = path + '?size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
-    return this.getSearchResults('GET', requestUrl, headers, null);
+    return this.getSearchResults('GET', requestPath, headers, null);
   }
 
   filter(path: string, token: string, query: string, page: number): Observable<any> {
     const offset = (page - 1) * this.defaultPageSize;
-    const requestUrl = this.baseUrl + path + query + '&size=' + this.defaultPageSize + '&from=' + offset;
+    const requestPath = path + query + '&size=' + this.defaultPageSize + '&from=' + offset;
     const headers = this.addHeaders(token, false);
-    return this.getSearchResults('GET', requestUrl, headers, null);
+    return this.getSearchResults('GET', requestPath, headers, null);
   }
 
   query(path: string, token: string, body: object): Observable<any> {
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.baseUrl + path + '/search';
-    return this.getSearchResults('POST', requestUrl, headers, body);
+    const requestPath = path + '/search';
+    return this.getSearchResults('POST', requestPath, headers, body);
   }
 
   get(path: string, id: string, token: string): Observable<any> {
-    const resourceUrl = this.baseUrl + path + '/' + id;
+    const requestPath = path + '/' + id;
     const headers = this.addHeaders(token, false);
-    return this.getResource('GET', resourceUrl, headers, null);
+    return this.getResource('GET', requestPath, headers, null);
   }
 
   post(path: string, resource: User | Ctx | Ou, token: string): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.baseUrl + path;
-    return this.getResource('POST', requestUrl, headers, body);
+    return this.getResource('POST', path, headers, body);
   }
 
   put(path: string, resource: User | Ctx | Ou, token: string): Observable<any> {
     const body = JSON.stringify(resource);
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.baseUrl + path;
-    return this.getResource('PUT', requestUrl, headers, body);
+    return this.getResource('PUT', path, headers, body);
   }
 
   delete(path: string, token: string): Observable<number> {
     const headers = this.addHeaders(token, true);
-    const requestUrl = this.baseUrl + path;
-    return this.getHttpStatus('DELETE', requestUrl, headers, null);
+    return this.getHttpStatus('DELETE', path, headers, null);
+  }
+
+  private getHttpStatus(method: string, url: string, headers: HttpHeaders, body: Date): Observable<any> {
+    return this.httpClient.request(method, url, {
+      headers: headers,
+      body: body,
+      observe: 'response',
+      responseType: 'text',
+    }).pipe(
+      map((response) => {
+        const status = response.status;
+        return status;
+      }),
+      catchError((error) => {
+        return throwError(() => new Error(JSON.stringify(error) || 'UNKNOWN ERROR!'));
+      })
+    );
   }
 }

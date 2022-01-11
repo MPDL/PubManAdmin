@@ -8,12 +8,9 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class UsersService extends PubmanRestService {
-  usersUrl: string = this.baseUrl + environment.restUsers;
-  ousUrl = environment.restOus;
-  ctxsUrl = environment.restCtxs;
-
-  users: User[] = [];
-  user: User;
+  ctxsUrl: string = environment.restCtxs;
+  ousUrl: string = environment.restOus;
+  usersUrl: string = environment.restUsers;
 
   constructor(
     protected connectionService: ConnectionService,
@@ -23,43 +20,44 @@ export class UsersService extends PubmanRestService {
   }
 
   activate(user: User, token: string): Observable<User> {
-    const userUrl = this.usersUrl + '/' + user.objectId + '/activate';
+    const url = this.usersUrl + '/' + user.objectId + '/activate';
     const body = user.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', userUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 
   deactivate(user: User, token: string): Observable<User> {
-    const userUrl = this.usersUrl + '/' + user.objectId + '/deactivate';
+    const url = this.usersUrl + '/' + user.objectId + '/deactivate';
     const body = user.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', userUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    const userUrl = this.usersUrl + '/' + user.objectId + '/add';
+    const url = this.usersUrl + '/' + user.objectId + '/add';
     const body = JSON.stringify(grants);
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', userUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    const userUrl = this.usersUrl + '/' + user.objectId + '/remove';
+    const url = this.usersUrl + '/' + user.objectId + '/remove';
     const body = JSON.stringify(grants);
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', userUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 
   changePassword(user: User, token: string): Observable<User> {
-    const userUrl = this.usersUrl + '/' + user.objectId + '/password';
+    const url = this.usersUrl + '/' + user.objectId + '/password';
     const body = user.password;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', userUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 
-  generateRandomPassword(): Observable<string> {
-    const userUrl = this.usersUrl + '/generateRandomPassword';
-    return this.getString(userUrl);
+  generateRandomPassword(token: string): Observable<string> {
+    const url = this.usersUrl + '/generateRandomPassword';
+    const headers = this.addHeaders(token, true);
+    return this.getStringResource('GET', url, headers);
   }
 
   addNamesOfGrantRefs(grant: Grant) {

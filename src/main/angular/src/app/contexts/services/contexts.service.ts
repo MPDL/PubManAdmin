@@ -8,7 +8,7 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class ContextsService extends PubmanRestService {
-  ctxUrl = environment.restCtxs;
+  ctxsUrl:string = environment.restCtxs;
 
   constructor(
     protected connectionService: ConnectionService,
@@ -18,17 +18,17 @@ export class ContextsService extends PubmanRestService {
   }
 
   openCtx(ctx: Ctx, token: string): Observable<Ctx> {
-    const ctxUrl = this.baseUrl + this.ctxUrl + '/' + ctx.objectId + '/open';
+    const url = this.ctxsUrl + '/' + ctx.objectId + '/open';
     const body = ctx.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', ctxUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 
   closeCtx(ctx: Ctx, token: string): Observable<Ctx> {
-    const ctxUrl = this.baseUrl + this.ctxUrl + '/' + ctx.objectId + '/close';
+    const url = this.ctxsUrl + '/' + ctx.objectId + '/close';
     const body = ctx.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', ctxUrl, headers, body);
+    return this.getResource('PUT', url, headers, body);
   }
 }
 

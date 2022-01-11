@@ -115,8 +115,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/users']);
   }
 
-  generateRandomPassword(user: { password: string; }) {
-    this.usersService.generateRandomPassword().subscribe((data) => user.password = data.toString());
+  generateRandomPassword(user: User) {
+    this.usersService.generateRandomPassword(this.token).subscribe((data) => user.password = data);
   }
 
   resetPassword(user: User) {
