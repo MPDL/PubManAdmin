@@ -9,6 +9,8 @@ import {UsersService} from './users.service';
 
 @Injectable()
 export class UserDetailsResolverService implements Resolve<User> {
+  usersPath: string = environment.restUsers;
+
   tokenSubscription: Subscription;
   token: string;
 
@@ -20,8 +22,8 @@ export class UserDetailsResolverService implements Resolve<User> {
   }
 
   resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<User> {
-    const url = environment.restUsers;
     const id = activatedRouteSnapshot.params['id'];
+
     if (id === 'new user') {
       const user = new User();
       user.loginname = 'new user';
@@ -32,14 +34,11 @@ export class UserDetailsResolverService implements Resolve<User> {
       return of(user);
     } else {
       let user: User;
-      return this.usersService.get(url, id, this.token)
+      return this.usersService.get(this.usersPath, id, this.token)
         .pipe(
           first(),
           map((response) => {
             user = response;
-            if (user.grantList) {
-              user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-            }
             return user;
           })
         );

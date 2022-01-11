@@ -29,8 +29,8 @@ export class UserSearchComponent implements OnInit {
   aggregationsList: any[] = [];
   selectedAggregation: any;
   years: any[] = [];
-  ous: Array<any>;
-  publishers: Array<any>;
+  ous: any[];
+  publishers: any[];
   selected;
   users: any[];
   total: number = 0;
@@ -113,7 +113,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   searchItems(body) {
-    if (this.token !== null) {
+    if (this.token != null) {
       this.currentPage = 1;
       this.searchService.query(this.url, this.token, body)
         .subscribe({
@@ -129,7 +129,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   onSelectYear(year) {
-    if (this.token !== null) {
+    if (this.token != null) {
       this.searchForm.reset();
       this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y'}]);
       this.currentPage = 1;
@@ -156,7 +156,7 @@ export class UserSearchComponent implements OnInit {
   }
 
   onSelectOu(ou) {
-    if (this.token !== null) {
+    if (this.token != null) {
       this.searchForm.reset();
       this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
       this.currentPage = 1;

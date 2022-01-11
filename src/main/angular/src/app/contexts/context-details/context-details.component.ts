@@ -15,8 +15,8 @@ import {ContextsService} from '../services/contexts.service';
   styleUrls: ['./context-details.component.scss'],
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
-  ctxsUrl = environment.restCtxs;
-  ousUrl = environment.restOus;
+  ctxsPath: string = environment.restCtxs;
+  ousPath: string = environment.restOus;
 
   ctx: Ctx;
   isNewCtx: boolean = false;
@@ -59,7 +59,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
     this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
 
-    this.ctx = this.activatedRoute.snapshot.data['ctx'];
+    this.setContext(this.activatedRoute.snapshot.data['ctx']);
 
     if (this.ctx.name === 'new ctx') {
       this.isNewCtx = true;
@@ -67,7 +67,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.genres2display = Object.keys(genres).filter((val) => val.match(/^[A-Z]/));
-    this.initializeAllowed(this.ctx);
 
     this.workflows2display = Object.keys(workflow).filter((val) => val.match(/^[A-Z]/));
     this.workflow = this.ctx.workflow;
@@ -77,22 +76,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.adminSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
-  }
-
-  private initializeAllowed(ctx: Ctx) {
-    if (ctx.allowedGenres != null) {
-      this.allowedGenres = this.ctx.allowedGenres || [];
-    } else {
-      this.ctx.allowedGenres = [];
-      this.allowedGenres = this.ctx.allowedGenres;
-    }
-    this.subjects2display = Object.keys(subjects).filter((val) => val.match(/^[A-Z]/));
-    if (ctx.allowedSubjectClassifications != null) {
-      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
-    } else {
-      this.ctx.allowedSubjectClassifications = [];
-      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
-    }
   }
 
   deleteGenre(genre: string) {
@@ -155,14 +138,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx.workflow = value;
   }
 
-  openCtx(ctx: Ctx) {
-    this.ctx = ctx;
+  openCtx() {
     if (this.ctx.state === 'CLOSED') {
       this.contextsService.openCtx(this.ctx, this.token)
         .subscribe({
           next: (data) => {
             this.ctx = data;
-            this.messagesService.success('Opened ' + ctx.objectId);
+            this.messagesService.success('Opened ' + this.ctx.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -171,23 +153,24 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data) => {
             this.ctx = data;
-            this.messagesService.success('Closed ' + ctx.objectId);
+            this.messagesService.success('Closed ' + this.ctx.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
     }
   }
 
-  deleteCtx(ctx: Ctx) {
-    this.ctx = ctx;
-    const id = this.ctx.objectId;
-    if (confirm('delete ' + ctx.name + ' ?')) {
-      this.contextsService.delete(this.ctxsUrl + '/' + id, this.token)
+  deleteCtx() {
+    if (confirm('delete ' + this.ctx.name + ' ?')) {
+      this.contextsService.delete(this.ctxsPath + '/' + this.ctx.objectId, this.token)
         .subscribe({
-          next: (data) => this.messagesService.success('deleted context ' + id),
+          next: (_data) => {
+            this.messagesService.success('deleted context ' + this.ctx.objectId);
+            this.ctx = null;
+            this.gotoCtxList();
+          },
           error: (e) => this.messagesService.error(e),
         });
-      this.gotoCtxList();
     }
   }
 
@@ -195,9 +178,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/contexts']);
   }
 
-  saveCtx(ctx: Ctx) {
-    this.ctx = ctx;
-
+  saveCtx() {
     if (this.ctx.name.includes('new ctx')) {
       this.messagesService.warning('name MUST NOT be new ctx');
       return;
@@ -219,25 +200,23 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewCtx) {
-      this.contextsService.post(this.ctxsUrl, this.ctx, this.token)
+      this.contextsService.post(this.ctxsPath, this.ctx, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('added new context ' + this.ctx.name);
+            this.setContext(data);
             this.isNewCtx = false;
             this.isNewOu = false;
-            this.ctx = data;
-            this.initializeAllowed(this.ctx);
+            this.messagesService.success('added new context ' + this.ctx.name);
           },
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.contextsService.put(this.ctxsUrl + '/' + this.ctx.objectId, this.ctx, this.token)
+      this.contextsService.put(this.ctxsPath + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('updated context ' + this.ctx.objectId);
-            this.ctx = data;
+            this.setContext(data);
             this.isNewOu = false;
-            this.initializeAllowed(this.ctx);
+            this.messagesService.success('updated context ' + this.ctx.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -255,9 +234,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
-    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {
@@ -284,7 +262,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
     this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId));
-
     this.ous = [];
   };
 
@@ -292,5 +269,26 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.isNewOu = true;
     this.closeOus();
     this.ctx.responsibleAffiliations = [];
+  }
+
+  private setContext(ctx: Ctx) {
+    this.ctx = ctx;
+    this.initializeAllowed();
+  }
+
+  private initializeAllowed() {
+    if (this.ctx.allowedGenres != null) {
+      this.allowedGenres = this.ctx.allowedGenres || [];
+    } else {
+      this.ctx.allowedGenres = [];
+      this.allowedGenres = this.ctx.allowedGenres;
+    }
+    this.subjects2display = Object.keys(subjects).filter((val) => val.match(/^[A-Z]/));
+    if (this.ctx.allowedSubjectClassifications != null) {
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
+    } else {
+      this.ctx.allowedSubjectClassifications = [];
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
+    }
   }
 }

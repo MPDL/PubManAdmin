@@ -68,11 +68,11 @@
                     <input type="password" class="form-control form-control-sm" [(ngModel)]="user.password" name="_password" readonly>
                 </div>
                 <div *ngIf="!isNewUser && user.active == true && user.password" class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword(user)" value="reset" />
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="resetPassword(user)" value="save" />
+                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword()" value="reset" />
+                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="resetPassword()" value="save" />
                 </div>
                 <div *ngIf="user.active == true && !user.password" class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword(user)" value="reset" />
+                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword()" value="reset" />
                 </div>
             </div>
 
@@ -92,7 +92,7 @@
                     <input type="text" class="form-control form-control-sm" [(ngModel)]="user.active" name="_active" readonly>
                 </div>
                 <div class="col-2">
-                    <input *ngIf="!isNewOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="activateUser(user)" [value]="user.active === false ? 'activate' : 'deactivate'" />
+                    <input *ngIf="!isNewOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="activateUser()" [value]="user.active === false ? 'activate' : 'deactivate'" />
                 </div>
             </div>
 
@@ -116,8 +116,8 @@
             <div class="row w-100 mt-4">
                 <div class="col-3 ms-auto">
                     <input type="button" class="btn btn-outline-primary btn-sm me-2" (click)="gotoUserList()" value="cancel" />
-                    <input *ngIf="!isNewUser && isAdmin" type="button" class="btn btn-outline-primary btn-sm me-2" (click)="deleteUser(user)" value="delete" />
-                    <input type="button" class="btn btn-outline-primary btn-sm" (click)="saveUser(user)" value="save" />
+                    <input *ngIf="!isNewUser && isAdmin" type="button" class="btn btn-outline-primary btn-sm me-2" (click)="deleteUser()" value="delete" />
+                    <input type="button" class="btn btn-outline-primary btn-sm" (click)="saveUser()" value="save" />
                 </div>
             </div>
 

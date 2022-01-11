@@ -9,7 +9,7 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
-  ousUrl:string = environment.restOus;
+  ousPath:string = environment.restOus;
 
   constructor(
     protected connectionService: ConnectionService,
@@ -19,52 +19,60 @@ export class OrganizationsService extends PubmanRestService {
   }
 
   getTopLevelOus(token: string): Observable<Ou[]> {
-    const url = this.ousUrl + '/toplevel';
+    const path = this.ousPath + '/toplevel';
     const headers = this.addHeaders(token, false);
-    return this.getResource('GET', url, headers, null);
+
+    return this.getResource('GET', path, headers, null);
   }
 
   getFirstLevelOus(token: string): Observable<Ou[]> {
-    const url = this.ousUrl + '/firstlevel';
+    const path = this.ousPath + '/firstlevel';
     const headers = this.addHeaders(token, false);
-    return this.getResource('GET', url, headers, null);
+
+    return this.getResource('GET', path, headers, null);
   }
 
   listChildren4Ou(id: string, token: string): Observable<Ou[]> {
-    const url = this.ousUrl + '/' + id + '/children';
+    const path = this.ousPath + '/' + id + '/children';
     const headers = this.addHeaders(token, false);
-    return this.getResource('GET', url, headers, null);
+
+    return this.getResource('GET', path, headers, null);
   }
 
   getOuPath(id: string, token: string): Observable<string> {
-    const url = this.ousUrl + '/' + id + '/ouPath';
+    const path = this.ousPath + '/' + id + '/ouPath';
     const headers = this.addHeaders(token, false);
-    return this.getStringResource('GET', url, headers);
+
+    return this.getStringResource('GET', path, headers);
   }
 
   openOu(ou: Ou, token: string): Observable<Ou> {
-    const url = this.ousUrl + '/' + ou.objectId + '/open';
+    const path = this.ousPath + '/' + ou.objectId + '/open';
     const headers = this.addHeaders(token, true);
     const body = ou.lastModificationDate;
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   closeOu(ou: Ou, token: string): Observable<Ou> {
-    const url = this.ousUrl + '/' + ou.objectId + '/close';
+    const path = this.ousPath + '/' + ou.objectId + '/close';
     const headers = this.addHeaders(token, true);
     const body = ou.lastModificationDate;
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   makeAffiliation(id: string): BasicRO {
     const aff = new BasicRO();
     aff.objectId = id;
+
     return aff;
   }
 
   makeMetadata(name: string): OuMetadata {
     const meta = new OuMetadata();
     meta.name = name;
+
     return meta;
   }
 }

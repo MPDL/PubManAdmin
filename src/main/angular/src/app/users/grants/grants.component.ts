@@ -24,8 +24,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
   @Output()
     userChange = new EventEmitter<User>();
 
-  ousUrl = environment.restOus;
-  ctxsUrl = environment.restCtxs;
+  ousPath: string = environment.restOus;
+  ctxsPath: string = environment.restCtxs;
 
   roles: string[];
   selectedRole: string;
@@ -35,8 +35,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
   filteredCtxs: Ctx[] = [];
   selectedCtx: Ctx;
 
-  ou: Ou;
-  ouPath: string;
   ous: Ou[] = [];
   selectedOu: Ou;
 
@@ -78,7 +76,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
   getCtxsAndOus() {
     this.organizationsService.getFirstLevelOus(this.token).subscribe((data) => this.ous = data);
 
-    this.usersService.filter(this.ctxsUrl, null, '?q=state:OPENED&size=300', 1)
+    this.usersService.filter(this.ctxsPath, null, '?q=state:OPENED&size=300', 1)
       .subscribe(
         (data) => {
           this.ctxs = data.list;
@@ -144,9 +142,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data) => {
             this.setUser(data);
-            if (this.user.grantList) {
-              this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-            }
             this.userChange.emit(this.user);
             this.isNewGrantChange.emit(false);
             this.messagesService.success('added Grants to ' + this.user.loginname);
@@ -170,25 +165,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   private setUser(user: User) {
     this.user = user;
-    this.updateParents();
-  }
-
-  private updateParents() {
-    this.user.grantList.forEach((grant) => {
-      if (grant.objectRef != null && grant.objectRef.startsWith('ou')) {
-        this.organizationsService.get(this.ousUrl, grant.objectRef, this.token).subscribe((data) => {
-          this.ou = data;
-          grant.parentName = this.ou.parentAffiliation.name;
-        });
-      } else if (grant.objectRef != null && grant.objectRef.startsWith('ctx')) {
-        this.contextsService.get(this.ctxsUrl, grant.objectRef, this.token).subscribe((data1) => {
-          this.ctx = data1;
-          this.organizationsService.getOuPath(this.ctx.responsibleAffiliations[0].objectId, this.token).subscribe((data2) => {
-            this.ouPath = data2;
-            grant.parentName = this.ouPath;
-          });
-        });
-      }
-    });
+    if (this.user.grantList != null) {
+      this.user.grantList.forEach((grant) => {
+        this.usersService.addNamesOfGrantRefs(grant);
+        this.usersService.addOuPathOfGrantRefs(grant);
+      });
+    }
   }
 }

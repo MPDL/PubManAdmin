@@ -11,6 +11,8 @@ import {ContextsService} from './contexts.service';
 
 @Injectable()
 export class ContextDetailsResolverService implements Resolve<any> {
+  ctxsPath: string = environment.restCtxs;
+
   tokenSubscription: Subscription;
   token: string;
 
@@ -23,8 +25,8 @@ export class ContextDetailsResolverService implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Ctx> {
-    const url = environment.restCtxs;
     const id = route.params['id'];
+
     if (id === 'new ctx') {
       const ctx = new Ctx();
       ctx.name = 'new ctx';
@@ -34,7 +36,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
       ctx.workflow = 'STANDARD';
       return of(ctx);
     } else {
-      return this.contextsService.get(url, id, this.token)
+      return this.contextsService.get(this.ctxsPath, id, this.token)
         .pipe(
           first(),
           catchError((error) => {

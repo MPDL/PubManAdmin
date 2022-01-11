@@ -78,7 +78,7 @@
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
         </div>
         <div *ngIf="!isNewOu && !isNewParentOu" class="col-1">
-          <input type="button" [disabled]="ou.publicStatus === 'OPENED' && hasOpenChildren" class="btn btn-outline-info btn-sm float-start" (click)="openOu(ou)" [value]="ou.publicStatus === 'OPENED' ? 'close' : 'open'" />
+          <input type="button" [disabled]="ou.publicStatus === 'OPENED' && hasOpenChildren" class="btn btn-outline-info btn-sm float-start" (click)="openOu()" [value]="ou.publicStatus === 'OPENED' ? 'close' : 'open'" />
         </div>
       </div>
 
@@ -109,8 +109,8 @@
       <div class="row w-100 mt-4">
         <div class="col-3 ms-auto">
           <input type="button" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
-          <input *ngIf="!isNewOu && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu(ou)" value="delete" />
-          <input type="button" class="btn btn-outline-info btn-sm" (click)="saveOu(ou)" value="save" />
+          <input *ngIf="!isNewOu && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
+          <input type="button" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
         </div>
       </div>
 

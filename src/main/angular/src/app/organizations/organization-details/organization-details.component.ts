@@ -13,7 +13,7 @@ import {OrganizationsService} from '../services/organizations.service';
   styleUrls: ['./organization-details.component.scss'],
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
-  ouRestUrl = environment.restOus;
+  ousPath: string = environment.restOus;
 
   ou: Ou;
   isNewOu: boolean = false;
@@ -82,7 +82,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOu(id: string, token: string) {
-    this.organizationsService.get(this.ouRestUrl, id, token)
+    this.organizationsService.get(this.ousPath, id, token)
       .subscribe({
         next: (data) => {
           this.ou = data;
@@ -102,7 +102,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   private listPredecessors(id: string, token: string) {
     const query = '?q=objectId:' + id;
-    this.organizationsService.filter(this.ouRestUrl, token, query, 1).subscribe((data) => this.predecessors = data.list);
+    this.organizationsService.filter(this.ousPath, token, query, 1).subscribe((data) => this.predecessors = data.list);
   }
 
   private listChildren(mother: string) {
@@ -120,8 +120,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  openOu(ou: Ou) {
-    this.ou = ou;
+  openOu() {
     if (this.ou.publicStatus === 'CREATED' || this.ou.publicStatus === 'CLOSED') {
       this.organizationsService.openOu(this.ou, this.token)
         .subscribe({
@@ -220,9 +219,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveOu(ou: Ou) {
-    this.ou = ou;
-
+  saveOu() {
     if (this.ou.metadata.name.includes('new ou')) {
       this.messagesService.warning('name MUST NOT be new ou');
       return;
@@ -243,40 +240,39 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewOu) {
-      this.organizationsService.post(this.ouRestUrl, this.ou, this.token)
+      this.organizationsService.post(this.ousPath, this.ou, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('added new organization ' + this.ou.metadata.name);
+            this.ou = data;
             this.isNewOu = false;
             this.isNewParentOu = false;
-            this.ou = data;
+            this.messagesService.success('added new organization ' + this.ou.metadata.name);
           },
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.put(this.ouRestUrl + '/' + this.ou.objectId, this.ou, this.token)
+      this.organizationsService.put(this.ousPath + '/' + this.ou.objectId, this.ou, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('updated organization ' + this.ou.objectId);
-            this.isNewParentOu = false;
             this.ou = data;
+            this.isNewParentOu = false;
             if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId != '') {
               this.parentOuSearchTerm = this.ou.parentAffiliation.name;
             }
+            this.messagesService.success('updated organization ' + this.ou.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
     }
   }
 
-  deleteOu(ou: Ou) {
-    this.ou = ou;
-    const id = this.ou.objectId;
-    if (confirm('delete '+ou.metadata.name+' ?')) {
-      this.organizationsService.delete(this.ouRestUrl + '/' + this.ou.objectId, this.token)
+  deleteOu() {
+    if (confirm('delete ' + this.ou.metadata.name+' ?')) {
+      this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
         .subscribe({
-          next: (data) => {
-            this.messagesService.success('deleted organization ' + id);
+          next: (_data) => {
+            this.messagesService.success('deleted organization ' + this.ou.objectId);
+            this.ou = null;
             this.gotoOrganizationList();
           },
           error: (e) => this.messagesService.error(e),
@@ -302,9 +298,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   private returnSuggestedParentOus(term: string) {
     const ous: Ou[] = [];
-    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {

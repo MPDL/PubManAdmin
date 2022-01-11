@@ -149,8 +149,9 @@ export class PubmanRestService {
     return this.getHttpStatus('DELETE', path, headers, null);
   }
 
-  private getHttpStatus(method: string, url: string, headers: HttpHeaders, body: Date): Observable<any> {
-    return this.httpClient.request(method, url, {
+  private getHttpStatus(method: string, path: string, headers: HttpHeaders, body: Date): Observable<any> {
+    const requestUrl = this.baseUrl + path;
+    return this.httpClient.request(method, requestUrl, {
       headers: headers,
       body: body,
       observe: 'response',

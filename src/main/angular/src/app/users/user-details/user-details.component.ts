@@ -6,7 +6,7 @@ import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
-import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
+import {Grant, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
@@ -17,16 +17,14 @@ import {UsersService} from '../services/users.service';
   styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
-  ctxsUrl = environment.restCtxs;
-  ousUrl = environment.restOus;
-  usersUrl = environment.restUsers;
+  ctxsPath: string = environment.restCtxs;
+  ousPath: string = environment.restOus;
+  usersPath: string = environment.restUsers;
 
   user: User;
   isNewUser: boolean = false;
 
-  ou: Ou;
   ous: Ou[] = [];
-  ouPath: string;
   ouSearchTerm: string = '';
   selectedOu: Ou;
   isNewOu: boolean = false;
@@ -36,11 +34,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectedGrantToRemove: Grant;
   selectedGrantsToRemove: Grant[] = [];
   grantsToRemove: string;
-
-  ctx: Ctx;
-  ctxTitle: string;
-
-  pw: string;
 
   adminSubscription: Subscription;
   isAdmin: boolean;
@@ -115,17 +108,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/users']);
   }
 
-  generateRandomPassword(user: User) {
-    this.usersService.generateRandomPassword(this.token).subscribe((data) => user.password = data);
+  generateRandomPassword() {
+    this.usersService.generateRandomPassword(this.token).subscribe((data) => this.user.password = data);
   }
 
-  resetPassword(user: User) {
-    if (user.active === true) {
-      this.usersService.changePassword(user, this.token)
+  resetPassword() {
+    if (this.user.active === true) {
+      this.usersService.changePassword(this.user, this.token)
         .subscribe({
           next: (data) => {
             this.setUser(data);
-            this.messagesService.success(data.loginname + ':  password was reset to ' + user.password);
+            this.messagesService.success(data.loginname + ':  password was reset to ' + this.user.password);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -134,13 +127,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  changePassword(user: User) {
-    if (user.password != null) {
-      this.usersService.changePassword(user, this.token)
+  changePassword() {
+    if (this.user.password != null) {
+      this.usersService.changePassword(this.user, this.token)
         .subscribe({
           next: (data) => {
             this.setUser(data);
-            this.messagesService.success(data.loginname + ':  password has changed to ' + user.password);
+            this.messagesService.success(data.loginname + ':  password has changed to ' + this.user.password);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -149,8 +142,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  activateUser(user: User) {
-    this.user = user;
+  activateUser() {
     if (this.user.active === true) {
       this.usersService.deactivate(this.user, this.token)
         .subscribe({
@@ -172,9 +164,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveUser(user: User) {
-    this.user = user;
-
+  saveUser() {
     if (this.user.loginname.includes('new user')) {
       this.messagesService.warning('name MUST NOT be new user');
       return;
@@ -196,19 +186,19 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewUser) {
-      this.usersService.post(this.usersUrl, this.user, this.token)
+      this.usersService.post(this.usersPath, this.user, this.token)
         .subscribe({
           next: (data) => {
-            this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + this.user.password);
+            this.user = data;
             this.isNewUser = false;
             this.isNewOu = false;
-            this.setUser(data);
+            this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + this.user.password);
           },
           error: (e) => this.messagesService.error(e),
         }
         );
     } else {
-      this.usersService.put(this.usersUrl + '/' + this.user.objectId, this.user, this.token)
+      this.usersService.put(this.usersPath + '/' + this.user.objectId, this.user, this.token)
         .subscribe({
           next: (data) => {
             this.messagesService.success('updated user ' + this.user.loginname);
@@ -217,9 +207,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             this.usersService.get(environment.restUsers, data.objectId, this.token)
               .subscribe((data) => {
                 this.setUser(data);
-                if (this.user.grantList) {
-                  this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-                }
               });
           },
           error: (e) => this.messagesService.error(e),
@@ -232,9 +219,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.setUser(data);
-          if (this.user.grantList) {
-            this.user.grantList.forEach((grant) => this.usersService.addNamesOfGrantRefs(grant));
-          }
           this.messagesService.success('removed Grants from ' + this.user.loginname);
           this.resetGrants();
         },
@@ -242,17 +226,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteUser(user: User) {
-    this.user = user;
-    const id = this.user.loginname;
-    if (confirm('delete '+user.name+' ?')) {
-      this.usersService.delete(this.usersUrl + '/' + this.user.objectId, this.token)
+  deleteUser() {
+    if (confirm('delete ' + this.user.name +' ?')) {
+      this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
         .subscribe({
-          next: (data) => this.messagesService.success('deleted user ' + id),
+          next: (_data) => {
+            this.messagesService.success('deleted user ' + this.user.loginname);
+            this.user = null;
+            this.gotoUserList();
+          },
           error: (e) => this.messagesService.error(e),
         });
-      this.user = null;
-      this.gotoUserList();
     }
   }
 
@@ -266,13 +250,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedOus(term: string) {
-    const ous: Ou[] = [];
-    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
     if (this.isAdmin) {
-      this.organizationsService.filter(url, null, queryString, 1)
+      this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
           next: (data) => {
+            const ous: Ou[] = [];
             data.list.forEach((ou: Ou) => {
               ous.push(ou);
             });
@@ -289,9 +272,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       const body = ous4localAdmin;
       body.query.bool.filter.terms['objectId'] = this.localAdminOus;
       body.query.bool.must.term['metadata.name.auto'] = term;
-      this.organizationsService.query(url, null, body)
+      this.organizationsService.query(this.ousPath, null, body)
         .subscribe({
           next: (data) => {
+            const ous: Ou[] = [];
             data.list.forEach((ou: Ou) => {
               ous.push(ou);
             });
@@ -335,25 +319,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   private setUser(user: User) {
     this.user = user;
-    this.updateParents();
-  }
-
-  private updateParents() {
-    this.user.grantList.forEach((grant) => {
-      if (grant.objectRef != null && grant.objectRef.startsWith('ou')) {
-        this.organizationsService.get(this.ousUrl, grant.objectRef, this.token).subscribe((data) => {
-          this.ou = data;
-          grant.parentName = this.ou.parentAffiliation.name;
-        });
-      } else if (grant.objectRef != null && grant.objectRef.startsWith('ctx')) {
-        this.contextsService.get(this.ctxsUrl, grant.objectRef, this.token).subscribe((data1) => {
-          this.ctx = data1;
-          this.organizationsService.getOuPath(this.ctx.responsibleAffiliations[0].objectId, this.token).subscribe((data2) => {
-            this.ouPath = data2;
-            grant.parentName = this.ouPath;
-          });
-        });
-      }
-    });
+    if (this.user.grantList != null) {
+      this.user.grantList.forEach((grant) => {
+        this.usersService.addNamesOfGrantRefs(grant);
+        this.usersService.addOuPathOfGrantRefs(grant);
+      });
+    }
   }
 }

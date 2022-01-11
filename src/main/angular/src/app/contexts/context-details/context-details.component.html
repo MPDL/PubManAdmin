@@ -4,7 +4,7 @@
       <h4 class="card-title">{{ctx.name}}</h4>
     </div>
     
-    <form #form="ngForm" class="list-group-item text-success" (ngSubmit)="form.valid && save(ctx)" novalidate>
+    <form #form="ngForm" class="list-group-item text-success" (ngSubmit)="form.valid && save()" novalidate>
       <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-7">
@@ -75,7 +75,7 @@
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
         </div>
         <div *ngIf="ctx.state && !isNewOu" class="col-2">
-          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="openCtx(ctx)" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
+          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="openCtx()" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
         </div>
       </div>
 
@@ -110,8 +110,8 @@
       <div class="row w-100 mt-4">
         <div class="col-3 ms-auto">
           <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
-          <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx(ctx)" value="delete" />
-          <input type="button" class="btn btn-outline-success btn-sm" (click)="saveCtx(ctx)" value="save" />
+          <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />
+          <input type="button" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
         </div>
       </div>
 

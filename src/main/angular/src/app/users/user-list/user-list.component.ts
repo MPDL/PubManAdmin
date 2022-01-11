@@ -16,7 +16,8 @@ import {UsersService} from '../services/users.service';
   providers: [],
 })
 export class UserListComponent implements OnInit, OnDestroy {
-  usersUrl = environment.restUsers;
+  ousPath: string = environment.restOus;
+  usersPath: string = environment.restUsers;
 
   title: string = 'Users';
 
@@ -76,7 +77,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private listAllUsers(page: number) {
-    this.usersService.getAll(this.usersUrl, this.token, page)
+    this.usersService.getAll(this.usersPath, this.token, page)
       .subscribe({
         next: (data) => {
           this.users = data.list;
@@ -87,7 +88,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private listUsers(searchTerm: string, page: number) {
-    this.usersService.filter(this.usersUrl, this.token, '?q=' + searchTerm, page)
+    this.usersService.filter(this.usersPath, this.token, '?q=' + searchTerm, page)
       .subscribe({
         next: (data) => {
           this.users = data.list;
@@ -141,11 +142,11 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedUsersByName(userName: string) {
-    const usersByName: User[] = [];
     const queryString = '?q=name.auto:' + userName;
-    this.usersService.filter(this.usersUrl, this.token, queryString, 1)
+    this.usersService.filter(this.usersPath, this.token, queryString, 1)
       .subscribe({
         next: (data) => {
+          const usersByName: User[] = [];
           data.list.forEach((user: User) => usersByName.push(user) );
           if (usersByName.length > 0) {
             this.usersByName = usersByName;
@@ -158,11 +159,11 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedUsersByLogin(loginname: string) {
-    const usersByLogin: User[] = [];
     const queryString = '?q=loginname.auto:' + loginname;
-    this.usersService.filter(this.usersUrl, this.token, queryString, 1)
+    this.usersService.filter(this.usersPath, this.token, queryString, 1)
       .subscribe({
         next: (data) => {
+          const usersByLogin: User[] = [];
           data.list.forEach((user: User) => usersByLogin.push(user) );
           if (usersByLogin.length > 0) {
             this.usersByLogin = usersByLogin;
@@ -184,12 +185,11 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedOus(term: string) {
-    const ous: Ou[] = [];
-    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
+          const ous: Ou[] = [];
           data.list.forEach((ou: Ou) => {
             ous.push(ou);
           });
@@ -206,7 +206,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.selectedOu = ou;
     this.currentPage = 1;
-    this.usersService.filter(this.usersUrl, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
+    this.usersService.filter(this.usersPath, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
       .subscribe({
         next: (data) => {
           this.users = data.list;

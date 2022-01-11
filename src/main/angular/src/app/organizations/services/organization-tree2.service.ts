@@ -33,7 +33,7 @@ export class OuTreeFlatNode {
 
 @Injectable()
 export class OrganizationTree2Service {
-  ousUrl = environment.restOus;
+  ousPath: string = environment.restOus;
 
   dataChange: BehaviorSubject<OuTreeNode[]> = new BehaviorSubject<OuTreeNode[]>([]);
   nodeMap: Map<string, OuTreeNode> = new Map<string, OuTreeNode>();
@@ -49,6 +49,7 @@ export class OrganizationTree2Service {
 
   async initialize() {
     const data: any[] = [];
+
     try {
       const topLevelOus = await this.getTopLevelOus();
       topLevelOus.forEach((ou: any) => data.push(this.generateNode(ou)));
@@ -60,6 +61,7 @@ export class OrganizationTree2Service {
 
   async initializeForLocalAdmin(lst: string) {
     const data: any[] = [];
+
     try {
       const topLevelOus = await this.getTopLevelOusForLocalAdmin(lst);
       topLevelOus.list.forEach((ou: any) => data.push(this.generateNode(ou)));
@@ -75,7 +77,7 @@ export class OrganizationTree2Service {
   }
 
   private getTopLevelOusForLocalAdmin(searchTerm: string) {
-    const tops = this.organizationsService.filter(this.ousUrl, null, '?q=' + searchTerm, 1).toPromise();
+    const tops = this.organizationsService.filter(this.ousPath, null, '?q=' + searchTerm, 1).toPromise();
     return tops;
   }
 
@@ -88,8 +90,10 @@ export class OrganizationTree2Service {
     if (!this.nodeMap.has(ouName)) {
       return;
     }
+
     const parent = this.nodeMap.get(ouName)!;
     let children = [];
+
     this.getChildren4Ou(ouId)
       .then((resp) => {
         children = resp;
@@ -105,8 +109,10 @@ export class OrganizationTree2Service {
     if (this.nodeMap.has(ou.name)) {
       return this.nodeMap.get(ou.name)!;
     }
+
     const response = new OuTreeNode(ou.name, ou.publicStatus, ou.objectId, ou.hasChildren);
     this.nodeMap.set(ou.name, response);
+
     return response;
   }
 }

@@ -30,8 +30,8 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   aggregationsList: any[] = [];
   selectedAggregation: any;
   years: any[] = [];
-  genres: Array<any>;
-  publishers: Array<any>;
+  genres: any[];
+  publishers: any[];
   selected;
   items: any[];
   total: number = 0;

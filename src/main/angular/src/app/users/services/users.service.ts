@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Observable} from 'rxjs';
 import {Grant, User} from '../../base/common/model/inge';
@@ -8,56 +9,63 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable()
 export class UsersService extends PubmanRestService {
-  ctxsUrl: string = environment.restCtxs;
-  ousUrl: string = environment.restOus;
-  usersUrl: string = environment.restUsers;
+  ctxsPath: string = environment.restCtxs;
+  ousPath: string = environment.restOus;
+  usersPath: string = environment.restUsers;
 
   constructor(
     protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
+    protected organizationsService: OrganizationsService,
   ) {
     super(connectionService, httpClient);
   }
 
   activate(user: User, token: string): Observable<User> {
-    const url = this.usersUrl + '/' + user.objectId + '/activate';
+    const path = this.usersPath + '/' + user.objectId + '/activate';
     const body = user.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   deactivate(user: User, token: string): Observable<User> {
-    const url = this.usersUrl + '/' + user.objectId + '/deactivate';
+    const path = this.usersPath + '/' + user.objectId + '/deactivate';
     const body = user.lastModificationDate;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   addGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    const url = this.usersUrl + '/' + user.objectId + '/add';
+    const path = this.usersPath + '/' + user.objectId + '/add';
     const body = JSON.stringify(grants);
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
-    const url = this.usersUrl + '/' + user.objectId + '/remove';
+    const path = this.usersPath + '/' + user.objectId + '/remove';
     const body = JSON.stringify(grants);
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   changePassword(user: User, token: string): Observable<User> {
-    const url = this.usersUrl + '/' + user.objectId + '/password';
+    const path = this.usersPath + '/' + user.objectId + '/password';
     const body = user.password;
     const headers = this.addHeaders(token, true);
-    return this.getResource('PUT', url, headers, body);
+
+    return this.getResource('PUT', path, headers, body);
   }
 
   generateRandomPassword(token: string): Observable<string> {
-    const url = this.usersUrl + '/generateRandomPassword';
+    const path = this.usersPath + '/generateRandomPassword';
     const headers = this.addHeaders(token, true);
-    return this.getStringResource('GET', url, headers);
+
+    return this.getStringResource('GET', path, headers);
   }
 
   addNamesOfGrantRefs(grant: Grant) {
@@ -65,10 +73,28 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.get(this.ousUrl, ref, null).subscribe((data) => grant.objectName = data.name);
+        this.get(this.ousPath, ref, null).subscribe((data) => grant.objectName = data.name);
       } else {
         if (ref.startsWith('ctx')) {
-          this.get(this.ctxsUrl, ref, null).subscribe((data) => grant.objectName = data.name);
+          this.get(this.ctxsPath, ref, null).subscribe((data) => grant.objectName = data.name);
+        }
+      }
+    }
+  }
+
+  addOuPathOfGrantRefs(grant: Grant) {
+    const ref = grant.objectRef;
+    if (ref === undefined) {
+    } else {
+      if (ref.startsWith('ou')) {
+        this.get(this.ousPath, grant.objectRef, null).subscribe((data) => grant.parentName = data.parentAffiliation.name);
+      } else {
+        if (ref.startsWith('ctx')) {
+          let ctx: any;
+          this.get(this.ctxsPath, ref, null).subscribe((data) => {
+            ctx = data;
+            this.organizationsService.getOuPath(ctx.responsibleAffiliations[0].objectId, null).subscribe((data) => grant.parentName = data);
+          });
         }
       }
     }
@@ -84,6 +110,7 @@ export class UsersService extends PubmanRestService {
         lst = lst + searchField + ':' + grant.objectRef;
       }
     });
+
     return lst;
   }
 }

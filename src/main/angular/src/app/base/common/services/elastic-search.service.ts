@@ -50,7 +50,7 @@ export class ElasticSearchService extends ElasticService {
     });
   }
 
-  getMappingFields(alias, type): Array<string> {
+  getMappingFields(alias, type): string[] {
     const fields:string[] = [];
     this.client.indices.getFieldMapping({
       index: alias,

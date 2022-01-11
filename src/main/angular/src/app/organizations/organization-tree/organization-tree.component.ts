@@ -19,6 +19,8 @@ import {OrganizationsService} from '../services/organizations.service';
   providers: [OrganizationTree2Service],
 })
 export class OrganizationTreeComponent implements OnInit {
+  ousPath: string = environment.restOus;
+
   ous: Ou[] = [];
   ouSearchTerm: string;
 
@@ -105,9 +107,8 @@ export class OrganizationTreeComponent implements OnInit {
 
   private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
-    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {

@@ -16,7 +16,8 @@ import {ContextsService} from '../services/contexts.service';
   styleUrls: ['./context-list.component.scss'],
 })
 export class ContextListComponent implements OnInit, OnDestroy {
-  ctxsUrl = environment.restCtxs;
+  ctxsPath: string = environment.restCtxs;
+  ousPath: string = environment.restOus;
 
   title: string = 'Contexts';
 
@@ -74,7 +75,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   listAllCtxs(page: number) {
-    this.contextsService.getAll(this.ctxsUrl, this.token, page)
+    this.contextsService.getAll(this.ctxsPath, this.token, page)
       .subscribe((data) => {
         this.ctxs = data.list;
         this.total = data.records;
@@ -82,7 +83,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   private listCtxs(searchTerm: string, page: number) {
-    this.contextsService.filter(this.ctxsUrl, null, '?q=' + searchTerm, page)
+    this.contextsService.filter(this.ctxsPath, null, '?q=' + searchTerm, page)
       .subscribe({
         next: (data) => {
           this.ctxs = data.list;
@@ -128,7 +129,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   private returnSuggestedCtxs(term: string) {
     const ctxsByName: Ctx[] = [];
     const queryString = '?q=name.auto:' + term;
-    this.contextsService.filter(this.ctxsUrl, null, queryString, 1)
+    this.contextsService.filter(this.ctxsPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ctx: Ctx) => ctxsByName.push(ctx));
@@ -153,9 +154,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
-    const url = environment.restOus;
     const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(url, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {
@@ -174,7 +174,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.selectedOu = ou;
     this.currentPage = 1;
-    this.contextsService.filter(this.ctxsUrl, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
+    this.contextsService.filter(this.ctxsPath, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe({
         next: (data) => {
           this.ctxs = data.list;
