@@ -5,7 +5,6 @@ import {Router} from '@angular/router';
 import {Ou, User} from 'app/base/common/model/inge';
 import {SearchService} from 'app/base/common/services/search.service';
 import {AuthenticationService} from 'app/base/services/authentication.service';
-import {UsersService} from 'app/users/services/users.service';
 import {environment} from 'environments/environment';
 import {Observable, Subscription} from 'rxjs';
 import {MessagesService} from '../../base/services/messages.service';
@@ -54,12 +53,11 @@ export class OrganizationTreeComponent implements OnInit {
     private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
-    private usersService: UsersService,
   ) {}
 
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
@@ -68,7 +66,7 @@ export class OrganizationTreeComponent implements OnInit {
     if (this.isAdmin) {
       this.database.initialize();
     } else if (this.loggedInUser != null) {
-      this.database.initializeForLocalAdmin(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'objectId'));
+      this.database.initializeForLocalAdmin(this.loggedInUser.topLevelOuIds);
     }
   }
 

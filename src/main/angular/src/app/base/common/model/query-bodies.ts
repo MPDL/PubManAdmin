@@ -39,3 +39,19 @@ export const ous4localAdmin = {
     {'metadata.name.keyword': {'order': 'asc'}},
   ],
 };
+
+export const localAdminOus = {
+  'size': 25,
+  'query': {
+    'bool': {
+      'filter': {
+        'terms': {
+          'objectId': ['terms'],
+        },
+      },
+    },
+  },
+  'sort': [
+    {'metadata.name.keyword': {'order': 'asc'}},
+  ],
+};

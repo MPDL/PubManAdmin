@@ -57,7 +57,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
 
     this.setContext(this.activatedRoute.snapshot.data['ctx']);
 

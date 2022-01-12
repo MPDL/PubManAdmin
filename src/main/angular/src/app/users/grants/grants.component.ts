@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
@@ -50,7 +49,6 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private usersService: UsersService,

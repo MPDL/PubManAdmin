@@ -2,6 +2,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BasicRO, Ou, OuMetadata} from 'app/base/common/model/inge';
+import {MessagesService} from 'app/base/services/messages.service';
 import {environment} from 'environments/environment';
 import {Observable} from 'rxjs';
 import {ConnectionService} from '../../base/services/connection.service';
@@ -10,12 +11,22 @@ import {PubmanRestService} from '../../base/services/pubman-rest.service';
 @Injectable()
 export class OrganizationsService extends PubmanRestService {
   ousPath:string = environment.restOus;
+  ous: Ou[];
 
   constructor(
     protected connectionService: ConnectionService,
+    protected messagesService: MessagesService,
     protected httpClient: HttpClient,
   ) {
     super(connectionService, httpClient);
+  }
+
+  getallChildOus(parentAffiliationIds: string[], token: string): Observable<Ou[]> {
+    const path = this.ousPath + '/allchildren';
+    const headers = this.addHeaders(token, false);
+    const body = parentAffiliationIds;
+
+    return this.getResource('POST', path, headers, body);
   }
 
   getTopLevelOus(token: string): Observable<Ou[]> {

@@ -1,4 +1,6 @@
 import {Injectable} from '@angular/core';
+import {Ou} from 'app/base/common/model/inge';
+import {localAdminOus} from 'app/base/common/model/query-bodies';
 import {BehaviorSubject} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {MessagesService} from '../../base/services/messages.service';
@@ -48,24 +50,34 @@ export class OrganizationTree2Service {
   ) {}
 
   async initialize() {
-    const data: any[] = [];
+    const treeData: any[] = [];
 
     try {
       const topLevelOus = await this.getTopLevelOus();
-      topLevelOus.forEach((ou: any) => data.push(this.generateNode(ou)));
-      this.dataChange.next(data);
+      topLevelOus.forEach((ou: any) => treeData.push(this.generateNode(ou)));
+      this.dataChange.next(treeData);
     } catch (e) {
       this.messagesService.error(e);
     }
   }
 
-  async initializeForLocalAdmin(lst: string) {
-    const data: any[] = [];
+  initializeForLocalAdmin(ouIds: string[]) {
+    const treeData: any[] = [];
 
+    const body = localAdminOus;
+    body.query.bool.filter.terms['objectId'] = ouIds;
     try {
-      const topLevelOus = await this.getTopLevelOusForLocalAdmin(lst);
-      topLevelOus.list.forEach((ou: any) => data.push(this.generateNode(ou)));
-      this.dataChange.next(data);
+      this.organizationsService.query(this.ousPath, null, body)
+        .subscribe({
+          next: (data) => {
+            const ous: Ou[] = [];
+            data.list.forEach((ou: Ou) => {
+              ous.push(ou);
+            });
+            ous.forEach((ou: any) => treeData.push(this.generateNode(ou)));
+            this.dataChange.next(treeData);
+          },
+        });
     } catch (e) {
       this.messagesService.error(e);
     }
@@ -73,11 +85,6 @@ export class OrganizationTree2Service {
 
   private getTopLevelOus() {
     const tops = this.organizationsService.getTopLevelOus(null).toPromise();
-    return tops;
-  }
-
-  private getTopLevelOusForLocalAdmin(searchTerm: string) {
-    const tops = this.organizationsService.filter(this.ousPath, null, '?q=' + searchTerm, 1).toPromise();
     return tops;
   }
 

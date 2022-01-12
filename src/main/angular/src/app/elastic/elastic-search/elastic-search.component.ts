@@ -127,7 +127,7 @@ export class ElasticSearchComponent implements OnInit {
 
   searchSelectedIndex(body) {
     let url;
-    if (this.searchForm.get('remoteUrl').value != '') {
+    if (this.searchForm.get('remoteUrl').value !== '') {
       url = this.searchForm.get('remoteUrl').value;
     } else {
       url = null;

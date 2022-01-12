@@ -1,5 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {catchError, map, share, shareReplay} from 'rxjs/operators';
 import {User} from '../common/model/inge';
@@ -11,14 +12,12 @@ export class AuthenticationService {
   private isAdmin = new BehaviorSubject<boolean>(false);
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private token = new BehaviorSubject<string>(null);
-  private user = new BehaviorSubject<User>(null);
-  private localAdminOus = new BehaviorSubject<string[]>(null);
+  private loggedInUser = new BehaviorSubject<User>(null);
 
   isAdmin$ = this.isAdmin.asObservable().pipe(shareReplay(1));
   isLoggedIn$ = this.isLoggedIn.asObservable().pipe(share());
   token$ = this.token.asObservable().pipe(shareReplay(1));
-  user$ = this.user.asObservable().pipe(shareReplay(1));
-  localAdminOus$ = this.localAdminOus.asObservable().pipe(shareReplay(1));
+  loggedInUser$ = this.loggedInUser.asObservable().pipe(shareReplay(1));
 
   private tokenUrl: string;
 
@@ -26,8 +25,8 @@ export class AuthenticationService {
     this.token.next(token);
   }
 
-  private setUser(user: User) {
-    this.user.next(user);
+  private setLoggedInUser(user: User) {
+    this.loggedInUser.next(user);
   }
 
   private setIsLoggedIn(isLoggedIn: boolean) {
@@ -38,14 +37,11 @@ export class AuthenticationService {
     this.isAdmin.next(isAdmin);
   }
 
-  private setLocalAdminOus(ous: string[]) {
-    this.localAdminOus.next(ous);
-  }
-
   constructor(
     private connectionService: ConnectionService,
     private http: HttpClient,
     private messagesService: MessagesService,
+    private organizatonService: OrganizationsService,
   ) {
     this.connectionService.connectionService.subscribe((data) => this.tokenUrl = data + '/rest/login');
   }
@@ -79,23 +75,23 @@ export class AuthenticationService {
     this.setIsLoggedIn(false);
     this.setIsAdmin(false);
     this.setToken(null);
-    this.setUser(null);
-    this.setLocalAdminOus(null);
+    this.setLoggedInUser(null);
   }
 
   who(token: string | string[]): Observable<User> {
     const headers = new HttpHeaders().set('Authorization', token);
     const whoUrl = this.tokenUrl + '/who';
+    const localAdminTopLevelOuIds: string[] = [];
     let user: User;
     let allowed = false;
-    const ous: string[] = [];
+
     return this.http.request<User>('GET', whoUrl, {
       headers: headers,
       observe: 'body',
     }).pipe(
       map((response) => {
         user = response;
-        this.setUser(user);
+        this.setLoggedInUser(user);
         if (user.grantList != null) {
           if (user.grantList.find((grant) => grant.role === 'SYSADMIN')) {
             this.setIsAdmin(true);
@@ -104,10 +100,11 @@ export class AuthenticationService {
             allowed = true;
             user.grantList.forEach((grant) => {
               if (grant.role === 'LOCAL_ADMIN') {
-                ous.push(grant.objectRef);
+                localAdminTopLevelOuIds.push(grant.objectRef);
               }
             });
-            this.setLocalAdminOus(ous);
+            user.topLevelOuIds = localAdminTopLevelOuIds;
+            this.organizatonService.getallChildOus(user.topLevelOuIds, null).subscribe((data) => user.allOus = data);
           }
         }
         return allowed ? user : null;

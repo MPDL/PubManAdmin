@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4localAdmin} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
-import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
@@ -37,8 +36,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   adminSubscription: Subscription;
   isAdmin: boolean;
-  localAdminOusSubscription: Subscription;
-  localAdminOus: string[];
   tokenSubscription: Subscription;
   token: string;
   userSubscription: Subscription;
@@ -47,7 +44,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
-    private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
@@ -57,9 +53,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.localAdminOusSubscription = this.authenticationService.localAdminOus$.subscribe((data) => this.localAdminOus = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
 
     this.setUser(this.activatedRoute.snapshot.data['user']);
 
@@ -270,7 +265,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         });
     } else {
       const body = ous4localAdmin;
-      body.query.bool.filter.terms['objectId'] = this.localAdminOus;
+      body.query.bool.filter.terms['objectId'] = this.loggedInUser.topLevelOuIds;
       body.query.bool.must.term['metadata.name.auto'] = term;
       this.organizationsService.query(this.ousPath, null, body)
         .subscribe({

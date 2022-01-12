@@ -64,7 +64,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           }
         });
     this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.user$.subscribe((data) => this.loggedInUser = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
   }
 
   ngOnDestroy() {
@@ -86,7 +86,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.ou = data;
-          if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId != '') {
+          if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
             this.parentOuSearchTerm = this.ou.parentAffiliation.name;
           }
           if (this.ou.hasPredecessors) {
@@ -231,7 +231,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewParentOu && this.ou.parentAffiliation.objectId === '' && !this.isAdmin) {
-      this.messagesService.warning('you MUST select an organization');
+      this.messagesService.warning('you MUST select a parent organization');
       return;
     }
 
@@ -256,7 +256,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           next: (data) => {
             this.ou = data;
             this.isNewParentOu = false;
-            if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId != '') {
+            if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
               this.parentOuSearchTerm = this.ou.parentAffiliation.name;
             }
             this.messagesService.success('updated organization ' + this.ou.objectId);
@@ -296,6 +296,17 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  getLoggedInUserAllOus(): Ou[] {
+    const ous = this.loggedInUser.allOus;
+    ous.forEach((ou, index) => {
+      if (ou.objectId === this.ou.objectId) {
+        ous.splice(index, 1);
+      }
+    });
+
+    return ous;
+  }
+
   private returnSuggestedParentOus(term: string) {
     const ous: Ou[] = [];
     const queryString = '?q=metadata.name.auto:' + term;
@@ -303,7 +314,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           data.list.forEach((ou: Ou) => {
-            ous.push(ou);
+            if (ou.objectId !== this.ou.objectId) {
+              ous.push(ou);
+            }
           });
           if (ous.length > 0) {
             this.parentOus = ous;
@@ -326,6 +339,18 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.ou.parentAffiliation.objectId = ou.objectId;
     this.parentOus = [];
   };
+
+  ouChangeAllowed(): boolean {
+    if (!this.isAdmin && this.loggedInUser.topLevelOuIds != null && this.loggedInUser.topLevelOuIds.find((element) => element === this.ou.objectId)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  onChangeOu(ou: Ou) {
+    this.ou.parentAffiliation.objectId = ou.objectId;
+  }
 
   changeParentOu() {
     this.isNewParentOu = true;

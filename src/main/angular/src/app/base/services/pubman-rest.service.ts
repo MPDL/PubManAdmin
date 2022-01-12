@@ -61,7 +61,7 @@ export class PubmanRestService {
     );
   }
 
-  getResource(method: string, path: string, headers: HttpHeaders, body: string | Date): Observable<any> {
+  getResource(method: string, path: string, headers: HttpHeaders, body: object | string | Date): Observable<any> {
     const requestUrl = this.baseUrl + path;
     if (body == null) {
       return this.httpClient.request(method, requestUrl, {
