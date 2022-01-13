@@ -190,14 +190,8 @@ export class UserListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           const ous: Ou[] = [];
-          data.list.forEach((ou: Ou) => {
-            ous.push(ou);
-          });
-          if (ous.length > 0) {
-            this.ous = ous;
-          } else {
-            this.ous = [];
-          }
+          data.list.forEach((ou: Ou) => ous.push(ou));
+          this.ous = ous;
         },
         error: (e) => this.messagesService.error(e),
       });

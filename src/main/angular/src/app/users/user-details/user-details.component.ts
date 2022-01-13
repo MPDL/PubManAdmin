@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ous4localAdmin} from 'app/base/common/model/query-bodies';
+import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
@@ -245,40 +245,27 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedOus(term: string) {
-    const queryString = '?q=metadata.name.auto:' + term;
+    const ous: Ou[] = [];
     if (this.isAdmin) {
+      const queryString = '?q=metadata.name.auto:' + term;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
           next: (data) => {
-            const ous: Ou[] = [];
-            data.list.forEach((ou: Ou) => {
-              ous.push(ou);
-            });
-            if (ous.length > 0) {
-              this.ous = ous;
-            } else {
-              this.ous = [];
-            }
+            data.list.forEach((ou: Ou) => ous.push(ou));
+            this.ous = ous;
             this.user.affiliation = null;
           },
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      const body = ous4localAdmin;
+      const body = ous4autoSelect;
       body.query.bool.filter.terms['objectId'] = this.loggedInUser.topLevelOuIds;
       body.query.bool.must.term['metadata.name.auto'] = term;
       this.organizationsService.query(this.ousPath, null, body)
         .subscribe({
           next: (data) => {
-            const ous: Ou[] = [];
-            data.list.forEach((ou: Ou) => {
-              ous.push(ou);
-            });
-            if (ous.length > 0) {
-              this.ous = ous;
-            } else {
-              this.ous = [];
-            }
+            data.list.forEach((ou: Ou) => ous.push(ou));
+            this.ous = ous;
             this.user.affiliation = null;
           },
           error: (e) => this.messagesService.error(e),

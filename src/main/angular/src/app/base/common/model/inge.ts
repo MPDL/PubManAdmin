@@ -29,7 +29,6 @@ export class User extends BasicRO {
   active: boolean;
   grantList: Grant[];
   topLevelOuIds: string[];
-  allOus: Ou[];
 }
 
 export class Ou extends BasicRO {

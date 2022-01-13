@@ -1,6 +1,5 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {catchError, map, share, shareReplay} from 'rxjs/operators';
 import {User} from '../common/model/inge';
@@ -41,7 +40,6 @@ export class AuthenticationService {
     private connectionService: ConnectionService,
     private http: HttpClient,
     private messagesService: MessagesService,
-    private organizatonService: OrganizationsService,
   ) {
     this.connectionService.connectionService.subscribe((data) => this.tokenUrl = data + '/rest/login');
   }
@@ -104,7 +102,6 @@ export class AuthenticationService {
               }
             });
             user.topLevelOuIds = localAdminTopLevelOuIds;
-            this.organizatonService.getallChildOus(user.topLevelOuIds, null).subscribe((data) => user.allOus = data);
           }
         }
         return allowed ? user : null;

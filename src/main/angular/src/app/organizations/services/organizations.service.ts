@@ -21,8 +21,8 @@ export class OrganizationsService extends PubmanRestService {
     super(connectionService, httpClient);
   }
 
-  getallChildOus(parentAffiliationIds: string[], token: string): Observable<Ou[]> {
-    const path = this.ousPath + '/allchildren';
+  getallChildOus(parentAffiliationIds: string[], ignoreOuId: string, token: string): Observable<Ou[]> {
+    const path = this.ousPath + '/allchildren/' + ignoreOuId;
     const headers = this.addHeaders(token, false);
     const body = parentAffiliationIds;
 

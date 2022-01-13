@@ -63,7 +63,6 @@ export class OrganizationTree2Service {
 
   initializeForLocalAdmin(ouIds: string[]) {
     const treeData: any[] = [];
-
     const body = localAdminOus;
     body.query.bool.filter.terms['objectId'] = ouIds;
     try {
@@ -71,9 +70,7 @@ export class OrganizationTree2Service {
         .subscribe({
           next: (data) => {
             const ous: Ou[] = [];
-            data.list.forEach((ou: Ou) => {
-              ous.push(ou);
-            });
+            data.list.forEach((ou: Ou) => ous.push(ou));
             ous.forEach((ou: any) => treeData.push(this.generateNode(ou)));
             this.dataChange.next(treeData);
           },

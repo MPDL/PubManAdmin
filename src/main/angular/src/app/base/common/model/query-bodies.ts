@@ -19,7 +19,7 @@ export const mpgOus4auto = {
   ],
 };
 
-export const ous4localAdmin = {
+export const ous4autoSelect = {
   'size': 25,
   'query': {
     'bool': {

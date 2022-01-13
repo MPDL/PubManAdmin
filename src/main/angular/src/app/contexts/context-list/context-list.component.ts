@@ -153,19 +153,13 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedOus(term: string) {
-    const ous: Ou[] = [];
     const queryString = '?q=metadata.name.auto:' + term;
     this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data) => {
-          data.list.forEach((ou: Ou) => {
-            ous.push(ou);
-          });
-          if (ous.length > 0) {
-            this.ous = ous;
-          } else {
-            this.ous = [];
-          }
+          const ous: Ou[] = [];
+          data.list.forEach((ou: Ou) => ous.push(ou));
+          this.ous = ous;
         },
         error: (e) => this.messagesService.error(e),
       });

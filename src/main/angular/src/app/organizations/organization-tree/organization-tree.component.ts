@@ -3,6 +3,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {Router} from '@angular/router';
 import {Ou, User} from 'app/base/common/model/inge';
+import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
@@ -105,21 +106,35 @@ export class OrganizationTreeComponent implements OnInit {
 
   private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
-    const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(this.ousPath, null, queryString, 1)
-      .subscribe({
-        next: (data) => {
-          data.list.forEach((ou: Ou) => {
-            ous.push(ou);
-          });
-          if (ous.length > 0) {
+    if (this.isAdmin) {
+      const queryString = '?q=metadata.name.auto:' + term;
+      this.organizationsService.filter(this.ousPath, null, queryString, 1)
+        .subscribe({
+          next: (data) => {
+            data.list.forEach((ou: Ou) => ous.push(ou));
             this.ous = ous;
-          } else {
-            this.ous = [];
-          }
-        },
-        error: (e) => this.messagesService.error(e),
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
+        const allOuIds: string[] = [];
+        data.forEach((ou: Ou) => {
+          allOuIds.push(ou.objectId);
+        });
+        const body = ous4autoSelect;
+        body.query.bool.filter.terms['objectId'] = allOuIds;
+        body.query.bool.must.term['metadata.name.auto'] = term;
+        this.organizationsService.query(this.ousPath, null, body)
+          .subscribe({
+            next: (data) => {
+              data.list.forEach((ou: Ou) => ous.push(ou));
+              this.ous = ous;
+            },
+            error: (e) => this.messagesService.error(e),
+          });
       });
+    }
   }
 
   closeOus() {
