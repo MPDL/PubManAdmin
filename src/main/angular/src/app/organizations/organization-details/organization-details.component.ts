@@ -78,7 +78,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     ou.parentAffiliation = this.organizationsService.makeAffiliation('');
     ou.metadata = this.organizationsService.makeMetadata('new ou');
     if (!this.isAdmin) {
-      this.getLoggedInUserAllOus(null);
+      this.getLoggedInUserAllOpenOus(null);
     }
 
     return ou;
@@ -99,7 +99,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             this.predecessors = [];
           }
           if (!this.isAdmin) {
-            this.getLoggedInUserAllOus(this.ou.objectId);
+            this.getLoggedInUserAllOpenOus(this.ou.objectId);
           }
         },
         error: (e) => this.messagesService.error(e),
@@ -302,8 +302,16 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLoggedInUserAllOus(ignoreOuId: string) {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null).subscribe((data) => this.ousForLoggedInUser = data);
+  getLoggedInUserAllOpenOus(ignoreOuId: string) {
+    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null).subscribe((data) => {
+      const ous: Ou[] = [];
+      data.forEach((ou: Ou) => {
+        if (ou.publicStatus === 'OPENED') {
+          ous.push(ou);
+        }
+      });
+      this.ousForLoggedInUser = ous;
+    });
   }
 
   private returnSuggestedParentOus(term: string) {
@@ -313,7 +321,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         next: (data) => {
           const ous: Ou[] = [];
           data.list.forEach((ou: Ou) => {
-            ous.push(ou);
+            if (ou.publicStatus === 'OPENED') {
+              ous.push(ou);
+            }
           });
           this.parentOus = ous;
         },

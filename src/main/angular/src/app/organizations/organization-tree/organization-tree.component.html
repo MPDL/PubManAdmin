@@ -14,7 +14,7 @@
         <div *ngIf="ous.length > 0">
           <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="closeOus()">
             <li class="list-group-item-info list-group-item-action py-0 d-flex no-gutters text-start" (click)="selectOu(ou)">
-              <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}}</small>
+              <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
             </li>
           </ul>
         </div>
