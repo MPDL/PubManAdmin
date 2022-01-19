@@ -81,7 +81,7 @@ async function getCommonConfig(wco) {
             }
         }
         if (!buildOptions.aot) {
-            const jitPolyfills = 'core-js/proposals/reflect-metadata';
+            const jitPolyfills = require.resolve('core-js/proposals/reflect-metadata');
             if (entryPoints['polyfills']) {
                 entryPoints['polyfills'].push(jitPolyfills);
             }
@@ -198,7 +198,8 @@ async function getCommonConfig(wco) {
             define: buildOptions.aot ? GLOBAL_DEFS_FOR_TERSER_WITH_AOT : GLOBAL_DEFS_FOR_TERSER,
             sourcemap: scriptsSourceMap,
             target: scriptTarget,
-            keepNames: !environment_options_1.allowMangle || isPlatformServer,
+            keepIdentifierNames: !environment_options_1.allowMangle || isPlatformServer,
+            keepNames: isPlatformServer,
             removeLicenses: buildOptions.extractLicenses,
             advanced: buildOptions.buildOptimizer,
         }));
