@@ -3,14 +3,10 @@ export const mpgOus4auto = {
   'query': {
     'bool': {
       'filter': {
-        'terms': {
-          'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22'],
-        },
+        'terms': {'parentAffiliation.objectId': ['ou_persistent13', 'ou_persistent22']},
       },
       'must': {
-        'term': {
-          'metadata.name.auto': 'term',
-        },
+        'term': {'metadata.name.auto': 'term'},
       },
     },
   },
@@ -19,19 +15,32 @@ export const mpgOus4auto = {
   ],
 };
 
+export const ctx4autoSelect = {
+  'size': 25,
+  'query': {
+    'bool': {
+      'filter': {
+        'terms': {'responsibleAffiliations.objectId': ['terms']},
+      },
+      'must': {
+        'term': {'name': 'term'},
+      },
+    },
+  },
+  'sort': [
+    {'name.keyword': {'order': 'asc'}},
+  ],
+};
+
 export const ous4autoSelect = {
   'size': 25,
   'query': {
     'bool': {
       'filter': {
-        'terms': {
-          'objectId': ['terms'],
-        },
+        'terms': {'objectId': ['terms']},
       },
       'must': {
-        'term': {
-          'metadata.name.auto': 'term',
-        },
+        'term': {'metadata.name.auto': 'term'},
       },
     },
   },
@@ -45,9 +54,7 @@ export const localAdminOus = {
   'query': {
     'bool': {
       'filter': {
-        'terms': {
-          'objectId': ['terms'],
-        },
+        'terms': {'objectId': ['terms']},
       },
     },
   },

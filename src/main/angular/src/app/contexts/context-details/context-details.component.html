@@ -43,7 +43,7 @@
 
       <div *ngIf="isNewCtx || isNewOu" class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">organization</label>
-          <div class="col-7">
+          <div *ngIf="isAdmin" class="col-7">
             <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
             <div *ngIf="ous.length > 0">
                 <ul class="list-group" (clickOutside)="closeOus()">
@@ -52,6 +52,11 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div *ngIf="!isAdmin" class="col-7">
+          <select class="select form-select form-select-sm" [(ngModel)]="ctx.responsibleAffiliations" name="_responsibleAffiliation" (ngModelChange)="selectOu($event)">
+            <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
+          </select>
         </div>
         <label class="col-1 col-form-label col-form-label-sm">ouId</label>
         <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">

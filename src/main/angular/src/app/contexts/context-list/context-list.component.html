@@ -27,7 +27,7 @@
                 <div *ngIf="ctxsByName.length > 0">
                     <ul class="list-group" (clickOutside)="closeCtxsByName()">
                         <li *ngFor="let ctx of ctxsByName" class="list-group-item-success list-group-item-action py-0 text-start" (click)="gotoCtx(ctx)">
-                            <small>{{ctx.name}} - {{ctx.responsibleAffiliations[0].name}}</small>
+                            <small>{{ctx.name}} - {{ctx.state}} <-- {{ctx.responsibleAffiliations[0].name}}</small>
                         </li>
                     </ul>
                 </div>

@@ -251,7 +251,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
           next: (data) => {
-            data.list.forEach((ou: Ou) => ous.push(ou));
+            data.list.forEach((ou: Ou) => {
+              if (ou.publicStatus === 'OPENED') {
+                ous.push(ou);
+              }
+            });
             this.ous = ous;
             this.user.affiliation = null;
           },
@@ -264,7 +268,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.organizationsService.query(this.ousPath, null, body)
         .subscribe({
           next: (data) => {
-            data.list.forEach((ou: Ou) => ous.push(ou));
+            data.list.forEach((ou: Ou) => {
+              if (ou.publicStatus === 'OPENED') {
+                ous.push(ou);
+              }
+            });
             this.ous = ous;
             this.user.affiliation = null;
           },

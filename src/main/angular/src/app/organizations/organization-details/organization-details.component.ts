@@ -342,7 +342,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.parentOus = [];
   };
 
-  onChangeOu(ou: Ou) {
+  onChangeParentOu(ou: Ou) {
     this.ou.parentAffiliation.objectId = ou.objectId;
   }
 

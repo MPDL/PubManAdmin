@@ -56,7 +56,7 @@
             </div>
         </div>
         <div *ngIf="!isAdmin" class="col-7">
-          <select class="select form-select form-select-sm" [(ngModel)]="ou.parentAffiliation" name="_parentAffiliation" (ngModelChange)="onChangeOu($event)">
+          <select class="select form-select form-select-sm" [(ngModel)]="ou.parentAffiliation" name="_parentAffiliation" (ngModelChange)="onChangeParentOu($event)">
             <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
           </select>
         </div>
