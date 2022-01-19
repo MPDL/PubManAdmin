@@ -62,8 +62,8 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       if (this.isAdmin) {
         this.listAllUsers(1);
-      } else if (this.loggedInUser != null) {
-        this.listUsers(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'affiliation.objectId'), 1);
+      } else {
+        this.listUsers(this.usersService.getListOfOusForLocalAdminFromGrants(this.loggedInUser.grantList, 'affiliation.objectId'), 1);
       }
     } else {
       this.messagesService.warning('no token, no users!');
@@ -102,8 +102,8 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.selectedOu === undefined) {
       if (this.isAdmin) {
         this.listAllUsers(page);
-      } else if (this.loggedInUser != null) {
-        this.listUsers(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'affiliation.objectId'), page);
+      } else {
+        this.listUsers(this.usersService.getListOfOusForLocalAdminFromGrants(this.loggedInUser.grantList, 'affiliation.objectId'), page);
       }
     } else {
       this.listUsers(this.selectedOu.objectId, page);

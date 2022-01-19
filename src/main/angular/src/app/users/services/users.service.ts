@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Observable} from 'rxjs';
-import {Grant, User} from '../../base/common/model/inge';
+import {Grant, Ou, User} from '../../base/common/model/inge';
 import {ConnectionService} from '../../base/services/connection.service';
 import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
@@ -100,7 +100,7 @@ export class UsersService extends PubmanRestService {
     }
   }
 
-  getListOfOusForLocalAdmin(grants: Grant[], searchField: string): string {
+  getListOfOusForLocalAdminFromGrants(grants: Grant[], searchField: string): string {
     let lst: string = '';
     grants.forEach((grant) => {
       if (grant.role === 'LOCAL_ADMIN') {
@@ -109,6 +109,18 @@ export class UsersService extends PubmanRestService {
         }
         lst = lst + searchField + ':' + grant.objectRef;
       }
+    });
+
+    return lst;
+  }
+
+  getListOfOusForLocalAdminFromOus(ous: Ou[], searchField: string): string {
+    let lst: string = '';
+    ous.forEach((ou) => {
+      if (lst.length > 0) {
+        lst = lst + '+';
+      }
+      lst = lst + searchField + ':' + ou.objectId;
     });
 
     return lst;

@@ -63,8 +63,12 @@ export class ContextListComponent implements OnInit, OnDestroy {
     if (this.token != null) {
       if (this.isAdmin) {
         this.listAllCtxs(1);
-      } else if (this.loggedInUser != null) {
-        this.listCtxs(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'responsibleAffiliations.objectId'), 1);
+      } else {
+        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
+          const ous: Ou[] = [];
+          data.forEach((ou: Ou) => ous.push(ou));
+          this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(ous, 'responsibleAffiliations.objectId'), 1);
+        });
       }
     } else {
       this.messagesService.warning('no token, no contexts!');
@@ -99,8 +103,12 @@ export class ContextListComponent implements OnInit, OnDestroy {
     if (this.selectedOu === undefined) {
       if (this.isAdmin) {
         this.listAllCtxs(page);
-      } else if (this.loggedInUser != null) {
-        this.listCtxs(this.usersService.getListOfOusForLocalAdmin(this.loggedInUser.grantList, 'responsibleAffiliations.objectId'), page);
+      } else {
+        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
+          const ous: Ou[] = [];
+          data.forEach((ou: Ou) => ous.push(ou));
+          this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(ous, 'responsibleAffiliations.objectId'), page);
+        });
       }
     } else {
       this.listCtxs(this.selectedOu.objectId, page);

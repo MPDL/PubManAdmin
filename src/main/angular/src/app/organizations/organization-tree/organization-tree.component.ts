@@ -66,7 +66,7 @@ export class OrganizationTreeComponent implements OnInit {
     this.database.dataChange.subscribe((data) => this.dataSource.data = data);
     if (this.isAdmin) {
       this.database.initialize();
-    } else if (this.loggedInUser != null) {
+    } else {
       this.database.initializeForLocalAdmin(this.loggedInUser.topLevelOuIds);
     }
   }
