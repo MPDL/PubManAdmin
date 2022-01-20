@@ -7,7 +7,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Router} from '@angular/router'; // keep 4 diagnostics
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {HttpErrorInterceptor} from './base/common/http-error.interceptor';
 import {PageNotFoundComponent} from './base/common/page-not-found.component';
 import {SharedModule} from './base/common/shared.module';
 import {FooterComponent} from './base/footer/footer.component';
@@ -60,7 +59,7 @@ import {UsersModule} from './users/users.module';
     PubmanRestService,
     AdminGuardService,
     LoginGuardService,
-    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
+//    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
 })

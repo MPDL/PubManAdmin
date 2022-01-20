@@ -22,6 +22,6 @@ export class FooterComponent implements OnInit {
   ngOnInit() {
     this.appVersion = appVersion;
     this.appHome = appHome;
-    this.connectionService.connectionService.subscribe((hostName) => this.hostName = hostName);
+    this.connectionService.connectionService.subscribe((data: string) => this.hostName = data);
   }
 }

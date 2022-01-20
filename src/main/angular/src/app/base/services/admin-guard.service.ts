@@ -21,7 +21,7 @@ export class AdminGuardService implements CanActivate, CanActivateChild {
   }
 
   checkAdmin(): boolean {
-    this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
     if (this.isAdmin) {
       return true;
     }

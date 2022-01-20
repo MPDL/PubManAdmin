@@ -57,8 +57,8 @@ export class OrganizationTreeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
@@ -105,35 +105,32 @@ export class OrganizationTreeComponent implements OnInit {
   }
 
   private returnSuggestedOus(term: string) {
-    const ous: Ou[] = [];
     if (this.isAdmin) {
       const queryString = '?q=metadata.name.auto:' + term;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
-          next: (data) => {
-            data.list.forEach((ou: Ou) => ous.push(ou));
-            this.ous = ous;
-          },
+          next: (data: {list: Ou[], records: number}) => this.ous = data.list,
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
-        const allOuIds: string[] = [];
-        data.forEach((ou: Ou) => {
-          allOuIds.push(ou.objectId);
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach((ou: Ou) => {
+              allOuIds.push(ou.objectId);
+            });
+            const body = ous4autoSelect;
+            body.query.bool.filter.terms['objectId'] = allOuIds;
+            body.query.bool.must.term['metadata.name.auto'] = term;
+            this.organizationsService.query(this.ousPath, null, body)
+              .subscribe({
+                next: (data: {list: Ou[], records: number}) => this.ous = data.list,
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
         });
-        const body = ous4autoSelect;
-        body.query.bool.filter.terms['objectId'] = allOuIds;
-        body.query.bool.must.term['metadata.name.auto'] = term;
-        this.organizationsService.query(this.ousPath, null, body)
-          .subscribe({
-            next: (data) => {
-              data.list.forEach((ou: Ou) => ous.push(ou));
-              this.ous = ous;
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      });
     }
   }
 

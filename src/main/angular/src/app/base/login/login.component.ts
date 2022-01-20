@@ -10,9 +10,9 @@ import {MessagesService} from '../services/messages.service';
 })
 export class LoginComponent implements OnInit {
   credentials: any = {};
-  empty = true;
-  loggedIn = false;
-  token = '';
+  empty: boolean = true;
+  loggedIn: boolean = false;
+  token: string = '';
   user: User;
 
   constructor(
@@ -25,14 +25,12 @@ export class LoginComponent implements OnInit {
   login() {
     this.authenticationService.login(this.credentials.userName, this.credentials.password)
       .subscribe({
-        next: (data) => {
+        next: (data: string) => {
           this.token = data;
           this.who();
           this.loggedIn = true;
         },
-        error: (e) => {
-          this.messagesService.error(e);
-        },
+        error: (e) => this.messagesService.error(e),
       });
   }
 
@@ -52,18 +50,16 @@ export class LoginComponent implements OnInit {
     if (this.token !== '') {
       this.authenticationService.who(this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.user = data;
             if (this.user == null) {
               this.logout();
-              this.messagesService.error('You are not allowed to login...');
+              this.messagesService.error('you are not allowed to login!');
             } else {
               this.credentials.userName = this.user.name;
             }
           },
-          error: (e) => {
-            this.messagesService.error(e);
-          },
+          error: (e) => this.messagesService.error(e),
         });
     }
   }

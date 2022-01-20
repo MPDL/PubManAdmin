@@ -55,9 +55,9 @@ export class UserListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     if (this.token != null) {
       if (this.isAdmin) {
@@ -79,7 +79,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   private listAllUsers(page: number) {
     this.usersService.getAll(this.usersPath, this.token, page)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: User[], records: number}) => {
           this.users = data.list;
           this.total = data.records;
         },
@@ -90,7 +90,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   private listUsers(searchTerm: string, page: number) {
     this.usersService.filter(this.usersPath, this.token, '?q=' + searchTerm, page)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: User[], records: number}) => {
           this.users = data.list;
           this.total = data.records;
         },
@@ -108,9 +108,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     } else {
       this.listUsers(this.selectedOu.objectId, page);
     }
-    this.users.forEach((user) => {
-      console.log(user.name + ':' + user.affiliation.objectId +',' + user.affiliation.creator +',' + user.affiliation.creationDate +',' + user.affiliation.lastModificationDate +',' + user.affiliation.modifier + ',' + user.affiliation.name);
-    });
     this.currentPage = page;
   }
 
@@ -145,15 +142,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     const queryString = '?q=name.auto:' + userName;
     this.usersService.filter(this.usersPath, this.token, queryString, 1)
       .subscribe({
-        next: (data) => {
-          const usersByName: User[] = [];
-          data.list.forEach((user: User) => usersByName.push(user) );
-          if (usersByName.length > 0) {
-            this.usersByName = usersByName;
-          } else {
-            this.usersByName = [];
-          }
-        },
+        next: (data: {list: User[], records: number}) => this.usersByName = data.list,
         error: (e) => this.messagesService.error(e),
       });
   }
@@ -162,15 +151,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     const queryString = '?q=loginname.auto:' + loginname;
     this.usersService.filter(this.usersPath, this.token, queryString, 1)
       .subscribe({
-        next: (data) => {
-          const usersByLogin: User[] = [];
-          data.list.forEach((user: User) => usersByLogin.push(user) );
-          if (usersByLogin.length > 0) {
-            this.usersByLogin = usersByLogin;
-          } else {
-            this.usersByLogin = [];
-          }
-        },
+        next: (data: {list: User[], records: number}) => this.usersByLogin = data.list,
         error: (e) => this.messagesService.error(e),
       });
   }
@@ -188,11 +169,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     const queryString = '?q=metadata.name.auto:' + term;
     this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
-        next: (data) => {
-          const ous: Ou[] = [];
-          data.list.forEach((ou: Ou) => ous.push(ou));
-          this.ous = ous;
-        },
+        next: (data: {list: Ou[], records: number}) => this.ous = data.list,
         error: (e) => this.messagesService.error(e),
       });
   }
@@ -202,7 +179,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.currentPage = 1;
     this.usersService.filter(this.usersPath, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: User[], records: number}) => {
           this.users = data.list;
           this.total = data.records;
         },

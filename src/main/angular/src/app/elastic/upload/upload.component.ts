@@ -30,7 +30,7 @@ export class UploadComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tokenSubscription = this.login.token$.subscribe((data) => this.token = data);
+    this.tokenSubscription = this.login.token$.subscribe((data: string) => this.token = data);
   }
 
   ngOnDestroy() {
@@ -62,18 +62,17 @@ export class UploadComponent implements OnInit, OnDestroy {
         reportProgress: true,
         observe: 'events',
       })
-      .subscribe(
-        (data) => {
-          if (data.type === HttpEventType.UploadProgress) {
-            this.isInProgress = true;
-            this.progress.percentage = Math.round(100 * data.loaded / data.total);
-          } else if (data instanceof HttpResponse) {
-            this.messagesService.info(data.status + ' ' + data.statusText + ' upload complete!');
-            this.isInProgress = false;
-            this.selectedFile.nativeElement.value = '';
-            this.filesToUpload = undefined;
-          }
-        });
+      .subscribe((data) => {
+        if (data.type === HttpEventType.UploadProgress) {
+          this.isInProgress = true;
+          this.progress.percentage = Math.round(100 * data.loaded / data.total);
+        } else if (data instanceof HttpResponse) {
+          this.messagesService.info(data.status + ' ' + data.statusText + ' upload complete!');
+          this.isInProgress = false;
+          this.selectedFile.nativeElement.value = '';
+          this.filesToUpload = undefined;
+        }
+      });
   }
 
   getFiles(): Observable<any> {

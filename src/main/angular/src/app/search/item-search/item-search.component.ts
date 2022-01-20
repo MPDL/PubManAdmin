@@ -54,7 +54,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       this.aggregationsList.push(itemAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.itemIndex.name, environment.itemIndex.type);
-    this.tokensubscription = this.authenticationservice.token$.subscribe((data) => this.token = data);
+    this.tokensubscription = this.authenticationservice.token$.subscribe((data: string) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });

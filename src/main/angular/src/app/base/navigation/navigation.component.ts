@@ -16,7 +16,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
   }
 
   ngOnDestroy() {

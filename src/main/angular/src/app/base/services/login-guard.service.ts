@@ -21,7 +21,7 @@ export class LoginGuardService implements CanActivate, CanActivateChild {
   }
 
   checkLogin(): boolean {
-    this.authenticationService.isLoggedIn$.subscribe((data) => this.isLoggedIn = data);
+    this.authenticationService.isLoggedIn$.subscribe((data: boolean) => this.isLoggedIn = data);
     if (this.isLoggedIn) {
       return true;
     }

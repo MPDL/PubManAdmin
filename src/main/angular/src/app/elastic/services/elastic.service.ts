@@ -14,7 +14,7 @@ export class ElasticService {
     private messagesService: MessagesService,
   ) {
     if (!this.client) {
-      this.connectionService.connectionService.subscribe((data) => {
+      this.connectionService.connectionService.subscribe((data: string) => {
         this.url = data + environment.elasticUrl;
         this.connect(this.url);
       });
@@ -153,7 +153,9 @@ export class ElasticService {
       queue.push(resp);
       while (queue.length) {
         const response = queue.shift();
-        response.hits.hits.forEach((hit) => docs.push(hit));
+        response.hits.hits.forEach(
+          (hit) => docs.push(hit)
+        );
         if (response.hits.total === docs.length) {
           return Promise.resolve(docs);
         }

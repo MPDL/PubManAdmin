@@ -52,9 +52,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     this.setUser(this.activatedRoute.snapshot.data['user']);
 
@@ -104,14 +104,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   generateRandomPassword() {
-    this.usersService.generateRandomPassword(this.token).subscribe((data) => this.user.password = data);
+    this.usersService.generateRandomPassword(this.token)
+      .subscribe({
+        next: (data: string) => this.user.password = data,
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   resetPassword() {
     if (this.user.active === true) {
       this.usersService.changePassword(this.user, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.setUser(data);
             this.messagesService.success(data.loginname + ':  password was reset to ' + this.user.password);
           },
@@ -126,7 +130,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.user.password != null) {
       this.usersService.changePassword(this.user, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.setUser(data);
             this.messagesService.success(data.loginname + ':  password has changed to ' + this.user.password);
           },
@@ -141,18 +145,18 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.user.active === true) {
       this.usersService.deactivate(this.user, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.setUser(data);
-            this.messagesService.success('Deactivated ' + this.user.objectId);
+            this.messagesService.success('deactivated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
     } else {
       this.usersService.activate(this.user, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.setUser(data);
-            this.messagesService.success('Activated ' + this.user.objectId);
+            this.messagesService.success('activated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -183,25 +187,31 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.isNewUser) {
       this.usersService.post(this.usersPath, this.user, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.user = data;
             this.isNewUser = false;
             this.isNewOu = false;
             this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + this.user.password);
           },
-          error: (e) => this.messagesService.error(e),
-        }
-        );
+          error: (e) => {
+            if (e.message.includes('already exists')) {
+              this.messagesService.error('the user with loginname ' + this.user.loginname + ' already exists!');
+            } else {
+              this.messagesService.error(e);
+            }
+          },
+        });
     } else {
       this.usersService.put(this.usersPath + '/' + this.user.objectId, this.user, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.messagesService.success('updated user ' + this.user.loginname);
             this.isNewOu = false;
             this.isNewGrant = false;
             this.usersService.get(environment.restUsers, data.objectId, this.token)
-              .subscribe((data) => {
-                this.setUser(data);
+              .subscribe({
+                next: (data: User) => this.setUser(data),
+                error: (e) => this.messagesService.error(e),
               });
           },
           error: (e) => this.messagesService.error(e),
@@ -212,9 +222,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   removeGrants() {
     this.usersService.removeGrants(this.user, this.selectedGrantsToRemove, this.token)
       .subscribe({
-        next: (data) => {
+        next: (data: User) => {
           this.setUser(data);
-          this.messagesService.success('removed Grants from ' + this.user.loginname);
+          this.messagesService.success('removed grants from ' + this.user.loginname);
           this.resetGrants();
         },
         error: (e) => this.messagesService.error(e),
@@ -250,7 +260,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       const queryString = '?q=metadata.name.auto:' + term;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
-          next: (data) => {
+          next: (data: {list: Ou[], records: number}) => {
             data.list.forEach((ou: Ou) => {
               if (ou.publicStatus === 'OPENED') {
                 ous.push(ou);
@@ -267,7 +277,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       body.query.bool.must.term['metadata.name.auto'] = term;
       this.organizationsService.query(this.ousPath, null, body)
         .subscribe({
-          next: (data) => {
+          next: (data: {list: Ou[], records: number}) => {
             data.list.forEach((ou: Ou) => {
               if (ou.publicStatus === 'OPENED') {
                 ous.push(ou);

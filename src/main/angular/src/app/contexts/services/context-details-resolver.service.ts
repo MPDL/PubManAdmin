@@ -21,7 +21,7 @@ export class ContextDetailsResolverService implements Resolve<any> {
     private contextsService: ContextsService,
     private messagesService: MessagesService,
   ) {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Ctx> {

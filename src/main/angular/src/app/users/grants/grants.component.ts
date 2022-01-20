@@ -55,8 +55,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
 
     if (this.isAdmin) {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
@@ -72,14 +72,20 @@ export class GrantsComponent implements OnInit, OnDestroy {
   }
 
   getCtxsAndOus() {
-    this.organizationsService.getFirstLevelOus(this.token).subscribe((data) => this.ous = data);
+    this.organizationsService.getFirstLevelOus(this.token)
+      .subscribe({
+        next: (data: Ou[]) => this.ous = data,
+        error: (e) => this.messagesService.error(e),
+      });
 
     this.usersService.filter(this.ctxsPath, null, '?q=state:OPENED&size=300', 1)
-      .subscribe(
-        (data) => {
+      .subscribe({
+        next: (data: {list: Ctx[], records: number}) => {
           this.ctxs = data.list;
           this.filteredCtxs = data.list;
-        });
+        },
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onChangeRole(role: string) {
@@ -138,7 +144,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     if (this.selectedGrantsToAdd.length > 0) {
       this.usersService.addGrants(this.user, this.selectedGrantsToAdd, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: User) => {
             this.setUser(data);
             this.userChange.emit(this.user);
             this.isNewGrantChange.emit(false);

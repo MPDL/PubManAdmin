@@ -56,19 +56,21 @@ export class ContextListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     if (this.token != null) {
       if (this.isAdmin) {
         this.listAllCtxs(1);
       } else {
-        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
-          const ous: Ou[] = [];
-          data.forEach((ou: Ou) => ous.push(ou));
-          this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(ous, 'responsibleAffiliations.objectId'), 1);
-        });
+        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+          .subscribe({
+            next: (data: Ou[]) => {
+              this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), 1);
+            },
+            error: (e) => this.messagesService.error(e),
+          });
       }
     } else {
       this.messagesService.warning('no token, no contexts!');
@@ -81,16 +83,19 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   listAllCtxs(page: number) {
     this.contextsService.getAll(this.ctxsPath, this.token, page)
-      .subscribe((data) => {
-        this.ctxs = data.list;
-        this.total = data.records;
+      .subscribe({
+        next: (data: {list: Ctx[], records: number}) => {
+          this.ctxs = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
       });
   }
 
   private listCtxs(searchTerm: string, page: number) {
     this.contextsService.filter(this.ctxsPath, null, '?q=' + searchTerm, page)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: Ctx[], records: number}) => {
           this.ctxs = data.list;
           this.total = data.records;
         },
@@ -104,11 +109,11 @@ export class ContextListComponent implements OnInit, OnDestroy {
       if (this.isAdmin) {
         this.listAllCtxs(page);
       } else {
-        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
-          const ous: Ou[] = [];
-          data.forEach((ou: Ou) => ous.push(ou));
-          this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(ous, 'responsibleAffiliations.objectId'), page);
-        });
+        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+          .subscribe({
+            next: (data: Ou[]) => this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), page),
+            error: (e) => this.messagesService.error(e),
+          });
       }
     } else {
       this.listCtxs(this.selectedOu.objectId, page);
@@ -136,33 +141,32 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedCtxs(term: string) {
-    const ctxsByName: Ctx[] = [];
     if (this.isAdmin) {
       const queryString = '?q=name.auto:' + term;
       this.contextsService.filter(this.ctxsPath, null, queryString, 1)
         .subscribe({
-          next: (data) => {
-            data.list.forEach((ctx: Ctx) => ctxsByName.push(ctx));
-            this.ctxsByName = ctxsByName;
-          },
+          next: (data: {list: Ctx[], records: number}) => this.ctxsByName = data.list,
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
-        const allOuIds: string[] = [];
-        data.forEach((ou: Ou) => allOuIds.push(ou.objectId));
-        const body = ctx4autoSelect;
-        body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
-        body.query.bool.must.term['name'] = term;
-        this.contextsService.query(this.ctxsPath, null, body)
-          .subscribe({
-            next: (data) => {
-              data.list.forEach((ctx: Ctx) => ctxsByName.push(ctx));
-              this.ctxsByName = ctxsByName;
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      });
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach(
+              (ou: Ou) => allOuIds.push(ou.objectId)
+            );
+            const body = ctx4autoSelect;
+            body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
+            body.query.bool.must.term['name'] = term;
+            this.contextsService.query(this.ctxsPath, null, body)
+              .subscribe({
+                next: (data: {list: Ctx[], records: number}) => this.ctxsByName = data.list,
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -176,33 +180,32 @@ export class ContextListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedOus(term: string) {
-    const ous: Ou[] = [];
     if (this.isAdmin) {
       const queryString = '?q=metadata.name.auto:' + term;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
-          next: (data) => {
-            data.list.forEach((ou: Ou) => ous.push(ou));
-            this.ous = ous;
-          },
+          next: (data: {list: Ou[], records: number}) => this.ous = data.list,
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null).subscribe((data) => {
-        const allOuIds: string[] = [];
-        data.forEach((ou: Ou) => allOuIds.push(ou.objectId));
-        const body = ous4autoSelect;
-        body.query.bool.filter.terms['objectId'] = allOuIds;
-        body.query.bool.must.term['metadata.name.auto'] = term;
-        this.organizationsService.query(this.ousPath, null, body)
-          .subscribe({
-            next: (data) => {
-              data.list.forEach((ou: Ou) => ous.push(ou));
-              this.ous = ous;
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      });
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach(
+              (ou: Ou) => allOuIds.push(ou.objectId)
+            );
+            const body = ous4autoSelect;
+            body.query.bool.filter.terms['objectId'] = allOuIds;
+            body.query.bool.must.term['metadata.name.auto'] = term;
+            this.organizationsService.query(this.ousPath, null, body)
+              .subscribe({
+                next: (data: {list: Ou[], records: number}) => this.ous = data.list,
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -211,7 +214,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.currentPage = 1;
     this.contextsService.filter(this.ctxsPath, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: Ctx[], records: number}) => {
           this.ctxs = data.list;
           this.total = data.records;
         },

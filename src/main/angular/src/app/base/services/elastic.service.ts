@@ -14,11 +14,10 @@ export class ElasticService {
     protected messagesService: MessagesService,
   ) {
     if (!this.client) {
-      this.connectionService.connectionService.subscribe(
-        (data) => {
-          this.uri = data + environment.elasticUrl;
-          this.connect(this.uri);
-        });
+      this.connectionService.connectionService.subscribe((data:string) => {
+        this.uri = data + environment.elasticUrl;
+        this.connect(this.uri);
+      });
     }
   }
 

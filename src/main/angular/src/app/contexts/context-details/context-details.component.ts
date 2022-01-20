@@ -56,9 +56,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data) => this.loggedInUser = data);
+    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     this.setContext(this.activatedRoute.snapshot.data['ctx']);
     if (!this.isAdmin) {
@@ -144,22 +144,20 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   openCtx() {
     if (this.ctx.state === 'CLOSED') {
-      let ou:Ou;
       this.organizationsService.get(this.ousPath, this.ctx.responsibleAffiliations[0].objectId, this.token)
         .subscribe({
-          next: (data) => {
-            ou = data;
-            if (ou.publicStatus !== 'OPENED') {
-              this.messagesService.warning('Closed contexts of closed organizations must not be opened. ');
-            } else {
-              this.contextsService.openCtx(this.ctx, this.token)
-                .subscribe({
-                  next: (data) => {
-                    this.ctx = data;
-                    this.messagesService.success('Opened ' + this.ctx.objectId);
-                  },
-                  error: (e) => this.messagesService.error(e),
-                });
+          next: (data: Ou) => {
+            if (data.publicStatus !== 'OPENED') {
+              if (confirm('Closed contexts of closed organizations should not be opened. Proceed?')) {
+                this.contextsService.openCtx(this.ctx, this.token)
+                  .subscribe({
+                    next: (data: Ctx) => {
+                      this.ctx = data;
+                      this.messagesService.success('opened ' + this.ctx.objectId);
+                    },
+                    error: (e) => this.messagesService.error(e),
+                  });
+              }
             }
           },
           error: (e) => this.messagesService.error(e),
@@ -167,9 +165,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.contextsService.closeCtx(this.ctx, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: Ctx) => {
             this.ctx = data;
-            this.messagesService.success('Closed ' + this.ctx.objectId);
+            this.messagesService.success('closed ' + this.ctx.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -218,7 +216,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     if (this.isNewCtx) {
       this.contextsService.post(this.ctxsPath, this.ctx, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: Ctx) => {
             this.setContext(data);
             this.isNewCtx = false;
             this.isNewOu = false;
@@ -229,7 +227,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.contextsService.put(this.ctxsPath + '/' + this.ctx.objectId, this.ctx, this.token)
         .subscribe({
-          next: (data) => {
+          next: (data: Ctx) => {
             this.setContext(data);
             this.isNewOu = false;
             this.messagesService.success('updated context ' + this.ctx.objectId);
@@ -249,22 +247,26 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   getLoggedInUserAllOpenOus(ignoreOuId: string) {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null).subscribe((data) => {
-      const ous: Ou[] = [];
-      data.forEach((ou: Ou) => {
-        if (ou.publicStatus === 'OPENED') {
-          ous.push(ou);
-        }
+    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
+      .subscribe({
+        next: (data: Ou[]) => {
+          const ous: Ou[] = [];
+          data.forEach((ou: Ou) => {
+            if (ou.publicStatus === 'OPENED') {
+              ous.push(ou);
+            }
+          });
+          this.ousForLoggedInUser = ous;
+        },
+        error: (e) => this.messagesService.error(e),
       });
-      this.ousForLoggedInUser = ous;
-    });
   }
 
   private returnSuggestedOus(term: string) {
     const queryString = '?q=metadata.name.auto:' + term;
     this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: Ou[], records: number}) => {
           const ous: Ou[] = [];
           data.list.forEach((ou: Ou) => {
             if (ou.publicStatus === 'OPENED') {

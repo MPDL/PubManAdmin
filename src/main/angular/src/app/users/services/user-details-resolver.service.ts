@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
 import {AuthenticationService} from 'app/base/services/authentication.service';
+import {MessagesService} from 'app/base/services/messages.service';
 import {environment} from 'environments/environment';
 import {Observable, of, Subscription} from 'rxjs';
 import {first, map} from 'rxjs/operators';
@@ -15,10 +16,11 @@ export class UserDetailsResolverService implements Resolve<User> {
   token: string;
 
   constructor(
-      private authenticationService: AuthenticationService,
+    private authenticationService: AuthenticationService,
+    private messagesService: MessagesService,
     private usersService: UsersService,
   ) {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
   }
 
   resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<User> {
@@ -30,8 +32,14 @@ export class UserDetailsResolverService implements Resolve<User> {
       user.grantList = [];
       user.affiliation = null;
       user.active = true;
-      this.usersService.generateRandomPassword(this.token).subscribe((data) => user.password = data);
-      return of(user);
+      this.usersService.generateRandomPassword(this.token)
+        .subscribe({
+          next: (data: string) => {
+            user.password = data;
+            return of(user);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     } else {
       let user: User;
       return this.usersService.get(this.usersPath, id, this.token)

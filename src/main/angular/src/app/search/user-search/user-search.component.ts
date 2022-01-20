@@ -1,6 +1,7 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
+import { Ou, User } from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
 import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
 import {userAggs} from '../../base/common/components/search-term/search.aggregations';
@@ -29,10 +30,10 @@ export class UserSearchComponent implements OnInit {
   aggregationsList: any[] = [];
   selectedAggregation: any;
   years: any[] = [];
-  ous: any[];
+  ous: Ou[];
   publishers: any[];
   selected;
-  users: any[];
+  users: User[];
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
@@ -53,7 +54,7 @@ export class UserSearchComponent implements OnInit {
       this.aggregationsList.push(userAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.userIndex.name, environment.userIndex.type);
-    this.authenticationService.token$.subscribe((data) => this.token = data);
+    this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
@@ -102,7 +103,7 @@ export class UserSearchComponent implements OnInit {
     this.loading = true;
     this.searchService.query(this.url, this.token, body)
       .subscribe({
-        next: (data) => {
+        next: (data: {list: User[], records: number}) => {
           this.total = data.records;
           this.currentPage = page;
           this.users = data.list;
@@ -117,7 +118,7 @@ export class UserSearchComponent implements OnInit {
       this.currentPage = 1;
       this.searchService.query(this.url, this.token, body)
         .subscribe({
-          next: (data) => {
+          next: (data: {list: User[], records: number}) => {
             this.users = data.list;
             this.total = data.records;
           },
@@ -142,9 +143,8 @@ export class UserSearchComponent implements OnInit {
       request.searchTerms = terms;
       const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
       this.searchService.query(this.url, this.token, body)
-      // this.search.filter(this.url, this.token, '?q=creationDate:' + year.key + '||/y', 1)
         .subscribe({
-          next: (data) => {
+          next: (data: {list: User[], records: number}) => {
             this.users = data.list;
             this.total = data.records;
           },
@@ -167,7 +167,7 @@ export class UserSearchComponent implements OnInit {
       };
       this.searchService.query(this.url, this.token, body)
         .subscribe({
-          next: (data) => {
+          next: (data: {list: User[], records: number}) => {
             this.users = data.list;
             this.total = data.records;
           },

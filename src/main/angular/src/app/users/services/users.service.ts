@@ -1,9 +1,11 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {MessagesService} from 'app/base/services/messages.service';
+import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Observable} from 'rxjs';
-import {Grant, Ou, User} from '../../base/common/model/inge';
+import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
 import {ConnectionService} from '../../base/services/connection.service';
 import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
@@ -16,7 +18,9 @@ export class UsersService extends PubmanRestService {
   constructor(
     protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
-    protected organizationsService: OrganizationsService,
+    private contextsService: ContextsService,
+    private messagesService: MessagesService,
+    private organizationsService: OrganizationsService,
   ) {
     super(connectionService, httpClient);
   }
@@ -73,10 +77,18 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.get(this.ousPath, ref, null).subscribe((data) => grant.objectName = data.name);
+        this.organizationsService.get(this.ousPath, ref, null)
+          .subscribe({
+            next: (data: Ou) => grant.objectName = data.name,
+            error: (e) => this.messagesService.error(e),
+          });
       } else {
         if (ref.startsWith('ctx')) {
-          this.get(this.ctxsPath, ref, null).subscribe((data) => grant.objectName = data.name);
+          this.contextsService.get(this.ctxsPath, ref, null)
+            .subscribe({
+              next: (data: Ctx) => grant.objectName = data.name,
+              error: (e) => this.messagesService.error(e),
+            });
         }
       }
     }
@@ -87,14 +99,24 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.get(this.ousPath, grant.objectRef, null).subscribe((data) => grant.parentName = data.parentAffiliation.name);
+        this.organizationsService.get(this.ousPath, grant.objectRef, null)
+          .subscribe({
+            next: (data: Ou) => grant.parentName = data.parentAffiliation.name,
+            error: (e) => this.messagesService.error(e),
+          });
       } else {
         if (ref.startsWith('ctx')) {
-          let ctx: any;
-          this.get(this.ctxsPath, ref, null).subscribe((data) => {
-            ctx = data;
-            this.organizationsService.getOuPath(ctx.responsibleAffiliations[0].objectId, null).subscribe((data) => grant.parentName = data);
-          });
+          this.contextsService.get(this.ctxsPath, ref, null)
+            .subscribe({
+              next: (data: Ctx) => {
+                this.organizationsService.getOuPath(data.responsibleAffiliations[0].objectId, null)
+                  .subscribe({
+                    next: (data: string) => grant.parentName = data,
+                    error: (e) => this.messagesService.error(e),
+                  });
+              },
+              error: (e) => this.messagesService.error(e),
+            });
         }
       }
     }

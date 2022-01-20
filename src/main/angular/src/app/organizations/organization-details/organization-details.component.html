@@ -74,9 +74,17 @@
         <div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
         </div>
-        <div *ngIf="!isNewOu && !isNewParentOu" class="col-1">
-          <input type="button" [disabled]="ou.publicStatus === 'OPENED' && hasOpenChildren" class="btn btn-outline-info btn-sm float-start" (click)="openOu()" [value]="ou.publicStatus === 'OPENED' ? 'close' : 'open'" />
+        <div *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'OPENED'" class="col-1">
+          <input type="button" [disabled]="hasOpenChildren" class="btn btn-outline-info btn-sm float-start" (click)="openOu()" [value]="'close'" />
         </div>
+        <div *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'CLOSED'" class="col-1">
+          <input type="button" [disabled]="!hasOpenParent" class="btn btn-outline-info btn-sm float-start" (click)="openOu()" [value]="'open'" />
+        </div>
+      </div>
+
+      <div class="row w-100 mt-0">
+        <label class="col-4 col-form-label col-form-label-sm"></label>
+        <label *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'CLOSED' && !hasOpenParent" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be opened, if the parent is open)</label>
       </div>
 
       <div class="row w-100 mt-0">
