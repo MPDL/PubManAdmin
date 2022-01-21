@@ -1,7 +1,7 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-import { Ou, User } from 'app/base/common/model/inge';
+import {User} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
 import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
 import {userAggs} from '../../base/common/components/search-term/search.aggregations';
@@ -29,16 +29,14 @@ export class UserSearchComponent implements OnInit {
   fields2Select: string[] = [];
   aggregationsList: any[] = [];
   selectedAggregation: any;
-  years: any[] = [];
-  ous: Ou[];
-  publishers: any[];
+  years;
+  ous;
   selected;
   users: User[];
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
-  token;
-  index: string = 'default';
+  token: string;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -73,23 +71,15 @@ export class UserSearchComponent implements OnInit {
     });
   }
 
-  addSearchTerm() {
-    this.searchTerms.push(this.initSearchTerm());
-  }
-
-  removeSearchTerm(i: number) {
-    this.searchTerms.removeAt(i);
-  }
-
-  onAggregationSelect(agg) {
+  async onAggregationSelect(agg) {
     this.selectedAggregation = userAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
+      this.years = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'organization':
-      this.ous = this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
+      this.ous = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     default:
@@ -111,22 +101,6 @@ export class UserSearchComponent implements OnInit {
         },
         error: (e) => this.messagesService.error(e),
       });
-  }
-
-  searchItems(body) {
-    if (this.token != null) {
-      this.currentPage = 1;
-      this.searchService.query(this.url, this.token, body)
-        .subscribe({
-          next: (data: {list: User[], records: number}) => {
-            this.users = data.list;
-            this.total = data.records;
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.warning('no login, no users!');
-    }
   }
 
   onSelectYear(year) {
@@ -179,16 +153,24 @@ export class UserSearchComponent implements OnInit {
   }
 
   onSelect(item) {
-    if (confirm('wanna edit it?')) {
-      this.router.navigate(['/user', item.objectId]);
-    }
+    this.router.navigate(['/user', item.objectId]);
   }
 
-  handleNotification(event: string, index) {
+  handleNotification(event: string, index: number) {
     if (event === 'add') {
       this.addSearchTerm();
     } else if (event === 'remove') {
       this.removeSearchTerm(index);
+    }
+  }
+
+  private addSearchTerm() {
+    this.searchTerms.push(this.initSearchTerm());
+  }
+
+  private removeSearchTerm(i: number) {
+    if (i !== 0) {
+      this.searchTerms.removeAt(i);
     }
   }
 
@@ -198,7 +180,7 @@ export class UserSearchComponent implements OnInit {
     this.searchItems(preparedBody);
   }
 
-  prepareRequest(): SearchRequest {
+  private prepareRequest(): SearchRequest {
     const model = this.searchForm.value;
     const searchTerms2Save: SearchTerm[] = model.searchTerms.map(
       (term: SearchTerm) => Object.assign({}, term)
@@ -207,5 +189,21 @@ export class UserSearchComponent implements OnInit {
       searchTerms: searchTerms2Save,
     };
     return request;
+  }
+
+  private searchItems(body: object) {
+    if (this.token != null) {
+      this.currentPage = 1;
+      this.searchService.query(this.url, this.token, body)
+        .subscribe({
+          next: (data: {list: User[], records: number}) => {
+            this.users = data.list;
+            this.total = data.records;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.messagesService.warning('no login, no users!');
+    }
   }
 }

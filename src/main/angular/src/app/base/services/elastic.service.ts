@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Client} from 'elasticsearch';
 import {environment} from 'environments/environment';
 import {ConnectionService} from '../../base/services/connection.service';
-import {MessagesService} from './messages.service';
 
 @Injectable()
 export class ElasticService {
@@ -11,7 +10,6 @@ export class ElasticService {
 
   constructor(
     protected connectionService: ConnectionService,
-    protected messagesService: MessagesService,
   ) {
     if (!this.client) {
       this.connectionService.connectionService.subscribe((data:string) => {
@@ -28,6 +26,7 @@ export class ElasticService {
     });
   }
 
+  /*
   count(index: string, callback: (arg0: number) => void): any {
     return this.client.search({
       index: index,
@@ -42,7 +41,9 @@ export class ElasticService {
       }
     });
   }
+  */
 
+  /*
   listOuNames(parent: string, id: string, callback: (arg0: any[]) => void): any {
     let queryString: string;
     if (parent.match('parent')) {
@@ -76,4 +77,5 @@ export class ElasticService {
       });
     }
   }
+  */
 }

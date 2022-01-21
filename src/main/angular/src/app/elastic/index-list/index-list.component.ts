@@ -74,7 +74,7 @@ export class IndexListComponent implements OnInit {
     }
   }
 
-  goTo(destination) {
+  goTo(destination: string) {
     this.router.navigate(['elastic', 'index', destination]);
   }
 
@@ -82,10 +82,10 @@ export class IndexListComponent implements OnInit {
     this.goTo('new');
   }
 
-  async delete(index) {
+  async delete(index: { index: string; }) {
     if (confirm('you\'re about 2 delete ' + index.index)) {
       try {
-        const response = await this.elasticService.delete(index.index);
+        const response = await this.elasticService.deleteIndex(index.index);
         const pos = this.indices.indexOf(index);
         this.indices.splice(pos, 1);
         this.messagesService.success('deleted ' + index.index + '\n' + JSON.stringify(response));
@@ -95,7 +95,7 @@ export class IndexListComponent implements OnInit {
     }
   }
 
-  handleNotification(event: string, index) {
+  handleNotification(event: string, index: number) {
     if (event === 'add') {
       this.addAlias();
     } else if (event === 'remove') {
@@ -118,7 +118,7 @@ export class IndexListComponent implements OnInit {
       case 'remove': {
         let a2remove: string;
         if (alias.alias.includes(',')) {
-          a2remove = prompt('which one?');
+          a2remove = prompt(alias.index + ': which one?');
         } else {
           a2remove = alias.alias;
         }

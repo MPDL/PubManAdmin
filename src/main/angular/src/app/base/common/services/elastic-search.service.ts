@@ -9,29 +9,30 @@ export class ElasticSearchService extends ElasticService {
     protected connectionService: ConnectionService,
     protected messagesService: MessagesService,
   ) {
-    super(connectionService, messagesService);
+    super(connectionService);
   }
 
-  buckets(index, body, nested): any[] {
+  async buckets(index: string, body: any, nested: boolean): Promise<any[]> {
     const buckets = [];
-    this.client.search({
-      index: index,
-      body: body,
-    }, (error, response) => {
-      if (error) {
-        this.messagesService.error(error);
+
+    try {
+      const response = await this.client.search({
+        index: index,
+        body: body,
+      });
+      if (nested) {
+        response.aggregations.name1.name2.buckets.forEach((bucket: any) => {
+          buckets.push(bucket);
+        });
       } else {
-        if (nested) {
-          response.aggregations.name1.name2.buckets.forEach((bucket) => {
-            buckets.push(bucket);
-          });
-        } else {
-          response.aggregations.name1.buckets.forEach((bucket) => {
-            buckets.push(bucket);
-          });
-        }
+        response.aggregations.name1.buckets.forEach((bucket: any) => {
+          buckets.push(bucket);
+        });
       }
-    });
+    } catch (error) {
+      this.messagesService.error(error);
+    }
+
     return buckets;
   }
 
@@ -50,7 +51,7 @@ export class ElasticSearchService extends ElasticService {
     });
   }
 
-  getMappingFields(alias, type): string[] {
+  getMappingFields(alias: string, type: string): string[] {
     const fields:string[] = [];
     this.client.indices.getFieldMapping({
       index: alias,
@@ -62,8 +63,6 @@ export class ElasticSearchService extends ElasticService {
       } else {
         let mapping;
         this.getTheNestedObject(response, type, (found) => mapping = found);
-        // let mapping = JSON.parse(JSON.stringify(response[index].mappings[type]));
-
         JSON.parse(JSON.stringify(mapping), (key, value: string) => {
           if (key === 'full_name') {
             if (!value.startsWith('_')) {
@@ -82,6 +81,7 @@ export class ElasticSearchService extends ElasticService {
         });
       }
     });
+
     return fields;
   }
 }

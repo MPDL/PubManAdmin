@@ -36,20 +36,20 @@ export class IndexAliasComponent implements OnInit {
     }
   }
 
-  select(index) {
+  select(index: any) {
     this.indexAliasForm.patchValue({index: index});
     this.filteredIndices = [];
   }
 
-  onActionSelect(selected) {
+  onActionSelect(selected: any) {
     this.indexAliasForm.patchValue({action: selected});
   }
 
-  onIndexSelect(selected) {
+  onIndexSelect(selected: any) {
     this.indexAliasForm.patchValue({index: selected});
   }
 
-  onAliasSelect(selected) {
+  onAliasSelect(selected: any) {
     this.indexAliasForm.patchValue({alias: selected});
   }
 

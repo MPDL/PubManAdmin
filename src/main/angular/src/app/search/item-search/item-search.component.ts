@@ -29,9 +29,9 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   fields2Select: string[] = [];
   aggregationsList: any[] = [];
   selectedAggregation: any;
-  years: any[] = [];
-  genres: any[];
-  publishers: any[];
+  years;
+  genres;
+  publishers;
   selected;
   items: any[];
   total: number = 0;
@@ -78,26 +78,28 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   }
 
   removeSearchTerm(i: number) {
-    this.searchTerms.removeAt(i);
+    if (i !== 0) {
+      this.searchTerms.removeAt(i);
+    }
   }
 
   ngOnDestroy() {
     this.tokensubscription.unsubscribe();
   }
 
-  onAggregationSelect(agg) {
+  async onAggregationSelect(agg) {
     this.selectedAggregation = itemAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, false);
+      this.years = await this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'genre':
-      this.genres = this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, false);
+      this.genres = await this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     case 'publisher':
-      this.publishers = this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, true);
+      this.publishers = await this.elasticSearchService.buckets(environment.itemIndex.name, this.selectedAggregation, true);
       this.selected = agg;
       break;
     default:
@@ -185,13 +187,6 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
         },
         error: (e) => this.messagesService.error(e),
       });
-  }
-
-  onSelect(item) {
-    if (confirm('wanna delete it?')) {
-      const index = this.items.indexOf(item);
-      this.items.splice(index, 1);
-    }
   }
 
   handleNotification(event: string, index) {

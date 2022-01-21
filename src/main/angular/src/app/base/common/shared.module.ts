@@ -19,14 +19,12 @@ import {SuggestionComponent} from './components/suggestion/suggestion.component'
   declarations: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
-    ClickOutsideDirective,
     ValueNotAllowedDirective,
     SearchTermComponent,
     SuggestionComponent,
   ],
   exports: [
     SelectedItemColourDirective,
-    ClickOutsideDirective,
     ClickOutsideDirective,
     ValueNotAllowedDirective,
     NgxPaginationModule,

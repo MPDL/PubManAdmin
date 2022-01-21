@@ -21,21 +21,21 @@ export class ElasticService {
     }
   }
 
-  private connect(url) {
+  private connect(url: string) {
     this.client = new Client({
       host: url,
       log: ['error', 'warning'],
     });
   }
 
-  connect2(url) {
+  connect2(url: string) {
     this.client = new Client({
       host: url,
       log: ['error', 'warning'],
     });
   }
 
-  remoteClient(url): Client {
+  private remoteClient(url: string): Client {
     const rc = new Client({
       host: url,
       log: ['error', 'warning'],
@@ -51,7 +51,7 @@ export class ElasticService {
     return this.client.cat.indices({format: 'json'});
   }
 
-  listRemoteIndices(host) {
+  listRemoteIndices(host: string) {
     return this.remoteClient(host).cat.indices({format: 'json'});
   }
 
@@ -59,20 +59,20 @@ export class ElasticService {
     return this.client.indices.getAlias({});
   }
 
-  create(name, body) {
+  createIndex(name: string, body: {}) {
     return this.client.indices.create({
       index: name,
       body: body,
     });
   }
 
-  getIndex(name) {
+  getIndex(name: string) {
     return this.client.indices.get({
       index: name,
     });
   }
 
-  delete(name) {
+  deleteIndex(name: string) {
     return this.client.indices.delete({
       index: name,
     });
@@ -116,33 +116,33 @@ export class ElasticService {
     });
   }
 
-  addAlias(index, alias) {
+  addAlias(index: string, alias: string) {
     return this.client.indices.putAlias({
       index: index,
       name: alias,
     });
   }
 
-  removeAlias(index, alias) {
+  removeAlias(index: string, alias: string) {
     return this.client.indices.deleteAlias({
       index: index,
       name: alias,
     });
   }
 
-  openIndex(name) {
+  openIndex(name: string) {
     return this.client.indices.open({
       index: name,
     });
   }
 
-  closeIndex(name) {
+  closeIndex(name: string) {
     return this.client.indices.close({
       index: name,
     });
   }
 
-  scroll() {
+  private scroll() {
     const docs = [];
     const queue = [];
     this.client.search({
@@ -154,7 +154,7 @@ export class ElasticService {
       while (queue.length) {
         const response = queue.shift();
         response.hits.hits.forEach(
-          (hit) => docs.push(hit)
+          (hit: any) => docs.push(hit)
         );
         if (response.hits.total === docs.length) {
           return Promise.resolve(docs);
@@ -166,19 +166,18 @@ export class ElasticService {
           }));
       }
     });
-    // return Promise.resolve(docs);
   }
 
-  scrollwithcallback(url, index, term, callback): any {
+  scrollwithcallback(url: string, index: any, term: object, callback) {
     const ms = this.messagesService;
     const hitList = [];
-    let ec: Client;
-    if (url != null) {
-      ec = this.remoteClient(url);
+    let client: Client;
+    if (url != null && url.length > 0) {
+      client = this.remoteClient(url);
     } else {
-      ec = this.client;
+      client = this.client;
     }
-    ec.search({
+    client.search({
       index: index,
       scroll: '30s',
       body: term,
@@ -190,7 +189,7 @@ export class ElasticService {
         hitList.push(hit);
       });
       if (response.hits.total > hitList.length) {
-        ec.scroll({
+        client.scroll({
           scrollId: response._scroll_id,
           scroll: '30s',
         }, scrolling);
@@ -200,13 +199,13 @@ export class ElasticService {
     });
   }
 
-  bulkIndex(body) {
+  bulkIndex(body: any[]) {
     return this.client.bulk({
       body: body,
     });
   }
 
-  reindex(body) {
+  reindex(body: { source: { index: any; }; dest: { index: any; }; }) {
     return this.client.reindex({
       body: body,
     });

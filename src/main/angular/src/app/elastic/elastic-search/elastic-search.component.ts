@@ -71,10 +71,12 @@ export class ElasticSearchComponent implements OnInit {
   }
 
   removeSearchTerm(i: number) {
-    this.searchTerms.removeAt(i);
+    if (i !== 0) {
+      this.searchTerms.removeAt(i);
+    }
   }
 
-  handleNotification(event: string, index) {
+  handleNotification(event: string, index: number) {
     if (event === 'add') {
       this.addSearchTerm();
     } else if (event === 'remove') {
@@ -89,7 +91,7 @@ export class ElasticSearchComponent implements OnInit {
       const target = this.searchForm.get('targetIndex').value;
       this.searchRequest = this.prepareRequest();
       const body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc');
-      this.elasticService.scrollwithcallback(url, source, body, async (cb) => {
+      this.elasticService.scrollwithcallback(url, source, body, async (cb: any[]) => {
         const docs = [];
         cb.forEach(async (doc) => {
           const temp = {index: {_index: target, _type: doc._type, _id: doc._id}};
@@ -114,7 +116,7 @@ export class ElasticSearchComponent implements OnInit {
     this.searchSelectedIndex(preparedBody);
   }
 
-  prepareRequest(): SearchRequest {
+  private prepareRequest(): SearchRequest {
     const model = this.searchForm.value;
     const searchTerms2Save: SearchTerm[] = model.searchTerms.map(
       (term: SearchTerm) => Object.assign({}, term)
@@ -125,8 +127,8 @@ export class ElasticSearchComponent implements OnInit {
     return request;
   }
 
-  searchSelectedIndex(body) {
-    let url;
+  private searchSelectedIndex(body: object) {
+    let url: string;
     if (this.searchForm.get('remoteUrl').value !== '') {
       url = this.searchForm.get('remoteUrl').value;
     } else {
@@ -146,11 +148,11 @@ export class ElasticSearchComponent implements OnInit {
       const response = await this.elasticService.reindex(body);
       this.messagesService.success(JSON.stringify(response));
     } catch (e) {
-      this, this.messagesService.error(e);
+      this.messagesService.error(e);
     }
   }
 
-  notyet(name) {
+  notyet(name: string) {
     alert('this method is not yet implemented 4 ' + name);
   }
 }

@@ -78,8 +78,7 @@
                     <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 autoHide="true" (pageChange)="getPage($event)"></pagination-controls>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li selected-item-color class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'iPaginator', itemsPerPage: 25, currentPage: currentPage, totalItems: total }"
-                        (click)="onSelect(item)">
+                    <li selected-item-color class="list-group-item text-primary justify-content-start p-1" *ngFor="let item of items | paginate: { id: 'iPaginator', itemsPerPage: 25, currentPage: currentPage, totalItems: total }">
                         <span class="text-primary">{{item.objectId}}</span>
                         <span class="text-primary ms-2">{{item.metadata.genre}}</span>
                         <span class="text-primary ms-2">{{item.metadata.title}}</span>

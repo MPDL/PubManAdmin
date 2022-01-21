@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import * as bodyBuilder from 'bodybuilder';
 import {ConnectionService} from '../../services/connection.service';
 import {PubmanRestService} from '../../services/pubman-rest.service';
+import {SearchRequest} from '../components/search-term/search.term';
 
 @Injectable()
 export class SearchService extends PubmanRestService {
@@ -13,7 +14,7 @@ export class SearchService extends PubmanRestService {
     super(connectionService, httpClient);
   }
 
-  buildQuery(request, limit, offset, sortfield, ascdesc) {
+  buildQuery(request: SearchRequest, limit: number, offset: number, sortfield: string, ascdesc: string) {
     let query = bodyBuilder();
 
     request.searchTerms.forEach((element) => {
@@ -35,15 +36,18 @@ export class SearchService extends PubmanRestService {
       default:
       }
     });
+
     const body = query
       .size(limit)
       .from(offset)
       .sort(sortfield, ascdesc);
+
     return body.build();
   }
 
   convertSearchTerm(term: string): string {
     let convertedSearchTerm = '';
+
     if (term.startsWith('"') && term.endsWith('"')) {
       convertedSearchTerm = '"';
       for (let i = 1; i < term.length-1; i++) {
@@ -57,6 +61,7 @@ export class SearchService extends PubmanRestService {
         convertedSearchTerm = this.handleSpecialCharacters(ch, convertedSearchTerm);
       }
     }
+
     return convertedSearchTerm;
   }
 
@@ -66,6 +71,7 @@ export class SearchService extends PubmanRestService {
     } else if (!ch.match(/[#%&]/)) {
       convertedSearchTerm = convertedSearchTerm + '\\' + ch;
     }
+
     return convertedSearchTerm;
   }
 }

@@ -9,7 +9,6 @@ import {IndexAliasComponent} from './index-alias/index-alias.component';
 import {IndexDetailComponent} from './index-detail/index-detail.component';
 import {IndexListComponent} from './index-list/index-list.component';
 import {ElasticService} from './services/elastic.service';
-import {UploadComponent} from './upload/upload.component';
 
 @NgModule({
   imports: [
@@ -17,7 +16,7 @@ import {UploadComponent} from './upload/upload.component';
     SharedModule,
     ElasticRoutingModule,
   ],
-  declarations: [ElasticComponent, ElasticStartComponent, IndexListComponent, ElasticSearchComponent, IndexDetailComponent, UploadComponent, IndexAliasComponent],
+  declarations: [ElasticComponent, ElasticStartComponent, IndexListComponent, ElasticSearchComponent, IndexDetailComponent, IndexAliasComponent],
   providers: [
     ElasticService,
   ],

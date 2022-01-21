@@ -41,7 +41,7 @@
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
                         <span class="badge bg-primary">{{year.doc_count}}</span>
                         <span class="text-primary ms-2">{{year.key_as_string.substring(0,4)}}</span>
-                        <li>
+                    </li>
                 </ul>
             </div>
             <div *ngIf="selected === 'organization'" class="card border-primary text-end m-1">
@@ -52,7 +52,7 @@
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let ou of ous" (click)="onSelectOu(ou)">
                         <span class="text-primary me-2">{{ou.key}}</span>
                         <span class="badge bg-primary">{{ou.doc_count}}</span>
-                        <li>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -70,7 +70,7 @@
                         <span class="text-primary ms-2">{{user.name}}</span>
                         <span class="text-primary ms-2">({{user.loginname}})</span>
                         <span class="text-primary ms-2">{{user.affiliation?.name}}</span>
-                    <li>
+                    </li>
                 </ul>
             </div>
         </div>

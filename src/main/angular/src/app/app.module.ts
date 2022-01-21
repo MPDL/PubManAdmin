@@ -1,10 +1,9 @@
-import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {Router} from '@angular/router'; // keep 4 diagnostics
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {PageNotFoundComponent} from './base/common/page-not-found.component';
@@ -59,7 +58,7 @@ import {UsersModule} from './users/users.module';
     PubmanRestService,
     AdminGuardService,
     LoginGuardService,
-//    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
+    //    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
 })
@@ -68,8 +67,8 @@ export class AppModule {
   // AppRouting has to be last in imports [], otherwise the '**' routing will match.
   // Diagnostic only: inspect router configuration
   constructor(
-    private router: Router,
+    //    private router: Router,
   ) { // TODO: wieder einkommentieren
-    console.log('App Routes: ', JSON.stringify(router.config, undefined, 2));
+    //    console.log('App Routes: ', JSON.stringify(router.config, undefined, 2));
   }
 }
