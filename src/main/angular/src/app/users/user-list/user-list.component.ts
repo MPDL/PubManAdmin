@@ -59,14 +59,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
-    if (this.token != null) {
-      if (this.isAdmin) {
-        this.listAllUsers(1);
-      } else {
-        this.listUsers(this.usersService.getListOfOusForLocalAdminFromGrants(this.loggedInUser.grantList, 'affiliation.objectId'), 1);
-      }
+    if (this.isAdmin) {
+      this.listAllUsers(1);
     } else {
-      this.messagesService.warning('no token, no users!');
+      this.listUsers(this.usersService.getListOfOusForLocalAdminFromGrants(this.loggedInUser.grantList, 'affiliation.objectId'), 1);
     }
   }
 

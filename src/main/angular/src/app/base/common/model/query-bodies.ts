@@ -32,6 +32,20 @@ export const ctx4autoSelect = {
   ],
 };
 
+export const localAdminCtxs = {
+  'size': 50,
+  'query': {
+    'bool': {
+      'filter': {
+        'terms': {'responsibleAffiliations.objectId': ['terms']},
+      },
+    },
+  },
+  'sort': [
+    {'name.keyword': {'order': 'asc'}},
+  ],
+};
+
 export const ous4autoSelect = {
   'size': 25,
   'query': {

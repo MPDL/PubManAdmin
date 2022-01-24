@@ -104,52 +104,44 @@ export class UserSearchComponent implements OnInit {
   }
 
   onSelectYear(year) {
-    if (this.token != null) {
-      this.searchForm.reset();
-      this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y'}]);
-      this.currentPage = 1;
-      const term = new SearchTerm();
-      term.type = 'filter';
-      term.field = 'creationDate';
-      term.searchTerm = year.key_as_string + '||/y';
-      const terms = [term];
-      const request = new SearchRequest();
-      request.searchTerms = terms;
-      const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
-      this.searchService.query(this.url, this.token, body)
-        .subscribe({
-          next: (data: {list: User[], records: number}) => {
-            this.users = data.list;
-            this.total = data.records;
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.warning('no login, no users!');
-    }
+    this.searchForm.reset();
+    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y'}]);
+    this.currentPage = 1;
+    const term = new SearchTerm();
+    term.type = 'filter';
+    term.field = 'creationDate';
+    term.searchTerm = year.key_as_string + '||/y';
+    const terms = [term];
+    const request = new SearchRequest();
+    request.searchTerms = terms;
+    const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
+    this.searchService.query(this.url, this.token, body)
+      .subscribe({
+        next: (data: {list: User[], records: number}) => {
+          this.users = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onSelectOu(ou) {
-    if (this.token != null) {
-      this.searchForm.reset();
-      this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
-      this.currentPage = 1;
-      const body = {
-        'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword': ou.key}}}}, 'sort': [
-          {'name.keyword': {'order': 'asc'}},
-        ],
-      };
-      this.searchService.query(this.url, this.token, body)
-        .subscribe({
-          next: (data: {list: User[], records: number}) => {
-            this.users = data.list;
-            this.total = data.records;
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.warning('no login, no users!');
-    }
+    this.searchForm.reset();
+    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
+    this.currentPage = 1;
+    const body = {
+      'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword': ou.key}}}}, 'sort': [
+        {'name.keyword': {'order': 'asc'}},
+      ],
+    };
+    this.searchService.query(this.url, this.token, body)
+      .subscribe({
+        next: (data: {list: User[], records: number}) => {
+          this.users = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
   }
 
   onSelect(item) {
@@ -192,18 +184,14 @@ export class UserSearchComponent implements OnInit {
   }
 
   private searchItems(body: object) {
-    if (this.token != null) {
-      this.currentPage = 1;
-      this.searchService.query(this.url, this.token, body)
-        .subscribe({
-          next: (data: {list: User[], records: number}) => {
-            this.users = data.list;
-            this.total = data.records;
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.warning('no login, no users!');
-    }
+    this.currentPage = 1;
+    this.searchService.query(this.url, this.token, body)
+      .subscribe({
+        next: (data: {list: User[], records: number}) => {
+          this.users = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
   }
 }

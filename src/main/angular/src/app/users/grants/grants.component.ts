@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {localAdminCtxs} from 'app/base/common/model/query-bodies';
+import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
@@ -46,9 +48,12 @@ export class GrantsComponent implements OnInit, OnDestroy {
   adminSubscription: Subscription;
   tokenSubscription: Subscription;
   token: string;
+  userSubscription: Subscription;
+  loggedInUser: User;
 
   constructor(
     private authenticationService: AuthenticationService,
+    private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private usersService: UsersService,
@@ -57,13 +62,15 @@ export class GrantsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     if (this.isAdmin) {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
-      this.getCtxsAndOus();
     } else {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
     }
+
+    this.getCtxsAndOus();
   }
 
   ngOnDestroy() {
@@ -71,21 +78,57 @@ export class GrantsComponent implements OnInit, OnDestroy {
     this.tokenSubscription.unsubscribe();
   }
 
-  getCtxsAndOus() {
-    this.organizationsService.getFirstLevelOus(this.token)
-      .subscribe({
-        next: (data: Ou[]) => this.ous = data,
-        error: (e) => this.messagesService.error(e),
-      });
-
-    this.usersService.filter(this.ctxsPath, null, '?q=state:OPENED&size=300', 1)
-      .subscribe({
-        next: (data: {list: Ctx[], records: number}) => {
-          this.ctxs = data.list;
-          this.filteredCtxs = data.list;
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+  private getCtxsAndOus() {
+    if (this.isAdmin) {
+      this.organizationsService.getFirstLevelOus(this.token)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const ous: Ou[] = [];
+            data.forEach((ou: Ou) => {
+              if (ou.publicStatus === 'OPENED') {
+                ous.push(ou);
+              }
+            });
+            this.ous = ous;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+      this.usersService.filter(this.ctxsPath, null, '?q=state:OPENED&size=300', 1)
+        .subscribe({
+          next: (data: {list: Ctx[], records: number}) => {
+            this.ctxs = data.list;
+            this.filteredCtxs = data.list;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach(
+              (ou: Ou) => allOuIds.push(ou.objectId)
+            );
+            const body = localAdminCtxs;
+            body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
+            this.contextsService.query(this.ctxsPath, null, body)
+              .subscribe({
+                next: (data: {list: Ctx[], records: number}) => {
+                  const ctxs: Ctx[] = [];
+                  data.list.forEach((ctx: Ctx) => {
+                    if (ctx.state === 'OPENED') {
+                      ctxs.push(ctx);
+                    }
+                  });
+                  this.ctxs = ctxs;
+                  this.filteredCtxs = ctxs;
+                },
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
   }
 
   onChangeRole(role: string) {
@@ -171,7 +214,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
     this.user = user;
     if (this.user.grantList != null) {
       this.user.grantList.forEach((grant) => {
-        this.usersService.addNamesOfGrantRefs(grant);
+        this.usersService.addAdditionalPropertiesOfGrantRefs(grant);
         this.usersService.addOuPathOfGrantRefs(grant);
       });
     }

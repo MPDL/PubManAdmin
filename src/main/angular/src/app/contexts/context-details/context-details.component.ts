@@ -61,6 +61,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     this.setContext(this.activatedRoute.snapshot.data['ctx']);
+
     if (!this.isAdmin) {
       this.getLoggedInUserAllOpenOus(null);
     }

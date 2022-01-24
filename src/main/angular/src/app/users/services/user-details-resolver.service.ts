@@ -36,10 +36,10 @@ export class UserDetailsResolverService implements Resolve<User> {
         .subscribe({
           next: (data: string) => {
             user.password = data;
-            return of(user);
           },
           error: (e) => this.messagesService.error(e),
         });
+      return of(user);
     } else {
       let user: User;
       return this.usersService.get(this.usersPath, id, this.token)

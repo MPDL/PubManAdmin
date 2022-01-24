@@ -17,6 +17,7 @@ export class Grant {
   role: string;
   grantType: string;
   objectRef: string;
+  objectStatus: string;
   objectName: string;
   parentName: string;
 }

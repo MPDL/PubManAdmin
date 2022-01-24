@@ -23,6 +23,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   user: User;
   isNewUser: boolean = false;
 
+  ousForLoggedInUser: Ou[];
   ous: Ou[] = [];
   ouSearchTerm: string = '';
   selectedOu: Ou;
@@ -57,6 +58,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
     this.setUser(this.activatedRoute.snapshot.data['user']);
+
+    if (!this.isAdmin) {
+      this.getLoggedInUserAllOpenOus(null);
+    }
 
     if (this.user.loginname === 'new user') {
       this.isNewUser = true;
@@ -254,6 +259,22 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  getLoggedInUserAllOpenOus(ignoreOuId: string) {
+    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
+      .subscribe({
+        next: (data: Ou[]) => {
+          const ous: Ou[] = [];
+          data.forEach((ou: Ou) => {
+            if (ou.publicStatus === 'OPENED') {
+              ous.push(ou);
+            }
+          });
+          this.ousForLoggedInUser = ous;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
   private returnSuggestedOus(term: string) {
     const ous: Ou[] = [];
     if (this.isAdmin) {
@@ -321,7 +342,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.user = user;
     if (this.user.grantList != null) {
       this.user.grantList.forEach((grant) => {
-        this.usersService.addNamesOfGrantRefs(grant);
+        this.usersService.addAdditionalPropertiesOfGrantRefs(grant);
         this.usersService.addOuPathOfGrantRefs(grant);
       });
     }

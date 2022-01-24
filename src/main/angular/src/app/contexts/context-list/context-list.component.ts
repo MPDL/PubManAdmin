@@ -60,20 +60,16 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
-    if (this.token != null) {
-      if (this.isAdmin) {
-        this.listAllCtxs(1);
-      } else {
-        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
-          .subscribe({
-            next: (data: Ou[]) => {
-              this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), 1);
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      }
+    if (this.isAdmin) {
+      this.listAllCtxs(1);
     } else {
-      this.messagesService.warning('no token, no contexts!');
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), 1);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -81,7 +77,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.tokenSubscription.unsubscribe();
   }
 
-  listAllCtxs(page: number) {
+  private listAllCtxs(page: number) {
     this.contextsService.getAll(this.ctxsPath, this.token, page)
       .subscribe({
         next: (data: {list: Ctx[], records: number}) => {
