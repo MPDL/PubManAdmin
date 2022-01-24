@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {ous4autoSelect, users4autoSelectByLogin, users4autoSelectByName} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
@@ -62,7 +63,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.isAdmin) {
       this.listAllUsers(1);
     } else {
-      this.listUsers(this.usersService.getListOfOusForLocalAdminFromGrants(this.loggedInUser.grantList, 'affiliation.objectId'), 1);
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            this.listUsers(this.usersService.getListOfOusForLocalAdminFromOus(data, 'affiliation.objectId'), 1);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     }
   }
 
@@ -99,7 +106,13 @@ export class UserListComponent implements OnInit, OnDestroy {
       if (this.isAdmin) {
         this.listAllUsers(page);
       } else {
-        this.listUsers(this.usersService.getListOfOusForLocalAdminFromGrants(this.loggedInUser.grantList, 'affiliation.objectId'), page);
+        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+          .subscribe({
+            next: (data: Ou[]) => {
+              this.listUsers(this.usersService.getListOfOusForLocalAdminFromOus(data, 'affiliation.objectId'), page);
+            },
+            error: (e) => this.messagesService.error(e),
+          });
       }
     } else {
       this.listUsers(this.selectedOu.objectId, page);
@@ -125,6 +138,36 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
+  private returnSuggestedUsersByName(userName: string) {
+    if (this.isAdmin) {
+      const queryString = '?q=name.auto:' + userName;
+      this.usersService.filter(this.usersPath, this.token, queryString, 1)
+        .subscribe({
+          next: (data: {list: User[], records: number}) => this.usersByName = data.list,
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach(
+              (ou: Ou) => allOuIds.push(ou.objectId)
+            );
+            const body = users4autoSelectByName;
+            body.query.bool.filter.terms['affiliation.objectId'] = allOuIds;
+            body.query.bool.must.term['name.auto'] = userName;
+            this.usersService.query(this.usersPath, this.token, body)
+              .subscribe({
+                next: (data: {list: User[], records: number}) => this.usersByName = data.list,
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
+  }
+
   getUsersByLogin(term: string) {
     const convertedSearchTerm = this.searchService.convertSearchTerm(term);
     if (convertedSearchTerm.length > 0) {
@@ -134,22 +177,34 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private returnSuggestedUsersByName(userName: string) {
-    const queryString = '?q=name.auto:' + userName;
-    this.usersService.filter(this.usersPath, this.token, queryString, 1)
-      .subscribe({
-        next: (data: {list: User[], records: number}) => this.usersByName = data.list,
-        error: (e) => this.messagesService.error(e),
-      });
-  }
-
-  private returnSuggestedUsersByLogin(loginname: string) {
-    const queryString = '?q=loginname.auto:' + loginname;
-    this.usersService.filter(this.usersPath, this.token, queryString, 1)
-      .subscribe({
-        next: (data: {list: User[], records: number}) => this.usersByLogin = data.list,
-        error: (e) => this.messagesService.error(e),
-      });
+  private returnSuggestedUsersByLogin(loginName: string) {
+    if (this.isAdmin) {
+      const queryString = '?q=loginname.auto:' + loginName;
+      this.usersService.filter(this.usersPath, this.token, queryString, 1)
+        .subscribe({
+          next: (data: {list: User[], records: number}) => this.usersByLogin = data.list,
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach(
+              (ou: Ou) => allOuIds.push(ou.objectId)
+            );
+            const body = users4autoSelectByLogin;
+            body.query.bool.filter.terms['affiliation.objectId'] = allOuIds;
+            body.query.bool.must.term['loginname.auto'] = loginName;
+            this.usersService.query(this.usersPath, this.token, body)
+              .subscribe({
+                next: (data: {list: User[], records: number}) => this.usersByLogin = data.list,
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
   }
 
   getOus(term: string) {
@@ -162,12 +217,33 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private returnSuggestedOus(term: string) {
-    const queryString = '?q=metadata.name.auto:' + term;
-    this.organizationsService.filter(this.ousPath, null, queryString, 1)
-      .subscribe({
-        next: (data: {list: Ou[], records: number}) => this.ous = data.list,
-        error: (e) => this.messagesService.error(e),
-      });
+    if (this.isAdmin) {
+      const queryString = '?q=metadata.name.auto:' + term;
+      this.organizationsService.filter(this.ousPath, null, queryString, 1)
+        .subscribe({
+          next: (data: {list: Ou[], records: number}) => this.ous = data.list,
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+        .subscribe({
+          next: (data: Ou[]) => {
+            const allOuIds: string[] = [];
+            data.forEach(
+              (ou: Ou) => allOuIds.push(ou.objectId)
+            );
+            const body = ous4autoSelect;
+            body.query.bool.filter.terms['objectId'] = allOuIds;
+            body.query.bool.must.term['metadata.name.auto'] = term;
+            this.organizationsService.query(this.ousPath, null, body)
+              .subscribe({
+                next: (data: {list: Ou[], records: number}) => this.ous = data.list,
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
   }
 
   selectOu(ou: Ou) {

@@ -64,6 +64,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.user.loginname === 'new user') {
+      this.usersService.generateRandomPassword(this.token)
+        .subscribe({
+          next: (data: string) => {
+            this.user.password = data;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+
       this.isNewUser = true;
       this.isNewOu = true;
     }
@@ -190,13 +198,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewUser) {
+      const pw = this.user.password;
       this.usersService.post(this.usersPath, this.user, this.token)
         .subscribe({
           next: (data: User) => {
             this.user = data;
             this.isNewUser = false;
             this.isNewOu = false;
-            this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + this.user.password);
+            this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + pw);
           },
           error: (e) => {
             if (e.message.includes('already exists')) {

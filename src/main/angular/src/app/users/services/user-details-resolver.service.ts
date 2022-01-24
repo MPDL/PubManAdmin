@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
 import {AuthenticationService} from 'app/base/services/authentication.service';
-import {MessagesService} from 'app/base/services/messages.service';
 import {environment} from 'environments/environment';
 import {Observable, of, Subscription} from 'rxjs';
 import {first, map} from 'rxjs/operators';
@@ -17,7 +16,6 @@ export class UserDetailsResolverService implements Resolve<User> {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private messagesService: MessagesService,
     private usersService: UsersService,
   ) {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
@@ -32,13 +30,6 @@ export class UserDetailsResolverService implements Resolve<User> {
       user.grantList = [];
       user.affiliation = null;
       user.active = true;
-      this.usersService.generateRandomPassword(this.token)
-        .subscribe({
-          next: (data: string) => {
-            user.password = data;
-          },
-          error: (e) => this.messagesService.error(e),
-        });
       return of(user);
     } else {
       let user: User;

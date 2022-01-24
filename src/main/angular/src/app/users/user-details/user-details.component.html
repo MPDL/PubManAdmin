@@ -29,6 +29,12 @@
                 <div *ngIf="user.affiliation && user.active === true" class="col-6">
                     <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
                 </div>
+                <div *ngIf="!user.affiliation && user.active !== true" class="col-7">
+                    <input type="text" class="form-control form-control-sm" readonly>
+                </div>
+                <div *ngIf="!user.affiliation && user.active === true" class="col-6">
+                    <input type="text" class="form-control form-control-sm" readonly>
+                </div>
                 <div *ngIf="user.active === true" class="col-1">
                     <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="changeOu()" value="change" />
                 </div>

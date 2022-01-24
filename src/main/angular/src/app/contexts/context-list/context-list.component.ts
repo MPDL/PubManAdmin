@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Ctx, Ou, User} from 'app/base/common/model/inge';
-import {ctx4autoSelect, ous4autoSelect} from 'app/base/common/model/query-bodies';
+import {ctxs4autoSelectByName, ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {UsersService} from 'app/users/services/users.service';
@@ -130,15 +130,15 @@ export class ContextListComponent implements OnInit, OnDestroy {
   getCtxsByName(term: string) {
     const convertedSearchTerm = this.searchService.convertSearchTerm(term);
     if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedCtxs(convertedSearchTerm);
+      this.returnSuggestedCtxsByName(convertedSearchTerm);
     } else {
       this.closeCtxsByName();
     }
   }
 
-  private returnSuggestedCtxs(term: string) {
+  private returnSuggestedCtxsByName(ctxName: string) {
     if (this.isAdmin) {
-      const queryString = '?q=name.auto:' + term;
+      const queryString = '?q=name.auto:' + ctxName;
       this.contextsService.filter(this.ctxsPath, null, queryString, 1)
         .subscribe({
           next: (data: {list: Ctx[], records: number}) => this.ctxsByName = data.list,
@@ -152,9 +152,9 @@ export class ContextListComponent implements OnInit, OnDestroy {
             data.forEach(
               (ou: Ou) => allOuIds.push(ou.objectId)
             );
-            const body = ctx4autoSelect;
+            const body = ctxs4autoSelectByName;
             body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
-            body.query.bool.must.term['name'] = term;
+            body.query.bool.must.term['name'] = ctxName;
             this.contextsService.query(this.ctxsPath, null, body)
               .subscribe({
                 next: (data: {list: Ctx[], records: number}) => this.ctxsByName = data.list,
