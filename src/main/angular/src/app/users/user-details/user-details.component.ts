@@ -154,7 +154,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  activateUser() {
+  changeUserState() {
     if (this.user.active === true) {
       this.usersService.deactivate(this.user, this.token)
         .subscribe({
@@ -284,10 +284,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private returnSuggestedOus(term: string) {
+  private returnSuggestedOus(ouName: string) {
     const ous: Ou[] = [];
     if (this.isAdmin) {
-      const queryString = '?q=metadata.name.auto:' + term;
+      const queryString = '?q=metadata.name.auto:' + ouName;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
           next: (data: {list: Ou[], records: number}) => {
@@ -304,7 +304,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     } else {
       const body = ous4autoSelect;
       body.query.bool.filter.terms['objectId'] = this.loggedInUser.topLevelOuIds;
-      body.query.bool.must.term['metadata.name.auto'] = term;
+      body.query.bool.must.term['metadata.name.auto'] = ouName;
       this.organizationsService.query(this.ousPath, null, body)
         .subscribe({
           next: (data: {list: Ou[], records: number}) => {

@@ -4,6 +4,7 @@ import * as bodyBuilder from 'bodybuilder';
 import {ConnectionService} from '../../services/connection.service';
 import {PubmanRestService} from '../../services/pubman-rest.service';
 import {SearchRequest} from '../components/search-term/search.term';
+import {Grant, Ou} from '../model/inge';
 
 @Injectable()
 export class SearchService extends PubmanRestService {
@@ -73,5 +74,43 @@ export class SearchService extends PubmanRestService {
     }
 
     return convertedSearchTerm;
+  }
+
+  getListOfOusForLocalAdminFromGrants(grants: Grant[], searchField: string): string {
+    let lst: string = '';
+    grants.forEach((grant: Grant) => {
+      if (grant.role === 'LOCAL_ADMIN') {
+        if (lst.length > 0) {
+          lst = lst + '+';
+        }
+        lst = lst + searchField + ':' + grant.objectRef;
+      }
+    });
+
+    return lst;
+  }
+
+  getListOfOusForLocalAdminFromOus(ous: Ou[], searchField: string): string {
+    let lst: string = '';
+    ous.forEach((ou: Ou) => {
+      if (lst.length > 0) {
+        lst = lst + '+';
+      }
+      lst = lst + searchField + ':' + ou.objectId;
+    });
+
+    return lst;
+  }
+
+  getListOfIds(ids: string[], searchField: string): string {
+    let lst: string = '';
+    ids.forEach((id: string) => {
+      if (lst.length > 0) {
+        lst = lst + '+';
+      }
+      lst = lst + searchField + ':' + id;
+    });
+
+    return lst;
   }
 }

@@ -66,7 +66,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
       this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
         .subscribe({
           next: (data: Ou[]) => {
-            this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), 1);
+            this.listCtxs(this.searchService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), 1);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -88,8 +88,9 @@ export class ContextListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private listCtxs(searchTerm: string, page: number) {
-    this.contextsService.filter(this.ctxsPath, null, '?q=' + searchTerm, page)
+  private listCtxs(listOfOuIds: string, page: number) {
+    const queryString = '?q=' + listOfOuIds;
+    this.contextsService.filter(this.ctxsPath, null, queryString, page)
       .subscribe({
         next: (data: {list: Ctx[], records: number}) => {
           this.ctxs = data.list;
@@ -107,7 +108,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
       } else {
         this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
           .subscribe({
-            next: (data: Ou[]) => this.listCtxs(this.usersService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), page),
+            next: (data: Ou[]) => this.listCtxs(this.searchService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), page),
             error: (e) => this.messagesService.error(e),
           });
       }
@@ -166,8 +167,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getOus(term: string) {
-    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+  getOus(ouName: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(ouName);
     if (convertedSearchTerm.length > 0) {
       this.returnSuggestedOus(convertedSearchTerm);
     } else {
@@ -175,9 +176,9 @@ export class ContextListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private returnSuggestedOus(term: string) {
+  private returnSuggestedOus(ouName: string) {
     if (this.isAdmin) {
-      const queryString = '?q=metadata.name.auto:' + term;
+      const queryString = '?q=metadata.name.auto:' + ouName;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
           next: (data: {list: Ou[], records: number}) => this.ous = data.list,
@@ -193,7 +194,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
             );
             const body = ous4autoSelect;
             body.query.bool.filter.terms['objectId'] = allOuIds;
-            body.query.bool.must.term['metadata.name.auto'] = term;
+            body.query.bool.must.term['metadata.name.auto'] = ouName;
             this.organizationsService.query(this.ousPath, null, body)
               .subscribe({
                 next: (data: {list: Ou[], records: number}) => this.ous = data.list,
@@ -208,7 +209,8 @@ export class ContextListComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.selectedOu = ou;
     this.currentPage = 1;
-    this.contextsService.filter(this.ctxsPath, null, '?q=responsibleAffiliations.objectId:' + ou.objectId, 1)
+    const queryString = '?q=responsibleAffiliations.objectId:' + ou.objectId;
+    this.contextsService.filter(this.ctxsPath, null, queryString, 1)
       .subscribe({
         next: (data: {list: Ctx[], records: number}) => {
           this.ctxs = data.list;

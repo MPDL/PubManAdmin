@@ -86,4 +86,20 @@ export class OrganizationsService extends PubmanRestService {
 
     return meta;
   }
+
+  removePredecessor(ou: Ou, predecessorId: string, token: string): Observable<Ou> {
+    const path = this.ousPath + '/' + ou.objectId + '/remove/' + predecessorId;
+    const headers = this.addHeaders(token, true);
+    const body = ou.lastModificationDate;
+
+    return this.getResource('PUT', path, headers, body);
+  }
+
+  addPredecessor(ou: Ou, predecessorId: string, token: string): Observable<Ou> {
+    const path = this.ousPath + '/' + ou.objectId + '/add/' + predecessorId;
+    const headers = this.addHeaders(token, true);
+    const body = ou.lastModificationDate;
+
+    return this.getResource('PUT', path, headers, body);
+  }
 }

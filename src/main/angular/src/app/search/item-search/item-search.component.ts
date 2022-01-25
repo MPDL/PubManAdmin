@@ -123,7 +123,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchItems(body) {
+  searchItems(body: object) {
     this.currentPage = 1;
     this.searchService.query(this.itemRestUrl, this.token, body)
       .subscribe({
@@ -135,7 +135,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSelectYear(year) {
+  onSelectYear(year: { key_as_string: string; }) {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y'}]);
     this.currentPage = 1;
@@ -157,11 +157,12 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSelectGenre(genre) {
+  onSelectGenre(genre: { key: string; }) {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'metadata.genre', searchTerm: genre.key}]);
     this.currentPage = 1;
-    this.searchService.filter(this.itemRestUrl, this.token, '?q=metadata.genre:' + genre.key, 1)
+    const queryString = '?q=metadata.genre:' + genre.key;
+    this.searchService.filter(this.itemRestUrl, this.token, queryString, 1)
       .subscribe({
         next: (data) => {
           this.items = data.list;
@@ -171,7 +172,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSelectPublisher(publisher) {
+  onSelectPublisher(publisher: { key: any; }) {
     this.searchForm.reset();
     const body = {size: 25, from: 0,
       query: {nested: {path: 'metadata.sources',

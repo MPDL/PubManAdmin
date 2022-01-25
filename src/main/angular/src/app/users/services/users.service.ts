@@ -127,30 +127,4 @@ export class UsersService extends PubmanRestService {
       }
     }
   }
-
-  getListOfOusForLocalAdminFromGrants(grants: Grant[], searchField: string): string {
-    let lst: string = '';
-    grants.forEach((grant) => {
-      if (grant.role === 'LOCAL_ADMIN') {
-        if (lst.length > 0) {
-          lst = lst + '+';
-        }
-        lst = lst + searchField + ':' + grant.objectRef;
-      }
-    });
-
-    return lst;
-  }
-
-  getListOfOusForLocalAdminFromOus(ous: Ou[], searchField: string): string {
-    let lst: string = '';
-    ous.forEach((ou) => {
-      if (lst.length > 0) {
-        lst = lst + '+';
-      }
-      lst = lst + searchField + ':' + ou.objectId;
-    });
-
-    return lst;
-  }
 }

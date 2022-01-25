@@ -143,7 +143,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.ctx.workflow = value;
   }
 
-  openCtx() {
+  changeCtxState() {
     if (this.ctx.state === 'CLOSED') {
       this.organizationsService.get(this.ousPath, this.ctx.responsibleAffiliations[0].objectId, this.token)
         .subscribe({
@@ -263,8 +263,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private returnSuggestedOus(term: string) {
-    const queryString = '?q=metadata.name.auto:' + term;
+  private returnSuggestedOus(ouName: string) {
+    const queryString = '?q=metadata.name.auto:' + ouName;
     this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data: {list: Ou[], records: number}) => {

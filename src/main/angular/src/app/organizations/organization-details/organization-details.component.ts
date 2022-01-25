@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {SearchService} from 'app/base/common/services/search.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {Identifier, Ou, User} from '../../base/common/model/inge';
@@ -15,18 +16,23 @@ import {OrganizationsService} from '../services/organizations.service';
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ousPath: string = environment.restOus;
 
-  ou: Ou;
   isNewOu: boolean = false;
+  ou: Ou;
   ousForLoggedInUser: Ou[];
 
-  parentOus: Ou[] = [];
-  parentOuSearchTerm: string = '';
   parentOuId: string;
+  parentOuSearchTerm: string = '';
+  parentOus: Ou[] = [];
 
   children: Ou[];
   hasOpenChildren: boolean;
   hasOpenParent: boolean;
+
+  isNewPredecessor: boolean = false;
+  predecessorOu: Ou;
   predecessors: Ou[] = [];
+  predecessorOuSearchTerm: string = '';
+  predecessorOus: Ou[] = [];
 
   alternativeName: string;
   description: string;
@@ -46,6 +52,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
+    private searchService: SearchService,
   ) {}
 
   ngOnInit() {
@@ -104,8 +111,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
               });
           }
           if (this.ou.hasPredecessors) {
-            const preId = this.ou.predecessorAffiliations[0].objectId;
-            this.listPredecessors(preId, token);
+            const predecessorIds: string[] = [];
+            this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
+              predecessorIds.push(predecessor.objectId);
+            });
+            this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'), this.token);
           } else {
             this.predecessors = [];
           }
@@ -117,9 +127,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private listPredecessors(id: string, token: string) {
-    const query = '?q=objectId:' + id;
-    this.organizationsService.filter(this.ousPath, token, query, 1)
+  private listPredecessors(listOfPredecessorIds: string, token: string) {
+    const queryString = '?q=' + listOfPredecessorIds;
+    this.organizationsService.filter(this.ousPath, token, queryString, 1)
       .subscribe({
         next: (data: {list: Ou[], records: number}) => this.predecessors = data.list,
         error: (e) => this.messagesService.error(e),
@@ -141,7 +151,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  openOu() {
+  changeOuState() {
     if (this.ou.publicStatus === 'CREATED' || this.ou.publicStatus === 'CLOSED') {
       this.organizationsService.openOu(this.ou, this.token)
         .subscribe({
@@ -333,8 +343,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private returnSuggestedParentOus(term: string) {
-    const queryString = '?q=metadata.name.auto:' + term;
+  private returnSuggestedParentOus(ouName: string) {
+    const queryString = '?q=metadata.name.auto:' + ouName;
     this.organizationsService.filter(this.ousPath, null, queryString, 1)
       .subscribe({
         next: (data: {list: Ou[], records: number}) => {
@@ -365,12 +375,80 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.ou.parentAffiliation.objectId = ou.objectId;
   }
 
-  changeParentOu() {
-    this.closeParentOus();
-    this.ou.parentAffiliation = this.organizationsService.makeAffiliation('');
-  }
-
   clearParentOuSearchTerm() {
     this.parentOuSearchTerm = '';
+  }
+
+  addPredecessors() {
+    this.isNewPredecessor = true;
+  }
+
+  addPredecessor() {
+    this.organizationsService.addPredecessor(this.ou, this.predecessorOu.objectId, this.token)
+      .subscribe({
+        next: (data: Ou) => {
+          this.getOu(data.objectId, this.token);
+          this.messagesService.success('added predecessor ' + this.predecessorOu.metadata.name);
+          this.resetPredecessors();
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  resetPredecessors() {
+    this.isNewPredecessor = false;
+    this.closePredecessorOus();
+  }
+
+  removePredecessor(predecessor: Ou) {
+    if (confirm('remove predecessor ' + predecessor.metadata.name +' ?')) {
+      this.organizationsService.removePredecessor(this.ou, predecessor.objectId, this.token)
+        .subscribe({
+          next: (data: Ou) => {
+            this.getOu(data.objectId, this.token);
+            this.messagesService.success('removed predecessor ' + predecessor.metadata.name);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
+  }
+
+  selectPredecessorOu(ou: Ou) {
+    this.predecessorOuSearchTerm = ou.name;
+    this.predecessorOu = ou;
+    this.predecessorOus = [];
+  };
+
+  getPredecessorOus(term: string) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedPredecessorOus(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedPredecessorOus(term);
+    } else {
+      this.closePredecessorOus();
+    }
+  }
+
+  private returnSuggestedPredecessorOus(predecessorOuName: string) {
+    const queryString = '?q=metadata.name.auto:' + predecessorOuName;
+    this.organizationsService.filter(this.ousPath, null, queryString, 1)
+      .subscribe({
+        next: (data: {list: Ou[], records: number}) => {
+          const ous: Ou[] = [];
+          data.list.forEach((ou: Ou) => {
+            if (ou.objectId != this.ou.objectId ) {
+              ous.push(ou);
+            }
+          });
+          this.predecessorOus = ous;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  closePredecessorOus() {
+    this.predecessorOuSearchTerm = '';
+    this.predecessorOu = null;
+    this.predecessorOus = [];
   }
 }

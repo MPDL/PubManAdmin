@@ -104,9 +104,9 @@ export class OrganizationTreeComponent implements OnInit {
     }
   }
 
-  private returnSuggestedOus(term: string) {
+  private returnSuggestedOus(ouName: string) {
     if (this.isAdmin) {
-      const queryString = '?q=metadata.name.auto:' + term;
+      const queryString = '?q=metadata.name.auto:' + ouName;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
           next: (data: {list: Ou[], records: number}) => this.ous = data.list,
@@ -122,7 +122,7 @@ export class OrganizationTreeComponent implements OnInit {
             });
             const body = ous4autoSelect;
             body.query.bool.filter.terms['objectId'] = allOuIds;
-            body.query.bool.must.term['metadata.name.auto'] = term;
+            body.query.bool.must.term['metadata.name.auto'] = ouName;
             this.organizationsService.query(this.ousPath, null, body)
               .subscribe({
                 next: (data: {list: Ou[], records: number}) => this.ous = data.list,

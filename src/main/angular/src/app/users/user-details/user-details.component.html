@@ -103,7 +103,7 @@
                     <input type="text" class="form-control form-control-sm" [(ngModel)]="user.active" name="_active" readonly>
                 </div>
                 <div class="col-2">
-                    <input *ngIf="!isNewOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="activateUser()" [value]="user.active === false ? 'activate' : 'deactivate'" />
+                    <input *ngIf="!isNewOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="changeUserState()" [value]="user.active === false ? 'activate' : 'deactivate'" />
                 </div>
             </div>
 

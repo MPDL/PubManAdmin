@@ -66,7 +66,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
         .subscribe({
           next: (data: Ou[]) => {
-            this.listUsers(this.usersService.getListOfOusForLocalAdminFromOus(data, 'affiliation.objectId'), 1);
+            this.listUsers(this.searchService.getListOfOusForLocalAdminFromOus(data, 'affiliation.objectId'), 1);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -90,8 +90,9 @@ export class UserListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private listUsers(searchTerm: string, page: number) {
-    this.usersService.filter(this.usersPath, this.token, '?q=' + searchTerm, page)
+  private listUsers(listOfUserIds: string, page: number) {
+    const queryString = '?q=' + listOfUserIds;
+    this.usersService.filter(this.usersPath, this.token, queryString, page)
       .subscribe({
         next: (data: {list: User[], records: number}) => {
           this.users = data.list;
@@ -109,7 +110,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
           .subscribe({
             next: (data: Ou[]) => {
-              this.listUsers(this.usersService.getListOfOusForLocalAdminFromOus(data, 'affiliation.objectId'), page);
+              this.listUsers(this.searchService.getListOfOusForLocalAdminFromOus(data, 'affiliation.objectId'), page);
             },
             error: (e) => this.messagesService.error(e),
           });
@@ -249,7 +250,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.selectedOu = ou;
     this.currentPage = 1;
-    this.usersService.filter(this.usersPath, this.token, '?q=affiliation.objectId:' + ou.objectId, 1)
+    const queryString = '?q=affiliation.objectId:' + ou.objectId;
+    this.usersService.filter(this.usersPath, this.token, queryString, 1)
       .subscribe({
         next: (data: {list: User[], records: number}) => {
           this.users = data.list;

@@ -80,7 +80,7 @@
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
         </div>
         <div *ngIf="ctx.state && !isNewOu" class="col-2">
-          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="openCtx()" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
+          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeCtxState()" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
         </div>
       </div>
 
@@ -112,14 +112,6 @@
         </div>
       </div>
       
-      <div class="row w-100 mt-4">
-        <div class="col-3 ms-auto">
-          <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
-          <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />
-          <input type="button" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
-        </div>
-      </div>
-
       <div class="row w-100 mt-3">
         <label *ngIf="allowedGenres.length" class="col-12 col-form-label col-form-label-sm text-warning text-end">(attention: the genre to be deleted must not be included in the organization's publication stock!)</label>
       </div>
@@ -175,6 +167,15 @@
           </div>
         </div>
       </div>
+
+      <div class="row w-100 mt-3">
+        <div class="col-3 ms-auto">
+          <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
+          <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />
+          <input type="button" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
+        </div>
+      </div>
+
     </form>
   </div>
   <!--<pre>{{ctx | json}}</pre>-->

@@ -93,7 +93,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
           },
           error: (e) => this.messagesService.error(e),
         });
-      this.usersService.filter(this.ctxsPath, null, '?q=state:OPENED&size=300', 1)
+      const queryString = '?q=state:OPENED&size=300';
+      this.usersService.filter(this.ctxsPath, null, queryString, 1)
         .subscribe({
           next: (data: {list: Ctx[], records: number}) => {
             this.ctxs = data.list;

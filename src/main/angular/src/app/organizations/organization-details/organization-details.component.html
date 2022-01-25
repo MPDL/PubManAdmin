@@ -75,10 +75,10 @@
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
         </div>
         <div *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'OPENED'" class="col-1">
-          <input type="button" [disabled]="hasOpenChildren" class="btn btn-outline-info btn-sm float-start" (click)="openOu()" [value]="'close'" />
+          <input type="button" [disabled]="hasOpenChildren" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'close'" />
         </div>
         <div *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'CLOSED'" class="col-1">
-          <input type="button" [disabled]="!hasOpenParent" class="btn btn-outline-info btn-sm float-start" (click)="openOu()" [value]="'open'" />
+          <input type="button" [disabled]="!hasOpenParent" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'open'" />
         </div>
       </div>
 
@@ -108,14 +108,6 @@
         <label class="col-1 col-form-label col-form-label-sm">end</label>
         <div class="col-1">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.metadata.endDate" name="_endDate">
-        </div>
-      </div>
-
-      <div class="row w-100 mt-4">
-        <div class="col-3 ms-auto">
-          <input type="button" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
-          <input *ngIf="!isNewOu && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
-          <input type="button" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
         </div>
       </div>
 
@@ -197,7 +189,15 @@
         </div>
       </div>
 
-      <div *ngIf="ou.hasChildren" class="row w-100 mt-3">
+      <div class="row w-100 mt-3">
+        <div class="col-3 ms-auto">
+          <input type="button" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
+          <input *ngIf="!isNewOu && isAdmin" type="button" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
+          <input type="button" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
+        </div>
+      </div>
+
+      <div *ngIf="ou.hasChildren" class="row w-100 mt-5">
         <label class="col-2 col-form-label col-form-label-sm">children</label>
         <div class="col-10">
           <ul class="list-group">
@@ -212,18 +212,43 @@
         </div>
       </div>
       
-      <div *ngIf="ou.hasPredecessors" class="row w-100 mt-3">
+      <div class="row w-100 mt-5">
         <label class="col-2 col-form-label col-form-label-sm">predecessors</label>
-        <div class="col-10">
+        <div *ngIf="ou.hasPredecessors" class="col-10">
           <ul class="list-group">
             <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let predecessor of predecessors" (click)="gotoRef(predecessor.objectId)">
               <div class="row">
                 <span class="col-3"><label class="col-form-label-sm">{{predecessor.objectId}}</label></span>
                 <span class="col-2"><label class="col-form-label-sm">{{predecessor.publicStatus}}</label></span>
-                <span class="col-7"><label class="col-form-label-sm">{{predecessor.metadata.name}}</label></span>
+                <span class="col-6"><label class="col-form-label-sm">{{predecessor.metadata.name}}</label></span>
+                <span class="col-1"><input type="button" class="btn btn-outline-primary btn-sm" (click)="removePredecessor(predecessor); $event.stopPropagation()" value="x" /></span>
               </div>
             </div>
           </ul>
+        </div>
+      </div>
+
+      <div *ngIf="!isNewPredecessor" class="row w-100 mt-3">
+        <div class="col-2 ms-auto">
+            <input type="button" class="btn btn-outline-primary btn-sm float-end" (click)="addPredecessors(); $event.stopPropagation()" value="add predecessor" />
+        </div>
+      </div>
+
+      <div *ngIf="isNewPredecessor" class="row w-100 mt-3">
+        <label class="col-2 col-form-label col-form-label-sm"></label>
+        <div class="col-8">
+          <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="predecessorOuSearchTerm" name="_predecessorOuSearchTerm" (keyup)="getPredecessorOus(predecessorOuSearchTerm)" autocomplete="off">
+          <div *ngIf="predecessorOus.length > 0">
+            <ul class="list-group" (clickOutside)="closePredecessorOus()">
+              <li *ngFor="let ou of predecessorOus" class="list-group-item-info list-group-item-action py-0 text-start" (click)="selectPredecessorOu(ou)">
+                <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-1">
+          <input [disabled]="!predecessorOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="addPredecessor()" value="add predecessor" />
+          <input type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetPredecessors()" value="clear" />
         </div>
       </div>
     </form>
