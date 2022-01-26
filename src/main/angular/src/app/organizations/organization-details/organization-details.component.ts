@@ -82,7 +82,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   private prepareNewOu(): Ou {
     const ou = new Ou();
-    ou.parentAffiliation = this.organizationsService.makeAffiliation('');
+    ou.parentAffiliation = this.organizationsService.makeAffiliation('', '');
     ou.metadata = this.organizationsService.makeMetadata('new ou');
     if (!this.isAdmin) {
       this.getLoggedInUserAllOpenOus(null);

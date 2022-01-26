@@ -1,4 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
@@ -16,6 +17,9 @@ import {UsersService} from '../services/users.service';
   styleUrls: ['./user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('form')
+    form: NgForm;
+
   ctxsPath: string = environment.restCtxs;
   ousPath: string = environment.restOus;
   usersPath: string = environment.restUsers;
@@ -84,9 +88,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   addGrant() {
-    this.isNewGrant = true;
+    if (!this.form.dirty || confirm('you have unsaved changes. Proceed?')) {
+      this.isNewGrant = true;
+    }
   }
-
   addToDeleteGrantsList(grant: Grant) {
     this.grants2remove = true;
     this.selectedGrantToRemove = grant;
@@ -97,42 +102,62 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   goToRef(grant: Grant) {
-    this.selectedGrantToRemove = grant;
-    const ref = this.selectedGrantToRemove.objectRef;
-    if (ref === undefined) {
-      this.messagesService.warning('the reference of the selected grant is undefined!');
-    } else {
-      if (ref.startsWith('ou')) {
-        this.router.navigate(['/organization', ref]);
+    if (this.checkForm()) {
+      this.selectedGrantToRemove = grant;
+      const ref = this.selectedGrantToRemove.objectRef;
+      if (ref === undefined) {
+        this.messagesService.warning('the reference of the selected grant is undefined!');
       } else {
-        if (ref.startsWith('ctx')) {
-          this.router.navigate(['/context', ref]);
+        if (ref.startsWith('ou')) {
+          this.router.navigate(['/organization', ref]);
+        } else {
+          if (ref.startsWith('ctx')) {
+            this.router.navigate(['/context', ref]);
+          }
         }
       }
     }
   }
 
   gotoUserList() {
-    this.router.navigate(['/users']);
+    if (this.checkForm()) {
+      this.router.navigate(['/users']);
+    }
+  }
+
+  private checkForm(): boolean {
+    if (!this.form.dirty) {
+      return true;
+    }
+
+    if (confirm('you have unsaved changes. Proceed?')) {
+      this.isNewGrant = false;
+      this.isNewOu = false;
+      return true;
+    }
+
+    return false;
   }
 
   generatePassword() {
-    this.usersService.generateRandomPassword(this.token)
-      .subscribe({
-        next: (data: string) => {
-          const pw: string = data;
-          this.user.password = pw;
-          this.usersService.changePassword(this.user, this.token)
-            .subscribe({
-              next: (data: User) => {
-                this.setUser(data);
-                this.messagesService.success(data.loginname + ':  password was reset to ' + pw);
-              },
-              error: (e) => this.messagesService.error(e),
-            });
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+    if (confirm('this will generate a new random password. Proceed?')) {
+      this.usersService.generateRandomPassword(this.token)
+        .subscribe({
+          next: (data: string) => {
+            const pw: string = data;
+            this.user.password = pw;
+            this.usersService.changePassword(this.user, this.token)
+              .subscribe({
+                next: (data: User) => {
+                  this.setUser(data);
+                  this.messagesService.success(data.loginname + ':  password was reset to ' + pw);
+                },
+                error: (e) => this.messagesService.error(e),
+              });
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
   }
 
   changeUserState() {
@@ -183,9 +208,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.post(this.usersPath, this.user, this.token)
         .subscribe({
           next: (data: User) => {
-            this.user = data;
+            this.setUser(data);
+            this.form.form.markAsPristine(); // resets form.dirty
             this.isNewUser = false;
-            this.isNewOu = false;
             this.messagesService.success('added new user ' + this.user.loginname + ' with password ' + pw);
           },
           error: (e) => {
@@ -200,12 +225,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.usersService.put(this.usersPath + '/' + this.user.objectId, this.user, this.token)
         .subscribe({
           next: (data: User) => {
-            this.messagesService.success('updated user ' + this.user.loginname);
-            this.isNewOu = false;
-            this.isNewGrant = false;
             this.usersService.get(environment.restUsers, data.objectId, this.token)
               .subscribe({
-                next: (data: User) => this.setUser(data),
+                next: (data: User) => {
+                  this.setUser(data);
+                  this.form.form.markAsPristine(); // resets form.dirty
+                  this.messagesService.success('updated user ' + data.loginname);
+                },
                 error: (e) => this.messagesService.error(e),
               });
           },
@@ -215,28 +241,32 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeGrants() {
-    this.usersService.removeGrants(this.user, this.selectedGrantsToRemove, this.token)
-      .subscribe({
-        next: (data: User) => {
-          this.setUser(data);
-          this.messagesService.success('removed grants from ' + this.user.loginname);
-          this.resetGrants();
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+    if (this.checkForm()) {
+      this.usersService.removeGrants(this.user, this.selectedGrantsToRemove, this.token)
+        .subscribe({
+          next: (data: User) => {
+            this.setUser(data);
+            this.resetGrants();
+            this.messagesService.success('removed grants from ' + this.user.loginname);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
   }
 
   deleteUser() {
     if (confirm('delete ' + this.user.name +' ?')) {
-      this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
-        .subscribe({
-          next: (_data) => {
-            this.messagesService.success('deleted user ' + this.user.loginname);
-            this.user = null;
-            this.gotoUserList();
-          },
-          error: (e) => this.messagesService.error(e),
-        });
+      if (this.checkForm()) {
+        this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
+          .subscribe({
+            next: (_data) => {
+              this.messagesService.success('deleted user ' + this.user.loginname);
+              this.user = null;
+              this.gotoUserList();
+            },
+            error: (e) => this.messagesService.error(e),
+          });
+      }
     }
   }
 
@@ -311,8 +341,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
-    this.user.affiliation = this.organizationsService.makeAffiliation(this.selectedOu.objectId);
+    this.user.affiliation = this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name);
     this.ous = [];
+    this.isNewOu = false;
   };
 
   changeOu() {
@@ -330,6 +361,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   private setUser(user: User) {
     this.user = user;
+    this.isNewOu = false;
+    this.isNewGrant = false;
+
     if (this.user.grantList != null) {
       this.user.grantList.forEach((grant) => {
         this.usersService.addAdditionalPropertiesOfGrantRefs(grant);

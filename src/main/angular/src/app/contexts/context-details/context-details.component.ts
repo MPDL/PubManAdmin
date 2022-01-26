@@ -149,7 +149,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: Ou) => {
             if (data.publicStatus !== 'OPENED') {
-              if (confirm('Closed contexts of closed organizations should not be opened. Proceed?')) {
+              if (confirm('closed contexts of closed organizations should not be opened. Proceed?')) {
                 this.contextsService.openCtx(this.ctx, this.token)
                   .subscribe({
                     next: (data: Ctx) => {
@@ -290,7 +290,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   selectOu(ou: Ou) {
     this.ouSearchTerm = ou.name;
     this.selectedOu = ou;
-    this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId));
+    this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name));
     this.ous = [];
   };
 

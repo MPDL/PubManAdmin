@@ -73,9 +73,10 @@ export class OrganizationsService extends PubmanRestService {
     return this.getResource('PUT', path, headers, body);
   }
 
-  makeAffiliation(id: string): BasicRO {
+  makeAffiliation(id: string, name: string): BasicRO {
     const aff = new BasicRO();
     aff.objectId = id;
+    aff.name = name;
 
     return aff;
   }

@@ -172,7 +172,7 @@
         <div class="col-3 ms-auto">
           <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
           <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />
-          <input type="button" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
+          <input type="button" [disabled]="form.invalid" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
         </div>
       </div>
 
