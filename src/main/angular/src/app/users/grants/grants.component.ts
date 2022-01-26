@@ -170,7 +170,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
   }
 
   resetGrants() {
-    this.selectedGrantsToAdd.splice(0, this.selectedGrantsToAdd.length);
+    this.isNewGrantChange.emit(false);
+    this.selectedGrantsToAdd = [];
     this.grantsToAdd = '';
   }
 
@@ -192,9 +193,9 @@ export class GrantsComponent implements OnInit, OnDestroy {
             this.setUser(data);
             this.userChange.emit(this.user);
             this.isNewGrantChange.emit(false);
-            this.messagesService.success('added Grants to ' + this.user.loginname);
             this.selectedGrantsToAdd = [];
             this.grantsToAdd = '';
+            this.messagesService.success('added Grants to ' + this.user.loginname);
           },
           error: (e) => this.messagesService.error(e),
         });

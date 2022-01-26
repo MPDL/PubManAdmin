@@ -4,7 +4,7 @@
       <h4 class="card-title">{{ou.metadata.name}}</h4>
     </div>
 
-    <form #form="ngForm" class="list-group-item text-info" (ngSubmit)="form.valid && saveOu()" novalidate>
+    <form #form="ngForm" class="list-group-item text-info" novalidate>
       <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-7">
@@ -248,7 +248,7 @@
         </div>
         <div class="col-1">
           <input [disabled]="!predecessorOu" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="addPredecessor()" value="add predecessor" />
-          <input type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetPredecessors()" value="clear" />
+          <input type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetPredecessors()" value="cancel" />
         </div>
       </div>
     </form>

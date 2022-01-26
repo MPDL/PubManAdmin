@@ -116,42 +116,23 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/users']);
   }
 
-  generateRandomPassword() {
+  generatePassword() {
     this.usersService.generateRandomPassword(this.token)
       .subscribe({
-        next: (data: string) => this.user.password = data,
+        next: (data: string) => {
+          const pw: string = data;
+          this.user.password = pw;
+          this.usersService.changePassword(this.user, this.token)
+            .subscribe({
+              next: (data: User) => {
+                this.setUser(data);
+                this.messagesService.success(data.loginname + ':  password was reset to ' + pw);
+              },
+              error: (e) => this.messagesService.error(e),
+            });
+        },
         error: (e) => this.messagesService.error(e),
       });
-  }
-
-  resetPassword() {
-    if (this.user.active === true) {
-      this.usersService.changePassword(this.user, this.token)
-        .subscribe({
-          next: (data: User) => {
-            this.setUser(data);
-            this.messagesService.success(data.loginname + ':  password was reset to ' + this.user.password);
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.warning('password will not be reset for deactivated user!');
-    }
-  }
-
-  changePassword() {
-    if (this.user.password != null) {
-      this.usersService.changePassword(this.user, this.token)
-        .subscribe({
-          next: (data: User) => {
-            this.setUser(data);
-            this.messagesService.success(data.loginname + ':  password has changed to ' + this.user.password);
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    } else {
-      this.messagesService.error('password must not be empty!');
-    }
   }
 
   changeUserState() {

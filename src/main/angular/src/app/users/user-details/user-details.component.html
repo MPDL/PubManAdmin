@@ -4,7 +4,7 @@
             <h4 class="card-title">{{user.loginname}}</h4>
         </div>
         
-        <form #form="ngForm" class="list-group-item text-primary" (ngSubmit)="form.valid && saveUser()" novalidate>
+        <form #form="ngForm" class="list-group-item text-primary" novalidate>
             <div class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">loginname</label>
                 <div class="col-7">
@@ -73,20 +73,6 @@
                 </div>
               </div>
 
-            <div class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">password</label>
-                <div class="col-2">
-                    <input type="password" class="form-control form-control-sm" [(ngModel)]="user.password" name="_password" readonly>
-                </div>
-                <div *ngIf="!isNewUser && user.active == true && user.password" class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword()" value="reset" />
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="resetPassword()" value="save" />
-                </div>
-                <div *ngIf="user.active == true && !user.password" class="col-2">
-                    <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="generateRandomPassword()" value="reset" />
-                </div>
-            </div>
-
             <div *ngIf="isNewUser" class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">active</label>
                 <div class="col-2">
@@ -132,7 +118,13 @@
                 </div>
             </div>
 
-            <div *ngIf="!isNewUser" class="w-100">
+            <div class="row w-100 mt-2">
+                <div class="col-1 ms-auto">
+                    <input *ngIf="user.active == true && !user.password" type="button" class="btn btn-outline-primary btn-sm float-end" (click)="generatePassword()" value="generate password" />
+                </div>
+            </div>
+
+                <div *ngIf="!isNewUser" class="w-100">
                 <div class="row w-100 mt-5">
                     <label class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
