@@ -5,15 +5,14 @@
     </div>
     
     <form #form="ngForm" class="list-group-item text-success" novalidate>
-      <p>Form status: {{form.status}} dirty: {{form.dirty}}</p>
       <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">name*</label>
         <div class="col-7">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.name" name="_ctxName" #ctxName="ngModel" required minlength="4" forbiddenName="new ctx">
           <div class="text-danger">
-            <div *ngIf="ctxName.errors?.required">name is required.</div>
-            <div *ngIf="ctxName.errors?.minlength">name must be at least 4 characters long.</div>
-            <div *ngIf="ctx.name === 'new ctx'">name MUST NOT be 'new ctx'.</div>
+            <div *ngIf="ctxName.errors?.required">*name is required.</div>
+            <div *ngIf="ctxName.errors?.minlength">*name must be at least 4 characters long.</div>
+            <div *ngIf="ctx.name === 'new ctx'">*name MUST NOT be 'new ctx'.</div>
           </div>
         </div>
         <label *ngIf="!isNewCtx" class="col-1 col-form-label col-form-label-sm">id</label>
@@ -54,13 +53,16 @@
                 </ul>
             </div>
             <div *ngIf="!selectedOu" class="text-danger">
-              <div>organization is required.</div>
+              <div>*organization is required.</div>
           </div>
         </div>
         <div *ngIf="!isAdmin" class="col-7">
-          <select class="select form-select form-select-sm" [(ngModel)]="ctx.responsibleAffiliations" name="_responsibleAffiliation" (ngModelChange)="selectOu($event)" required>
+          <select class="select form-select form-select-sm" [(ngModel)]="selectedOu" name="_responsibleAffiliation" (ngModelChange)="selectOu($event)" required>
             <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
           </select>
+          <div *ngIf="!selectedOu" class="text-danger">
+            <div>*organization is required.</div>
+          </div>
         </div>
         <label class="col-1 col-form-label col-form-label-sm">ouId</label>
         <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
@@ -136,7 +138,7 @@
             </div>
             <div class="col-6">
               <div *ngIf="!allowedGenres.length" class="text-danger">
-                <div>select at least one allowed genre..</div>
+                <div>*select at least one allowed genre.</div>
               </div>
                     <ul class="list-group">
                 <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let genre of allowedGenres">
@@ -186,5 +188,8 @@
     </form>
   </div>
   <p></p>
+  Form status: {{form.status}}<p>
+  Form dirty: {{form.dirty}}<p>
+  <p>Context:</p>
   <pre>{{ctx | json}}</pre>
 </div>

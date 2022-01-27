@@ -293,6 +293,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.selectedOu = ou;
     this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name));
     this.ous = [];
+    this.isNewOu = false;
   };
 
   changeOu() {
