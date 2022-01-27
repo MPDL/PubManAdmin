@@ -71,6 +71,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.ctx.name === 'new ctx') {
+      this.ctx.name = null;
       this.isNewCtx = true;
       this.isNewOu = true;
     }
@@ -181,33 +182,27 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   deleteCtx() {
     if (confirm('delete ' + this.ctx.name + ' ?')) {
-      this.contextsService.delete(this.ctxsPath + '/' + this.ctx.objectId, this.token)
-        .subscribe({
-          next: (_data) => {
-            this.messagesService.success('deleted context ' + this.ctx.objectId);
-            this.ctx = null;
-            this.gotoCtxList();
-          },
-          error: (e) => this.messagesService.error(e),
-        });
+      if (this.checkForm()) {
+        this.contextsService.delete(this.ctxsPath + '/' + this.ctx.objectId, this.token)
+          .subscribe({
+            next: (_data) => {
+              this.messagesService.success('deleted context ' + this.ctx.objectId);
+              this.ctx = null;
+              this.gotoCtxList();
+            },
+            error: (e) => this.messagesService.error(e),
+          });
+      }
     }
   }
 
   gotoCtxList() {
-    this.router.navigate(['/contexts']);
+    if (this.checkForm()) {
+      this.router.navigate(['/contexts']);
+    }
   }
 
   saveCtx() {
-    if (this.ctx.name.includes('new ctx')) {
-      this.messagesService.warning('name MUST NOT be new ctx');
-      return;
-    }
-
-    if (this.ctx.name == null) {
-      this.messagesService.warning('name MUST NOT be empty');
-      return;
-    }
-
     if (this.ctx.responsibleAffiliations.length === 0) {
       this.messagesService.warning('you MUST select an organization');
       return;
@@ -223,6 +218,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: Ctx) => {
             this.setContext(data);
+            this.form.form.markAsPristine(); // resets form.dirty
             this.isNewCtx = false;
             this.isNewOu = false;
             this.messagesService.success('added new context ' + this.ctx.name);
@@ -234,6 +230,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: Ctx) => {
             this.setContext(data);
+            this.form.form.markAsPristine(); // resets form.dirty
             this.isNewOu = false;
             this.messagesService.success('updated context ' + this.ctx.objectId);
           },
@@ -323,5 +320,18 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       this.ctx.allowedSubjectClassifications = [];
       this.allowedSubjects = this.ctx.allowedSubjectClassifications;
     }
+  }
+
+  private checkForm(): boolean {
+    if (!this.form.dirty) {
+      return true;
+    }
+
+    if (confirm('you have unsaved changes. Proceed?')) {
+      this.isNewOu = false;
+      return true;
+    }
+
+    return false;
   }
 }
