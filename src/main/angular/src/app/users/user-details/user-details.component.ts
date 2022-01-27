@@ -34,10 +34,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   isNewOu: boolean = false;
 
   isNewGrant: boolean = false;
-  grants2remove: boolean = false;
-  selectedGrantToRemove: Grant;
-  selectedGrantsToRemove: Grant[] = [];
-  grantsToRemove: string;
 
   adminSubscription: Subscription;
   isAdmin: boolean;
@@ -76,6 +72,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
 
+      this.user.loginname = null;
       this.isNewUser = true;
       this.isNewOu = true;
     }
@@ -88,33 +85,31 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   addGrant() {
-    if (!this.form.dirty || confirm('you have unsaved changes. Proceed?')) {
-      this.isNewGrant = true;
-    }
+    this.isNewGrant = true;
   }
-  addToDeleteGrantsList(grant: Grant) {
-    this.grants2remove = true;
-    this.selectedGrantToRemove = grant;
-    if (!this.selectedGrantsToRemove.some((data) => (data.objectRef === this.selectedGrantToRemove.objectRef && data.role === this.selectedGrantToRemove.role))) {
-      this.selectedGrantsToRemove.push(this.selectedGrantToRemove);
+
+  removeGrant(grant: Grant) {
+    if (confirm('this will remove the selected grant ' + grant.role + ' Proceed?')) {
+      const grantsToRemove: Grant[] = [];
+      grantsToRemove.push(grant);
+      this.usersService.removeGrants(this.user, grantsToRemove, this.token)
+        .subscribe({
+          next: (data: User) => {
+            this.setUser(data);
+            this.messagesService.success('removed grant ' + grant.role + ' from ' + this.user.loginname);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     }
-    this.grantsToRemove = JSON.stringify(this.selectedGrantsToRemove);
   }
 
   goToRef(grant: Grant) {
     if (this.checkForm()) {
-      this.selectedGrantToRemove = grant;
-      const ref = this.selectedGrantToRemove.objectRef;
-      if (ref === undefined) {
-        this.messagesService.warning('the reference of the selected grant is undefined!');
-      } else {
-        if (ref.startsWith('ou')) {
-          this.router.navigate(['/organization', ref]);
-        } else {
-          if (ref.startsWith('ctx')) {
-            this.router.navigate(['/context', ref]);
-          }
-        }
+      const ref = grant.objectRef;
+      if (ref && ref.startsWith('ou')) {
+        this.router.navigate(['/organization', ref]);
+      } else if (ref && ref.startsWith('ctx')) {
+        this.router.navigate(['/context', ref]);
       }
     }
   }
@@ -183,23 +178,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   saveUser() {
-    if (this.user.loginname.includes('new user')) {
-      this.messagesService.warning('name MUST NOT be new user');
-      return;
-    }
-
-    if (this.user.loginname.includes(' ')) {
-      this.messagesService.warning('loginname MUST NOT contain spaces');
-      return;
-    }
-
     if (!this.user.affiliation) {
       this.messagesService.warning('you MUST select an organization');
-      return;
-    }
-
-    if (!this.user.name) {
-      this.messagesService.warning('name MUST NOT be empty');
       return;
     }
 
@@ -234,20 +214,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
                 },
                 error: (e) => this.messagesService.error(e),
               });
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    }
-  }
-
-  removeGrants() {
-    if (this.checkForm()) {
-      this.usersService.removeGrants(this.user, this.selectedGrantsToRemove, this.token)
-        .subscribe({
-          next: (data: User) => {
-            this.setUser(data);
-            this.resetGrants();
-            this.messagesService.success('removed grants from ' + this.user.loginname);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -350,13 +316,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.isNewOu = true;
     this.closeOus();
     this.user.affiliation = null;
-  }
-
-  resetGrants() {
-    this.grantsToRemove = '';
-    this.grants2remove = false;
-    this.selectedGrantToRemove = null;
-    this.selectedGrantsToRemove = [];
   }
 
   private setUser(user: User) {

@@ -7,8 +7,9 @@ import {ElasticSearchService} from '../common/services/elastic-search.service';
 import {SearchService} from '../common/services/search.service';
 import {ClickOutsideDirective} from '../directives/clickoutside.directive';
 import {SelectedItemColourDirective} from '../directives/selected-item-colour.directive';
-import {ValueNotAllowedDirective} from '../directives/value-not-allowed.directive';
+import {ForbiddenNameDirective} from '../directives/forbidden-name.directive';
 import {SuggestionComponent} from './components/suggestion/suggestion.component';
+import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
 
 @NgModule({
   imports: [
@@ -19,20 +20,22 @@ import {SuggestionComponent} from './components/suggestion/suggestion.component'
   declarations: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
-    ValueNotAllowedDirective,
+    ForbiddenNameDirective,
     SearchTermComponent,
     SuggestionComponent,
+    ValidLoginnameDirective,
   ],
   exports: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
-    ValueNotAllowedDirective,
+    ForbiddenNameDirective,
     NgxPaginationModule,
     SearchTermComponent,
     SuggestionComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    ValidLoginnameDirective,
   ],
   providers: [
     SearchService,

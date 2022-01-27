@@ -1,4 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
@@ -15,6 +16,9 @@ import {ContextsService} from '../services/contexts.service';
   styleUrls: ['./context-details.component.scss'],
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('form')
+    form: NgForm;
+
   ctxsPath: string = environment.restCtxs;
   ousPath: string = environment.restOus;
 

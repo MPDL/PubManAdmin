@@ -5,14 +5,15 @@
     </div>
     
     <form #form="ngForm" class="list-group-item text-success" novalidate>
+      <p>Form status: {{form.status}} dirty: {{form.dirty}}</p>
       <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">name</label>
         <div class="col-7">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.name" name="_ctxName" #ctxName="ngModel" required minlength="4" value-not-allowed="new ctx">
-          <div *ngIf="ctxName.invalid && (ctxName.dirty || ctxName.touched)" class="text-danger">
-            <div *ngIf="ctxName.errors.required">name is required.</div>
-            <div *ngIf="ctxName.errors.minlength">name must be at least 4 characters long.</div>
-            <div *ngIf="ctxName.errors.value-not-allowed">name MUST NOT be 'new ctx'.</div>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.name" name="_ctxName" #ctxName="ngModel" required minlength="4" forbiddenName="new ctx">
+          <div class="text-danger">
+            <div *ngIf="ctxName.errors?.required">name is required.</div>
+            <div *ngIf="ctxName.errors?.minlength">name must be at least 4 characters long.</div>
+            <div *ngIf="ctx.name === 'new ctx'">name MUST NOT be 'new ctx'.</div>
           </div>
         </div>
         <label *ngIf="!isNewCtx" class="col-1 col-form-label col-form-label-sm">id</label>

@@ -9,11 +9,12 @@
             <div class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">loginname*</label>
                 <div class="col-7">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.loginname" name="_loginname" #loginName="ngModel" required minlength="4" value-not-allowed="new user" [readonly]="!isNewUser">
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.loginname" name="_loginname" #loginName="ngModel" required minlength="4" forbiddenName="new user" validLoginname [readonly]="!isNewUser">
                     <div class="text-danger">
                         <div *ngIf="loginName.errors?.required">loginname is required.</div>
                         <div *ngIf="loginName.errors?.minlength">loginname must be at least 4 characters long.</div>
-                        <div *ngIf="user.loginname === 'new user'">loginname MUST NOT be 'new user'.</div>
+                        <div *ngIf="loginName.errors?.forbiddenName">loginname MUST NOT be 'new user'.</div>
+                        <div *ngIf="loginName.errors?.validLoginname">loginname must not include special characters except those of an email adress.</div>
                     </div>
                 </div>
                 <label *ngIf="!isNewUser" class="col-1 col-form-label col-form-label-sm">id</label>
@@ -128,8 +129,8 @@
                 </div>
             </div>
 
-                <div *ngIf="!isNewUser" class="w-100">
-                <div class="row w-100 mt-5">
+            <div *ngIf="!isNewUser && !isNewGrant && user.grantList || isNewGrant" class="w-100">
+                <div class="row w-100 mt-3">
                     <label class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
                         <ul class="list-group">
@@ -140,14 +141,16 @@
                                     <span class="col-2 text-start"><label class="col-form-label-sm p-0">{{grant.objectRef}}</label></span>
                                     <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{grant.objectStatus}}</label></span>
                                     <span class="col-3 text-start"><label class="col-form-label-sm p-0">{{grant.parentName}}</label></span>
-                                    <span class="col-1"><input type="button" [disabled]="isNewGrant || form.dirty" class="btn btn-outline-primary btn-sm" (click)="addToDeleteGrantsList(grant); $event.stopPropagation()" value="x" /></span>
+                                    <span class="col-1"><input type="button" [disabled]="isNewGrant || form.dirty" class="btn btn-outline-primary btn-sm" (click)="removeGrant(grant); $event.stopPropagation()" value="x" /></span>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
+            </div>
 
-                <div *ngIf="!isNewGrant" class="row w-100 mt-3">
+            <div *ngIf="!isNewUser" class="w-100">
+                <div *ngIf="!isNewGrant" class="row w-100 mt-2">
                     <div class="col-2 ms-auto">
                         <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-primary btn-sm float-end" (click)="addGrant(); $event.stopPropagation()" value="add grants" />
                     </div>
@@ -156,24 +159,6 @@
                 <div *ngIf="isNewGrant" class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
                         <grants-component class="row w-100 mt-3" [(isNewGrant)]="isNewGrant" [(user)]="user"></grants-component>
-                    </div>
-                </div>
-
-                <div *ngIf="grants2remove" class="row w-100 mt-3">
-                    <div class="col-10 ms-auto">
-                        <div class="row w-100 mt-3">
-                            <div class="container">
-                                <div class="row w-100">
-                                    <div class="col-11">
-                                        <textarea class="form-control form-control-sm" rows="3" [(ngModel)]="grantsToRemove" name="_grantsToRemove" readonly></textarea>
-                                    </div>
-                                    <div class="col-1">
-                                        <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="removeGrants()"  value="remove grants" />
-                                        <input *ngIf="grantsToRemove" type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetGrants()" value="cancel" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
