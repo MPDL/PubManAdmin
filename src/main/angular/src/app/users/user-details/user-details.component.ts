@@ -72,9 +72,19 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
 
-      this.user.loginname = null;
       this.isNewUser = true;
       this.isNewOu = true;
+    }
+  }
+
+  private setUser(user: User) {
+    this.user = user;
+
+    if (this.user.grantList != null) {
+      this.user.grantList.forEach((grant) => {
+        this.usersService.addAdditionalPropertiesOfGrantRefs(grant);
+        this.usersService.addOuPathOfGrantRefs(grant);
+      });
     }
   }
 
@@ -118,20 +128,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (this.checkForm()) {
       this.router.navigate(['/users']);
     }
-  }
-
-  private checkForm(): boolean {
-    if (!this.form.dirty) {
-      return true;
-    }
-
-    if (confirm('you have unsaved changes. Proceed?')) {
-      this.isNewGrant = false;
-      this.isNewOu = false;
-      return true;
-    }
-
-    return false;
   }
 
   generatePassword() {
@@ -221,7 +217,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteUser() {
-    if (confirm('delete ' + this.user.name +' ?')) {
+    if (confirm('delete ' + this.user.name + ' ?')) {
       if (this.checkForm()) {
         this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
           .subscribe({
@@ -245,7 +241,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLoggedInUserAllOpenOus(ignoreOuId: string) {
+  private getLoggedInUserAllOpenOus(ignoreOuId: string) {
     this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
       .subscribe({
         next: (data: Ou[]) => {
@@ -318,16 +314,17 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.user.affiliation = null;
   }
 
-  private setUser(user: User) {
-    this.user = user;
-    this.isNewOu = false;
-    this.isNewGrant = false;
-
-    if (this.user.grantList != null) {
-      this.user.grantList.forEach((grant) => {
-        this.usersService.addAdditionalPropertiesOfGrantRefs(grant);
-        this.usersService.addOuPathOfGrantRefs(grant);
-      });
+  private checkForm(): boolean {
+    if (!this.form.dirty && !this.isNewGrant) {
+      return true;
     }
+
+    if (confirm('you have unsaved changes. Proceed?')) {
+      this.isNewGrant = false;
+      this.isNewOu = false;
+      return true;
+    }
+
+    return false;
   }
 }

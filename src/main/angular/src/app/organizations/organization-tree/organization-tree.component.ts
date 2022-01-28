@@ -92,7 +92,7 @@ export class OrganizationTreeComponent implements OnInit {
   }
 
   addNewOu() {
-    this.router.navigate(['/organization', 'new org']);
+    this.router.navigate(['/organization', 'new ou']);
   }
 
   getOus(term: string) {

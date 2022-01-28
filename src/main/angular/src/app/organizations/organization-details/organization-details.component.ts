@@ -1,4 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {environment} from 'environments/environment';
@@ -14,6 +15,9 @@ import {OrganizationsService} from '../services/organizations.service';
   styleUrls: ['./organization-details.component.scss'],
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('form')
+    form: NgForm;
+
   ousPath: string = environment.restOus;
 
   isNewOu: boolean = false;
@@ -40,7 +44,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   adminSubscription: Subscription;
   isAdmin: boolean;
-  routeSubscription: Subscription;
   tokenSubscription: Subscription;
   token: string;
   userSubscription: Subscription;
@@ -59,72 +62,53 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
-    this.routeSubscription = this.activatedRoute.params.subscribe((data) => {
-      const id = data['id'];
-      this.hasOpenChildren = false;
-      this.hasOpenParent = true;
-      if (id === 'new org') {
-        this.isNewOu = true;
-        this.ou = this.prepareNewOu();
-      } else {
-        this.getOu(id, this.token);
-        this.listChildren(id);
-      }
-    });
-  }
 
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.routeSubscription.unsubscribe();
-    this.tokenSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
-  }
+    this.setOu(this.activatedRoute.snapshot.data['ou']);
+    this.hasOpenChildren = false;
+    this.hasOpenParent = true;
 
-  private prepareNewOu(): Ou {
-    const ou = new Ou();
-    ou.parentAffiliation = this.organizationsService.makeAffiliation('', '');
-    ou.metadata = this.organizationsService.makeMetadata('new ou');
     if (!this.isAdmin) {
       this.getLoggedInUserAllOpenOus(null);
     }
 
-    return ou;
+    if (this.ou.metadata.name === 'new ou') {
+      this.ou.metadata.name = null;
+      this.isNewOu = true;
+    }
   }
 
-  private getOu(id: string, token: string) {
-    this.organizationsService.get(this.ousPath, id, token)
-      .subscribe({
-        next: (data: Ou) => {
-          this.ou = data;
-          if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
-            this.parentOuSearchTerm = this.ou.parentAffiliation.name;
-            let parentOu:Ou;
-            this.organizationsService.get(this.ousPath, this.ou.parentAffiliation.objectId, this.token)
-              .subscribe({
-                next: (data: Ou) => {
-                  parentOu = data;
-                  if (parentOu.publicStatus === 'CLOSED') {
-                    this.hasOpenParent = false;
-                  }
-                },
-                error: (e) => this.messagesService.error(e),
-              });
-          }
-          if (this.ou.hasPredecessors) {
-            const predecessorIds: string[] = [];
-            this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
-              predecessorIds.push(predecessor.objectId);
-            });
-            this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'), this.token);
-          } else {
-            this.predecessors = [];
-          }
-          if (!this.isAdmin) {
-            this.getLoggedInUserAllOpenOus(this.ou.objectId);
-          }
-        },
-        error: (e) => this.messagesService.error(e),
+  ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
+    this.tokenSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
+  }
+
+  private setOu(ou: Ou) {
+    this.ou = ou;
+    if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
+      this.parentOuSearchTerm = this.ou.parentAffiliation.name;
+      let parentOu:Ou;
+      this.organizationsService.get(this.ousPath, this.ou.parentAffiliation.objectId, this.token)
+        .subscribe({
+          next: (data: Ou) => {
+            parentOu = data;
+            if (parentOu.publicStatus === 'CLOSED') {
+              this.hasOpenParent = false;
+            }
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
+    if (this.ou.hasPredecessors) {
+      const predecessorIds: string[] = [];
+      this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
+        predecessorIds.push(predecessor.objectId);
       });
+      this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'), this.token);
+    } else {
+      this.predecessors = [];
+    }
+    this.listChildren(this.ou.objectId);
   }
 
   private listPredecessors(listOfPredecessorIds: string, token: string) {
@@ -251,16 +235,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   saveOu() {
-    if (this.ou.metadata.name.includes('new ou')) {
-      this.messagesService.warning('name MUST NOT be new ou');
-      return;
-    }
-
-    if (this.ou.metadata.name == null) {
-      this.messagesService.warning('name MUST NOT be empty');
-      return;
-    }
-
     if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId === '') {
       this.messagesService.warning('you MUST select a parent organization');
       return;
@@ -275,6 +249,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: Ou) => {
             this.ou = data;
+            this.form.form.markAsPristine(); // resets form.dirty
             this.isNewOu = false;
             this.messagesService.success('added new organization ' + this.ou.metadata.name);
           },
@@ -285,6 +260,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: Ou) => {
             this.ou = data;
+            this.form.form.markAsPristine(); // resets form.dirty
             if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
               this.parentOuSearchTerm = this.ou.parentAffiliation.name;
             }
@@ -296,25 +272,34 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteOu() {
-    if (confirm('delete ' + this.ou.metadata.name+' ?')) {
-      this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
-        .subscribe({
-          next: (_data) => {
-            this.messagesService.success('deleted organization ' + this.ou.objectId);
-            this.ou = null;
-            this.gotoOrganizationList();
-          },
-          error: (e) => this.messagesService.error(e),
-        });
+    if (confirm('delete ' + this.ou.metadata.name + ' ?')) {
+      if (this.checkForm()) {
+        this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
+          .subscribe({
+            next: (_data) => {
+              this.messagesService.success('deleted organization ' + this.ou.objectId);
+              this.ou = null;
+              this.gotoOrganizationList();
+            },
+            error: (e) => this.messagesService.error(e),
+          });
+      }
     }
   }
 
   gotoRef(id: string) {
-    this.router.navigate(['/organization', id]);
+    if (this.checkForm()) {
+      this.router.routeReuseStrategy.shouldReuseRoute = function() {
+        return false;
+      };
+      this.router.navigate(['/organization', id]);
+    }
   }
 
   gotoOrganizationList() {
-    this.router.navigate(['/organizations']);
+    if (this.checkForm()) {
+      this.router.navigate(['/organizations']);
+    }
   }
 
   getParentOus(term: string) {
@@ -327,7 +312,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLoggedInUserAllOpenOus(ignoreOuId: string) {
+  private getLoggedInUserAllOpenOus(ignoreOuId: string) {
     this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
       .subscribe({
         next: (data: Ou[]) => {
@@ -355,6 +340,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
             }
           });
           this.parentOus = ous;
+          this.ou.parentAffiliation.objectId = null;
         },
         error: (e) => this.messagesService.error(e),
       });
@@ -387,7 +373,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.organizationsService.addPredecessor(this.ou, this.predecessorOu.objectId, this.token)
       .subscribe({
         next: (data: Ou) => {
-          this.getOu(data.objectId, this.token);
+          this.setOu(data);
+          this.form.form.markAsPristine(); // resets form.dirty
           this.messagesService.success('added predecessor ' + this.predecessorOu.metadata.name);
           this.resetPredecessors();
         },
@@ -405,7 +392,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.organizationsService.removePredecessor(this.ou, predecessor.objectId, this.token)
         .subscribe({
           next: (data: Ou) => {
-            this.getOu(data.objectId, this.token);
+            this.setOu(data);
             this.messagesService.success('removed predecessor ' + predecessor.metadata.name);
           },
           error: (e) => this.messagesService.error(e),
@@ -450,5 +437,19 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.predecessorOuSearchTerm = '';
     this.predecessorOu = null;
     this.predecessorOus = [];
+  }
+
+  private checkForm(): boolean {
+    if (!this.form.dirty && !this.isNewPredecessor) {
+      return true;
+    }
+
+    if (confirm('you have unsaved changes. Proceed?')) {
+      this.isNewPredecessor = false;
+      this.isNewOu = false;
+      return true;
+    }
+
+    return false;
   }
 }

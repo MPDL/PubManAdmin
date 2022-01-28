@@ -52,7 +52,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
     private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
-    private usersService: UsersService,
   ) {}
 
   ngOnInit() {

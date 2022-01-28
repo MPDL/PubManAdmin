@@ -248,7 +248,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLoggedInUserAllOpenOus(ignoreOuId: string) {
+  private getLoggedInUserAllOpenOus(ignoreOuId: string) {
     this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
       .subscribe({
         next: (data: Ou[]) => {
