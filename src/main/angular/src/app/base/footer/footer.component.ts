@@ -10,10 +10,9 @@ const {homepage: appHome} = require('../../../../package.json');
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
-  appVersion;
-  appName = 'Pubman Administration';
-  appHome;
-  hostName;
+  appVersion: any;
+  appHome: any;
+  hostName: string;
 
   constructor(
     private connectionService: ConnectionService,

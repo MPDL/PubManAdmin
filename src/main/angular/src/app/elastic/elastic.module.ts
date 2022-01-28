@@ -16,7 +16,13 @@ import {ElasticService} from './services/elastic.service';
     SharedModule,
     ElasticRoutingModule,
   ],
-  declarations: [ElasticComponent, ElasticStartComponent, IndexListComponent, ElasticSearchComponent, IndexDetailComponent, IndexAliasComponent],
+  declarations: [
+    ElasticComponent,
+    ElasticStartComponent,
+    IndexListComponent,
+    ElasticSearchComponent,
+    IndexDetailComponent,
+    IndexAliasComponent],
   providers: [
     ElasticService,
   ],

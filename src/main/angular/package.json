@@ -67,5 +67,8 @@
   "bugs": {
     "url": "https://github.com/MPDL/PubManAdmin/issues"
   },
-  "homepage": "https://github.com/MPDL/PubManAdmin#readme"
+  "homepage": "https://github.com/MPDL/PubManAdmin#readme",
+  "disclaimer": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Impressum",
+  "privacy": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Datenschutzhinweis",
+  "help": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Help"
 }

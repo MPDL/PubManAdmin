@@ -23,7 +23,7 @@
 
       <div *ngIf="!isNewOu" class="row w-100 mt-0">
         <label class="col-2 col-form-label col-form-label-sm"></label>
-        <label class="col-8 col-form-label col-form-label-sm text-warning text-start">(attention: changes to organization names are not automatically reflected in existing records or CoNE author entries!)</label>
+        <label class="col-8 col-form-label col-form-label-sm text-warning text-start">(attention: changes to organization names are NOT automatically reflected in existing records or CoNE author entries!)</label>
       </div>
 
       <div *ngIf="!isNewOu" class="row w-100 mt-3">
@@ -202,7 +202,7 @@
         <div class="col-3 ms-auto">
           <input type="button"[disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
           <input *ngIf="!isNewOu && isAdmin" type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
-          <input type="button" [disabled]="form.invalid || isNewPredecessor" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
+          <input type="button" [disabled]="form.invalid || isNewPredecessor || !form.dirty" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
         </div>
       </div>
 

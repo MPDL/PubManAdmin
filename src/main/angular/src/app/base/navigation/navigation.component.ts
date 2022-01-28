@@ -10,7 +10,6 @@ import {AuthenticationService} from '../services/authentication.service';
 export class NavigationComponent implements OnInit, OnDestroy {
   adminSubscription: Subscription;
   isAdmin: boolean;
-
   constructor(
     private authenticationService: AuthenticationService,
   ) {}

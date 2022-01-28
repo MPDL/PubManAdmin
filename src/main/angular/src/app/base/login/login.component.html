@@ -1,5 +1,10 @@
 <form #form1="ngForm" [hidden]="loggedIn" *ngIf="empty">
   <div class="row g-1">
+    <div class="col">
+      <a class="form-text text-primary me-3" href='{{appDisclaimer}}' target="_blank">Disclaimer</a>
+      <a class="form-text text-primary me-3" href='{{appPrivacy}}' target="_blank">Privacy_Policy</a>
+      <a class="form-text text-primary me-5" href='{{appHelp}}' target="_blank">Help</a>
+    </div>
     <div class="col validation-field-parent">
       <input type="text" class="form-control form-control-sm py-0" placeholder="loginname" [(ngModel)]="credentials.userName" name="_userName" #userName="ngModel" required />
       <div *ngIf="userName.invalid && userName.touched" class="form-text text-danger validation-message">required*</div>
@@ -14,8 +19,13 @@
   </div>
 </form>
 
-<form #form2="ngForm" [hidden]="!loggedIn">
+<form [hidden]="!loggedIn">
   <div class="row g-1">
+    <div class="col">
+      <a class="form-text text-primary me-3" link="/disclaimer">Disclaimer</a>
+      <a class="form-text text-primary me-3" link="/privacy">Privacy_Policy</a>
+      <a class="form-text text-primary me-5" link="/help">Help</a>
+    </div>
     <div class="col align-self-center">
       <small class="form-text text-primary"><span>Welcome</span></small>
     </div>
