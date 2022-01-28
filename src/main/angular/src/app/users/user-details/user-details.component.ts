@@ -64,6 +64,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.user.loginname === 'new user') {
+      this.user.loginname = null;
       this.usersService.generateRandomPassword(this.token)
         .subscribe({
           next: (data: string) => {

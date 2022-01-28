@@ -4,7 +4,6 @@ import {Ctx, Ou, User} from 'app/base/common/model/inge';
 import {ctxs4autoSelectByName, ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
-import {UsersService} from 'app/users/services/users.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {AuthenticationService} from '../../base/services/authentication.service';
