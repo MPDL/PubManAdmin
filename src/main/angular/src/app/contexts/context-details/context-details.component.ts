@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -53,6 +54,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
     private contextsService: ContextsService,
+    private location: Location,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
@@ -198,7 +200,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   gotoCtxList() {
     if (this.checkForm()) {
-      this.router.navigate(['/contexts']);
+      this.location.back();
     }
   }
 

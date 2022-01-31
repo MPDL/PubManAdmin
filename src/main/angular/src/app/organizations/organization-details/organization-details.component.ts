@@ -1,3 +1,4 @@
+import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -52,6 +53,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
+    private location: Location,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
@@ -298,7 +300,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   gotoOrganizationList() {
     if (this.checkForm()) {
-      this.router.navigate(['/organizations']);
+      this.location.back();
     }
   }
 
