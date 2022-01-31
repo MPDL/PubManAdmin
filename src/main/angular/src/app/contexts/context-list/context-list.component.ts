@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Ctx, Ou, User} from 'app/base/common/model/inge';
 import {ctxs4autoSelectByName, ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
@@ -20,6 +20,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   ousPath: string = environment.restOus;
 
   title: string = 'Contexts';
+  dummyOu: string = 'dummyOu';
 
   ctxs: Ctx[] = [];
   ctxsByName: Ctx[] = [];
@@ -49,6 +50,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
+    private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
   ) {}
@@ -58,13 +60,32 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
-    if (this.isAdmin) {
-      this.listAllCtxs(1);
+    const ouId_: string = this.route.snapshot.params['ouId'];
+    const page: string = this.route.snapshot.params['page'];
+
+    if (page != null) {
+      this.currentPage = +page;
+    } else {
+      this.currentPage = 1;
+    }
+
+    if (ouId_ != null && ouId_ !== this.dummyOu) {
+      this.organizationsService.get(this.ousPath, ouId_, this.token)
+        .subscribe({
+          next: (data: Ou) => {
+            this.selectOu(data);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else if (page != null) {
+      this.getPage(this.currentPage);
+    } else if (this.isAdmin) {
+      this.listAllCtxs(this.currentPage);
     } else {
       this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
         .subscribe({
           next: (data: Ou[]) => {
-            this.listCtxs(this.searchService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), 1);
+            this.listCtxs(this.searchService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), this.currentPage);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -73,6 +94,23 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.tokenSubscription.unsubscribe();
+  }
+
+  gotoCtx(ctx: Ctx) {
+    this.selectedCtx = ctx;
+    this.router.navigate(['/context', this.selectedCtx.objectId]);
+  }
+
+  gotoFilteredOu(ou: Ou) {
+    this.currentPage = 1;
+    this.router.navigate(['/contexts', ou.objectId, this.currentPage]);
+  }
+
+  gotoFilteredPage(page: number) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {
+      return false;
+    };
+    this.router.navigate(['/contexts', this.selectedOu != null ? this.selectedOu.objectId : this.dummyOu, page]);
   }
 
   private listAllCtxs(page: number) {
@@ -98,7 +136,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
       });
   }
 
-  getPage(page: number) {
+  private getPage(page: number) {
     this.loading = true;
     if (this.selectedOu === undefined) {
       if (this.isAdmin) {
@@ -113,13 +151,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
     } else {
       this.listCtxs(this.selectedOu.objectId, page);
     }
-    this.currentPage = page;
     this.loading = false;
-  }
-
-  gotoCtx(ctx: Ctx) {
-    this.selectedCtx = ctx;
-    this.router.navigate(['/context', this.selectedCtx.objectId]);
   }
 
   addNewCtx() {
@@ -204,11 +236,10 @@ export class ContextListComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectOu(ou: Ou) {
+  private selectOu(ou: Ou) {
     this.selectedOu = ou;
-    this.currentPage = 1;
     const queryString = '?q=responsibleAffiliations.objectId:' + ou.objectId;
-    this.contextsService.filter(this.ctxsPath, null, queryString, 1)
+    this.contextsService.filter(this.ctxsPath, null, queryString, this.currentPage)
       .subscribe({
         next: (data: {list: Ctx[], records: number}) => {
           this.ctxs = data.list;

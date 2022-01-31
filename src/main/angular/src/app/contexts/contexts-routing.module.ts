@@ -7,6 +7,7 @@ import {ContextDetailsResolverService} from './services/context-details-resolver
 
 const routes: Routes = [
   {path: 'contexts', component: ContextListComponent, canActivate: [LoginGuardService]},
+  {path: 'contexts/:ouId/:page', component: ContextListComponent, canActivate: [LoginGuardService]},
   {path: 'context/:id', component: ContextDetailsComponent, canActivate: [LoginGuardService], resolve: {ctx: ContextDetailsResolverService}},
 ];
 
