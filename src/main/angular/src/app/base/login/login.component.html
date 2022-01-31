@@ -21,7 +21,7 @@
 
 <form [hidden]="!loggedIn">
   <div class="row g-1">
-    <div class="col">
+    <div class="col align-self-center">
       <a class="form-text text-primary me-3" href='{{appDisclaimer}}' target="_blank">Disclaimer</a>
       <a class="form-text text-primary me-3" href='{{appPrivacy}}' target="_blank">Privacy_Policy</a>
       <a class="form-text text-primary me-5" href='{{appHelp}}' target="_blank">Help</a>
@@ -32,7 +32,7 @@
     <div class="col align-self-center">
       <small class="form-text text-muted"><span>{{credentials.userName}} </span></small>
     </div>
-    <div class="col">
+    <div class="col align-self-center">
       <a class="btn btn-outline-primary btn-sm" routerLink="/home" (click)="logout()">Logout</a>
     </div>
   </div>
