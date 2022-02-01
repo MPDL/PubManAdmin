@@ -20,7 +20,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
   ousPath: string = environment.restOus;
 
   title: string = 'Contexts';
-  dummyOu: string = 'dummyOu';
+  dummyOu: string = 'ou_unselected';
 
   ctxs: Ctx[] = [];
   ctxsByName: Ctx[] = [];
@@ -96,6 +96,38 @@ export class ContextListComponent implements OnInit, OnDestroy {
     this.tokenSubscription.unsubscribe();
   }
 
+  addNewCtx() {
+    this.router.navigate(['/context', 'new ctx']);
+  }
+
+  closeCtxsByName() {
+    this.ctxSearchTerm = '';
+    this.ctxsByName = [];
+  }
+
+  closeOus() {
+    this.ouSearchTerm = '';
+    this.ous = [];
+  }
+
+  getCtxsByName(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedCtxsByName(convertedSearchTerm);
+    } else {
+      this.closeCtxsByName();
+    }
+  }
+
+  getOus(ouName: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(ouName);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
+    } else {
+      this.closeOus();
+    }
+  }
+
   gotoCtx(ctx: Ctx) {
     this.selectedCtx = ctx;
     this.router.navigate(['/context', this.selectedCtx.objectId]);
@@ -111,6 +143,24 @@ export class ContextListComponent implements OnInit, OnDestroy {
       return false;
     };
     this.router.navigate(['/contexts', this.selectedOu != null ? this.selectedOu.objectId : this.dummyOu, page]);
+  }
+
+  private getPage(page: number) {
+    this.loading = true;
+    if (this.selectedOu === undefined) {
+      if (this.isAdmin) {
+        this.listAllCtxs(page);
+      } else {
+        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+          .subscribe({
+            next: (data: Ou[]) => this.listCtxs(this.searchService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), page),
+            error: (e) => this.messagesService.error(e),
+          });
+      }
+    } else {
+      this.listCtxs(this.selectedOu.objectId, page);
+    }
+    this.loading = false;
   }
 
   private listAllCtxs(page: number) {
@@ -134,37 +184,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
         },
         error: (e) => this.messagesService.error(e),
       });
-  }
-
-  private getPage(page: number) {
-    this.loading = true;
-    if (this.selectedOu === undefined) {
-      if (this.isAdmin) {
-        this.listAllCtxs(page);
-      } else {
-        this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
-          .subscribe({
-            next: (data: Ou[]) => this.listCtxs(this.searchService.getListOfOusForLocalAdminFromOus(data, 'responsibleAffiliations.objectId'), page),
-            error: (e) => this.messagesService.error(e),
-          });
-      }
-    } else {
-      this.listCtxs(this.selectedOu.objectId, page);
-    }
-    this.loading = false;
-  }
-
-  addNewCtx() {
-    this.router.navigate(['/context', 'new ctx']);
-  }
-
-  getCtxsByName(term: string) {
-    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
-    if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedCtxsByName(convertedSearchTerm);
-    } else {
-      this.closeCtxsByName();
-    }
   }
 
   private returnSuggestedCtxsByName(ctxName: string) {
@@ -194,15 +213,6 @@ export class ContextListComponent implements OnInit, OnDestroy {
           },
           error: (e) => this.messagesService.error(e),
         });
-    }
-  }
-
-  getOus(ouName: string) {
-    const convertedSearchTerm = this.searchService.convertSearchTerm(ouName);
-    if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedOus(convertedSearchTerm);
-    } else {
-      this.closeOus();
     }
   }
 
@@ -249,15 +259,5 @@ export class ContextListComponent implements OnInit, OnDestroy {
       });
     this.title = 'Contexts for ' + this.selectedOu.name;
     this.closeOus();
-  }
-
-  closeCtxsByName() {
-    this.ctxSearchTerm = '';
-    this.ctxsByName = [];
-  }
-
-  closeOus() {
-    this.ouSearchTerm = '';
-    this.ous = [];
   }
 }

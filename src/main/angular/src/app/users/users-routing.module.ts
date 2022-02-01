@@ -7,6 +7,7 @@ import {UserListComponent} from './user-list/user-list.component';
 
 const routes: Routes = [
   {path: 'users', component: UserListComponent, canActivate: [LoginGuardService]},
+  {path: 'users/:ouId/:page', component: UserListComponent, canActivate: [LoginGuardService]},
   {path: 'user/:id', component: UserDetailsComponent, canActivate: [LoginGuardService], resolve: {user: UserDetailsResolverService}},
 ];
 

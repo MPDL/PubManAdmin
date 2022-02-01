@@ -13,7 +13,7 @@
         <input class="form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" (clickOutside)="closeOus()">
-            <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectOu(ou)">
+            <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="gotoFilteredOu(ou)">
               <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
             </li>
           </ul>
@@ -49,7 +49,7 @@
       </div>
       <div class="col-5">
         <div *ngIf="total > 0" class="has-text-centered">
-          <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="getPage($event)"></pagination-controls>
+          <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="gotoFilteredPage($event)"></pagination-controls>
         </div>
       </div>
     </div>
