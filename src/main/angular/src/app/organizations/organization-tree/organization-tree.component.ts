@@ -29,7 +29,23 @@ export class OrganizationTreeComponent implements OnInit {
   treeControl: FlatTreeControl<OuTreeFlatNode>;
   treeFlattener: MatTreeFlattener<OuTreeNode, OuTreeFlatNode>;
 
-  transformer = (node: OuTreeNode, level: number) => {
+  hasChild = (_: number, nodeData: OuTreeFlatNode) => {
+    return nodeData.expandable;
+  };
+
+  private getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {
+    return node.childrenChange;
+  };
+
+  private getLevel = (node: OuTreeFlatNode) => {
+    return node.level;
+  };
+
+  private isExpandable = (node: OuTreeFlatNode) => {
+    return node.expandable;
+  };
+
+  private transformer = (node: OuTreeNode, level: number) => {
     if (this.nodeMap.has(node.ouName)) {
       return this.nodeMap.get(node.ouName)!;
     }
@@ -38,12 +54,9 @@ export class OrganizationTreeComponent implements OnInit {
     return newNode;
   };
 
-  hasChild = (_: number, nodeData: OuTreeFlatNode) => {
-    return nodeData.expandable;
-  };
-
   adminSubscription: Subscription;
   isAdmin: boolean;
+  databaseSubscription: Subscription;
   userSubscription: Subscription;
   loggedInUser: User;
 
@@ -63,36 +76,62 @@ export class OrganizationTreeComponent implements OnInit {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    this.database.dataChange.subscribe((data) => this.dataSource.data = data);
+
+    this.databaseSubscription = this.database.dataChange.subscribe((data) => this.dataSource.data = data);
+
     if (this.isAdmin) {
       this.database.initialize();
     } else {
       this.database.initializeForLocalAdmin(this.loggedInUser.topLevelOuIds);
     }
+
+    /*
+    const selectedNode: string = 'ou_2173677';
+    const nodes2expand: OuTreeFlatNode[] = [];
+    this.organizationsService.getOuPath(selectedNode, null)
+      .subscribe({
+        next: async (data: string) => {
+          const path: string[] = data.split(',');
+          for (let i = path.length - 1; i > 0; i--) {
+            const node2expand: OuTreeFlatNode = this.loadNode(path[i].trimStart());
+            if (node2expand != null) {
+              nodes2expand.push(node2expand);
+            }
+          }
+          nodes2expand.forEach((node2expand: OuTreeFlatNode) => this.treeControl.expand(node2expand));
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+      */
   }
 
-  private getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {
-    return node.childrenChange;
-  };
+  private loadNode(ouName: string): OuTreeFlatNode {
+    if (this.nodeMap.has(ouName)) {
+      const node: OuTreeFlatNode = this.nodeMap.get(ouName);
+      this.loadChildren(node);
+      return node;
+    }
 
-  private getLevel = (node: OuTreeFlatNode) => {
-    return node.level;
-  };
-
-  private isExpandable = (node: OuTreeFlatNode) => {
-    return node.expandable;
-  };
-
-  loadChildren(node: OuTreeFlatNode) {
-    this.database.loadChildren(node.ouName, node.ouId);
+    return null;
   }
 
-  gotoOu(node: { ouId: string; }) {
-    this.router.navigate(['/organization', node.ouId]);
+  ngOnDestroy() {
+    this.adminSubscription.unsubscribe();
+    this.databaseSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   addNewOu() {
     this.router.navigate(['/organization', 'new ou']);
+  }
+
+  closeOus() {
+    this.ouSearchTerm = '';
+    this.ous = [];
+  }
+
+  collapsAll() {
+    this.treeControl.collapseAll();
   }
 
   getOus(term: string) {
@@ -102,6 +141,19 @@ export class OrganizationTreeComponent implements OnInit {
     } else {
       this.closeOus();
     }
+  }
+
+  gotoOu(node: { ouId: string; }) {
+    this.router.navigate(['/organization', node.ouId]);
+  }
+
+  loadChildren(node: OuTreeFlatNode) {
+    this.database.loadChildren(node.ouName, node.ouId);
+  }
+
+  selectOu(ou: Ou) {
+    this.router.navigate(['/organization', ou.objectId]);
+    this.ous = [];
   }
 
   private returnSuggestedOus(ouName: string) {
@@ -132,15 +184,5 @@ export class OrganizationTreeComponent implements OnInit {
           error: (e) => this.messagesService.error(e),
         });
     }
-  }
-
-  closeOus() {
-    this.ouSearchTerm = '';
-    this.ous = [];
-  }
-
-  selectOu(ou: Ou) {
-    this.router.navigate(['/organization', ou.objectId]);
-    this.ous = [];
   }
 }

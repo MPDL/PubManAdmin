@@ -21,7 +21,13 @@
       </div>
     </div>
 
-    <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <div class="row w-100">
+      <div class="col-1 ms-start">
+          <input type="button" class="btn btn-outline-info text-white btn-sm me-2" (click)="collapsAll()" value="collapse all" />
+      </div>
+  </div>
+
+    <cdk-tree #tree [dataSource]="dataSource" [treeControl]="treeControl">
       <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
         {{node.ouName}} - {{node.ouId}} - {{node.ouStatus}}
       </cdk-tree-node>

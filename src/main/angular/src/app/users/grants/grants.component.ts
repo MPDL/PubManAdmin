@@ -76,6 +76,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.adminSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   private getCtxsAndOus() {

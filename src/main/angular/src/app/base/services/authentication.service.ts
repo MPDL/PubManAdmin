@@ -41,7 +41,7 @@ export class AuthenticationService {
     private http: HttpClient,
     private messagesService: MessagesService,
   ) {
-    this.connectionService.connectionService.subscribe((data: string) => this.tokenUrl = data + '/rest/login');
+    this.connectionService.connectionService$.subscribe((data: string) => this.tokenUrl = data + '/rest/login');
   }
 
   login(userName: string, password: string) {

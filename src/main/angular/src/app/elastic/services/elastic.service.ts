@@ -14,7 +14,7 @@ export class ElasticService {
     private messagesService: MessagesService,
   ) {
     if (!this.client) {
-      this.connectionService.connectionService.subscribe((data: string) => {
+      this.connectionService.connectionService$.subscribe((data: string) => {
         this.url = data + environment.elasticUrl;
         this.connect(this.url);
       });

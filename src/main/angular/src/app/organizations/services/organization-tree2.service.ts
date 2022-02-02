@@ -9,9 +9,9 @@ import {OrganizationsService} from './organizations.service';
 export class OuTreeNode {
   childrenChange: BehaviorSubject<OuTreeNode[]> = new BehaviorSubject<OuTreeNode[]>([]);
 
-  get children(): OuTreeNode[] {
-    return this.childrenChange.value;
-  }
+  //  children(): OuTreeNode[] {
+  //    return this.childrenChange.value;
+  //  }
 
   constructor(
     public ouName: string,
@@ -50,41 +50,34 @@ export class OrganizationTree2Service {
   ) {}
 
   async initialize() {
-    const treeData: any[] = [];
+    const ouTreeNodes: OuTreeNode[] = [];
 
     try {
       const topLevelOus: Ou[] = await lastValueFrom(this.getTopLevelOus());
       topLevelOus.forEach(
-        (ou: Ou) => treeData.push(this.generateNode(ou))
+        (ou: Ou) => ouTreeNodes.push(this.generateNode(ou))
+
       );
-      this.dataChange.next(treeData);
+      this.dataChange.next(ouTreeNodes);
     } catch (e) {
       this.messagesService.error(e);
     }
   }
 
   initializeForLocalAdmin(ouIds: string[]) {
-    const treeData: any[] = [];
+    const ouTreeNodes: OuTreeNode[] = [];
     const body = localAdminOus;
     body.query.bool.filter.terms['objectId'] = ouIds;
     this.organizationsService.query(this.ousPath, null, body)
       .subscribe({
         next: (data: {list: Ou[], records: number}) => {
           data.list.forEach(
-            (ou: Ou) => treeData.push(this.generateNode(ou))
+            (ou: Ou) => ouTreeNodes.push(this.generateNode(ou))
           );
-          this.dataChange.next(treeData);
+          this.dataChange.next(ouTreeNodes);
         },
         error: (e) => this.messagesService.error(e),
       });
-  }
-
-  private getTopLevelOus(): Observable<Ou[]> {
-    return this.organizationsService.getTopLevelOus(null);
-  }
-
-  private getChildren4Ou(id: string): Observable<Ou[]> {
-    return this.organizationsService.listChildren4Ou(id, null);
   }
 
   loadChildren(ouName: string, ouId: string) {
@@ -113,6 +106,14 @@ export class OrganizationTree2Service {
     this.nodeMap.set(ou.name, ouTreeNode);
 
     return ouTreeNode;
+  }
+
+  private getChildren4Ou(ouId: string): Observable<Ou[]> {
+    return this.organizationsService.listChildren4Ou(ouId, null);
+  }
+
+  private getTopLevelOus(): Observable<Ou[]> {
+    return this.organizationsService.getTopLevelOus(null);
   }
 }
 

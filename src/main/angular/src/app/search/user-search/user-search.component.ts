@@ -3,6 +3,7 @@ import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {User} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
+import { Subscription } from 'rxjs';
 import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
 import {userAggs} from '../../base/common/components/search-term/search.aggregations';
 import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
@@ -37,6 +38,7 @@ export class UserSearchComponent implements OnInit {
   loading: boolean = false;
   currentPage: number = 1;
   token: string;
+  tokenSubscription: Subscription;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -52,10 +54,14 @@ export class UserSearchComponent implements OnInit {
       this.aggregationsList.push(userAgg);
     }
     this.fields2Select = this.elasticSearchService.getMappingFields(environment.userIndex.name, environment.userIndex.type);
-    this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
+  }
+
+  ngOnDestroy() {
+    this.tokenSubscription.unsubscribe();
   }
 
   get searchTerms(): FormArray {
