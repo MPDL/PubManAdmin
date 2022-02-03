@@ -28,10 +28,17 @@
   </div>
 
     <cdk-tree #tree [dataSource]="dataSource" [treeControl]="treeControl">
-      <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasNotChildAndIsNotSelected" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
         {{node.ouName}} - {{node.ouId}} - {{node.ouStatus}}
       </cdk-tree-node>
-      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasNotChildAndIsSelected" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-success list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
+        {{node.ouName}} - {{node.ouId}} - {{node.ouStatus}}
+      </cdk-tree-node>
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChildAndIsNotSelected" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-info list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
+        <span class="mr-2 boldandlarger" cdkTreeNodeToggle (click)="loadChildren(node)">{{treeControl.isExpanded(node) ? '&horbar;&NonBreakingSpace;' : '>&NonBreakingSpace;'}}</span>
+        {{node.ouName}} - {{node.ouId}} - {{node.ouStatus}}
+      </cdk-tree-node>
+      <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChildAndIsSelected" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-success list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center">
         <span class="mr-2 boldandlarger" cdkTreeNodeToggle (click)="loadChildren(node)">{{treeControl.isExpanded(node) ? '&horbar;&NonBreakingSpace;' : '>&NonBreakingSpace;'}}</span>
         {{node.ouName}} - {{node.ouId}} - {{node.ouStatus}}
       </cdk-tree-node>

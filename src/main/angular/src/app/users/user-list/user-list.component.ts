@@ -62,7 +62,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
     this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
 
-    const ouId_: string = this.route.snapshot.params['ouId'];
+    const ouId: string = this.route.snapshot.params['ouId'];
     const page: string = this.route.snapshot.params['page'];
 
     if (page != null) {
@@ -71,8 +71,8 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.currentPage = 1;
     }
 
-    if (ouId_ != null && ouId_ !== this.dummyOu) {
-      this.organizationsService.get(this.ousPath, ouId_, this.token)
+    if (ouId != null && ouId !== this.dummyOu) {
+      this.organizationsService.get(this.ousPath, ouId, this.token)
         .subscribe({
           next: (data: Ou) => {
             this.selectOu(data);

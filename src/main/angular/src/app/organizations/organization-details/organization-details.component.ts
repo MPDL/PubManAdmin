@@ -1,4 +1,3 @@
-import {Location} from '@angular/common';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -53,7 +52,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
-    private location: Location,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
@@ -85,56 +83,65 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
-  private setOu(ou: Ou) {
-    this.ou = ou;
-    if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
-      this.parentOuSearchTerm = this.ou.parentAffiliation.name;
-      let parentOu:Ou;
-      this.organizationsService.get(this.ousPath, this.ou.parentAffiliation.objectId, this.token)
-        .subscribe({
-          next: (data: Ou) => {
-            parentOu = data;
-            if (parentOu.publicStatus === 'CLOSED') {
-              this.hasOpenParent = false;
-            }
-          },
-          error: (e) => this.messagesService.error(e),
-        });
+  addAlternativeName(selected: string) {
+    if (selected != null && selected !== '') {
+      if (this.ou.metadata.alternativeNames) {
+        if (!this.ou.metadata.alternativeNames.includes(selected)) {
+          this.ou.metadata.alternativeNames.push(selected);
+        }
+      } else {
+        this.ou.metadata.alternativeNames = [];
+        this.ou.metadata.alternativeNames.push(selected);
+      }
     }
-    if (this.ou.hasPredecessors) {
-      const predecessorIds: string[] = [];
-      this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
-        predecessorIds.push(predecessor.objectId);
-      });
-      this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'), this.token);
-    } else {
-      this.predecessors = [];
-    }
-    this.listChildren(this.ou.objectId);
+    this.alternativeName = '';
   }
 
-  private listPredecessors(listOfPredecessorIds: string, token: string) {
-    const queryString = '?q=' + listOfPredecessorIds;
-    this.organizationsService.filter(this.ousPath, token, queryString, 1)
-      .subscribe({
-        next: (data: {list: Ou[], records: number}) => this.predecessors = data.list,
-        error: (e) => this.messagesService.error(e),
-      });
+  addDescription(selected: string) {
+    if (selected != null && selected !== '') {
+      if (this.ou.metadata.descriptions) {
+        if (!this.ou.metadata.descriptions.includes(selected)) {
+          this.ou.metadata.descriptions.push(selected);
+        }
+      } else {
+        this.ou.metadata.descriptions = [];
+        this.ou.metadata.descriptions.push(selected);
+      }
+    }
+    this.description = '';
   }
 
-  private listChildren(mother: string) {
-    this.organizationsService.listChildren4Ou(mother, null)
+  addIdentifier(selected: string) {
+    if (selected != null && selected !== '') {
+      const ouid = new Identifier();
+      ouid.id = selected;
+      if (this.ou.metadata.identifiers) {
+        if (!this.ou.metadata.identifiers.some((id) => (id.id === selected))) {
+          this.ou.metadata.identifiers.push(ouid);
+        }
+      } else {
+        this.ou.metadata.identifiers = [];
+        this.ou.metadata.identifiers.push(ouid);
+      }
+    }
+    this.identifier = '';
+  }
+
+  addPredecessor() {
+    this.organizationsService.addPredecessor(this.ou, this.predecessorOu.objectId, this.token)
       .subscribe({
-        next: (data: Ou[]) => {
-          this.children = data;
-          this.children.forEach((child) => {
-            if (child.publicStatus === 'OPENED') {
-              this.hasOpenChildren = true;
-            }
-          });
+        next: (data: Ou) => {
+          this.setOu(data);
+          this.form.form.markAsPristine(); // resets form.dirty
+          this.messagesService.success('added predecessor ' + this.predecessorOu.metadata.name);
+          this.resetPredecessors();
         },
         error: (e) => this.messagesService.error(e),
       });
+  }
+
+  addPredecessors() {
+    this.isNewPredecessor = true;
   }
 
   changeOuState() {
@@ -159,48 +166,10 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  addAlternativeName(selected: string) {
-    if (selected != null && selected !== '') {
-      if (this.ou.metadata.alternativeNames) {
-        if (!this.ou.metadata.alternativeNames.includes(selected)) {
-          this.ou.metadata.alternativeNames.push(selected);
-        }
-      } else {
-        this.ou.metadata.alternativeNames = [];
-        this.ou.metadata.alternativeNames.push(selected);
-      }
-    }
-    this.alternativeName = '';
-  }
-
-  deleteAlternativeName(selected: string) {
-    const index = this.ou.metadata.alternativeNames.indexOf(selected);
-    this.ou.metadata.alternativeNames.splice(index, 1);
-  }
-
   clearAlternativeNames() {
     if (confirm('remove all subject alternative names ?')) {
       this.ou.metadata.alternativeNames.splice(0, this.ou.metadata.alternativeNames.length);
     }
-  }
-
-  addDescription(selected: string) {
-    if (selected != null && selected !== '') {
-      if (this.ou.metadata.descriptions) {
-        if (!this.ou.metadata.descriptions.includes(selected)) {
-          this.ou.metadata.descriptions.push(selected);
-        }
-      } else {
-        this.ou.metadata.descriptions = [];
-        this.ou.metadata.descriptions.push(selected);
-      }
-    }
-    this.description = '';
-  }
-
-  deleteDescription(selected: string) {
-    const index = this.ou.metadata.descriptions.indexOf(selected);
-    this.ou.metadata.descriptions.splice(index, 1);
   }
 
   clearDescriptions() {
@@ -209,20 +178,35 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  addIdentifier(selected: string) {
-    if (selected != null && selected !== '') {
-      const ouid = new Identifier();
-      ouid.id = selected;
-      if (this.ou.metadata.identifiers) {
-        if (!this.ou.metadata.identifiers.some((id) => (id.id === selected))) {
-          this.ou.metadata.identifiers.push(ouid);
-        }
-      } else {
-        this.ou.metadata.identifiers = [];
-        this.ou.metadata.identifiers.push(ouid);
-      }
+  clearIdentifiers() {
+    if (confirm('remove all identificators ?')) {
+      this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
     }
-    this.identifier = '';
+  }
+
+  clearParentOuSearchTerm() {
+    this.parentOuSearchTerm = '';
+  }
+
+  closeParentOus() {
+    this.parentOuSearchTerm = '';
+    this.parentOus = [];
+  }
+
+  closePredecessorOus() {
+    this.predecessorOuSearchTerm = '';
+    this.predecessorOu = null;
+    this.predecessorOus = [];
+  }
+
+  deleteAlternativeName(selected: string) {
+    const index = this.ou.metadata.alternativeNames.indexOf(selected);
+    this.ou.metadata.alternativeNames.splice(index, 1);
+  }
+
+  deleteDescription(selected: string) {
+    const index = this.ou.metadata.descriptions.indexOf(selected);
+    this.ou.metadata.descriptions.splice(index, 1);
   }
 
   deleteIdentifier(selected: Identifier) {
@@ -230,10 +214,77 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.ou.metadata.identifiers.splice(index, 1);
   }
 
-  clearIdentifiers() {
-    if (confirm('remove all identificators ?')) {
-      this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
+  deleteOu() {
+    if (confirm('delete ' + this.ou.metadata.name + ' ?')) {
+      if (this.checkForm()) {
+        this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
+          .subscribe({
+            next: (_data) => {
+              this.messagesService.success('deleted organization ' + this.ou.objectId);
+              this.ou = null;
+              this.gotoOrganizationList();
+            },
+            error: (e) => this.messagesService.error(e),
+          });
+      }
     }
+  }
+
+  getParentOus(term: string) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedParentOus(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedParentOus(term);
+    } else {
+      this.closeParentOus();
+    }
+  }
+
+  getPredecessorOus(term: string) {
+    if (term.length > 0 && !term.startsWith('"')) {
+      this.returnSuggestedPredecessorOus(term);
+    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
+      this.returnSuggestedPredecessorOus(term);
+    } else {
+      this.closePredecessorOus();
+    }
+  }
+
+  gotoOrganizationList() {
+    if (this.checkForm()) {
+      this.router.navigate(['/organizations', this.ou.objectId]);
+    }
+  }
+
+  gotoRef(id: string) {
+    if (this.checkForm()) {
+      this.router.routeReuseStrategy.shouldReuseRoute = function() {
+        return false;
+      };
+      this.router.navigate(['/organization', id]);
+    }
+  }
+
+  onChangeParentOu(ou: Ou) {
+    this.ou.parentAffiliation.objectId = ou.objectId;
+  }
+
+  removePredecessor(predecessor: Ou) {
+    if (confirm('remove predecessor ' + predecessor.metadata.name +' ?')) {
+      this.organizationsService.removePredecessor(this.ou, predecessor.objectId, this.token)
+        .subscribe({
+          next: (data: Ou) => {
+            this.setOu(data);
+            this.messagesService.success('removed predecessor ' + predecessor.metadata.name);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    }
+  }
+
+  resetPredecessors() {
+    this.isNewPredecessor = false;
+    this.closePredecessorOus();
   }
 
   saveOu() {
@@ -273,45 +324,30 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteOu() {
-    if (confirm('delete ' + this.ou.metadata.name + ' ?')) {
-      if (this.checkForm()) {
-        this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
-          .subscribe({
-            next: (_data) => {
-              this.messagesService.success('deleted organization ' + this.ou.objectId);
-              this.ou = null;
-              this.gotoOrganizationList();
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      }
-    }
-  }
+  selectParentOu(ou: Ou) {
+    this.parentOuSearchTerm = ou.name;
+    this.ou.parentAffiliation.objectId = ou.objectId;
+    this.parentOus = [];
+  };
 
-  gotoRef(id: string) {
-    if (this.checkForm()) {
-      this.router.routeReuseStrategy.shouldReuseRoute = function() {
-        return false;
-      };
-      this.router.navigate(['/organization', id]);
-    }
-  }
+  selectPredecessorOu(ou: Ou) {
+    this.predecessorOuSearchTerm = ou.name;
+    this.predecessorOu = ou;
+    this.predecessorOus = [];
+  };
 
-  gotoOrganizationList() {
-    if (this.checkForm()) {
-      this.location.back();
+  private checkForm(): boolean {
+    if (!this.form.dirty && !this.isNewPredecessor) {
+      return true;
     }
-  }
 
-  getParentOus(term: string) {
-    if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedParentOus(term);
-    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedParentOus(term);
-    } else {
-      this.closeParentOus();
+    if (confirm('you have unsaved changes. Proceed?')) {
+      this.isNewPredecessor = false;
+      this.isNewOu = false;
+      return true;
     }
+
+    return false;
   }
 
   private getLoggedInUserAllOpenOus(ignoreOuId: string) {
@@ -326,6 +362,30 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           });
           this.ousForLoggedInUser = ous;
         },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  private listChildren(mother: string) {
+    this.organizationsService.listChildren4Ou(mother, null)
+      .subscribe({
+        next: (data: Ou[]) => {
+          this.children = data;
+          this.children.forEach((child) => {
+            if (child.publicStatus === 'OPENED') {
+              this.hasOpenChildren = true;
+            }
+          });
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  private listPredecessors(listOfPredecessorIds: string, token: string) {
+    const queryString = '?q=' + listOfPredecessorIds;
+    this.organizationsService.filter(this.ousPath, token, queryString, 1)
+      .subscribe({
+        next: (data: {list: Ou[], records: number}) => this.predecessors = data.list,
         error: (e) => this.messagesService.error(e),
       });
   }
@@ -348,76 +408,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  closeParentOus() {
-    this.parentOuSearchTerm = '';
-    this.parentOus = [];
-  }
-
-  selectParentOu(ou: Ou) {
-    this.parentOuSearchTerm = ou.name;
-    this.ou.parentAffiliation.objectId = ou.objectId;
-    this.parentOus = [];
-  };
-
-  onChangeParentOu(ou: Ou) {
-    this.ou.parentAffiliation.objectId = ou.objectId;
-  }
-
-  clearParentOuSearchTerm() {
-    this.parentOuSearchTerm = '';
-  }
-
-  addPredecessors() {
-    this.isNewPredecessor = true;
-  }
-
-  addPredecessor() {
-    this.organizationsService.addPredecessor(this.ou, this.predecessorOu.objectId, this.token)
-      .subscribe({
-        next: (data: Ou) => {
-          this.setOu(data);
-          this.form.form.markAsPristine(); // resets form.dirty
-          this.messagesService.success('added predecessor ' + this.predecessorOu.metadata.name);
-          this.resetPredecessors();
-        },
-        error: (e) => this.messagesService.error(e),
-      });
-  }
-
-  resetPredecessors() {
-    this.isNewPredecessor = false;
-    this.closePredecessorOus();
-  }
-
-  removePredecessor(predecessor: Ou) {
-    if (confirm('remove predecessor ' + predecessor.metadata.name +' ?')) {
-      this.organizationsService.removePredecessor(this.ou, predecessor.objectId, this.token)
-        .subscribe({
-          next: (data: Ou) => {
-            this.setOu(data);
-            this.messagesService.success('removed predecessor ' + predecessor.metadata.name);
-          },
-          error: (e) => this.messagesService.error(e),
-        });
-    }
-  }
-
-  selectPredecessorOu(ou: Ou) {
-    this.predecessorOuSearchTerm = ou.name;
-    this.predecessorOu = ou;
-    this.predecessorOus = [];
-  };
-
-  getPredecessorOus(term: string) {
-    if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedPredecessorOus(term);
-    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedPredecessorOus(term);
-    } else {
-      this.closePredecessorOus();
-    }
-  }
-
   private returnSuggestedPredecessorOus(predecessorOuName: string) {
     const queryString = '?q=metadata.name.auto:' + predecessorOuName;
     this.organizationsService.filter(this.ousPath, null, queryString, 1)
@@ -435,23 +425,31 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  closePredecessorOus() {
-    this.predecessorOuSearchTerm = '';
-    this.predecessorOu = null;
-    this.predecessorOus = [];
-  }
-
-  private checkForm(): boolean {
-    if (!this.form.dirty && !this.isNewPredecessor) {
-      return true;
+  private setOu(ou: Ou) {
+    this.ou = ou;
+    if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
+      this.parentOuSearchTerm = this.ou.parentAffiliation.name;
+      let parentOu:Ou;
+      this.organizationsService.get(this.ousPath, this.ou.parentAffiliation.objectId, this.token)
+        .subscribe({
+          next: (data: Ou) => {
+            parentOu = data;
+            if (parentOu.publicStatus === 'CLOSED') {
+              this.hasOpenParent = false;
+            }
+          },
+          error: (e) => this.messagesService.error(e),
+        });
     }
-
-    if (confirm('you have unsaved changes. Proceed?')) {
-      this.isNewPredecessor = false;
-      this.isNewOu = false;
-      return true;
+    if (this.ou.hasPredecessors) {
+      const predecessorIds: string[] = [];
+      this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
+        predecessorIds.push(predecessor.objectId);
+      });
+      this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'), this.token);
+    } else {
+      this.predecessors = [];
     }
-
-    return false;
+    this.listChildren(this.ou.objectId);
   }
 }

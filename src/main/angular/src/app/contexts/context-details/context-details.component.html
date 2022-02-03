@@ -32,7 +32,9 @@
         <div *ngIf="ctx.state === 'OPENED'" class="col-1">
           <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeOu()" value="change" />
         </div>
-        <label class="col-1 col-form-label col-form-label-sm">ouId</label>
+        <div class="col-1">
+          <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId" class="btn btn-outline-success btn-sm" (click)="gotoRef(ctx.responsibleAffiliations[0]?.objectId)" value="ouId" title="goto organization" />
+        </div>
         <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
         </div>
@@ -187,9 +189,11 @@
 
     </form>
   </div>
+  <!--
   <p></p>
   Form status: {{form.status}}<p>
   Form dirty: {{form.dirty}}<p>
   <p>Context:</p>
   <pre>{{ctx | json}}</pre>
+  -->
 </div>

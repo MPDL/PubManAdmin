@@ -1,7 +1,7 @@
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {Component, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Ou, User} from 'app/base/common/model/inge';
 import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
@@ -29,8 +29,20 @@ export class OrganizationTreeComponent implements OnInit {
   treeControl: FlatTreeControl<OuTreeFlatNode>;
   treeFlattener: MatTreeFlattener<OuTreeNode, OuTreeFlatNode>;
 
-  hasChild = (_: number, nodeData: OuTreeFlatNode) => {
-    return nodeData.expandable;
+  hasChildAndIsSelected = (_: number, nodeData: OuTreeFlatNode) => {
+    return nodeData.expandable && nodeData.selected;
+  };
+
+  hasChildAndIsNotSelected = (_: number, nodeData: OuTreeFlatNode) => {
+    return nodeData.expandable && !nodeData.selected;
+  };
+
+  hasNotChildAndIsSelected = (_: number, nodeData: OuTreeFlatNode) => {
+    return !nodeData.expandable && nodeData.selected;
+  };
+
+  hasNotChildAndIsNotSelected = (_: number, nodeData: OuTreeFlatNode) => {
+    return !nodeData.expandable && !nodeData.selected;
   };
 
   private getChildren = (node: OuTreeNode): Observable<OuTreeNode[]> => {
@@ -46,11 +58,11 @@ export class OrganizationTreeComponent implements OnInit {
   };
 
   private transformer = (node: OuTreeNode, level: number) => {
-    if (this.nodeMap.has(node.ouName)) {
-      return this.nodeMap.get(node.ouName)!;
+    if (this.nodeMap.has(node.ouId)) {
+      return this.nodeMap.get(node.ouId)!;
     }
-    const newNode = new OuTreeFlatNode(node.ouName, node.ouStatus, node.ouId, level, node.hasChildren, node.parentOuId);
-    this.nodeMap.set(node.ouName, newNode);
+    const newNode = new OuTreeFlatNode(node.ouName, node.ouStatus, node.ouId, false, level, node.hasChildren, node.parentOuId);
+    this.nodeMap.set(node.ouId, newNode);
     return newNode;
   };
 
@@ -65,6 +77,7 @@ export class OrganizationTreeComponent implements OnInit {
     private database: OrganizationTree2Service,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
+    private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
   ) {}
@@ -85,34 +98,12 @@ export class OrganizationTreeComponent implements OnInit {
       this.database.initializeForLocalAdmin(this.loggedInUser.topLevelOuIds);
     }
 
-    /*
-    const selectedNode: string = 'ou_2173677';
-    const nodes2expand: OuTreeFlatNode[] = [];
-    this.organizationsService.getOuPath(selectedNode, null)
-      .subscribe({
-        next: async (data: string) => {
-          const path: string[] = data.split(',');
-          for (let i = path.length - 1; i > 0; i--) {
-            const node2expand: OuTreeFlatNode = this.loadNode(path[i].trimStart());
-            if (node2expand != null) {
-              nodes2expand.push(node2expand);
-            }
-          }
-          nodes2expand.forEach((node2expand: OuTreeFlatNode) => this.treeControl.expand(node2expand));
-        },
-        error: (e) => this.messagesService.error(e),
-      });
-      */
-  }
+    const ouId: string = this.route.snapshot.params['ouId'];
 
-  private loadNode(ouName: string): OuTreeFlatNode {
-    if (this.nodeMap.has(ouName)) {
-      const node: OuTreeFlatNode = this.nodeMap.get(ouName);
-      this.loadChildren(node);
-      return node;
+    if (ouId != null) {
+      this.expandNode(ouId);
+      this.selectNode(ouId);
     }
-
-    return null;
   }
 
   ngOnDestroy() {
@@ -148,12 +139,61 @@ export class OrganizationTreeComponent implements OnInit {
   }
 
   loadChildren(node: OuTreeFlatNode) {
-    this.database.loadChildren(node.ouName, node.ouId);
+    this.database.loadChildren(node.ouId);
   }
 
   selectOu(ou: Ou) {
     this.router.navigate(['/organization', ou.objectId]);
     this.ous = [];
+  }
+
+  private expandNode(ouId: string) {
+    const maxRepeat: number = 5;
+    let countRepeat: number = 0;
+    this.organizationsService.getIdPath(ouId, null)
+      .subscribe({
+        next: async (data: string) => {
+          const path: string[] = data.split(',');
+          for (let i = path.length - 1; i > 0; i--) {
+            if (this.nodeMap.has(path[i])) {
+              countRepeat = 0;
+              const node: OuTreeFlatNode = this.nodeMap.get(path[i]);
+              this.loadChildren(node);
+              this.treeControl.expand(node);
+            } else {
+              countRepeat++;
+              if (countRepeat < maxRepeat) {
+                i++;
+                await this.sleep(500);
+              } else {
+                break;
+              }
+            }
+          }
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  private async selectNode(ouId: string) {
+    let node: OuTreeFlatNode = null;
+    const maxRepeat: number = 5;
+    let countRepeat = 0;
+    while (node == null) {
+      node = this.nodeMap.get(ouId);
+      if (node != null) {
+        const newNode = new OuTreeFlatNode(node.ouName, node.ouStatus, node.ouId, true, node.level, node.expandable, node.parentOuId);
+        this.nodeMap.set(node.ouId, newNode);
+        this.database.dataChange.next(this.database.dataChange.value);
+      } else {
+        countRepeat++;
+        if (countRepeat < maxRepeat) {
+          await this.sleep(500);
+        } else {
+          break;
+        }
+      }
+    }
   }
 
   private returnSuggestedOus(ouName: string) {
@@ -184,5 +224,9 @@ export class OrganizationTreeComponent implements OnInit {
           error: (e) => this.messagesService.error(e),
         });
     }
+  }
+
+  private sleep(milliseconds: number) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
   }
 }

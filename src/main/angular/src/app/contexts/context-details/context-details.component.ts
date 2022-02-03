@@ -204,6 +204,12 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  gotoRef(id: string) {
+    if (this.checkForm()) {
+      this.router.navigate(['/organization', id]);
+    }
+  }
+
   saveCtx() {
     if (this.ctx.responsibleAffiliations.length === 0) {
       this.messagesService.warning('you MUST select an organization');

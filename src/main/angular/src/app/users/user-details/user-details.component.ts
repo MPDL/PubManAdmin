@@ -116,7 +116,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  goToRef(grant: Grant) {
+  gotoRef(id: string) {
+    if (this.checkForm()) {
+      this.router.navigate(['/organization', id]);
+    }
+  }
+
+
+  gotoRefByGrant(grant: Grant) {
     if (this.checkForm()) {
       const ref = grant.objectRef;
       if (ref && ref.startsWith('ou')) {

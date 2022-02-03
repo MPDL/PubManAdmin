@@ -7,6 +7,7 @@ import {OrganizationDetailsResolverService} from './services/organization-detail
 
 const routes: Routes = [
   {path: 'organizations', component: OrganizationTreeComponent, canActivate: [LoginGuardService]},
+  {path: 'organizations/:ouId', component: OrganizationTreeComponent, canActivate: [LoginGuardService]},
   {path: 'organization/:id', component: OrganizationDetailsComponent, canActivate: [LoginGuardService], resolve: {ou: OrganizationDetailsResolverService}},
 ];
 

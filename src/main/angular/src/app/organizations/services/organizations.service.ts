@@ -50,6 +50,13 @@ export class OrganizationsService extends PubmanRestService {
     return this.getResource('GET', path, headers, null);
   }
 
+  getIdPath(id: string, token: string): Observable<string> {
+    const path = this.ousPath + '/' + id + '/idPath';
+    const headers = this.addHeaders(token, false);
+
+    return this.getStringResource('GET', path, headers);
+  }
+
   getOuPath(id: string, token: string): Observable<string> {
     const path = this.ousPath + '/' + id + '/ouPath';
     const headers = this.addHeaders(token, false);

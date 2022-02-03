@@ -39,7 +39,9 @@
                 <div *ngIf="user.active === true" class="col-1">
                     <input type="button" [disabled]="isNewGrant" class="btn btn-outline-primary btn-sm float-start" (click)="changeOu()" value="change" />
                 </div>
-                <label class="col-1 col-form-label col-form-label-sm">ouId</label>
+                <div class="col-1">
+                    <input type="button" [disabled]="!user.affiliation?.objectId" class="btn btn-outline-primary btn-sm" (click)="gotoRef(user.affiliation.objectId)" value="ouId" title="goto organization" />
+                </div>
                 <div *ngIf="user.affiliation" class="col-2">
                   <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.objectId" name="_ouId" readonly>
                 </div>
@@ -136,7 +138,7 @@
                     <label class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
                         <ul class="list-group">
-                            <li class="list-group-item-primary list-group-item-action py-0 align-items-center" *ngFor="let grant of user.grantList" (click)="goToRef(grant)">
+                            <li class="list-group-item list-group-item-action list-group-item-primary py-0" *ngFor="let grant of user.grantList" (click)="gotoRefByGrant(grant)">
                                 <div class="row">
                                     <span class="col-2 text-start text-truncate"><label class="col-form-label-sm p-0 ms-2">{{grant.role}}</label></span>
                                     <span class="col-3 text-start"><label class="col-form-label-sm p-0">{{grant.objectName}}</label></span>
@@ -166,9 +168,11 @@
             </div>
         </form>
     </div>
+    <!--
     <p></p>
     Form status: {{form.status}}<p>
     Form dirty: {{form.dirty}}<p>
     <p>User:</p>
     <pre>{{user | json}}</pre>
+    -->
 </div>

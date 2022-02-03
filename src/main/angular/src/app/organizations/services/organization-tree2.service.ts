@@ -27,6 +27,7 @@ export class OuTreeFlatNode {
     public ouName: string,
     public ouStatus: string,
     public ouId: string,
+    public selected: boolean = false,
     public level: number = 1,
     public expandable: boolean = false,
     public parentOuId: string | null = null,
@@ -80,12 +81,12 @@ export class OrganizationTree2Service {
       });
   }
 
-  loadChildren(ouName: string, ouId: string) {
-    if (!this.nodeMap.has(ouName)) {
+  loadChildren(ouId: string) {
+    if (!this.nodeMap.has(ouId)) {
       return;
     }
 
-    const parent: OuTreeNode = this.nodeMap.get(ouName)!;
+    const parent: OuTreeNode = this.nodeMap.get(ouId)!;
     this.getChildren4Ou(ouId)
       .subscribe({
         next: (data: Ou[]) => {
@@ -98,12 +99,12 @@ export class OrganizationTree2Service {
   }
 
   private generateNode(ou: Ou): OuTreeNode {
-    if (this.nodeMap.has(ou.name)) {
-      return this.nodeMap.get(ou.name)!;
+    if (this.nodeMap.has(ou.objectId)) {
+      return this.nodeMap.get(ou.objectId)!;
     }
 
     const ouTreeNode: OuTreeNode = new OuTreeNode(ou.name, ou.publicStatus, ou.objectId, ou.hasChildren);
-    this.nodeMap.set(ou.name, ouTreeNode);
+    this.nodeMap.set(ou.objectId, ouTreeNode);
 
     return ouTreeNode;
   }
