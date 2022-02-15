@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="card border-primary text-end m-1">
         <div class="card-header">
-            <h4 class="card-title">search 4 items</h4>
+            <h4 class="card-title">Search Items</h4>
         </div>
         <div class="card-body">
             <form [formGroup]="searchForm" novalidate (ngSubmit)="submit()">
@@ -12,20 +12,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="row w-100">
+                <div class="row w-100 mt-1">
                     <div class="col-1 ms-auto">
-                    <input type="submit" class="btn btn-outline-primary btn-sm" [disabled]="!searchForm.valid" value="submit" />
-                </div>
+                        <input type="submit" class="btn btn-outline-primary btn-sm" value="submit" />
+                    </div>
                 </div>
             </form>
-            <!--<pre>{{searchForm.value | json}}</pre>-->
         </div>
     </div>
     <div class="row">
         <div class="col-3">
-            <!--<div class="card-deck w-100">-->
             <div class="card border-primary text-end m-1">
-                <!--<div class="card-header">-->
                 <div class="row">
                     <label class="col-4 col-form-label col-form-label-sm"><span class="align-bottom">group by</span></label>
                     <div class="col-8">
@@ -34,7 +31,6 @@
                         </select>
                     </div>
                 </div>
-                <!--</div>-->
             </div>
             <div *ngIf="selected === 'creationDate'" class="card border-primary text-end m-1">
                 <div class="card-header">
@@ -44,7 +40,7 @@
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
                         <span class="badge bg-primary">{{year.doc_count}}</span>
                         <span class="text-primary ms-2">{{year.key_as_string.substring(0,4)}}</span>
-                        <li>
+                    <li>
                 </ul>
             </div>
             <div *ngIf="selected === 'genre'" class="card border-primary text-end m-1">
@@ -55,7 +51,7 @@
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let genre of genres" (click)="onSelectGenre(genre)">
                         <span class="text-primary me-2">{{genre.key}}</span>
                         <span class="badge bg-primary">{{genre.doc_count}}</span>
-                        <li>
+                    <li>
                 </ul>
             </div>
             <div *ngIf="selected === 'publisher'" class="card border-primary text-end m-1">
@@ -66,13 +62,13 @@
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let publisher of publishers" (click)="onSelectPublisher(publisher)">
                         <span class="text-primary me-2">{{publisher.key}}</span>
                         <span class="badge bg-primary">{{publisher.doc_count}}</span>
-                        <li>
+                    <li>
                 </ul>
             </div>
         </div>
         <div class="col-9">
             <div>
-                <span class="text-primary">your query returned {{total}} records</span>
+                <span class="text-primary">your query returned {{total}} record(s)</span>
                 <div *ngIf="total > 0" class="has-text-centered">
                     <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
                     <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 autoHide="true" (pageChange)="getPage($event)"></pagination-controls>
@@ -84,7 +80,7 @@
                         <span class="text-primary ms-2">{{item.metadata.title}}</span>
                         <span class="text-primary ms-2">{{item.creationDate}}</span>
                         <span *ngIf="item.metadata.sources" class="text-primary ms-2">{{item.metadata.sources[0]?.publishingInfo?.publisher}}</span>
-                        <li>
+                    <li>
                 </ul>
             </div>
         </div>

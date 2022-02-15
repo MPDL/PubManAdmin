@@ -102,7 +102,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeGrant(grant: Grant) {
-    if (confirm('this will remove the selected grant ' + grant.role + ' Proceed?')) {
+    if (confirm('Remove the selected grant ' + grant.role + '?')) {
       const grantsToRemove: Grant[] = [];
       grantsToRemove.push(grant);
       this.usersService.removeGrants(this.user, grantsToRemove, this.token)
@@ -141,7 +141,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   generatePassword() {
-    if (confirm('this will generate a new random password. Proceed?')) {
+    if (confirm('Generate a new random password?')) {
       this.usersService.generateRandomPassword(this.token)
         .subscribe({
           next: (data: string) => {
@@ -227,7 +227,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteUser() {
-    if (confirm('delete ' + this.user.name + ' ?')) {
+    if (confirm('Delete ' + this.user.name + '?')) {
       if (this.checkForm()) {
         this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
           .subscribe({
@@ -329,7 +329,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    if (confirm('you have unsaved changes. Proceed?')) {
+    if (confirm('You have unsaved changes. Proceed?')) {
       this.isNewGrant = false;
       this.isNewOu = false;
       return true;

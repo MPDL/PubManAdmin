@@ -11,13 +11,15 @@ import {ElasticService} from '../services/elastic.service';
   styleUrls: ['./elastic-search.component.scss'],
 })
 export class ElasticSearchComponent implements OnInit {
+  fields2Select: string[] = [];
   searchForm: FormGroup;
   searchRequest: SearchRequest;
-  searchResult: any;
+  searchResult: any[];
   sourceList: any[];
-  targetList: any[];
 
-  fields2Select: string[] = [];
+  get searchTerms(): FormArray {
+    return this.searchForm.get('searchTerms') as FormArray;
+  }
 
   constructor(
     private elasticService: ElasticService,
@@ -28,52 +30,11 @@ export class ElasticSearchComponent implements OnInit {
 
   ngOnInit() {
     this.searchForm = this.formBuilder.group({
-      remoteUrl: '',
       sourceIndex: ['', Validators.required],
-      targetIndex: ['', Validators.required],
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
+
     this.getList();
-  }
-
-  async changeList() {
-    const remoteUrl = this.searchForm.get('remoteUrl').value;
-    try {
-      this.sourceList = await this.elasticService.listRemoteIndices(remoteUrl);
-    } catch (e) {
-      this.messagesService.error(e);
-    }
-  }
-
-  async getList() {
-    try {
-      this.sourceList = await this.elasticService.listAllIndices();
-      this.targetList = this.sourceList;
-    } catch (e) {
-      this.messagesService.error(e);
-    }
-  }
-
-  initSearchTerm() {
-    return this.formBuilder.group({
-      type: '',
-      field: '',
-      searchTerm: '',
-    });
-  }
-
-  get searchTerms(): FormArray {
-    return this.searchForm.get('searchTerms') as FormArray;
-  }
-
-  addSearchTerm() {
-    this.searchTerms.push(this.initSearchTerm());
-  }
-
-  removeSearchTerm(i: number) {
-    if (i !== 0) {
-      this.searchTerms.removeAt(i);
-    }
   }
 
   handleNotification(event: string, index: number) {
@@ -81,32 +42,6 @@ export class ElasticSearchComponent implements OnInit {
       this.addSearchTerm();
     } else if (event === 'remove') {
       this.removeSearchTerm(index);
-    }
-  }
-
-  import() {
-    if (this.searchForm.valid) {
-      const url = this.searchForm.get('remoteUrl').value;
-      const source = this.searchForm.get('sourceIndex').value;
-      const target = this.searchForm.get('targetIndex').value;
-      this.searchRequest = this.prepareRequest();
-      const body = this.searchservice.buildQuery(this.searchRequest, -1, 0, '_id', 'asc');
-      this.elasticService.scrollwithcallback(url, source, body, async (cb: any[]) => {
-        const docs = [];
-        cb.forEach(async (doc) => {
-          const temp = {index: {_index: target, _type: doc._type, _id: doc._id}};
-          docs.push(temp);
-          docs.push(doc._source);
-        });
-        try {
-          const go4it = await this.elasticService.bulkIndex(docs);
-          this.messagesService.success(JSON.stringify(go4it));
-        } catch (e) {
-          this.messagesService.error(e);
-        }
-      });
-    } else {
-      this.messagesService.error('form invalid? '+this.searchForm.hasError);
     }
   }
 
@@ -127,32 +62,38 @@ export class ElasticSearchComponent implements OnInit {
     return request;
   }
 
-  private searchSelectedIndex(body: object) {
-    let url: string;
-    if (this.searchForm.get('remoteUrl').value !== '') {
-      url = this.searchForm.get('remoteUrl').value;
-    } else {
-      url = null;
-    }
-    const index = this.searchForm.get('sourceIndex').value;
-    this.elasticService.scrollwithcallback(url, index, body, (hits) => {
-      this.searchResult = hits;
-    });
+  private addSearchTerm() {
+    this.searchTerms.push(this.initSearchTerm());
   }
 
-  async reindex() {
-    const source = this.searchForm.get('sourceIndex').value;
-    const dest = this.searchForm.get('targetIndex').value;
-    const body = {source: {index: source}, dest: {index: dest}};
+  private async getList() {
     try {
-      const response = await this.elasticService.reindex(body);
-      this.messagesService.success(JSON.stringify(response));
+      this.sourceList = await this.elasticService.listAllIndices();
     } catch (e) {
       this.messagesService.error(e);
     }
   }
 
-  notyet(name: string) {
-    alert('this method is not yet implemented 4 ' + name);
+  private initSearchTerm() {
+    return this.formBuilder.group({
+      type: 'must',
+      field: '',
+      searchTerm: '',
+    });
+  }
+
+  private removeSearchTerm(i: number) {
+    if (i !== 0) {
+      this.searchTerms.removeAt(i);
+    }
+  }
+
+  private searchSelectedIndex(body: object) {
+    const index = this.searchForm.get('sourceIndex').value;
+    this.elasticService.scroll(index, body)
+      .then(
+        (data) => this.searchResult = data,
+        (error) => this.messagesService.error(error)
+      );
   }
 }

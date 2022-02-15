@@ -4,8 +4,7 @@
       <h4 class="text-secondary card-title">Indices List</h4>
       <input type="submit" class="btn btn-outline-secondary btn-sm" (click)="addNewIndex()" value="+" />
     </div>
-
-    <div class="list-group-flush">
+    <div class="list-group-flush m-2">
       <div class="list-group-item list-group-item-secondary list-group-item-action py-0 d-flex flex-sm-row no-gutters align-items-center" *ngFor="let index of indices" (click)="goTo(index.index)">
         <span class="col-sm-1 text-end me-2">{{index['docs.count']}}</span>
         <span class="col-sm-4 text-start text-truncate">{{index.index || index}}</span>
@@ -15,27 +14,6 @@
           <input type="submit" class="btn btn-outline-secondary btn-sm float-end" (click)="delete(index); $event.stopPropagation()" value="x" />
         </div>
       </div>
-    </div>
-
-    <div class="card-body border-secondary">
-      <h4 class="text-secondary card-title">Aliases</h4>
-    </div>
-    
-    <div class="list-group-flush m-1">
-      <form [formGroup]="aliasForm" novalidate (ngSubmit)="submit()">
-        <div formArrayName="indexAliases">
-          <div *ngFor="let indexAlias of indexAliases.controls; let i=index">
-            <div [formGroupName]="i">
-              <index-alias-component [indexAliasForm]="indexAliases.controls[i]" [indexList]="indices" (notice)="handleNotification($event, i)"></index-alias-component>
-            </div>
-          </div>
-        </div>
-        <div class="row w-100">
-          <div class="col-1 ms-auto">
-            <input type="submit" class="btn btn-outline-secondary btn-sm" [disabled]="!aliasForm.valid" value="submit" />
-          </div>
-        </div>
-      </form>
     </div>
   </div>
   <!--<pre>{{aliases | json}}</pre>-->

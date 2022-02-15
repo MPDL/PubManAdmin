@@ -16,6 +16,6 @@ export class ForbiddenNameDirective implements Validator {
   @Input('forbiddenName') forbiddenName = '';
 
   validate(control: AbstractControl): ValidationErrors | null {
-    return this.forbiddenName ? forbiddenNameValidator(new RegExp(this.forbiddenName, 'i'))(control) : null;
+    return this.forbiddenName ? forbiddenNameValidator(new RegExp('^' + this.forbiddenName + '$', 'i'))(control) : null;
   }
 }

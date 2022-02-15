@@ -5,7 +5,6 @@ import {ElasticRoutingModule} from './elastic-routing.module';
 import {ElasticSearchComponent} from './elastic-search/elastic-search.component';
 import {ElasticStartComponent} from './elastic-start/elastic-start.component';
 import {ElasticComponent} from './elastic.component';
-import {IndexAliasComponent} from './index-alias/index-alias.component';
 import {IndexDetailComponent} from './index-detail/index-detail.component';
 import {IndexListComponent} from './index-list/index-list.component';
 import {ElasticService} from './services/elastic.service';
@@ -21,8 +20,7 @@ import {ElasticService} from './services/elastic.service';
     ElasticStartComponent,
     IndexListComponent,
     ElasticSearchComponent,
-    IndexDetailComponent,
-    IndexAliasComponent],
+    IndexDetailComponent],
   providers: [
     ElasticService,
   ],

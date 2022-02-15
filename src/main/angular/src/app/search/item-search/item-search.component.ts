@@ -41,6 +41,10 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   token;
   index: string = 'default';
 
+  get searchTerms(): FormArray {
+    return this.searchForm.get('searchTerms') as FormArray;
+  }
+
   constructor(
     private authenticationservice: AuthenticationService,
     private elasticSearchService: ElasticSearchService,
@@ -60,31 +64,27 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  get searchTerms(): FormArray {
-    return this.searchForm.get('searchTerms') as FormArray;
+  ngOnDestroy() {
+    this.tokensubscription.unsubscribe();
   }
 
-  initSearchTerm() {
+  private initSearchTerm() {
     return this.formBuilder.group({
-      type: '',
+      type: 'must',
       field: '',
       searchTerm: '',
       fields: [],
     });
   }
 
-  addSearchTerm() {
+  private addSearchTerm() {
     this.searchTerms.push(this.initSearchTerm());
   }
 
-  removeSearchTerm(i: number) {
+  private removeSearchTerm(i: number) {
     if (i !== 0) {
       this.searchTerms.removeAt(i);
     }
-  }
-
-  ngOnDestroy() {
-    this.tokensubscription.unsubscribe();
   }
 
   async onAggregationSelect(agg) {
@@ -123,7 +123,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchItems(body: object) {
+  private searchItems(body: object) {
     this.currentPage = 1;
     this.searchService.query(this.itemRestUrl, this.token, body)
       .subscribe({
@@ -204,7 +204,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     this.searchItems(preparedBody);
   }
 
-  prepareRequest(): SearchRequest {
+  private prepareRequest(): SearchRequest {
     const model = this.searchForm.value;
     const searchTerms2Save: SearchTerm[] = model.searchTerms.map(
       (term: SearchTerm) => Object.assign({}, term)

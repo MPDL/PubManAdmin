@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="card border-primary text-end m-1">
         <div class="card-header">
-            <h4 class="card-title">search 4 users</h4>
+            <h4 class="card-title">Search Users</h4>
         </div>
         <div class="card-body">
             <form [formGroup]="searchForm" novalidate (ngSubmit)="submit()">
@@ -12,13 +12,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="row w-100">
+                <div class="row w-100 mt-1">
                     <div class="col-1 ms-auto">
-                        <input type="submit" class="btn btn-outline-primary btn-sm" [disabled]="!searchForm.valid" value="submit" />
+                        <input type="submit" class="btn btn-outline-primary btn-sm" value="submit" />
                     </div>
                 </div>
             </form>
-            <!--    <pre>{{searchForm.value | json}}</pre>-->
         </div>
     </div>
     <div class="row">
@@ -58,7 +57,7 @@
         </div>
         <div class="col-9">
             <div>
-                <span class="text-primary">your query returned {{total}} records</span>
+                <span class="text-primary">your query returned {{total}} record(s)</span>
                 <div *ngIf="total > 0" class="has-text-centered">
                     <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
                     <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 autoHide="true" (pageChange)="getPage($event)"></pagination-controls>

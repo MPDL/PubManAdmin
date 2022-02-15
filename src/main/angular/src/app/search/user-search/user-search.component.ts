@@ -3,7 +3,7 @@ import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {User} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
 import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
 import {userAggs} from '../../base/common/components/search-term/search.aggregations';
 import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
@@ -30,15 +30,19 @@ export class UserSearchComponent implements OnInit {
   fields2Select: string[] = [];
   aggregationsList: any[] = [];
   selectedAggregation: any;
-  years;
-  ous;
-  selected;
+  years: any[];
+  ous: any[];
+  selected: string;
   users: User[];
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
   token: string;
   tokenSubscription: Subscription;
+
+  get searchTerms(): FormArray {
+    return this.searchForm.get('searchTerms') as FormArray;
+  }
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -64,35 +68,6 @@ export class UserSearchComponent implements OnInit {
     this.tokenSubscription.unsubscribe();
   }
 
-  get searchTerms(): FormArray {
-    return this.searchForm.get('searchTerms') as FormArray;
-  }
-
-  initSearchTerm() {
-    return this.formBuilder.group({
-      type: '',
-      field: '',
-      searchTerm: '',
-      fields: [],
-    });
-  }
-
-  async onAggregationSelect(agg) {
-    this.selectedAggregation = userAggs[agg];
-    switch (agg) {
-    case 'creationDate':
-      this.years = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
-      this.selected = agg;
-      break;
-    case 'organization':
-      this.ous = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
-      this.selected = agg;
-      break;
-    default:
-      this.selected = null;
-    }
-  }
-
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
     const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
@@ -109,7 +84,54 @@ export class UserSearchComponent implements OnInit {
       });
   }
 
-  onSelectYear(year) {
+  handleNotification(event: string, index: number) {
+    if (event === 'add') {
+      this.addSearchTerm();
+    } else if (event === 'remove') {
+      this.removeSearchTerm(index);
+    }
+  }
+
+  async onAggregationSelect(agg: string | number) {
+    this.selectedAggregation = userAggs[agg];
+    switch (agg) {
+    case 'creationDate':
+      this.years = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
+      this.selected = agg;
+      break;
+    case 'organization':
+      this.ous = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
+      this.selected = agg;
+      break;
+    default:
+      this.selected = null;
+    }
+  }
+
+  onSelect(item: { objectId: any; }) {
+    this.router.navigate(['/user', item.objectId]);
+  }
+
+  onSelectOu(ou: { key: any; }) {
+    this.searchForm.reset();
+    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
+    this.currentPage = 1;
+    const body = {
+      'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword': ou.key}}}}, 'sort': [
+        {'name.keyword': {'order': 'asc'}},
+      ],
+    };
+    this.searchService.query(this.url, this.token, body)
+      .subscribe({
+        next: (data: {list: User[], records: number}) => {
+          this.users = data.list;
+          this.total = data.records;
+        },
+        error: (e) => this.messagesService.error(e),
+      });
+  }
+
+  onSelectYear(year: { key_as_string: string; }) {
     this.searchForm.reset();
     this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'creationDate', searchTerm: year.key_as_string + '||/y'}]);
     this.currentPage = 1;
@@ -131,51 +153,23 @@ export class UserSearchComponent implements OnInit {
       });
   }
 
-  onSelectOu(ou) {
-    this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
-    this.currentPage = 1;
-    const body = {
-      'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword': ou.key}}}}, 'sort': [
-        {'name.keyword': {'order': 'asc'}},
-      ],
-    };
-    this.searchService.query(this.url, this.token, body)
-      .subscribe({
-        next: (data: {list: User[], records: number}) => {
-          this.users = data.list;
-          this.total = data.records;
-        },
-        error: (e) => this.messagesService.error(e),
-      });
-  }
-
-  onSelect(item) {
-    this.router.navigate(['/user', item.objectId]);
-  }
-
-  handleNotification(event: string, index: number) {
-    if (event === 'add') {
-      this.addSearchTerm();
-    } else if (event === 'remove') {
-      this.removeSearchTerm(index);
-    }
+  submit() {
+    this.searchRequest = this.prepareRequest();
+    const preparedBody = this.searchService.buildQuery(this.searchRequest, 25, 0, 'name.keyword', 'asc');
+    this.searchUsers(preparedBody);
   }
 
   private addSearchTerm() {
     this.searchTerms.push(this.initSearchTerm());
   }
 
-  private removeSearchTerm(i: number) {
-    if (i !== 0) {
-      this.searchTerms.removeAt(i);
-    }
-  }
-
-  submit() {
-    this.searchRequest = this.prepareRequest();
-    const preparedBody = this.searchService.buildQuery(this.searchRequest, 25, 0, 'name.keyword', 'asc');
-    this.searchItems(preparedBody);
+  private initSearchTerm() {
+    return this.formBuilder.group({
+      type: 'must',
+      field: '',
+      searchTerm: '',
+      fields: [],
+    });
   }
 
   private prepareRequest(): SearchRequest {
@@ -189,7 +183,13 @@ export class UserSearchComponent implements OnInit {
     return request;
   }
 
-  private searchItems(body: object) {
+  private removeSearchTerm(i: number) {
+    if (i !== 0) {
+      this.searchTerms.removeAt(i);
+    }
+  }
+
+  private searchUsers(body: object) {
     this.currentPage = 1;
     this.searchService.query(this.url, this.token, body)
       .subscribe({

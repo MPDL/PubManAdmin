@@ -167,19 +167,19 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   clearAlternativeNames() {
-    if (confirm('remove all subject alternative names ?')) {
+    if (confirm('Remove all subject alternative names?')) {
       this.ou.metadata.alternativeNames.splice(0, this.ou.metadata.alternativeNames.length);
     }
   }
 
   clearDescriptions() {
-    if (confirm('remove all descriptions ?')) {
+    if (confirm('Remove all descriptions?')) {
       this.ou.metadata.descriptions.splice(0, this.ou.metadata.descriptions.length);
     }
   }
 
   clearIdentifiers() {
-    if (confirm('remove all identificators ?')) {
+    if (confirm('Remove all identificators?')) {
       this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
     }
   }
@@ -215,7 +215,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteOu() {
-    if (confirm('delete ' + this.ou.metadata.name + ' ?')) {
+    if (confirm('Delete ' + this.ou.metadata.name + '?')) {
       if (this.checkForm()) {
         this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
           .subscribe({
@@ -270,7 +270,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   removePredecessor(predecessor: Ou) {
-    if (confirm('remove predecessor ' + predecessor.metadata.name +' ?')) {
+    if (confirm('Remove predecessor ' + predecessor.metadata.name + '?')) {
       this.organizationsService.removePredecessor(this.ou, predecessor.objectId, this.token)
         .subscribe({
           next: (data: Ou) => {
@@ -341,7 +341,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    if (confirm('you have unsaved changes. Proceed?')) {
+    if (confirm('You have unsaved changes. Proceed?')) {
       this.isNewPredecessor = false;
       this.isNewOu = false;
       return true;

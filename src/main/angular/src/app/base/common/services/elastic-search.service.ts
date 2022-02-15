@@ -36,21 +36,6 @@ export class ElasticSearchService extends ElasticService {
     return buckets;
   }
 
-  private getTheNestedObject(obj, key2find, callback): any {
-    let found;
-    Object.keys(obj).forEach((key) => {
-      if (key === key2find) {
-        found = obj[key];
-        callback(found);
-      } else {
-        found = this.getTheNestedObject(obj[key], key2find, callback);
-        if (found) {
-          callback(found);
-        }
-      }
-    });
-  }
-
   getMappingFields(alias: string, type: string): string[] {
     const fields:string[] = [];
     this.client.indices.getFieldMapping({
@@ -61,8 +46,8 @@ export class ElasticSearchService extends ElasticService {
       if (error) {
         this.messagesService.error(error);
       } else {
-        let mapping;
-        this.getTheNestedObject(response, type, (found) => mapping = found);
+        let mapping: any;
+        this.getTheNestedObject(response, type, (found: any) => mapping = found);
         JSON.parse(JSON.stringify(mapping), (key, value: string) => {
           if (key === 'full_name') {
             if (!value.startsWith('_')) {
@@ -83,5 +68,20 @@ export class ElasticSearchService extends ElasticService {
     });
 
     return fields;
+  }
+
+  private getTheNestedObject(obj: { [x: string]: any; }, key2find: string, callback: { (found: any): any; (arg0: any): void; }): any {
+    let found: any;
+    Object.keys(obj).forEach((key) => {
+      if (key === key2find) {
+        found = obj[key];
+        callback(found);
+      } else {
+        found = this.getTheNestedObject(obj[key], key2find, callback);
+        if (found) {
+          callback(found);
+        }
+      }
+    });
   }
 }

@@ -8,7 +8,6 @@ import {SearchService} from '../common/services/search.service';
 import {ClickOutsideDirective} from '../directives/clickoutside.directive';
 import {SelectedItemColourDirective} from '../directives/selected-item-colour.directive';
 import {ForbiddenNameDirective} from '../directives/forbidden-name.directive';
-import {SuggestionComponent} from './components/suggestion/suggestion.component';
 import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
 
 @NgModule({
@@ -22,7 +21,6 @@ import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
     ClickOutsideDirective,
     ForbiddenNameDirective,
     SearchTermComponent,
-    SuggestionComponent,
     ValidLoginnameDirective,
   ],
   exports: [
@@ -31,7 +29,6 @@ import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
     ForbiddenNameDirective,
     NgxPaginationModule,
     SearchTermComponent,
-    SuggestionComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

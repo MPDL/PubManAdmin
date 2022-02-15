@@ -14,7 +14,6 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   @ViewChild('new_index_form')
     indexform: NgForm;
 
-  remote: string;
   index;
   indexName: string;
   indexInfo: any;
@@ -67,28 +66,34 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
   async addAlias(index: string) {
     try {
       const alias = prompt('new alias name:');
-      await this.elasticService.addAlias(index, alias);
-      this.messagesService.success('added alias ' + alias + ' to index ' + index);
-      this.getIndex(index);
+      if (alias != null) {
+        await this.elasticService.addAlias(index, alias);
+        this.messagesService.success('added alias ' + alias + ' to index ' + index);
+        this.getIndex(index);
+      }
     } catch (e) {
       this.messagesService.error(e);
     }
   }
 
   async removeAlias(index: string) {
-    try {
-      let alias: string;
-      const aliases = Object.keys(this.index[this.indexName].aliases);
-      if (aliases.length > 1) {
-        alias = prompt('which one?');
-      } else if (aliases.length === 1) {
-        alias = aliases[0];
+    if (confirm('Remove alias?')) {
+      try {
+        let alias: string;
+        const aliases = Object.keys(this.index[this.indexName].aliases);
+        if (aliases.length > 1) {
+          alias = prompt('which one?');
+        } else if (aliases.length === 1) {
+          alias = aliases[0];
+        }
+        if (alias != null) {
+          await this.elasticService.removeAlias(index, alias);
+          this.messagesService.success('removed alias ' + alias + ' from index ' + index);
+          this.getIndex(index);
+        }
+      } catch (e) {
+        this.messagesService.error(e);
       }
-      await this.elasticService.removeAlias(index, alias);
-      this.messagesService.success('removed alias ' + alias + ' from index ' + index);
-      this.getIndex(index);
-    } catch (e) {
-      this.messagesService.error(e);
     }
   }
 
@@ -112,24 +117,10 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  async getRemoteList(host: string) {
-    this.remote = host;
-    try {
-      this.list = await this.elasticService.listRemoteIndices(this.remote);
-    } catch (e) {
-      this.messagesService.error(e);
-    }
-  }
-
   async onChangeSettings(index: string) {
     try {
-      if (this.remote != null) {
-        const settings = await this.elasticService.getRemoteSettings4Index(this.remote, index);
-        this.selectedSettings = this.cloneSettings(settings[index]);
-      } else {
-        const settings = await this.elasticService.getSettings4Index(index);
-        this.selectedSettings = this.cloneSettings(settings[index]);
-      }
+      const settings = await this.elasticService.getSettings4Index(index);
+      this.selectedSettings = this.cloneSettings(settings[index]);
     } catch (e) {
       this.messagesService.error(e);
     }
@@ -153,13 +144,8 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
 
   async onChangeMappings(index: string) {
     try {
-      if (this.remote != null) {
-        const mapping = await this.elasticService.getRemoteMapping4Index(this.remote, index);
-        this.selectedMapping = mapping[index];
-      } else {
-        const mapping = await this.elasticService.getMapping4Index(index);
-        this.selectedMapping = mapping[index];
-      }
+      const mapping = await this.elasticService.getMapping4Index(index);
+      this.selectedMapping = mapping[index];
     } catch (e) {
       this.messagesService.error(e);
     }
@@ -169,20 +155,15 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['elastic', 'index']);
   }
 
-  remoteList() {
-    const host = prompt('where from?');
-    this.getRemoteList(host);
-  }
-
   async save() {
-    let msg = 'saving ' + this.indexName + '\n';
+    let msg = 'Saving ' + this.indexName.toLocaleLowerCase() + '\n';
     msg = msg.concat('with seleted settings / mapping');
 
     if (confirm(msg)) {
       const body = {};
       Object.assign(body, this.selectedSettings, this.selectedMapping);
       try {
-        const response = await this.elasticService.createIndex(this.indexName, body);
+        const response = await this.elasticService.createIndex(this.indexName.toLocaleLowerCase(), body);
         this.messagesService.success('created index ' + this.indexName + '\n' + JSON.stringify(response));
       } catch (e) {
         this.messagesService.error(e);
@@ -204,9 +185,5 @@ export class IndexDetailComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.messagesService.error(e);
     }
-  }
-
-  notyet(name: string) {
-    alert('this method is not yet implemented 4 ' + name);
   }
 }

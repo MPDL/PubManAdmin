@@ -20,6 +20,15 @@ export class SearchTermComponent {
   filteredTerms: string[] = [];
   types: string[] = queryTypes;
 
+  addSearchTerm() {
+    this.notice.emit('add');
+  }
+
+  close() {
+    this.searchTermForm.patchValue({field: ''});
+    this.filteredTerms = [];
+  }
+
   filter() {
     const selectedField = this.searchTermForm.get('field') as FormGroup;
     if (selectedField.value !== '') {
@@ -31,25 +40,16 @@ export class SearchTermComponent {
     }
   }
 
-  select(term) {
-    this.searchTermForm.patchValue({field: term});
-    this.filteredTerms = [];
-  }
-
-  onQueryTypeSelect(type) {
+  onQueryTypeSelect(type: any) {
     this.searchTermForm.patchValue({type: type});
-  }
-
-  close() {
-    this.searchTermForm.patchValue({field: ''});
-    this.filteredTerms = [];
-  }
-
-  addSearchTerm() {
-    this.notice.emit('add');
   }
 
   removeSearchTerm() {
     this.notice.emit('remove');
+  }
+
+  select(term: any) {
+    this.searchTermForm.patchValue({field: term});
+    this.filteredTerms = [];
   }
 }

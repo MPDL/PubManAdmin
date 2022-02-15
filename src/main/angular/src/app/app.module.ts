@@ -58,7 +58,6 @@ import {UsersModule} from './users/users.module';
     PubmanRestService,
     AdminGuardService,
     LoginGuardService,
-    //    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
 })

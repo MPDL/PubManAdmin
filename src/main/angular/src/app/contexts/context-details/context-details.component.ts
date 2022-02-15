@@ -135,13 +135,13 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   clearGenres() {
-    if (confirm('remove all genres ?')) {
+    if (confirm('Remove all genres?')) {
       this.allowedGenres.splice(0, this.allowedGenres.length);
     }
   }
 
   clearSubjects() {
-    if (confirm('remove all subject classifications ?')) {
+    if (confirm('Remove all subject classifications?')) {
       this.allowedSubjects.splice(0, this.allowedSubjects.length);
     }
   }
@@ -156,7 +156,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: Ou) => {
             if (data.publicStatus !== 'OPENED') {
-              if (confirm('closed contexts of closed organizations should not be opened. Proceed?')) {
+              if (confirm('Closed contexts of closed organizations should not be opened. Proceed?')) {
                 this.contextsService.openCtx(this.ctx, this.token)
                   .subscribe({
                     next: (data: Ctx) => {
@@ -183,7 +183,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteCtx() {
-    if (confirm('delete ' + this.ctx.name + ' ?')) {
+    if (confirm('Delete ' + this.ctx.name + '?')) {
       if (this.checkForm()) {
         this.contextsService.delete(this.ctxsPath + '/' + this.ctx.objectId, this.token)
           .subscribe({
@@ -336,7 +336,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    if (confirm('you have unsaved changes. Proceed?')) {
+    if (confirm('You have unsaved changes. Proceed?')) {
       this.isNewOu = false;
       return true;
     }

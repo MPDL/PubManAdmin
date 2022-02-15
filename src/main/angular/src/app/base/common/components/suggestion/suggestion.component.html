@@ -1,8 +1,0 @@
-<div [formGroup]="form">
-  <input type="text" class="form-control form-control-sm" formControlName="suggestion" [placeholder]="placeholder" autocomplete="off">
-    <ul class="list-group" (clickOutside)="close()">
-      <li *ngFor="let selected of (searchResult | async)?.list" class="list-group-item list-group-item-action py-0 text-start" [ngClass]="'list-group-item-'+color" (click)="filter(selected)">
-        <small>{{selected.name}}</small>
-      </li>
-    </ul>
-</div>

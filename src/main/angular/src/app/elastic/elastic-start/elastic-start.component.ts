@@ -28,10 +28,4 @@ export class ElasticStartComponent implements OnInit {
       this.info = null;
     }
   }
-
-  connect2(server) {
-    this.host = server;
-    this.elasticService.connect2(this.host);
-    this.getInfo();
-  }
 }
