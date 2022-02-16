@@ -1,29 +1,13 @@
 import {Injectable} from '@angular/core';
-import {Client} from 'elasticsearch';
-import {environment} from 'environments/environment';
-import {ConnectionService} from '../../base/services/connection.service';
+import {ConnectionService} from 'app/base/services/connection.service';
+import {ElasticBaseService} from 'app/base/services/elastic-base.service';
 
 @Injectable()
-export class ElasticService {
-  client: Client;
-  url: string;
-
+export class ElasticService extends ElasticBaseService {
   constructor(
-    private connectionService: ConnectionService,
+    protected connectionService: ConnectionService,
   ) {
-    if (!this.client) {
-      this.connectionService.connectionService$.subscribe((data: string) => {
-        this.url = data + environment.elasticUrl;
-        this.connect(this.url);
-      });
-    }
-  }
-
-  private connect(url: string) {
-    this.client = new Client({
-      host: url,
-      log: ['error', 'warning'],
-    });
+    super(connectionService);
   }
 
   info_api() {
@@ -57,23 +41,9 @@ export class ElasticService {
     });
   }
 
-  getAliases4Index(index: string) {
-    return this.client.indices.getAlias({
-      index: index,
-    });
-  }
-
   getMapping4Index(index: string) {
     return this.client.indices.getMapping({
       index: index,
-    });
-  }
-
-  putMapping2Index(index: string, type: string, mapping: object) {
-    return this.client.indices.putMapping({
-      index: index,
-      type: type,
-      body: mapping,
     });
   }
 

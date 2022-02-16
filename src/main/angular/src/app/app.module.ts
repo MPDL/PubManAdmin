@@ -16,7 +16,7 @@ import {NavigationComponent} from './base/navigation/navigation.component';
 import {AdminGuardService} from './base/services/admin-guard.service';
 import {AuthenticationService} from './base/services/authentication.service';
 import {ConnectionService} from './base/services/connection.service';
-import {ElasticService} from './base/services/elastic.service';
+import {ElasticBaseService} from './base/services/elastic-base.service';
 import {LoginGuardService} from './base/services/login-guard.service';
 import {MessagesService} from './base/services/messages.service';
 import {PubmanRestService} from './base/services/pubman-rest.service';
@@ -53,7 +53,7 @@ import {UsersModule} from './users/users.module';
   providers: [
     ConnectionService,
     AuthenticationService,
-    ElasticService,
+    ElasticBaseService,
     MessagesService,
     PubmanRestService,
     AdminGuardService,

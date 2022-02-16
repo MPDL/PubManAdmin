@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Client} from 'elasticsearch';
 import {environment} from 'environments/environment';
-import {ConnectionService} from '../../base/services/connection.service';
+import {ConnectionService} from './connection.service';
 
 @Injectable()
-export class ElasticService {
+export class ElasticBaseService {
   client: Client;
   uri: string;
 

@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ConnectionService} from '../../services/connection.service';
-import {ElasticService} from '../../services/elastic.service';
+import {ElasticBaseService} from '../../services/elastic-base.service';
 import {MessagesService} from '../../services/messages.service';
 
 @Injectable()
-export class ElasticSearchService extends ElasticService {
+export class ElasticSearchService extends ElasticBaseService {
   constructor(
     protected connectionService: ConnectionService,
     protected messagesService: MessagesService,
