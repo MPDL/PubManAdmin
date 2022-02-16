@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
 import {ConnectionService} from '../services/connection.service';
 
 const {version: appVersion} = require('../../../../package.json');
