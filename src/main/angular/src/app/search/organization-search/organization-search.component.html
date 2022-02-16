@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="card border-primary text-end m-1">
         <div class="card-header">
-            <h4 class="card-title">Search Users</h4>
+            <h4 class="card-title">Search Organizations</h4>
         </div>
         <div class="card-body">
             <form [formGroup]="searchForm" novalidate (ngSubmit)="submit()">
@@ -26,7 +26,7 @@
                 <div class="row">
                     <label class="col-4 col-form-label col-form-label-sm"><span class="align-bottom">group by</span></label>
                     <div class="col-8">
-                        <select class="select form-select form-select-sm"(change)="onAggregationSelect($event.target.value)">
+                        <select class="select form-select form-select-sm" (change)="onAggregationSelect($event.target.value)">
                             <option *ngFor="let agg of aggregationsList" [value]="agg">{{agg}}</option>
                         </select>
                     </div>
@@ -34,35 +34,24 @@
             </div>
             <div *ngIf="selected === 'creationDate'" class="card border-primary text-end m-1">
                 <div class="card-header">
-                    <h4 class="card-title">users / creationDate</h4>
+                    <h4 class="card-title">organizations / creationDate</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
                     <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let year of years" (click)="onSelectYear(year)">
                         <span class="badge bg-primary">{{year.doc_count}}</span>
                         <span class="text-primary ms-2">{{year.key_as_string.substring(0,4)}}</span>
-                    </li>
+                    <li>
                 </ul>
             </div>
-            <div *ngIf="selected === 'organization'" class="card border-primary text-end m-1">
+            <div *ngIf="selected === 'state'" class="card border-primary text-end m-1">
                 <div class="card-header">
-                    <h4 class="card-title">users / organization</h4>
+                    <h4 class="card-title">organizations / state</h4>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let ou of ous" (click)="onSelectOu(ou)">
-                        <span class="text-primary me-2">{{ou.key}}</span>
-                        <span class="badge bg-primary">{{ou.doc_count}}</span>
-                    </li>
-                </ul>
-            </div>
-            <div *ngIf="selected === 'active'" class="card border-primary text-end m-1">
-                <div class="card-header">
-                    <h4 class="card-title">users / active</h4>
-                </div>
-                <ul class="list-group list-group-flush h-100">
-                    <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let active of actives" (click)="onSelectActive(active)">
-                        <span class="text-primary me-2">{{active.key == '1' ? true : false}}</span>
-                        <span class="badge bg-primary">{{active.doc_count}}</span>
-                    </li>
+                    <li selected-item-color class="list-group-item text-primary p-1 justify-content-end" *ngFor="let state of states" (click)="onSelectState(state)">
+                        <span class="text-primary me-2">{{state.key}}</span>
+                        <span class="badge bg-primary">{{state.doc_count}}</span>
+                    <li>
                 </ul>
             </div>
         </div>
@@ -74,13 +63,11 @@
                     <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 autoHide="true" (pageChange)="getPage($event)"></pagination-controls>
                 </div>
                 <ul class="list-group list-group-flush h-100">
-                    <li selected-item-color class="list-group-item text-primary justify-content-start p-1" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: 25, currentPage: currentPage, totalItems: total }"
-                        (click)="onSelect(user)">
-                        <span class="text-primary">{{user.objectId}}</span>
-                        <span class="text-primary ms-2">{{user.name}}</span>
-                        <span class="text-primary ms-2">({{user.loginname}})</span>
-                        <span class="text-primary ms-2">{{user.affiliation?.name}}</span>
-                    </li>
+                    <li selected-item-color class="list-group-item text-primary justify-content-start p-1" *ngFor="let ou of ous | paginate: { id: 'iPaginator', itemsPerPage: 25, currentPage: currentPage, totalItems: total }"
+                        (click)="onSelect(ou)">
+                        <span class="text-primary">{{ou.objectId}}</span>
+                        <span class="text-primary ms-2">{{ou.name}}</span>
+                    <li>
                 </ul>
             </div>
         </div>

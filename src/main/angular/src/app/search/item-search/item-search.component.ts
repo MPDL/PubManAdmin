@@ -29,16 +29,16 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   fields2Select: string[] = [];
   aggregationsList: any[] = [];
   selectedAggregation: any;
-  years;
-  genres;
-  publishers;
-  selected;
+  years: any[];
+  genres: any[];
+  publishers: any[];
+  selected: any;
   items: any[];
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
   tokensubscription: Subscription;
-  token;
+  token: string;
   index: string = 'default';
 
   get searchTerms(): FormArray {
@@ -87,7 +87,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onAggregationSelect(agg) {
+  async onAggregationSelect(agg: string | number) {
     this.selectedAggregation = itemAggs[agg];
     switch (agg) {
     case 'creationDate':
@@ -190,7 +190,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  handleNotification(event: string, index) {
+  handleNotification(event: string, index: number) {
     if (event === 'add') {
       this.addSearchTerm();
     } else if (event === 'remove') {

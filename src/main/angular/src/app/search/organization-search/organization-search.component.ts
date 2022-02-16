@@ -1,11 +1,10 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-import {User} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
-import {userAggs} from '../../base/common/components/search-term/search.aggregations';
+import {ouAggs} from '../../base/common/components/search-term/search.aggregations';
 import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
 import {ElasticSearchService} from '../../base/common/services/elastic-search.service';
 import {SearchService} from '../../base/common/services/search.service';
@@ -13,15 +12,16 @@ import {AuthenticationService} from '../../base/services/authentication.service'
 import {MessagesService} from '../../base/services/messages.service';
 
 @Component({
-  selector: 'user-search-component',
-  templateUrl: './user-search.component.html',
-  styleUrls: ['./user-search.component.scss'],
+  selector: 'organization-search-component',
+  templateUrl: './organization-search.component.html',
+  styleUrls: ['./organization-search.component.scss'],
 })
-export class UserSearchComponent implements OnInit {
+export class OrganizationSearchComponent implements OnInit, OnDestroy {
   @ViewChildren(SearchTermComponent)
     components: QueryList<SearchTermComponent>;
 
-  userRestUrl = environment.restUsers;
+  ouRestUrl = environment.restOus;
+
   searchForm: FormGroup;
   searchRequest: SearchRequest;
 
@@ -30,23 +30,23 @@ export class UserSearchComponent implements OnInit {
   fields2Select: string[] = [];
   aggregationsList: any[] = [];
   selectedAggregation: any;
-  actives: any[];
   years: any[];
+  states: any[];
+  selected: any;
   ous: any[];
-  selected: string;
-  users: User[];
   total: number = 0;
   loading: boolean = false;
   currentPage: number = 1;
+  tokensubscription: Subscription;
   token: string;
-  tokenSubscription: Subscription;
+  index: string = 'default';
 
   get searchTerms(): FormArray {
     return this.searchForm.get('searchTerms') as FormArray;
   }
 
   constructor(
-    private authenticationService: AuthenticationService,
+    private authenticationservice: AuthenticationService,
     private elasticSearchService: ElasticSearchService,
     private formBuilder: FormBuilder,
     private messagesService: MessagesService,
@@ -55,30 +55,30 @@ export class UserSearchComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    for (const userAgg in userAggs) {
-      this.aggregationsList.push(userAgg);
+    for (const ouAgg in ouAggs) {
+      this.aggregationsList.push(ouAgg);
     }
-    this.fields2Select = this.elasticSearchService.getMappingFields(environment.userIndex.name, environment.userIndex.type);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
+    this.fields2Select = this.elasticSearchService.getMappingFields(environment.ouIndex.name, environment.ouIndex.type);
+    this.tokensubscription = this.authenticationservice.token$.subscribe((data: string) => this.token = data);
     this.searchForm = this.formBuilder.group({
       searchTerms: this.formBuilder.array([this.initSearchTerm()]),
     });
   }
 
   ngOnDestroy() {
-    this.tokenSubscription.unsubscribe();
+    this.tokensubscription.unsubscribe();
   }
 
   getPage(page: number) {
     this.searchRequest = this.prepareRequest();
-    const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'name.keyword', 'asc');
+    const body = this.searchService.buildQuery(this.searchRequest, 25, ((page - 1) * 25), 'metadata.name.keyword', 'asc');
     this.loading = true;
-    this.searchService.query(this.userRestUrl, this.token, body)
+    this.searchService.query(this.ouRestUrl, this.token, body)
       .subscribe({
-        next: (data: {list: User[], records: number}) => {
+        next: (data) => {
           this.total = data.records;
           this.currentPage = page;
-          this.users = data.list;
+          this.ous = data.list;
           this.loading = false;
         },
         error: (e) => this.messagesService.error(e),
@@ -94,18 +94,14 @@ export class UserSearchComponent implements OnInit {
   }
 
   async onAggregationSelect(agg: string | number) {
-    this.selectedAggregation = userAggs[agg];
+    this.selectedAggregation = ouAggs[agg];
     switch (agg) {
     case 'creationDate':
-      this.years = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
+      this.years = await this.elasticSearchService.buckets(environment.ouIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
-    case 'organization':
-      this.ous = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
-      this.selected = agg;
-      break;
-    case 'active':
-      this.actives = await this.elasticSearchService.buckets(environment.userIndex.name, this.selectedAggregation, false);
+    case 'state':
+      this.states = await this.elasticSearchService.buckets(environment.ouIndex.name, this.selectedAggregation, false);
       this.selected = agg;
       break;
     default:
@@ -113,38 +109,19 @@ export class UserSearchComponent implements OnInit {
     }
   }
 
-  onSelect(user: { objectId: any; }) {
-    this.router.navigate(['/user', user.objectId]);
+  onSelect(ou: { objectId: any; }) {
+    this.router.navigate(['/organization', ou.objectId]);
   }
 
-  onSelectActive(active: { key: string; }) {
+  onSelectState(state: { key: string; }) {
     this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'active', searchTerm: active.key == '1' ? true : false}]);
+    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'publicStatus.keyword', searchTerm: state.key}]);
     this.currentPage = 1;
-    const queryString = '?q=active:' + (active.key == '1' ? 'true' : 'false');
-    this.searchService.filter(this.userRestUrl, this.token, queryString, 1)
+    const queryString = '?q=publicStatus.keyword:' + state.key;
+    this.searchService.filter(this.ouRestUrl, this.token, queryString, 1)
       .subscribe({
         next: (data) => {
-          this.users = data.list;
-          this.total = data.records;
-        },
-        error: (e) => this.messagesService.error(e),
-      });
-  }
-
-  onSelectOu(ou: { key: any; }) {
-    this.searchForm.reset();
-    this.searchForm.controls.searchTerms.patchValue([{type: 'filter', field: 'affiliation.name.keyword', searchTerm: ou.key}]);
-    this.currentPage = 1;
-    const body = {
-      'size': 25, 'query': {'bool': {'filter': {'term': {'affiliation.name.keyword': ou.key}}}}, 'sort': [
-        {'name.keyword': {'order': 'asc'}},
-      ],
-    };
-    this.searchService.query(this.userRestUrl, this.token, body)
-      .subscribe({
-        next: (data: {list: User[], records: number}) => {
-          this.users = data.list;
+          this.ous = data.list;
           this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),
@@ -158,15 +135,15 @@ export class UserSearchComponent implements OnInit {
     const term = new SearchTerm();
     term.type = 'filter';
     term.field = 'creationDate';
-    term.searchTerm = year.key_as_string + '||/y';
+    term.searchTerm = year.key_as_string+'||/y';
     const terms = [term];
     const request = new SearchRequest();
     request.searchTerms = terms;
     const body = this.searchService.buildQuery(request, 25, 0, 'creationDate', 'asc');
-    this.searchService.query(this.userRestUrl, this.token, body)
+    this.searchService.query(this.ouRestUrl, this.token, body)
       .subscribe({
-        next: (data: {list: User[], records: number}) => {
-          this.users = data.list;
+        next: (data) => {
+          this.ous = data.list;
           this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),
@@ -175,8 +152,8 @@ export class UserSearchComponent implements OnInit {
 
   submit() {
     this.searchRequest = this.prepareRequest();
-    const preparedBody = this.searchService.buildQuery(this.searchRequest, 25, 0, 'name.keyword', 'asc');
-    this.searchUsers(preparedBody);
+    const preparedBody = this.searchService.buildQuery(this.searchRequest, 25, 0, 'metadata.name.keyword', 'asc');
+    this.searchContexts(preparedBody);
   }
 
   private addSearchTerm() {
@@ -209,12 +186,12 @@ export class UserSearchComponent implements OnInit {
     }
   }
 
-  private searchUsers(body: object) {
+  private searchContexts(body: object) {
     this.currentPage = 1;
-    this.searchService.query(this.userRestUrl, this.token, body)
+    this.searchService.query(this.ouRestUrl, this.token, body)
       .subscribe({
-        next: (data: {list: User[], records: number}) => {
-          this.users = data.list;
+        next: (data) => {
+          this.ous = data.list;
           this.total = data.records;
         },
         error: (e) => this.messagesService.error(e),

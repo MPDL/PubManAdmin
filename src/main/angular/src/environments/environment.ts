@@ -6,17 +6,20 @@ export const environment = {
   restOus: '/rest/ous',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
+  ctxIndex: {
+    name: 'contexts',
+    type: 'context',
+  },
   itemIndex: {
     name: 'items',
     type: 'item',
-  },
-  userIndex: {
-    name: 'users',
-    type: 'user',
   },
   ouIndex: {
     name: 'ous',
     type: 'organization',
   },
-
+  userIndex: {
+    name: 'users',
+    type: 'user',
+  },
 };
