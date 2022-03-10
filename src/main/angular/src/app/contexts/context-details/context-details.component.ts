@@ -69,7 +69,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.setContext(this.activatedRoute.snapshot.data['ctx']);
 
     if (!this.isAdmin) {
-      this.getLoggedInUserAllOpenOus(null);
+      this.getLoggedInUserAllOpenOus();
     }
 
     if (this.ctx.name === 'new ctx') {
@@ -256,8 +256,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getLoggedInUserAllOpenOus(ignoreOuId: string) {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
+  private getLoggedInUserAllOpenOus() {
+    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
       .subscribe({
         next: (data: Ou[]) => {
           const ous: Ou[] = [];

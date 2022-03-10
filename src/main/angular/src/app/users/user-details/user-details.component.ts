@@ -62,7 +62,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.setUser(this.activatedRoute.snapshot.data['user']);
 
     if (!this.isAdmin) {
-      this.getLoggedInUserAllOpenOus(null);
+      this.getLoggedInUserFirstLevelOpenOus();
     }
 
     if (this.user.loginname === 'new user') {
@@ -251,20 +251,20 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getLoggedInUserAllOpenOus(ignoreOuId: string) {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
-      .subscribe({
-        next: (data: Ou[]) => {
-          const ous: Ou[] = [];
-          data.forEach((ou: Ou) => {
-            if (ou.publicStatus === 'OPENED') {
-              ous.push(ou);
+  private getLoggedInUserFirstLevelOpenOus() {
+    const ous: Ou[] = [];
+    this.loggedInUser.topLevelOuIds.forEach((ouId: string) => {
+      this.organizationsService.get(this.ousPath, ouId, null)
+        .subscribe({
+          next: (data: Ou) => {
+            if (data.publicStatus === 'OPENED') {
+              ous.push(data);
             }
-          });
-          this.ousForLoggedInUser = ous;
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+            this.ousForLoggedInUser = ous;
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    });
   }
 
   private returnSuggestedOus(ouName: string) {

@@ -68,7 +68,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.hasOpenParent = true;
 
     if (!this.isAdmin) {
-      this.getLoggedInUserAllOpenOus(null);
+      this.getLoggedInUserAllOpenOus();
     }
 
     if (this.ou.metadata.name === 'new ou') {
@@ -350,8 +350,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  private getLoggedInUserAllOpenOus(ignoreOuId: string) {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, ignoreOuId, null)
+  private getLoggedInUserAllOpenOus() {
+    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
       .subscribe({
         next: (data: Ou[]) => {
           const ous: Ou[] = [];

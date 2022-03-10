@@ -206,7 +206,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
             );
             const body = ctxs4autoSelectByName;
             body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
-            body.query.bool.must.term['name'] = ctxName;
+            body.query.bool.must.term['name'] = ctxName.toLowerCase();
             this.contextsService.query(this.ctxsPath, null, body)
               .subscribe({
                 next: (data: {list: Ctx[], records: number}) => this.ctxsByName = data.list,
@@ -236,7 +236,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
             );
             const body = ous4autoSelect;
             body.query.bool.filter.terms['objectId'] = allOuIds;
-            body.query.bool.must.term['metadata.name.auto'] = ouName;
+            body.query.bool.must.term['metadata.name.auto'] = ouName.toLowerCase();
             this.organizationsService.query(this.ousPath, null, body)
               .subscribe({
                 next: (data: {list: Ou[], records: number}) => this.ous = data.list,

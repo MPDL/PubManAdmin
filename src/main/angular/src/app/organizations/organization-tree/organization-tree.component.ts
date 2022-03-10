@@ -214,7 +214,7 @@ export class OrganizationTreeComponent implements OnInit {
             });
             const body = ous4autoSelect;
             body.query.bool.filter.terms['objectId'] = allOuIds;
-            body.query.bool.must.term['metadata.name.auto'] = ouName;
+            body.query.bool.must.term['metadata.name.auto'] = ouName.toLowerCase();
             this.organizationsService.query(this.ousPath, null, body)
               .subscribe({
                 next: (data: {list: Ou[], records: number}) => this.ous = data.list,

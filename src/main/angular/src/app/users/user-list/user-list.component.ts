@@ -234,7 +234,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             );
             const body = ous4autoSelect;
             body.query.bool.filter.terms['objectId'] = allOuIds;
-            body.query.bool.must.term['metadata.name.auto'] = term;
+            body.query.bool.must.term['metadata.name.auto'] = term.toLowerCase();
             this.organizationsService.query(this.ousPath, null, body)
               .subscribe({
                 next: (data: {list: Ou[], records: number}) => this.ous = data.list,
@@ -264,7 +264,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             );
             const body = users4autoSelectByLogin;
             body.query.bool.filter.terms['affiliation.objectId'] = allOuIds;
-            body.query.bool.must.term['loginname.auto'] = loginName;
+            body.query.bool.must.term['loginname.auto'] = loginName.toLowerCase();
             this.usersService.query(this.usersPath, this.token, body)
               .subscribe({
                 next: (data: {list: User[], records: number}) => this.usersByLogin = data.list,
@@ -294,7 +294,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             );
             const body = users4autoSelectByName;
             body.query.bool.filter.terms['affiliation.objectId'] = allOuIds;
-            body.query.bool.must.term['name.auto'] = userName;
+            body.query.bool.must.term['name.auto'] = userName.toLowerCase();
             this.usersService.query(this.usersPath, this.token, body)
               .subscribe({
                 next: (data: {list: User[], records: number}) => this.usersByName = data.list,
