@@ -206,7 +206,7 @@ export class ContextListComponent implements OnInit, OnDestroy {
             );
             const body = ctxs4autoSelectByName;
             body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
-            body.query.bool.must.term['name'] = ctxName.toLowerCase();
+            body.query.bool.must.term['name.auto'] = ctxName.toLowerCase();
             this.contextsService.query(this.ctxsPath, null, body)
               .subscribe({
                 next: (data: {list: Ctx[], records: number}) => this.ctxsByName = data.list,

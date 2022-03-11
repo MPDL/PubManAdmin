@@ -6,7 +6,7 @@ export const ctxs4autoSelectByName = {
         'terms': {'responsibleAffiliations.objectId': ['terms']},
       },
       'must': {
-        'term': {'name': 'term'},
+        'term': {'name.auto': 'term'},
       },
     },
   },
