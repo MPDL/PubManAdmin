@@ -24,7 +24,12 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/.htaccess"
+              "src/.htaccess",
+              {
+                "glob": "*.svg",
+                "input": "./node_modules/bootstrap-icons/",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/styles.scss"
