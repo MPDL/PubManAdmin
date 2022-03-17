@@ -9,10 +9,6 @@ import {OrganizationsService} from './organizations.service';
 export class OuTreeNode {
   childrenChange: BehaviorSubject<OuTreeNode[]> = new BehaviorSubject<OuTreeNode[]>([]);
 
-  //  children(): OuTreeNode[] {
-  //    return this.childrenChange.value;
-  //  }
-
   constructor(
     public ouName: string,
     public ouStatus: string,
@@ -57,7 +53,6 @@ export class OrganizationTree2Service {
       const topLevelOus: Ou[] = await lastValueFrom(this.getTopLevelOus());
       topLevelOus.forEach(
         (ou: Ou) => ouTreeNodes.push(this.generateNode(ou))
-
       );
       this.dataChange.next(ouTreeNodes);
     } catch (e) {

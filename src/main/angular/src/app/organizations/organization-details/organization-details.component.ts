@@ -168,19 +168,28 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   clearAlternativeNames() {
     if (confirm('Remove all subject alternative names?')) {
-      this.ou.metadata.alternativeNames.splice(0, this.ou.metadata.alternativeNames.length);
+      if (this.ou.metadata.alternativeNames != null) {
+        this.ou.metadata.alternativeNames.splice(0, this.ou.metadata.alternativeNames.length);
+        this.markAsDirty();
+      }
     }
   }
 
   clearDescriptions() {
     if (confirm('Remove all descriptions?')) {
-      this.ou.metadata.descriptions.splice(0, this.ou.metadata.descriptions.length);
+      if (this.ou.metadata.descriptions != null) {
+        this.ou.metadata.descriptions.splice(0, this.ou.metadata.descriptions.length);
+        this.markAsDirty();
+      }
     }
   }
 
   clearIdentifiers() {
     if (confirm('Remove all identificators?')) {
-      this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
+      if (this.ou.metadata.identifiers != null) {
+        this.ou.metadata.identifiers.splice(0, this.ou.metadata.identifiers.length);
+        this.markAsDirty();
+      }
     }
   }
 
@@ -202,16 +211,19 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   deleteAlternativeName(selected: string) {
     const index = this.ou.metadata.alternativeNames.indexOf(selected);
     this.ou.metadata.alternativeNames.splice(index, 1);
+    this.markAsDirty();
   }
 
   deleteDescription(selected: string) {
     const index = this.ou.metadata.descriptions.indexOf(selected);
     this.ou.metadata.descriptions.splice(index, 1);
+    this.markAsDirty();
   }
 
   deleteIdentifier(selected: Identifier) {
     const index = this.ou.metadata.identifiers.indexOf(selected);
     this.ou.metadata.identifiers.splice(index, 1);
+    this.markAsDirty();
   }
 
   deleteOu() {
@@ -252,7 +264,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   gotoOrganizationList() {
     if (this.checkForm()) {
-      this.router.navigate(['/organizations', this.ou.objectId]);
+      if (this.ou.objectId != null) {
+        this.router.navigate(['/organizations', this.ou.objectId]);
+      } else {
+        this.router.navigate(['/organizations']);
+      }
     }
   }
 
@@ -388,6 +404,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
         next: (data: {list: Ou[], records: number}) => this.predecessors = data.list,
         error: (e) => this.messagesService.error(e),
       });
+  }
+
+  private markAsDirty() {
+    (<any>Object).values(this.form.controls).forEach((control: { markAsDirty: () => void; }) => {
+      control.markAsDirty();
+    });
   }
 
   private returnSuggestedParentOus(ouName: string) {

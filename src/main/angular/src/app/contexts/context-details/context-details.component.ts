@@ -90,19 +90,17 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
-  deleteGenre(genre: string) {
-    const index = this.allowedGenres.indexOf(genre);
-    this.allowedGenres.splice(index, 1);
-  }
-
-  deleteSubject(subject: string) {
-    const index = this.allowedSubjects.indexOf(subject);
-    this.allowedSubjects.splice(index, 1);
-  }
-
   addGenres(genre: string[]) {
     this.selectedGenres = genre;
     this.selectedGenres.forEach((genre) => {
+      if (!this.allowedGenres.includes(genre)) {
+        this.allowedGenres.push(genre);
+      }
+    });
+  }
+
+  addAllGenres() {
+    this.genres2display.forEach((genre) => {
       if (!this.allowedGenres.includes(genre)) {
         this.allowedGenres.push(genre);
       }
@@ -118,36 +116,12 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  addAllGenres() {
-    this.genres2display.forEach((genre) => {
-      if (!this.allowedGenres.includes(genre)) {
-        this.allowedGenres.push(genre);
-      }
-    });
-  }
-
   addAllSubjects() {
     this.subjects2display.forEach((subject) => {
       if (!this.allowedSubjects.includes(subject)) {
         this.allowedSubjects.push(subject);
       }
     });
-  }
-
-  clearGenres() {
-    if (confirm('Remove all genres?')) {
-      this.allowedGenres.splice(0, this.allowedGenres.length);
-    }
-  }
-
-  clearSubjects() {
-    if (confirm('Remove all subject classifications?')) {
-      this.allowedSubjects.splice(0, this.allowedSubjects.length);
-    }
-  }
-
-  onChangedWorkflow(value: string) {
-    this.ctx.workflow = value;
   }
 
   changeCtxState() {
@@ -182,6 +156,32 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  changeOu() {
+    this.isNewOu = true;
+    this.closeOus();
+    this.ctx.responsibleAffiliations = [];
+  }
+
+  clearGenres() {
+    if (confirm('Remove all genres?')) {
+      this.allowedGenres.splice(0, this.allowedGenres.length);
+      this.markAsDirty();
+    }
+  }
+
+  clearSubjects() {
+    if (confirm('Remove all subject classifications?')) {
+      this.allowedSubjects.splice(0, this.allowedSubjects.length);
+      this.markAsDirty();
+    }
+  }
+
+  closeOus() {
+    this.ouSearchTerm = '';
+    this.selectedOu = null;
+    this.ous = [];
+  }
+
   deleteCtx() {
     if (confirm('Delete ' + this.ctx.name + '?')) {
       if (this.checkForm()) {
@@ -198,6 +198,27 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  deleteGenre(genre: string) {
+    const index = this.allowedGenres.indexOf(genre);
+    this.allowedGenres.splice(index, 1);
+    this.markAsDirty();
+  }
+
+  deleteSubject(subject: string) {
+    const index = this.allowedSubjects.indexOf(subject);
+    this.allowedSubjects.splice(index, 1);
+    this.markAsDirty();
+  }
+
+  getOus(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
+    } else {
+      this.closeOus();
+    }
+  }
+
   gotoCtxList() {
     if (this.checkForm()) {
       this.location.back();
@@ -208,6 +229,10 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     if (this.checkForm()) {
       this.router.navigate(['/organization', id]);
     }
+  }
+
+  onChangedWorkflow(value: string) {
+    this.ctx.workflow = value;
   }
 
   saveCtx() {
@@ -247,13 +272,25 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getOus(term: string) {
-    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
-    if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedOus(convertedSearchTerm);
-    } else {
-      this.closeOus();
+  selectOu(ou: Ou) {
+    this.ouSearchTerm = ou.name;
+    this.selectedOu = ou;
+    this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name));
+    this.ous = [];
+    this.isNewOu = false;
+  };
+
+  private checkForm(): boolean {
+    if (!this.form.dirty) {
+      return true;
     }
+
+    if (confirm('You have unsaved changes. Proceed?')) {
+      this.isNewOu = false;
+      return true;
+    }
+
+    return false;
   }
 
   private getLoggedInUserAllOpenOus() {
@@ -270,6 +307,28 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         },
         error: (e) => this.messagesService.error(e),
       });
+  }
+
+  private initializeAllowed() {
+    if (this.ctx.allowedGenres != null) {
+      this.allowedGenres = this.ctx.allowedGenres || [];
+    } else {
+      this.ctx.allowedGenres = [];
+      this.allowedGenres = this.ctx.allowedGenres;
+    }
+    this.subjects2display = Object.keys(subjects).filter((val) => val.match(/^[A-Z]/));
+    if (this.ctx.allowedSubjectClassifications != null) {
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
+    } else {
+      this.ctx.allowedSubjectClassifications = [];
+      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
+    }
+  }
+
+  private markAsDirty() {
+    (<any>Object).values(this.form.controls).forEach((control: { markAsDirty: () => void; }) => {
+      control.markAsDirty();
+    });
   }
 
   private returnSuggestedOus(ouName: string) {
@@ -290,57 +349,8 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  closeOus() {
-    this.ouSearchTerm = '';
-    this.selectedOu = null;
-    this.ous = [];
-  }
-
-  selectOu(ou: Ou) {
-    this.ouSearchTerm = ou.name;
-    this.selectedOu = ou;
-    this.ctx.responsibleAffiliations.push(this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name));
-    this.ous = [];
-    this.isNewOu = false;
-  };
-
-  changeOu() {
-    this.isNewOu = true;
-    this.closeOus();
-    this.ctx.responsibleAffiliations = [];
-  }
-
   private setContext(ctx: Ctx) {
     this.ctx = ctx;
     this.initializeAllowed();
-  }
-
-  private initializeAllowed() {
-    if (this.ctx.allowedGenres != null) {
-      this.allowedGenres = this.ctx.allowedGenres || [];
-    } else {
-      this.ctx.allowedGenres = [];
-      this.allowedGenres = this.ctx.allowedGenres;
-    }
-    this.subjects2display = Object.keys(subjects).filter((val) => val.match(/^[A-Z]/));
-    if (this.ctx.allowedSubjectClassifications != null) {
-      this.allowedSubjects = this.ctx.allowedSubjectClassifications || [];
-    } else {
-      this.ctx.allowedSubjectClassifications = [];
-      this.allowedSubjects = this.ctx.allowedSubjectClassifications;
-    }
-  }
-
-  private checkForm(): boolean {
-    if (!this.form.dirty) {
-      return true;
-    }
-
-    if (confirm('You have unsaved changes. Proceed?')) {
-      this.isNewOu = false;
-      return true;
-    }
-
-    return false;
   }
 }
