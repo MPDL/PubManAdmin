@@ -33,7 +33,7 @@
           <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeOu()" value="change" />
         </div>
         <div class="col-1">
-          <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId" class="btn btn-outline-success btn-sm" (click)="gotoRef(ctx.responsibleAffiliations[0]?.objectId)" value="ouId" title="goto organization" />
+          <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId || form.dirty" class="btn btn-outline-success btn-sm" (click)="gotoRef(ctx.responsibleAffiliations[0]?.objectId)" value="ouId" title="goto organization" />
         </div>
         <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>

@@ -35,7 +35,7 @@
           <input type="text" class="form-control form-control-sm" readonly>
         </div>
         <div class="col-1">
-          <input type="button" [disabled]="!ou.parentAffiliation?.objectId" class="btn btn-outline-info btn-sm" (click)="gotoRef(ou.parentAffiliation.objectId)" value="parentId" title="goto parent" />
+          <input type="button" [disabled]="!ou.parentAffiliation?.objectId || form.dirty || isNewPredecessor" class="btn btn-outline-info btn-sm" (click)="gotoRef(ou.parentAffiliation.objectId)" value="parentId" title="goto parent" />
         </div>
         <div *ngIf="ou.parentAffiliation" class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" readonly>

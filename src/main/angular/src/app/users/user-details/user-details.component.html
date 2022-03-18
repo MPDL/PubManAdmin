@@ -40,7 +40,7 @@
                     <input type="button" [disabled]="isNewGrant" class="btn btn-outline-primary btn-sm float-start" (click)="changeOu()" value="change" />
                 </div>
                 <div class="col-1">
-                    <input type="button" [disabled]="!user.affiliation?.objectId" class="btn btn-outline-primary btn-sm" (click)="gotoRef(user.affiliation.objectId)" value="ouId" title="goto organization" />
+                    <input type="button" [disabled]="!user.affiliation?.objectId || isNewGrant || form.dirty" class="btn btn-outline-primary btn-sm" (click)="gotoRef(user.affiliation.objectId)" value="ouId" title="goto organization" />
                 </div>
                 <div *ngIf="user.affiliation" class="col-2">
                   <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.objectId" name="_ouId" readonly>
