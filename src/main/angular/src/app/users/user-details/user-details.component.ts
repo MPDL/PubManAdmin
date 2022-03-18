@@ -80,17 +80,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setUser(user: User) {
-    this.user = user;
-
-    if (this.user.grantList != null) {
-      this.user.grantList.forEach((grant) => {
-        this.usersService.addAdditionalPropertiesOfGrantRefs(grant);
-        this.usersService.addOuPathOfGrantRefs(grant);
-      });
-    }
-  }
-
   ngOnDestroy() {
     this.adminSubscription.unsubscribe();
     this.tokenSubscription.unsubscribe();
@@ -101,42 +90,53 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.isNewGrant = true;
   }
 
-  removeGrant(grant: Grant) {
-    if (confirm('Remove the selected grant ' + grant.role + '?')) {
-      const grantsToRemove: Grant[] = [];
-      grantsToRemove.push(grant);
-      this.usersService.removeGrants(this.user, grantsToRemove, this.token)
+  changeOu() {
+    this.isNewOu = true;
+    this.closeOus();
+    this.user.affiliation = null;
+  }
+
+  changeUserState() {
+    if (this.user.active === true) {
+      this.usersService.deactivate(this.user, this.token)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);
-            this.messagesService.success('removed grant ' + grant.role + ' from ' + this.user.loginname);
+            this.messagesService.success('deactivated ' + this.user.objectId);
+          },
+          error: (e) => this.messagesService.error(e),
+        });
+    } else {
+      this.usersService.activate(this.user, this.token)
+        .subscribe({
+          next: (data: User) => {
+            this.setUser(data);
+            this.messagesService.success('activated ' + this.user.objectId);
           },
           error: (e) => this.messagesService.error(e),
         });
     }
   }
 
-  gotoRef(id: string) {
-    if (this.checkForm()) {
-      this.router.navigate(['/organization', id]);
-    }
+  closeOus() {
+    this.ouSearchTerm = '';
+    this.selectedOu = null;
+    this.ous = [];
   }
 
-
-  gotoRefByGrant(grant: Grant) {
-    if (this.checkForm()) {
-      const ref = grant.objectRef;
-      if (ref && ref.startsWith('ou')) {
-        this.router.navigate(['/organization', ref]);
-      } else if (ref && ref.startsWith('ctx')) {
-        this.router.navigate(['/context', ref]);
+  deleteUser() {
+    if (confirm('Delete ' + this.user.name + '?')) {
+      if (this.checkForm()) {
+        this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
+          .subscribe({
+            next: (_data) => {
+              this.messagesService.success('deleted user ' + this.user.loginname);
+              this.user = null;
+              this.router.navigate(['/users']);
+            },
+            error: (e) => this.messagesService.error(e),
+          });
       }
-    }
-  }
-
-  gotoUserList() {
-    if (this.checkForm()) {
-      this.location.back();
     }
   }
 
@@ -161,22 +161,47 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeUserState() {
-    if (this.user.active === true) {
-      this.usersService.deactivate(this.user, this.token)
-        .subscribe({
-          next: (data: User) => {
-            this.setUser(data);
-            this.messagesService.success('deactivated ' + this.user.objectId);
-          },
-          error: (e) => this.messagesService.error(e),
-        });
+  getOus(term: string) {
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedOus(convertedSearchTerm);
     } else {
-      this.usersService.activate(this.user, this.token)
+      this.closeOus();
+    }
+  }
+
+  gotoRef(id: string) {
+    if (this.checkForm()) {
+      this.router.navigate(['/organization', id]);
+    }
+  }
+
+  gotoRefByGrant(grant: Grant) {
+    if (this.checkForm()) {
+      const ref = grant.objectRef;
+      if (ref && ref.startsWith('ou')) {
+        this.router.navigate(['/organization', ref]);
+      } else if (ref && ref.startsWith('ctx')) {
+        this.router.navigate(['/context', ref]);
+      }
+    }
+  }
+
+  gotoUserList() {
+    if (this.checkForm()) {
+      this.location.back();
+    }
+  }
+
+  removeGrant(grant: Grant) {
+    if (confirm('Remove the selected grant ' + grant.role + '?')) {
+      const grantsToRemove: Grant[] = [];
+      grantsToRemove.push(grant);
+      this.usersService.removeGrants(this.user, grantsToRemove, this.token)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);
-            this.messagesService.success('activated ' + this.user.objectId);
+            this.messagesService.success('removed grant ' + grant.role + ' from ' + this.user.loginname);
           },
           error: (e) => this.messagesService.error(e),
         });
@@ -226,29 +251,26 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteUser() {
-    if (confirm('Delete ' + this.user.name + '?')) {
-      if (this.checkForm()) {
-        this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
-          .subscribe({
-            next: (_data) => {
-              this.messagesService.success('deleted user ' + this.user.loginname);
-              this.user = null;
-              this.gotoUserList();
-            },
-            error: (e) => this.messagesService.error(e),
-          });
-      }
-    }
-  }
+  selectOu(ou: Ou) {
+    this.ouSearchTerm = ou.name;
+    this.selectedOu = ou;
+    this.user.affiliation = this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name);
+    this.ous = [];
+    this.isNewOu = false;
+  };
 
-  getOus(term: string) {
-    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
-    if (convertedSearchTerm.length > 0) {
-      this.returnSuggestedOus(convertedSearchTerm);
-    } else {
-      this.closeOus();
+  private checkForm(): boolean {
+    if (!this.form.dirty && !this.isNewGrant) {
+      return true;
     }
+
+    if (confirm('You have unsaved changes. Proceed?')) {
+      this.isNewGrant = false;
+      this.isNewOu = false;
+      return true;
+    }
+
+    return false;
   }
 
   private getLoggedInUserFirstLevelOpenOus() {
@@ -304,37 +326,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  closeOus() {
-    this.ouSearchTerm = '';
-    this.selectedOu = null;
-    this.ous = [];
-  }
+  private setUser(user: User) {
+    this.user = user;
 
-  selectOu(ou: Ou) {
-    this.ouSearchTerm = ou.name;
-    this.selectedOu = ou;
-    this.user.affiliation = this.organizationsService.makeAffiliation(this.selectedOu.objectId, this.selectedOu.name);
-    this.ous = [];
-    this.isNewOu = false;
-  };
-
-  changeOu() {
-    this.isNewOu = true;
-    this.closeOus();
-    this.user.affiliation = null;
-  }
-
-  private checkForm(): boolean {
-    if (!this.form.dirty && !this.isNewGrant) {
-      return true;
+    if (this.user.grantList != null) {
+      this.user.grantList.forEach((grant) => {
+        this.usersService.addAdditionalPropertiesOfGrantRefs(grant);
+        this.usersService.addOuPathOfGrantRefs(grant);
+      });
     }
-
-    if (confirm('You have unsaved changes. Proceed?')) {
-      this.isNewGrant = false;
-      this.isNewOu = false;
-      return true;
-    }
-
-    return false;
   }
 }

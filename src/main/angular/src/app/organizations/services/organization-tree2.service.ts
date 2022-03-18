@@ -60,37 +60,36 @@ export class OrganizationTree2Service {
     }
   }
 
-  initializeForLocalAdmin(ouIds: string[]) {
+  async initializeForLocalAdmin(ouIds: string[]) {
     const ouTreeNodes: OuTreeNode[] = [];
     const body = localAdminOus;
     body.query.bool.filter.terms['objectId'] = ouIds;
-    this.organizationsService.query(this.ousPath, null, body)
-      .subscribe({
-        next: (data: {list: Ou[], records: number}) => {
-          data.list.forEach(
-            (ou: Ou) => ouTreeNodes.push(this.generateNode(ou))
-          );
-          this.dataChange.next(ouTreeNodes);
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+
+    try {
+      const data: {list: Ou[], records: number} = await lastValueFrom(this.organizationsService.query(this.ousPath, null, body));
+      data.list.forEach(
+        (ou: Ou) => ouTreeNodes.push(this.generateNode(ou))
+      );
+      this.dataChange.next(ouTreeNodes);
+    } catch (e) {
+      this.messagesService.error(e);
+    }
   }
 
-  loadChildren(ouId: string) {
+  async loadChildren(ouId: string) {
     if (!this.nodeMap.has(ouId)) {
       return;
     }
 
     const parent: OuTreeNode = this.nodeMap.get(ouId)!;
-    this.getChildren4Ou(ouId)
-      .subscribe({
-        next: (data: Ou[]) => {
-          const ouTreeNode: OuTreeNode[] = data.map((child: Ou) => this.generateNode(child));
-          parent.childrenChange.next(ouTreeNode);
-          this.dataChange.next(this.dataChange.value);
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+    try {
+      const children: Ou[] = await lastValueFrom(this.getChildren4Ou(ouId));
+      const ouTreeNode: OuTreeNode[] = children.map((child: Ou) => this.generateNode(child));
+      parent.childrenChange.next(ouTreeNode);
+      this.dataChange.next(this.dataChange.value);
+    } catch (e) {
+      this.messagesService.error(e);
+    }
   }
 
   private generateNode(ou: Ou): OuTreeNode {

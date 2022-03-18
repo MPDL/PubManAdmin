@@ -105,6 +105,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         this.allowedGenres.push(genre);
       }
     });
+    this.markAsDirty();
   }
 
   addSubjects(subject: string[]) {
@@ -122,6 +123,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
         this.allowedSubjects.push(subject);
       }
     });
+    this.markAsDirty();
   }
 
   changeCtxState() {
@@ -140,6 +142,15 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
                     error: (e) => this.messagesService.error(e),
                   });
               }
+            } else {
+              this.contextsService.openCtx(this.ctx, this.token)
+                .subscribe({
+                  next: (data: Ctx) => {
+                    this.ctx = data;
+                    this.messagesService.success('opened ' + this.ctx.objectId);
+                  },
+                  error: (e) => this.messagesService.error(e),
+                });
             }
           },
           error: (e) => this.messagesService.error(e),
@@ -190,7 +201,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
             next: (_data) => {
               this.messagesService.success('deleted context ' + this.ctx.objectId);
               this.ctx = null;
-              this.gotoCtxList();
+              this.router.navigate(['/contexts']);
             },
             error: (e) => this.messagesService.error(e),
           });

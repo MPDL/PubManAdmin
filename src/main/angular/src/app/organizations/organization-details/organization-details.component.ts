@@ -264,7 +264,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   gotoOrganizationList() {
     if (this.checkForm()) {
-      if (this.ou.objectId != null) {
+      if (this.ou != null && this.ou.objectId != null) {
         this.router.navigate(['/organizations', this.ou.objectId]);
       } else {
         this.router.navigate(['/organizations']);

@@ -7,7 +7,7 @@ import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
-import {Observable, Subscription} from 'rxjs';
+import {lastValueFrom, Observable, Subscription} from 'rxjs';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationTree2Service, OuTreeFlatNode, OuTreeNode} from '../services/organization-tree2.service';
 import {OrganizationsService} from '../services/organizations.service';
@@ -147,32 +147,34 @@ export class OrganizationTreeComponent implements OnInit {
     this.ous = [];
   }
 
-  private expandNode(ouId: string) {
+  private async expandNode(ouId: string) {
     const maxRepeat: number = 5;
     let countRepeat: number = 0;
-    this.organizationsService.getIdPath(ouId, null)
-      .subscribe({
-        next: async (data: string) => {
-          const path: string[] = data.split(',');
-          for (let i = path.length - 1; i > 0; i--) {
-            if (this.nodeMap.has(path[i])) {
-              countRepeat = 0;
-              const node: OuTreeFlatNode = this.nodeMap.get(path[i]);
-              this.loadChildren(node);
-              this.treeControl.expand(node);
-            } else {
-              countRepeat++;
-              if (countRepeat < maxRepeat) {
-                i++;
-                await this.sleep(500);
-              } else {
-                break;
-              }
-            }
+    try {
+      const data: string = await lastValueFrom(this.organizationsService.getIdPath(ouId, null));
+      const path: string[] = data.split(',');
+      for (let i = path.length - 1; i > 0; i--) {
+        if (!this.isAdmin && i === path.length - 1) {
+          continue;
+        }
+        if (this.nodeMap.has(path[i])) {
+          countRepeat = 0;
+          const node: OuTreeFlatNode = this.nodeMap.get(path[i]);
+          this.loadChildren(node);
+          this.treeControl.expand(node);
+        } else {
+          countRepeat++;
+          if (countRepeat < maxRepeat) {
+            i++;
+            await this.sleep(500);
+          } else {
+            break;
           }
-        },
-        error: (e) => this.messagesService.error(e),
-      });
+        }
+      }
+    } catch (e) {
+      this.messagesService.error(e);
+    }
   }
 
   private async selectNode(ouId: string) {
@@ -188,7 +190,7 @@ export class OrganizationTreeComponent implements OnInit {
       } else {
         countRepeat++;
         if (countRepeat < maxRepeat) {
-          await this.sleep(500);
+          await this.sleep(700);
         } else {
           break;
         }
