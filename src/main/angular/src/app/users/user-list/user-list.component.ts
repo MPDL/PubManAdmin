@@ -148,6 +148,9 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   gotoFilteredOu(ou: Ou) {
     this.currentPage = 1;
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {
+      return false;
+    };
     this.router.navigate(['/users', ou.objectId, this.currentPage]);
   }
 

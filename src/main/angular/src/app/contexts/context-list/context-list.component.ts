@@ -137,6 +137,9 @@ export class ContextListComponent implements OnInit, OnDestroy {
 
   gotoFilteredOu(ou: Ou) {
     this.currentPage = 1;
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {
+      return false;
+    };
     this.router.navigate(['/contexts', ou.objectId, this.currentPage]);
   }
 
