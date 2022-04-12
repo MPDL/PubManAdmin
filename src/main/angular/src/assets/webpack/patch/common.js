@@ -191,7 +191,9 @@ async function getCommonConfig(wco) {
             test: tsConfig.options.allowJs ? /\.[cm]?[tj]sx?$/ : /\.[cm]?tsx?$/,
             loader: webpack_1.AngularWebpackLoaderPath,
             // The below are known paths that are not part of the TypeScript compilation even when allowJs is enabled.
-            exclude: [/[/\\](?:css-loader|mini-css-extract-plugin|webpack-dev-server|webpack)[/\\]/],
+            exclude: [
+                /[\\/]node_modules[/\\](?:css-loader|mini-css-extract-plugin|webpack-dev-server|webpack)[/\\]/,
+            ],
         });
         extraPlugins.push((0, typescript_2.createIvyPlugin)(wco, aot, tsConfigPath));
     }
@@ -305,7 +307,7 @@ async function getCommonConfig(wco) {
                     // The below is needed due to a bug in `@babel/runtime`. See: https://github.com/babel/babel/issues/12824
                     resolve: { fullySpecified: false },
                     exclude: [
-                        /[/\\](?:core-js|@babel|tslib|web-animations-js|web-streams-polyfill|whatwg-url)[/\\]/,
+                        /[\\/]node_modules[/\\](?:core-js|@babel|tslib|web-animations-js|web-streams-polyfill|whatwg-url)[/\\]/,
                     ],
                     use: [
                         {

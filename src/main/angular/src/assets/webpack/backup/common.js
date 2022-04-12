@@ -48,6 +48,8 @@ const progress_plugin_1 = require("../plugins/progress-plugin");
 const transfer_size_plugin_1 = require("../plugins/transfer-size-plugin");
 const typescript_2 = require("../plugins/typescript");
 const helpers_1 = require("../utils/helpers");
+const node_polyfill_plugin = require("node-polyfill-webpack-plugin");
+
 // eslint-disable-next-line max-lines-per-function
 async function getCommonConfig(wco) {
     var _a, _b;
@@ -327,7 +329,7 @@ async function getCommonConfig(wco) {
             ],
         },
         experiments: {
-            backCompat: false,
+            backCompat: true,
             syncWebAssembly: true,
             asyncWebAssembly: true,
         },
@@ -367,7 +369,10 @@ async function getCommonConfig(wco) {
                 },
             },
         },
-        plugins: [new named_chunks_plugin_1.NamedChunksPlugin(), new plugins_1.DedupeModuleResolvePlugin({ verbose }), ...extraPlugins],
+        plugins: [new named_chunks_plugin_1.NamedChunksPlugin(), new plugins_1.DedupeModuleResolvePlugin({ verbose }), ...extraPlugins,
+            new node_polyfill_plugin({
+                excludeAliases: ['console']
+            }),],
         node: false,
     };
 }
