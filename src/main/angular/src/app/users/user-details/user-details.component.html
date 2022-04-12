@@ -105,9 +105,10 @@
             <div class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">name*</label>
                 <div class="col-7">
-                    <input type="text" [disabled]="isNewGrant" class="form-control form-control-sm" [(ngModel)]="user.name" name="_userName" #userName="ngModel" required>
-                    <div *ngIf="userName.invalid" class="text-danger">
-                        <div>*name is required.</div>
+                    <input type="text" [disabled]="isNewGrant" class="form-control form-control-sm" [(ngModel)]="user.name" name="_userName" #userName="ngModel" forbiddenCharacter='"\\' required>
+                    <div class="text-danger">
+                        <div *ngIf="userName.errors?.required">*name is required.</div>
+                        <div *ngIf="userName.errors?.forbiddenCharacter">*name must not contain the special characters " and \.</div>
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import {ElasticSearchService} from '../common/services/elastic-search.service';
 import {SearchService} from '../common/services/search.service';
 import {ClickOutsideDirective} from '../directives/clickoutside.directive';
 import {SelectedItemColourDirective} from '../directives/selected-item-colour.directive';
+import {ForbiddenCharacterDirective} from '../directives/forbidden-character.directive';
 import {ForbiddenNameDirective} from '../directives/forbidden-name.directive';
 import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
 
@@ -19,6 +20,7 @@ import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
   declarations: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
+    ForbiddenCharacterDirective,
     ForbiddenNameDirective,
     SearchTermComponent,
     ValidLoginnameDirective,
@@ -26,6 +28,7 @@ import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
   exports: [
     SelectedItemColourDirective,
     ClickOutsideDirective,
+    ForbiddenCharacterDirective,
     ForbiddenNameDirective,
     NgxPaginationModule,
     SearchTermComponent,
