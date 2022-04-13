@@ -243,20 +243,18 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   getParentOus(term: string) {
-    if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedParentOus(term);
-    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedParentOus(term);
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedParentOus(convertedSearchTerm);
     } else {
       this.closeParentOus();
     }
   }
 
   getPredecessorOus(term: string) {
-    if (term.length > 0 && !term.startsWith('"')) {
-      this.returnSuggestedPredecessorOus(term);
-    } else if (term.length > 3 && term.startsWith('"') && term.endsWith('"')) {
-      this.returnSuggestedPredecessorOus(term);
+    const convertedSearchTerm = this.searchService.convertSearchTerm(term);
+    if (convertedSearchTerm.length > 0) {
+      this.returnSuggestedPredecessorOus(convertedSearchTerm);
     } else {
       this.closePredecessorOus();
     }
