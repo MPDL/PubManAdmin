@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {SearchTermComponent} from '../../base/common/components/search-term/search-term.component';
@@ -21,7 +21,7 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
 
   itemRestUrl = environment.restItems;
 
-  searchForm: FormGroup;
+  searchForm: UntypedFormGroup;
   searchRequest: SearchRequest;
 
   searchTerm: string;
@@ -41,14 +41,14 @@ export class ItemSearchComponent implements OnInit, OnDestroy {
   token: string;
   index: string = 'default';
 
-  get searchTerms(): FormArray {
-    return this.searchForm.get('searchTerms') as FormArray;
+  get searchTerms(): UntypedFormArray {
+    return this.searchForm.get('searchTerms') as UntypedFormArray;
   }
 
   constructor(
     private authenticationservice: AuthenticationService,
     private elasticSearchService: ElasticSearchService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private messagesService: MessagesService,
     private searchService: SearchService,
   ) {}

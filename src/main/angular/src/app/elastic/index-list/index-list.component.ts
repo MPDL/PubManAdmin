@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MessagesService} from '../../base/services/messages.service';
 import {ElasticService} from '../services/elastic.service';
@@ -12,7 +12,7 @@ import {ElasticService} from '../services/elastic.service';
 export class IndexListComponent implements OnInit {
   indices: any[];
   aliases: any;
-  aliasForm: FormGroup;
+  aliasForm: UntypedFormGroup;
   indexList: string[] = [];
 
   constructor(

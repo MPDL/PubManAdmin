@@ -130,5 +130,7 @@
       }
     }
   },
-  "defaultProject": "admintool" 
+  "cli": {
+    "analytics": false
+  }
 }

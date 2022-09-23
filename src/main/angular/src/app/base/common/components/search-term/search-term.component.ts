@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 
 export const queryTypes = ['must', 'must_not', 'filter', 'should'];
 
@@ -10,7 +10,7 @@ export const queryTypes = ['must', 'must_not', 'filter', 'should'];
 })
 export class SearchTermComponent {
   @Input()
-    searchTermForm: FormGroup;
+    searchTermForm: UntypedFormGroup;
   @Input()
     fields: string[];
 
@@ -30,7 +30,7 @@ export class SearchTermComponent {
   }
 
   filter() {
-    const selectedField = this.searchTermForm.get('field') as FormGroup;
+    const selectedField = this.searchTermForm.get('field') as UntypedFormGroup;
     if (selectedField.value !== '') {
       this.filteredTerms = this.fields.filter((el) => {
         return el.toLowerCase().indexOf(selectedField.value.toLowerCase()) > -1;

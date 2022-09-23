@@ -43,13 +43,15 @@ const webpack_subresource_integrity_1 = require("webpack-subresource-integrity")
 const environment_options_1 = require("../../utils/environment-options");
 const load_esm_1 = require("../../utils/load-esm");
 const plugins_1 = require("../plugins");
+const devtools_ignore_plugin_1 = require("../plugins/devtools-ignore-plugin");
 const named_chunks_plugin_1 = require("../plugins/named-chunks-plugin");
 const progress_plugin_1 = require("../plugins/progress-plugin");
 const transfer_size_plugin_1 = require("../plugins/transfer-size-plugin");
 const typescript_2 = require("../plugins/typescript");
+const watch_files_logs_plugin_1 = require("../plugins/watch-files-logs-plugin");
 const helpers_1 = require("../utils/helpers");
+const VENDORS_TEST = /[\\/]node_modules[\\/]/;
 const node_polyfill_plugin = require("node-polyfill-webpack-plugin");
-
 // eslint-disable-next-line max-lines-per-function
 async function getCommonConfig(wco) {
     var _a, _b;
@@ -86,15 +88,7 @@ async function getCommonConfig(wco) {
                 entryPoints['polyfills'] = [projectPolyfills];
             }
         }
-        if (!buildOptions.aot) {
-            const jitPolyfills = require.resolve('core-js/proposals/reflect-metadata');
-            if (entryPoints['polyfills']) {
-                entryPoints['polyfills'].push(jitPolyfills);
-            }
-            else {
-                entryPoints['polyfills'] = [jitPolyfills];
-            }
-        }
+
     }
     if (allowedCommonJsDependencies) {
         // When this is not defined it means the builder doesn't support showing common js usages.
@@ -122,12 +116,7 @@ async function getCommonConfig(wco) {
             patterns: (0, helpers_1.assetPatterns)(root, buildOptions.assets),
         }));
     }
-    if (buildOptions.showCircularDependencies) {
-        const CircularDependencyPlugin = require('circular-dependency-plugin');
-        extraPlugins.push(new CircularDependencyPlugin({
-            exclude: /[\\/]node_modules[\\/]/,
-        }));
-    }
+
     if (buildOptions.extractLicenses) {
         const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
         extraPlugins.push(new LicenseWebpackPlugin({
@@ -148,6 +137,7 @@ async function getCommonConfig(wco) {
         if (stylesSourceMap) {
             include.push(/css$/);
         }
+        extraPlugins.push(new devtools_ignore_plugin_1.DevToolsIgnorePlugin());
         extraPlugins.push(new webpack_2.SourceMapDevToolPlugin({
             filename: '[file].map',
             include,
@@ -159,6 +149,9 @@ async function getCommonConfig(wco) {
             moduleFilenameTemplate: '[resource-path]',
             append: hiddenSourceMap ? false : undefined,
         }));
+    }
+    if (verbose) {
+        extraPlugins.push(new watch_files_logs_plugin_1.WatchFilesLogsPlugin());
     }
     if (buildOptions.statsJson) {
         extraPlugins.push(new plugins_1.JsonStatsPlugin(path.resolve(root, buildOptions.outputPath, 'stats.json')));
@@ -263,7 +256,16 @@ async function getCommonConfig(wco) {
         watch: buildOptions.watch,
         watchOptions: {
             poll,
+            // The below is needed as when preserveSymlinks is enabled we disable `resolve.symlinks`.
+            followSymlinks: buildOptions.preserveSymlinks,
             ignored: poll === undefined ? undefined : '**/node_modules/**',
+        },
+        snapshot: {
+            module: {
+                // Use hash of content instead of timestamp because the timestamp of the symlink will be used
+                // instead of the referenced files which causes changes in symlinks not to be picked up.
+                hash: buildOptions.preserveSymlinks,
+            },
         },
         performance: {
             hints: false,
@@ -317,9 +319,10 @@ async function getCommonConfig(wco) {
                                 scriptTarget,
                                 aot: buildOptions.aot,
                                 optimize: buildOptions.buildOptimizer,
+                                supportedBrowsers: buildOptions.supportedBrowsers,
                                 instrumentCode: codeCoverage
                                     ? {
-                                        includedBasePath: sourceRoot,
+                                        includedBasePath: sourceRoot !== null && sourceRoot !== void 0 ? sourceRoot : projectRoot,
                                         excludedPaths: (0, helpers_1.getInstrumentationExcludedPaths)(root, codeCoverageExclude),
                                     }
                                     : undefined,
@@ -336,6 +339,7 @@ async function getCommonConfig(wco) {
             asyncWebAssembly: true,
         },
         infrastructureLogging: {
+            debug: verbose,
             level: verbose ? 'verbose' : 'error',
         },
         stats: (0, helpers_1.getStatsOptions)(verbose),
@@ -366,7 +370,7 @@ async function getCommonConfig(wco) {
                         name: 'vendor',
                         chunks: (chunk) => chunk.name === 'main',
                         enforce: true,
-                        test: /[\\/]node_modules[\\/]/,
+                        test: VENDORS_TEST,
                     },
                 },
             },

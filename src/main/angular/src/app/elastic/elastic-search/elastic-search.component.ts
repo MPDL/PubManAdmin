@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {SearchRequest, SearchTerm} from '../../base/common/components/search-term/search.term';
 import {SearchService} from '../../base/common/services/search.service';
 import {MessagesService} from '../../base/services/messages.service';
@@ -12,18 +12,18 @@ import {ElasticService} from '../services/elastic.service';
 })
 export class ElasticSearchComponent implements OnInit {
   fields2Select: string[] = [];
-  searchForm: FormGroup;
+  searchForm: UntypedFormGroup;
   searchRequest: SearchRequest;
   searchResult: any[];
   sourceList: any[];
 
-  get searchTerms(): FormArray {
-    return this.searchForm.get('searchTerms') as FormArray;
+  get searchTerms(): UntypedFormArray {
+    return this.searchForm.get('searchTerms') as UntypedFormArray;
   }
 
   constructor(
     private elasticService: ElasticService,
-    private formBuilder : FormBuilder,
+    private formBuilder : UntypedFormBuilder,
     private messagesService: MessagesService,
     private searchservice: SearchService,
   ) {}

@@ -1,5 +1,5 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {User} from 'app/base/common/model/inge';
 import {environment} from 'environments/environment';
@@ -22,7 +22,7 @@ export class UserSearchComponent implements OnInit {
     components: QueryList<SearchTermComponent>;
 
   userRestUrl = environment.restUsers;
-  searchForm: FormGroup;
+  searchForm: UntypedFormGroup;
   searchRequest: SearchRequest;
 
   searchTerm: string;
@@ -41,14 +41,14 @@ export class UserSearchComponent implements OnInit {
   token: string;
   tokenSubscription: Subscription;
 
-  get searchTerms(): FormArray {
-    return this.searchForm.get('searchTerms') as FormArray;
+  get searchTerms(): UntypedFormArray {
+    return this.searchForm.get('searchTerms') as UntypedFormArray;
   }
 
   constructor(
     private authenticationService: AuthenticationService,
     private elasticSearchService: ElasticSearchService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private messagesService: MessagesService,
     private router: Router,
     private searchService: SearchService,
