@@ -201,7 +201,7 @@
         </div>
       </div>
 
-      <div class="row w-100 mt-3">
+      <div class="row w-100 mt-3 mb-2">
         <div class="col-3 ms-auto">
           <input type="button"[disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
           <input *ngIf="!isNewOu && isAdmin" type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
