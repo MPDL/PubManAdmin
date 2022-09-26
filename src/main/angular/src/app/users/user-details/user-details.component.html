@@ -4,7 +4,7 @@
             <h4 class="card-title">{{user.loginname}}</h4>
         </div>
         
-        <form #form="ngForm" class="list-group-item text-primary" novalidate>
+        <form #form="ngForm" class="list-group-item text-primary bg-white" novalidate>
             <div class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">loginname*</label>
                 <div class="col-7">
@@ -157,13 +157,13 @@
             <div *ngIf="!isNewUser" class="w-100">
                 <div *ngIf="!isNewGrant" class="row w-100 mt-2">
                     <div class="col-2 ms-auto">
-                        <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-primary btn-sm float-end" (click)="addGrant(); $event.stopPropagation()" value="add grants" />
+                        <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-primary btn-sm float-end mb-2" (click)="addGrant(); $event.stopPropagation()" value="add grants" />
                     </div>
                 </div>
 
                 <div *ngIf="isNewGrant" class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
-                        <grants-component class="row w-100 mt-3" [(isNewGrant)]="isNewGrant" [(user)]="user"></grants-component>
+                        <grants-component class="row w-100 mt-3 mb-2" [(isNewGrant)]="isNewGrant" [(user)]="user"></grants-component>
                     </div>
                 </div>
             </div>

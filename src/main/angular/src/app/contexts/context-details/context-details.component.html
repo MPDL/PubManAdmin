@@ -4,7 +4,7 @@
       <h4 class="card-title">{{ctx.name}}</h4>
     </div>
     
-    <form #form="ngForm" class="list-group-item text-success" novalidate>
+    <form #form="ngForm" class="list-group-item text-success bg-white" novalidate>
       <div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">name*</label>
         <div class="col-7">
@@ -179,7 +179,7 @@
         </div>
       </div>
 
-      <div class="row w-100 mt-3">
+      <div class="row w-100 mt-3 mb-2">
         <div class="col-3 ms-auto">
           <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
           <input *ngIf="!isNewCtx && isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />

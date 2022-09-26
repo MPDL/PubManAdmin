@@ -51,6 +51,7 @@ const typescript_2 = require("../plugins/typescript");
 const watch_files_logs_plugin_1 = require("../plugins/watch-files-logs-plugin");
 const helpers_1 = require("../utils/helpers");
 const VENDORS_TEST = /[\\/]node_modules[\\/]/;
+const node_polyfill_plugin = require("node-polyfill-webpack-plugin");
 // eslint-disable-next-line max-lines-per-function
 async function getCommonConfig(wco) {
     var _a, _b;
@@ -87,6 +88,15 @@ async function getCommonConfig(wco) {
                 entryPoints['polyfills'] = [projectPolyfills];
             }
         }
+        if (!buildOptions.aot) {
+            const jitPolyfills = 'core-js/proposals/reflect-metadata';
+            if (entryPoints['polyfills']) {
+                entryPoints['polyfills'].push(jitPolyfills);
+            }
+            else {
+                entryPoints['polyfills'] = [jitPolyfills];
+            }
+        }
     }
     if (allowedCommonJsDependencies) {
         // When this is not defined it means the builder doesn't support showing common js usages.
@@ -112,6 +122,12 @@ async function getCommonConfig(wco) {
     if (buildOptions.assets.length) {
         extraPlugins.push(new copy_webpack_plugin_1.default({
             patterns: (0, helpers_1.assetPatterns)(root, buildOptions.assets),
+        }));
+    }
+    if (buildOptions.showCircularDependencies) {
+        const CircularDependencyPlugin = require('circular-dependency-plugin');
+        extraPlugins.push(new CircularDependencyPlugin({
+            exclude: /[\\/]node_modules[\\/]/,
         }));
     }
     if (buildOptions.extractLicenses) {
@@ -331,7 +347,7 @@ async function getCommonConfig(wco) {
             ],
         },
         experiments: {
-            backCompat: false,
+            backCompat: true,
             syncWebAssembly: true,
             asyncWebAssembly: true,
         },
@@ -372,7 +388,10 @@ async function getCommonConfig(wco) {
                 },
             },
         },
-        plugins: [new named_chunks_plugin_1.NamedChunksPlugin(), new plugins_1.DedupeModuleResolvePlugin({ verbose }), ...extraPlugins],
+        plugins: [new named_chunks_plugin_1.NamedChunksPlugin(), new plugins_1.DedupeModuleResolvePlugin({ verbose }), ...extraPlugins,
+            new node_polyfill_plugin({
+                excludeAliases: ['console']
+            }),],
         node: false,
     };
 }
