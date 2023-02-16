@@ -13,3 +13,4 @@ target/
 .idea/
 *.iws
 
+src/main/angular/package.json.sic
