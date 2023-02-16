@@ -4,7 +4,7 @@
 	
 	<groupId>de.mpg.mpdl.inge</groupId>
 	<artifactId>admintool</artifactId>
-	<version>8.4.4-SNAPSHOT</version>
+	<version>8.4.13-SNAPSHOT</version>
 	<packaging>war</packaging>
 	
 	<repositories>
@@ -104,8 +104,8 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<nodeVersion>v16.17.0</nodeVersion>
-							<npmVersion>8.15.0</npmVersion>
+							<nodeVersion>v18.14.0</nodeVersion>
+							<npmVersion>9.5.0</npmVersion>
 						</configuration>
 					</execution>
 					<execution>
