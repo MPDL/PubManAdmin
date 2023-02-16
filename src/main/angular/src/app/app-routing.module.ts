@@ -9,10 +9,7 @@ const routes: Routes = [
   {path: '**', component: PageNotFoundComponent}, // Wildcard route for page not found
 ];
 
-const routerOptions: ExtraOptions = {
-  relativeLinkResolution: 'legacy',
-  // enableTracing: true, // TODO: wieder aubauen
-};
+const routerOptions: ExtraOptions = {};
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, routerOptions)],
