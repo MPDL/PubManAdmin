@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
 import {Observable, of, Subscription} from 'rxjs';
@@ -8,7 +8,7 @@ import {Ou} from '../../base/common/model/inge';
 import {OrganizationsService} from './organizations.service';
 
 @Injectable()
-export class OrganizationDetailsResolverService implements Resolve<Ou> {
+export class OrganizationDetailsResolverService  {
   ousPath: string = environment.restOus;
 
   tokenSubscription: Subscription;

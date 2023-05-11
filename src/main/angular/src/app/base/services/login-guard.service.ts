@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, CanActivateChild} from '@angular/router';
+
 import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
 @Injectable()
-export class LoginGuardService implements CanActivate, CanActivateChild {
+export class LoginGuardService  {
   isLoggedIn: boolean = false;
 
   constructor(
