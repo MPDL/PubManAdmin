@@ -4,9 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build-prod": "ng build --base-href=/admintool/ -c=production",
-    "build-qa": "ng build --base-href=/admintool/ -c=qa",
-    "build-dev": "ng build --base-href=/admintool/ -c=dev"
+    "build-prod": "ng build --base-href=/admintool/ --configuration production -c=production",
+    "build-qa": "ng build --base-href=/admintool/ --configuration production -c=qa",
+    "build-dev": "ng build --base-href=/admintool/ --configuration production -c=dev"
   },
   "private": true,
   "dependencies": {
