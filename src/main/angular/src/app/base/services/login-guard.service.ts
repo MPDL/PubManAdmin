@@ -4,7 +4,7 @@ import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
 @Injectable()
-export class LoginGuardService  {
+export class LoginGuardService {
   isLoggedIn: boolean = false;
 
   constructor(

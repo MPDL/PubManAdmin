@@ -3,7 +3,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {SearchTermComponent} from '../common/components/search-term/search-term.component';
-import {ElasticSearchService} from '../common/services/elastic-search.service';
 import {SearchService} from '../common/services/search.service';
 import {ClickOutsideDirective} from '../directives/clickoutside.directive';
 import {SelectedItemColourDirective} from '../directives/selected-item-colour.directive';
@@ -39,7 +38,6 @@ import {ValidLoginnameDirective} from '../directives/valid-loginname.directive';
   ],
   providers: [
     SearchService,
-    ElasticSearchService,
   ],
 })
 export class SharedModule {}

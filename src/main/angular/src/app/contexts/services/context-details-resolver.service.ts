@@ -1,6 +1,6 @@
 
 import {Injectable} from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import {ActivatedRouteSnapshot} from '@angular/router';
 import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
 import {Observable, of, Subscription, throwError} from 'rxjs';
@@ -10,7 +10,7 @@ import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from './contexts.service';
 
 @Injectable()
-export class ContextDetailsResolverService  {
+export class ContextDetailsResolverService {
   ctxsPath: string = environment.restCtxs;
 
   tokenSubscription: Subscription;
