@@ -1,9 +1,7 @@
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import * as bodyBuilder from 'bodybuilder';
 import {ConnectionService} from '../../services/connection.service';
 import {PubmanRestService} from '../../services/pubman-rest.service';
-import {SearchRequest} from '../components/search-term/search.term';
 import {Grant, Ou} from '../model/inge';
 
 @Injectable()
@@ -13,37 +11,6 @@ export class SearchService extends PubmanRestService {
     protected httpClient: HttpClient,
   ) {
     super(connectionService, httpClient);
-  }
-
-  buildQuery(request: SearchRequest, limit: number, offset: number, sortfield: string, ascdesc: string) {
-    let query = bodyBuilder();
-
-    request.searchTerms.forEach((element) => {
-      const field = element.field;
-      const value: string = element.searchTerm;
-      switch (element.type) {
-      case 'must':
-        query = query.query('match', field, value);
-        break;
-      case 'must_not':
-        query = query.notFilter('term', field, value);
-        break;
-      case 'filter':
-        query = query.filter('term', field, value);
-        break;
-      case 'should':
-        query = query.orFilter('term', field, value);
-        break;
-      default:
-      }
-    });
-
-    const body = query
-      .size(limit)
-      .from(offset)
-      .sort(sortfield, ascdesc);
-
-    return body.build();
   }
 
   convertSearchTerm(term: string): string {

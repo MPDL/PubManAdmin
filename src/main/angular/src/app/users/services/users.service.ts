@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MessagesService} from 'app/base/services/messages.service';
 import {ContextsService} from 'app/contexts/services/contexts.service';

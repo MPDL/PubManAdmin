@@ -1,4 +1,4 @@
-import {HttpClientModule} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
@@ -23,38 +23,32 @@ import {ContextsModule} from './contexts/contexts.module';
 import {OrganizationsModule} from './organizations/organizations.module';
 import {UsersModule} from './users/users.module';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    MessagesComponent,
-    NavigationComponent,
-    HomeComponent,
-    PageNotFoundComponent,
-    FooterComponent,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MatDialogModule,
-    MatInputModule,
-    UsersModule,
-    OrganizationsModule,
-    ContextsModule,
-    SharedModule,
-    AppRoutingModule,
-  ],
-  providers: [
-    ConnectionService,
-    AuthenticationService,
-    MessagesService,
-    PubmanRestService,
-    AdminGuardService,
-    LoginGuardService,
-  ],
-  bootstrap: [AppComponent],
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        MessagesComponent,
+        NavigationComponent,
+        HomeComponent,
+        PageNotFoundComponent,
+        FooterComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        MatDialogModule,
+        MatInputModule,
+        UsersModule,
+        OrganizationsModule,
+        ContextsModule,
+        SharedModule,
+        AppRoutingModule], providers: [
+        ConnectionService,
+        AuthenticationService,
+        MessagesService,
+        PubmanRestService,
+        AdminGuardService,
+        LoginGuardService,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {
   // Order matters !!!
   // AppRouting has to be last in imports [], otherwise the '**' routing will match.
