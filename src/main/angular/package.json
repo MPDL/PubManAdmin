@@ -37,6 +37,7 @@
     "@angular/compiler-cli": "^16.0.1",
     "@angular/language-service": "^16.0.1",
     "@types/node": "^20.1.2",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
