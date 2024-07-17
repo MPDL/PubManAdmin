@@ -104,8 +104,8 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<nodeVersion>v18.16.0</nodeVersion>
-							<npmVersion>9.6.6</npmVersion>
+							<nodeVersion>v20.15.0</nodeVersion>
+							<npmVersion>10.8.1</npmVersion>
 						</configuration>
 					</execution>
 					<execution>
@@ -115,15 +115,6 @@
 						</goals>
 						<configuration>
 							<arguments>install --force</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>npm patch angular</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<configuration>
-							<arguments>run patch</arguments>
 						</configuration>
 					</execution>
 					<execution>
