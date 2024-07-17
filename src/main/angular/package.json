@@ -11,12 +11,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.11",
-    "@angular/cdk": "^16.0.0",
+    "@angular/cdk": "^16.2.14",
     "@angular/common": "^17.3.11",
     "@angular/compiler": "^17.3.11",
     "@angular/core": "^17.3.11",
     "@angular/forms": "^17.3.11",
-    "@angular/material": "^16.0.0",
+    "@angular/material": "^16.2.0",
     "@angular/platform-browser": "^17.3.11",
     "@angular/platform-browser-dynamic": "^17.3.11",
     "@angular/router": "^17.3.11",
@@ -37,9 +37,9 @@
     "@angular/compiler-cli": "^17.3.11",
     "@angular/language-service": "^17.3.11",
     "@types/node": "^20.1.2",
-    "node-polyfill-webpack-plugin": "^2.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.4.5"
+    "node-polyfill-webpack-plugin": "^4.0.0",
+    "typescript": "^5.4.5",
+    "ts-node": "^10.9.1"
   },
   "description": "This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.6.",
   "main": "karma.conf.js",
