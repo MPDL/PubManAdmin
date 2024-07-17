@@ -98,7 +98,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true
-              
             }
           },
           "defaultConfiguration": ""

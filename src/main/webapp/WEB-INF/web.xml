@@ -6,12 +6,12 @@
 
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>/browser/index.html</welcome-file>
 	</welcome-file-list>
 
 <!-- Required for Angular navigation -> Let index.html handle errors -->
 	<error-page>
-		<location>/index.html</location>
+		<location>/browser/index.html</location>
 	</error-page>
 
 </web-app>
