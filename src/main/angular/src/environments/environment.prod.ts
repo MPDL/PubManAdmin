@@ -1,7 +1,6 @@
 export const environment = {
   production: true,
   baseUrl: 'https://' + window.location.hostname,
-  elasticUrl: '/es',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   restOus: '/rest/ous',

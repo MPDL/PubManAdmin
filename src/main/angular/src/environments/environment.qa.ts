@@ -1,7 +1,6 @@
 export const environment = {
   production: false,
   baseUrl: 'https://qa.inge.mpdl.mpg.de',
-  elasticUrl: '/es',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   restOus: '/rest/ous',
