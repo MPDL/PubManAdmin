@@ -1,7 +1,3 @@
-export class SearchRequest {
-  searchTerms: SearchTerm[];
-}
-
 export class SearchTerm {
   type: string;
   field: string;

@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {ConnectionService} from '../../services/connection.service';
 import {PubmanRestService} from '../../services/pubman-rest.service';
-import {Grant, Ou} from '../model/inge';
+import {Ou} from '../model/inge';
 
 @Injectable()
 export class SearchService extends PubmanRestService {
@@ -41,20 +41,6 @@ export class SearchService extends PubmanRestService {
     }
 
     return convertedSearchTerm;
-  }
-
-  getListOfOusForLocalAdminFromGrants(grants: Grant[], searchField: string): string {
-    let lst: string = '';
-    grants.forEach((grant: Grant) => {
-      if (grant.role === 'LOCAL_ADMIN') {
-        if (lst.length > 0) {
-          lst = lst + '+';
-        }
-        lst = lst + searchField + ':' + grant.objectRef;
-      }
-    });
-
-    return lst;
   }
 
   getListOfOusForLocalAdminFromOus(ous: Ou[], searchField: string): string {

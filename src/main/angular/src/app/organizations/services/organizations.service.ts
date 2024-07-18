@@ -1,4 +1,3 @@
-
 import { HttpClient } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BasicRO, Ou, OuMetadata} from 'app/base/common/model/inge';

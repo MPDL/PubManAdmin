@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export class UserRO {
   objectId: string;
   name: string;
