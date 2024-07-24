@@ -3,7 +3,7 @@
         <div class="card-body">
             <h4 class="card-title">{{user.loginname}}</h4>
         </div>
-        
+
         <form #form="ngForm" class="list-group-item text-primary bg-white" novalidate>
             <div class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">loginname*</label>
@@ -49,7 +49,7 @@
                   <input type="text" class="form-control form-control-sm" readonly>
                 </div>
             </div>
-  
+
             <div *ngIf="isNewUser || isNewOu" class="row w-100 mt-3">
                 <label class="col-2 col-form-label col-form-label-sm">organization*</label>
                 <div *ngIf="isAdmin" class="col-7">
@@ -139,7 +139,7 @@
                     <label class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
                         <ul class="list-group">
-                            <li class="list-group-item list-group-item-action list-group-item-primary py-0" *ngFor="let grant of user.grantList" (click)="!isNewGrant && !form.dirty && gotoRefByGrant(grant)">
+                            <li class="list-group-item list-group-item-action list-group-item-secondary py-0" *ngFor="let grant of user.grantList" (click)="!isNewGrant && !form.dirty && gotoRefByGrant(grant)">
                                 <div class="row">
                                     <span class="col-2 text-start text-truncate"><label class="col-form-label-sm p-0 ms-2">{{grant.role}}</label></span>
                                     <span class="col-3 text-start"><label class="col-form-label-sm p-0">{{grant.objectName}}</label></span>
