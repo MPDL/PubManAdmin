@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ConnectionService} from '../services/connection.service';
 import {Subscription} from 'rxjs';
+import {environment} from 'environments/environment';
 
 @Component({
   selector: 'home-component',
@@ -11,6 +12,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   hostSubscription: Subscription;
 
   hostName: string;
+
+  icon: string = environment.icon;
 
   constructor(
     private connectionService: ConnectionService,

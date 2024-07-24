@@ -55,7 +55,7 @@
     </div>
 
     <ul class="list-group">
-      <div class="list-group-item list-group-item-action list-group-item-primary text-primary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
+      <div class="list-group-item list-group-item-action list-group-item-secondary text-primary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
         <div class="row">
             <span class="col-3"><label class="col-form-label-sm p-0 ms-2">{{user.name}}</label></span>
             <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.loginname}}</label></span>

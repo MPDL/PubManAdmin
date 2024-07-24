@@ -3,19 +3,12 @@ import {User} from '../common/model/inge';
 import {AuthenticationService} from '../services/authentication.service';
 import {MessagesService} from '../services/messages.service';
 
-const {disclaimer: appDisclaimer} = require('../../../../package.json');
-const {privacy: appPrivacy} = require('../../../../package.json');
-const {help: appHelp} = require('../../../../package.json');
-
 @Component({
   selector: 'login-component',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  appDisclaimer: any;
-  appPrivacy: any;
-  appHelp: any;
   credentials: any = {};
   empty: boolean = true;
   loggedIn: boolean = false;
@@ -28,9 +21,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.appDisclaimer = appDisclaimer;
-    this.appPrivacy = appPrivacy;
-    this.appHelp = appHelp;
   }
 
   login() {

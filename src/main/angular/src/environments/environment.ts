@@ -1,6 +1,6 @@
 export const environment = {
-  production: false,
-  baseUrl: 'https://dev.inge.mpdl.mpg.de',
+  production: true,
+  baseUrl: 'https://' + window.location.hostname,
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   restOus: '/rest/ous',
@@ -21,4 +21,5 @@ export const environment = {
     name: 'users',
     type: 'user',
   },
+  icon: './assets/gfz.svg',
 };

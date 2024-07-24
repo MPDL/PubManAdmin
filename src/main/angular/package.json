@@ -4,9 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build-prod": "ng build --base-href=/admintool/ -c=production",
-    "build-qa": "ng build --base-href=/admintool/ -c=qa",
-    "build-dev": "ng build --base-href=/admintool/ -c=dev"
+    "build-gfz": "ng build --base-href=/admintool/ -c=gfz",
+    "build-rifs": "ng build --base-href=/admintool/ -c=rifs",
+    "build-pik": "ng build --base-href=/admintool/ -c=pik"
   },
   "private": true,
   "dependencies": {
@@ -49,9 +49,5 @@
   "author": "",
   "bugs": {
     "url": "https://github.com/MPDL/PubManAdmin/issues"
-  },
-  "homepage": "https://github.com/MPDL/PubManAdmin#readme",
-  "disclaimer": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Impressum",
-  "privacy": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Datenschutzhinweis",
-  "help": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Help"
+  }
 }

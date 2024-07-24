@@ -49,7 +49,7 @@
             "browser": "src/main.ts"
           },
           "configurations": {
-            "production": {
+            "gfz": {
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -64,11 +64,11 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.gfz.ts"
                 }
               ]
             },
-            "qa": {
+            "rifs": {
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -83,11 +83,11 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.qa.ts"
+                  "with": "src/environments/environment.rifs.ts"
                 }
               ]
             },
-            "dev": {
+            "pik": {
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -98,24 +98,16 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "extractLicenses": true
+              "extractLicenses": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.pik.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": ""
-        },
-        "serve": {
-          "builder": "@angular/build:dev-server",
-          "options": {
-            "buildTarget": "admintool:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "admintool:build:production"
-            },
-            "qa": {
-              "buildTarget": "admintool:build:qa"
-            }
-          }
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
