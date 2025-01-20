@@ -6,9 +6,10 @@ const {version: appVersion} = require('../../../../package.json');
 const {homepage: appHome} = require('../../../../package.json');
 
 @Component({
-  selector: 'footer-component',
-  templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss'],
+    selector: 'footer-component',
+    templateUrl: './footer.component.html',
+    styleUrls: ['./footer.component.scss'],
+    standalone: false
 })
 export class FooterComponent implements OnInit {
   appVersion: any;

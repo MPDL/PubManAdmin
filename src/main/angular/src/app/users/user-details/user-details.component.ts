@@ -13,9 +13,10 @@ import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
 
 @Component({
-  selector: 'user-details-component',
-  templateUrl: './user-details.component.html',
-  styleUrls: ['./user-details.component.scss'],
+    selector: 'user-details-component',
+    templateUrl: './user-details.component.html',
+    styleUrls: ['./user-details.component.scss'],
+    standalone: false
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('form')

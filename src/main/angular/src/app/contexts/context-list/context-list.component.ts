@@ -11,9 +11,10 @@ import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from '../services/contexts.service';
 
 @Component({
-  selector: 'context-list-component',
-  templateUrl: './context-list.component.html',
-  styleUrls: ['./context-list.component.scss'],
+    selector: 'context-list-component',
+    templateUrl: './context-list.component.html',
+    styleUrls: ['./context-list.component.scss'],
+    standalone: false
 })
 export class ContextListComponent implements OnInit, OnDestroy {
   ctxsPath: string = environment.restCtxs;

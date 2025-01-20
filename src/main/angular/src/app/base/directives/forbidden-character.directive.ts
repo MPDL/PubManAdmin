@@ -9,8 +9,9 @@ export function forbiddenCharacterValidator(characterRe: RegExp): ValidatorFn {
 }
 
 @Directive({
-  selector: '[forbiddenCharacter]',
-  providers: [{provide: NG_VALIDATORS, useExisting: ForbiddenCharacterDirective, multi: true}],
+    selector: '[forbiddenCharacter]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: ForbiddenCharacterDirective, multi: true }],
+    standalone: false
 })
 export class ForbiddenCharacterDirective implements Validator {
   @Input('forbiddenCharacter') forbiddenCharacter = '';

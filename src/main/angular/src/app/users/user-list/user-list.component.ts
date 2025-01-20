@@ -11,10 +11,11 @@ import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
 
 @Component({
-  selector: 'user-list-component',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss'],
-  providers: [],
+    selector: 'user-list-component',
+    templateUrl: './user-list.component.html',
+    styleUrls: ['./user-list.component.scss'],
+    providers: [],
+    standalone: false
 })
 export class UserListComponent implements OnInit, OnDestroy {
   ousPath: string = environment.restOus;

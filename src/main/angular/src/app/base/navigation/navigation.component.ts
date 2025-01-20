@@ -3,9 +3,10 @@ import {Subscription} from 'rxjs';
 import {AuthenticationService} from '../services/authentication.service';
 
 @Component({
-  selector: 'navigation-component',
-  templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss'],
+    selector: 'navigation-component',
+    templateUrl: './navigation.component.html',
+    styleUrls: ['./navigation.component.scss'],
+    standalone: false
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   adminSubscription: Subscription;

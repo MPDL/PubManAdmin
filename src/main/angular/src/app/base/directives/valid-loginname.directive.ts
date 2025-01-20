@@ -9,8 +9,9 @@ export function validLoginnameValidator(nameRe: RegExp): ValidatorFn {
 }
 
 @Directive({
-  selector: '[validLoginname]',
-  providers: [{provide: NG_VALIDATORS, useExisting: ValidLoginnameDirective, multi: true}],
+    selector: '[validLoginname]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: ValidLoginnameDirective, multi: true }],
+    standalone: false
 })
 export class ValidLoginnameDirective implements Validator {
   regex: string = '^[A-Za-z0-9@_\\-\\.]*$';

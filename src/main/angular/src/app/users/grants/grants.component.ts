@@ -10,9 +10,10 @@ import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
 
 @Component({
-  selector: 'grants-component',
-  templateUrl: './grants.component.html',
-  styleUrls: ['./grants.component.scss'],
+    selector: 'grants-component',
+    templateUrl: './grants.component.html',
+    styleUrls: ['./grants.component.scss'],
+    standalone: false
 })
 export class GrantsComponent implements OnInit, OnDestroy {
   @Input()

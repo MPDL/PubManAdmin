@@ -8,9 +8,10 @@ const {privacy: appPrivacy} = require('../../../../package.json');
 const {help: appHelp} = require('../../../../package.json');
 
 @Component({
-  selector: 'login-component',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+    selector: 'login-component',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent implements OnInit {
   appDisclaimer: any;
