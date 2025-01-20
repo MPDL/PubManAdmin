@@ -40,15 +40,9 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.7.3"
   },
-  "description": "This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.6.",
-  "main": "karma.conf.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MPDL/PubManAdmin.git"
-  },
-  "author": "",
-  "bugs": {
-    "url": "https://github.com/MPDL/PubManAdmin/issues"
   },
   "homepage": "https://github.com/MPDL/PubManAdmin#readme",
   "disclaimer": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Impressum",
