@@ -5,7 +5,7 @@ import {HomeComponent} from './base/home/home.component';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
-  {path: '', redirectTo: '/home', pathMatch: 'full'}, // Default route
+  {path: '', redirectTo: 'home', pathMatch: 'full'}, // Default route
   {path: '**', component: PageNotFoundComponent}, // Wildcard route for page not found
 ];
 
