@@ -109,6 +109,23 @@
           },
           "defaultConfiguration": ""
         },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "buildTarget": "admintool:build"
+          },
+          "configurations": {
+            "gfz": {
+              "buildTarget": "admintool:build:gfz"
+            },
+            "rifs": {
+              "buildTarget": "admintool:build:rifs"
+            },
+            "pik": {
+              "buildTarget": "admintool:build:pik"
+            }
+          }
+        },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {

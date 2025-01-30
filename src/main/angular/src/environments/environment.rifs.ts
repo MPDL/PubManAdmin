@@ -21,5 +21,5 @@ export const environment = {
     name: 'users',
     type: 'user',
   },
-  icon: './assets/rifs.jpg',
+  icon: './assets/rifs.png',
 };
