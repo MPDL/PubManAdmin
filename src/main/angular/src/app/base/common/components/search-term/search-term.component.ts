@@ -4,9 +4,10 @@ import {UntypedFormGroup} from '@angular/forms';
 export const queryTypes = ['must', 'must_not', 'filter', 'should'];
 
 @Component({
-  selector: 'search-term-component',
-  templateUrl: './search-term.component.html',
-  styleUrls: ['./search-term.component.scss'],
+    selector: 'search-term-component',
+    templateUrl: './search-term.component.html',
+    styleUrls: ['./search-term.component.scss'],
+    standalone: false
 })
 export class SearchTermComponent {
   @Input()

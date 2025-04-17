@@ -4,9 +4,10 @@ import {Subscription} from 'rxjs';
 import {environment} from 'environments/environment';
 
 @Component({
-  selector: 'home-component',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+    selector: 'home-component',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: false
 })
 export class HomeComponent implements OnInit, OnDestroy {
   hostSubscription: Subscription;

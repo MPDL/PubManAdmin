@@ -4,9 +4,10 @@ import {AuthenticationService} from '../services/authentication.service';
 import {MessagesService} from '../services/messages.service';
 
 @Component({
-  selector: 'login-component',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+    selector: 'login-component',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent implements OnInit {
   credentials: any = {};

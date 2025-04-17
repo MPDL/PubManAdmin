@@ -13,10 +13,11 @@ import {OrganizationTree2Service, OuTreeFlatNode, OuTreeNode} from '../services/
 import {OrganizationsService} from '../services/organizations.service';
 
 @Component({
-  selector: 'organization-tree-component',
-  templateUrl: 'organization-tree.component.html',
-  styleUrls: ['organization-tree.component.scss'],
-  providers: [OrganizationTree2Service],
+    selector: 'organization-tree-component',
+    templateUrl: 'organization-tree.component.html',
+    styleUrls: ['organization-tree.component.scss'],
+    providers: [OrganizationTree2Service],
+    standalone: false
 })
 export class OrganizationTreeComponent implements OnInit {
   ousPath: string = environment.restOus;

@@ -1,7 +1,8 @@
 import {Directive, ElementRef, HostListener, Input} from '@angular/core';
 
 @Directive({
-  selector: '[selected-item-color]',
+    selector: '[selected-item-color]',
+    standalone: false
 })
 export class SelectedItemColourDirective {
   @Input()

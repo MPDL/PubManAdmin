@@ -10,9 +10,10 @@ import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
 
 @Component({
-  selector: 'organization-details-component',
-  templateUrl: './organization-details.component.html',
-  styleUrls: ['./organization-details.component.scss'],
+    selector: 'organization-details-component',
+    templateUrl: './organization-details.component.html',
+    styleUrls: ['./organization-details.component.scss'],
+    standalone: false
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('form')

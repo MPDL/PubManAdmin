@@ -12,9 +12,10 @@ import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from '../services/contexts.service';
 
 @Component({
-  selector: 'context-details-component',
-  templateUrl: './context-details.component.html',
-  styleUrls: ['./context-details.component.scss'],
+    selector: 'context-details-component',
+    templateUrl: './context-details.component.html',
+    styleUrls: ['./context-details.component.scss'],
+    standalone: false
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('form')
