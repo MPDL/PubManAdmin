@@ -9,7 +9,9 @@ import {Ctx} from '../../base/common/model/inge';
 import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from './contexts.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ContextDetailsResolverService {
   ctxsPath: string = environment.restCtxs;
 

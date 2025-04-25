@@ -4,7 +4,9 @@ import {ConnectionService} from '../../services/connection.service';
 import {PubmanRestService} from '../../services/pubman-rest.service';
 import {Ou} from '../model/inge';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SearchService extends PubmanRestService {
   constructor(
     protected connectionService: ConnectionService,

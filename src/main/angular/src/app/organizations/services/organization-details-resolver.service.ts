@@ -7,7 +7,9 @@ import {first, map} from 'rxjs/operators';
 import {Ou} from '../../base/common/model/inge';
 import {OrganizationsService} from './organizations.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class OrganizationDetailsResolverService {
   ousPath: string = environment.restOus;
 

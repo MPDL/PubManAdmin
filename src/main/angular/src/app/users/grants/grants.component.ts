@@ -1,4 +1,6 @@
+import {CommonModule} from '@angular/common';
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {localAdminCtxs} from 'app/base/common/model/query-bodies';
 import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
@@ -13,7 +15,12 @@ import {UsersService} from '../services/users.service';
     selector: 'grants-component',
     templateUrl: './grants.component.html',
     styleUrls: ['./grants.component.scss'],
-    standalone: false
+    providers: [UsersService, ContextsService],
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule
+    ]
 })
 export class GrantsComponent implements OnInit, OnDestroy {
   @Input()

@@ -1,4 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
 import {ConnectionService} from '../services/connection.service';
 import {Subscription} from 'rxjs';
 
@@ -6,7 +8,8 @@ import {Subscription} from 'rxjs';
     selector: 'home-component',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, RouterModule]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   hostSubscription: Subscription;

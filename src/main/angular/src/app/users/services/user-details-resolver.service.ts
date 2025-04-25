@@ -7,7 +7,9 @@ import {first, map} from 'rxjs/operators';
 import {User} from '../../base/common/model/inge';
 import {UsersService} from './users.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UserDetailsResolverService {
   usersPath: string = environment.restUsers;
 

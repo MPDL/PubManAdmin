@@ -2,7 +2,7 @@ import {Directive, ElementRef, HostListener, Output, EventEmitter} from '@angula
 
 @Directive({
     selector: '[clickOutside]',
-    standalone: false
+    standalone: true
 })
 export class ClickOutsideDirective {
   @Output()

@@ -1,6 +1,6 @@
-import {Location} from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
@@ -10,12 +10,28 @@ import {Ctx, genres, Ou, subjects, User, workflow} from '../../base/common/model
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from '../services/contexts.service';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {ContextDetailsResolverService} from '../services/context-details-resolver.service';
+import {
+  ClickOutsideDirective
+} from '../../base/directives/clickoutside.directive';
+import {
+  ForbiddenNameDirective
+} from '../../base/directives/forbidden-name.directive';
 
 @Component({
     selector: 'context-details-component',
     templateUrl: './context-details.component.html',
     styleUrls: ['./context-details.component.scss'],
-    standalone: false
+    standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgxPaginationModule,
+    ClickOutsideDirective,
+    ForbiddenNameDirective,
+  ],
+    providers: [ContextsService, ContextDetailsResolverService]
 })
 export class ContextDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('form')
