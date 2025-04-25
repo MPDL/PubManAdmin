@@ -1,11 +1,13 @@
 import {Component, OnInit, Inject} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {CommonModule} from '@angular/common';
+import {MatDialogRef, MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 
 @Component({
     selector: 'messages-component',
     templateUrl: './messages.component.html',
     styleUrls: ['./messages.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, MatDialogModule]
 })
 export class MessagesComponent implements OnInit {
   message: any;

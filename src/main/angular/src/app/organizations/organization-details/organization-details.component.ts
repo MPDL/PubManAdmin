@@ -1,5 +1,6 @@
+import {CommonModule} from '@angular/common';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {environment} from 'environments/environment';
@@ -8,12 +9,32 @@ import {Identifier, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {OrganizationDetailsResolverService} from '../services/organization-details-resolver.service';
+import {
+  ClickOutsideDirective
+} from '../../base/directives/clickoutside.directive';
+import {
+  ForbiddenNameDirective
+} from '../../base/directives/forbidden-name.directive';
+import {
+  ForbiddenCharacterDirective
+} from '../../base/directives/forbidden-character.directive';
 
 @Component({
     selector: 'organization-details-component',
     templateUrl: './organization-details.component.html',
     styleUrls: ['./organization-details.component.scss'],
-    standalone: false
+    standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgxPaginationModule,
+    ClickOutsideDirective,
+    ForbiddenNameDirective,
+    ForbiddenCharacterDirective,
+  ],
+    providers: [OrganizationsService, OrganizationDetailsResolverService]
 })
 export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('form')

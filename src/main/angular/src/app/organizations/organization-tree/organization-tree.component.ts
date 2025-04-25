@@ -1,5 +1,7 @@
-import {FlatTreeControl} from '@angular/cdk/tree';
+import {CdkTree, CdkTreeNode, CdkTreeNodeDef, CdkTreeNodePadding, CdkTreeNodeToggle, FlatTreeControl} from '@angular/cdk/tree';
+import {CommonModule} from '@angular/common';
 import {Component, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Ou, User} from 'app/base/common/model/inge';
@@ -11,13 +13,32 @@ import {lastValueFrom, Observable, Subscription} from 'rxjs';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationTree2Service, OuTreeFlatNode, OuTreeNode} from '../services/organization-tree2.service';
 import {OrganizationsService} from '../services/organizations.service';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {
+  ClickOutsideDirective
+} from '../../base/directives/clickoutside.directive';
 
 @Component({
     selector: 'organization-tree-component',
     templateUrl: 'organization-tree.component.html',
     styleUrls: ['organization-tree.component.scss'],
     providers: [OrganizationTree2Service],
-    standalone: false
+    standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    NgxPaginationModule,
+    ClickOutsideDirective,
+    CdkTree,
+    CdkTreeNode,
+    CdkTreeNodeDef,
+    CdkTreeNodePadding,
+    CdkTreeNodeToggle,
+  ],
 })
 export class OrganizationTreeComponent implements OnInit {
   ousPath: string = environment.restOus;

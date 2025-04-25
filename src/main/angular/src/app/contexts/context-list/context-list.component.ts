@@ -9,12 +9,25 @@ import {Subscription} from 'rxjs';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from '../services/contexts.service';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {
+  ClickOutsideDirective
+} from '../../base/directives/clickoutside.directive';
 
 @Component({
     selector: 'context-list-component',
     templateUrl: './context-list.component.html',
     styleUrls: ['./context-list.component.scss'],
-    standalone: false
+    standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgxPaginationModule,
+    ClickOutsideDirective,
+  ],
+    providers: [ContextsService]
 })
 export class ContextListComponent implements OnInit, OnDestroy {
   ctxsPath: string = environment.restCtxs;

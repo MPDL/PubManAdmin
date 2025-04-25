@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {Subscription} from 'rxjs';
 import {ConnectionService} from '../services/connection.service';
 
@@ -9,7 +10,8 @@ const {homepage: appHome} = require('../../../../package.json');
     selector: 'footer-component',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule]
 })
 export class FooterComponent implements OnInit {
   appVersion: any;

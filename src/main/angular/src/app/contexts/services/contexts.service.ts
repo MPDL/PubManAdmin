@@ -6,7 +6,9 @@ import {Ctx} from '../../base/common/model/inge';
 import {ConnectionService} from '../../base/services/connection.service';
 import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ContextsService extends PubmanRestService {
   ctxsPath:string = environment.restCtxs;
 

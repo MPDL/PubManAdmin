@@ -9,7 +9,9 @@ import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
 import {ConnectionService} from '../../base/services/connection.service';
 import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UsersService extends PubmanRestService {
   ctxsPath: string = environment.restCtxs;
   ousPath: string = environment.restOus;

@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 import {User} from '../common/model/inge';
 import {AuthenticationService} from '../services/authentication.service';
 import {MessagesService} from '../services/messages.service';
@@ -7,7 +10,8 @@ import {MessagesService} from '../services/messages.service';
     selector: 'login-component',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, FormsModule, RouterModule]
 })
 export class LoginComponent implements OnInit {
   credentials: any = {};

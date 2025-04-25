@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BasicRO, Ou, OuMetadata} from 'app/base/common/model/inge';
 import {MessagesService} from 'app/base/services/messages.service';
@@ -7,9 +7,11 @@ import {Observable} from 'rxjs';
 import {ConnectionService} from '../../base/services/connection.service';
 import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class OrganizationsService extends PubmanRestService {
-  ousPath:string = environment.restOus;
+  ousPath: string = environment.restOus;
   ous: Ou[];
 
   constructor(

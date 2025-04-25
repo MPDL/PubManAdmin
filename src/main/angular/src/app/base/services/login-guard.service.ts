@@ -3,7 +3,9 @@ import {Injectable} from '@angular/core';
 import {AuthenticationService} from './authentication.service';
 import {MessagesService} from './messages.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class LoginGuardService {
   isLoggedIn: boolean = false;
 

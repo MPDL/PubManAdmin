@@ -30,7 +30,9 @@ export class OuTreeFlatNode {
   ) {}
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class OrganizationTree2Service {
   ousPath: string = environment.restOus;
 

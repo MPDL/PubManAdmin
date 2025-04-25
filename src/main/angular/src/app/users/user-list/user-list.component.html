@@ -1,11 +1,11 @@
 <div class="container-sm">
 
-  <h3 class="text-primary">User Administration</h3>
+  <h3 class="text-secondary">User Administration</h3>
 
-  <div class="card text-white bg-primary text-end">
+  <div class="card text-white bg-secondary text-end">
     <div class="card-body">
       <h4 class="card-title">{{title}}</h4>
-      <input type="submit" class="btn btn-primary btn-sm" value="+" (click)="addNewUser()" />
+      <input type="submit" class="btn btn-secondary btn-sm" value="+" (click)="addNewUser()" />
     </div>
 
     <div class="row">
@@ -13,7 +13,7 @@
         <input class="form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" (clickOutside)="closeOus()">
-            <li *ngFor="let ou of ous" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="gotoFilteredOu(ou)">
+            <li *ngFor="let ou of ous" class="list-group-item-secondary list-group-item-action py-0 text-start" (click)="gotoFilteredOu(ou)">
               <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
             </li>
           </ul>
@@ -26,7 +26,7 @@
         <input class="form-control form-control-sm" type="text" placeholder="search by name of user" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" autocomplete="off">
         <div *ngIf="usersByName.length > 0">
           <ul class="list-group" (clickOutside)="closeUsersByName()">
-            <li *ngFor="let user of usersByName" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectUserByName(user)">
+            <li *ngFor="let user of usersByName" class="list-group-item-secondary list-group-item-action py-0 text-start" (click)="selectUserByName(user)">
               <small *ngIf="!user.affiliation">{{user.name}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- N.N.</small>
               <small *ngIf="user.affiliation">{{user.name}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- {{user.affiliation.name}}</small>
             </li>
@@ -40,7 +40,7 @@
         <input class="form-control form-control-sm" type="text" placeholder="search by loginname of user" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" autocomplete="off">
         <div *ngIf="usersByLogin.length > 0">
           <ul class="list-group" (clickOutside)="closeUsersByLogin()">
-            <li *ngFor="let user of usersByLogin" class="list-group-item-primary list-group-item-action py-0 text-start" (click)="selectUserByLogin(user)">
+            <li *ngFor="let user of usersByLogin" class="list-group-item-secondary list-group-item-action py-0 text-start" (click)="selectUserByLogin(user)">
               <small *ngIf="!user.affiliation">{{user.loginname}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- N.N.</small>
               <small *ngIf="user.affiliation">{{user.loginname}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- {{user.affiliation.name}}</small>
             </li>
@@ -55,7 +55,7 @@
     </div>
 
     <ul class="list-group">
-      <div class="list-group-item list-group-item-action list-group-item-secondary text-primary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
+      <div class="list-group-item list-group-item-action list-group-item-secondary text-secondary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
         <div class="row">
             <span class="col-3"><label class="col-form-label-sm p-0 ms-2">{{user.name}}</label></span>
             <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.loginname}}</label></span>

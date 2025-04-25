@@ -1,4 +1,6 @@
+import {CommonModule} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4autoSelect, users4autoSelectByLogin, users4autoSelectByName} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
@@ -9,13 +11,24 @@ import {Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
+import {LoginGuardService} from '../../base/services/login-guard.service';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {
+  ClickOutsideDirective
+} from '../../base/directives/clickoutside.directive';
 
 @Component({
     selector: 'user-list-component',
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss'],
-    providers: [],
-    standalone: false
+    providers: [UsersService, LoginGuardService],
+    standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgxPaginationModule,
+    ClickOutsideDirective,
+  ],
 })
 export class UserListComponent implements OnInit, OnDestroy {
   ousPath: string = environment.restOus;

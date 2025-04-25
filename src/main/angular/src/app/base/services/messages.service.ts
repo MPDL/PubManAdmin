@@ -2,7 +2,9 @@ import {Injectable} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MessagesComponent} from '../messages/messages.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class MessagesService {
   messageDialogRef: MatDialogRef<MessagesComponent>;
 

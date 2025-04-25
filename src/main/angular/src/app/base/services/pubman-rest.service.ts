@@ -5,7 +5,9 @@ import {catchError, map} from 'rxjs/operators';
 import {Ctx, Ou, SearchResult, User} from '../common/model/inge';
 import {ConnectionService} from './connection.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class PubmanRestService {
   defaultPageSize = 50;
   baseUrl: string;

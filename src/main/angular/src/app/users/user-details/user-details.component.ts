@@ -1,28 +1,58 @@
-import {Location} from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
-import {OrganizationsService} from 'app/organizations/services/organizations.service';
+import {
+  OrganizationsService,
+} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
 import {Subscription} from 'rxjs';
 import {Grant, Ou, User} from '../../base/common/model/inge';
-import {AuthenticationService} from '../../base/services/authentication.service';
+import {
+  AuthenticationService,
+} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
+import {LoginGuardService} from '../../base/services/login-guard.service';
+import {
+  UserDetailsResolverService,
+} from '../services/user-details-resolver.service';
+import {GrantsComponent} from '../grants/grants.component';
+import {
+  ClickOutsideDirective,
+} from '../../base/directives/clickoutside.directive';
+import {
+  ForbiddenNameDirective,
+} from '../../base/directives/forbidden-name.directive';
+import {
+  ValidLoginnameDirective,
+} from '../../base/directives/valid-loginname.directive';
+import {
+  ForbiddenCharacterDirective,
+} from '../../base/directives/forbidden-character.directive';
 
 @Component({
-    selector: 'user-details-component',
-    templateUrl: './user-details.component.html',
-    styleUrls: ['./user-details.component.scss'],
-    standalone: false
+  selector: 'user-details-component',
+  templateUrl: './user-details.component.html',
+  styleUrls: ['./user-details.component.scss'],
+  providers: [UsersService, UserDetailsResolverService, LoginGuardService],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    GrantsComponent,
+    ClickOutsideDirective,
+    ForbiddenNameDirective,
+    ValidLoginnameDirective,
+    ForbiddenCharacterDirective,
+  ],
 })
 export class UserDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('form')
-    form: NgForm;
+  form: NgForm;
 
-  ctxsPath: string = environment.restCtxs;
   ousPath: string = environment.restOus;
   usersPath: string = environment.restUsers;
 
@@ -53,7 +83,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private searchService: SearchService,
     private usersService: UsersService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
@@ -296,7 +327,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       const queryString = '?q=metadata.name.auto:' + ouName;
       this.organizationsService.filter(this.ousPath, null, queryString, 1)
         .subscribe({
-          next: (data: {list: Ou[], records: number}) => {
+          next: (data: { list: Ou[], records: number }) => {
             data.list.forEach((ou: Ou) => {
               if (ou.publicStatus === 'OPENED') {
                 ous.push(ou);
@@ -313,7 +344,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       body.query.bool.must.term['metadata.name.auto'] = ouName;
       this.organizationsService.query(this.ousPath, null, body)
         .subscribe({
-          next: (data: {list: Ou[], records: number}) => {
+          next: (data: { list: Ou[], records: number }) => {
             data.list.forEach((ou: Ou) => {
               if (ou.publicStatus === 'OPENED') {
                 ous.push(ou);

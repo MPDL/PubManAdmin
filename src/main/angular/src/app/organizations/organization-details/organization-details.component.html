@@ -86,22 +86,22 @@
         <div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
         </div>
-        <div *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'OPENED'" class="col-1">
+        <div *ngIf="!isNewOu && ou.publicStatus === 'OPENED'" class="col-1">
           <input type="button" [disabled]="hasOpenChildren || isNewPredecessor" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'close'" />
         </div>
-        <div *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'CLOSED'" class="col-1">
+        <div *ngIf="!isNewOu && ou.publicStatus === 'CLOSED'" class="col-1">
           <input type="button" [disabled]="!hasOpenParent || isNewPredecessor" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'open'" />
         </div>
       </div>
 
       <div class="row w-100 mt-0">
         <label class="col-4 col-form-label col-form-label-sm"></label>
-        <label *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'CLOSED' && !hasOpenParent" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be opened, if the parent is open)</label>
+        <label *ngIf="!isNewOu && ou.publicStatus === 'CLOSED' && !hasOpenParent" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be opened, if the parent is open)</label>
       </div>
 
       <div class="row w-100 mt-0">
         <label class="col-4 col-form-label col-form-label-sm"></label>
-        <label *ngIf="!isNewOu && !isNewParentOu && ou.publicStatus === 'OPENED' && hasOpenChildren" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be closed, if all children are closed)</label>
+        <label *ngIf="!isNewOu && ou.publicStatus === 'OPENED' && hasOpenChildren" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be closed, if all children are closed)</label>
       </div>
 
       <div class="row w-100 mt-3">
@@ -203,7 +203,7 @@
 
       <div class="row w-100 mt-3 mb-2">
         <div class="col-3 ms-auto">
-          <input type="button"[disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
+          <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
           <input *ngIf="!isNewOu && isAdmin" type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
           <input type="button" [disabled]="form.invalid || isNewPredecessor || !form.dirty" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
         </div>
@@ -223,7 +223,7 @@
           </ul>
         </div>
       </div>
-      
+
       <div *ngIf="!isNewOu && !isNewPredecessor && ou.hasPredecessors || isNewPredecessor" class="row w-100 mt-5">
         <label class="col-2 col-form-label col-form-label-sm">predecessors</label>
         <div *ngIf="ou.hasPredecessors" class="col-10">

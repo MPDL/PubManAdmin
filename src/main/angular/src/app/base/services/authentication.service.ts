@@ -6,7 +6,9 @@ import {User} from '../common/model/inge';
 import {ConnectionService} from './connection.service';
 import {MessagesService} from './messages.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthenticationService {
   private isAdmin = new BehaviorSubject<boolean>(false);
   private isLoggedIn = new BehaviorSubject<boolean>(false);
