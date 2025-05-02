@@ -1,7 +1,0 @@
-{
-  "/rest": {
-    "target": "https://qa.pure.mpdl.mpg.de",
-    "secure": false,
-    "logLevel": "debug"
-  }
-}

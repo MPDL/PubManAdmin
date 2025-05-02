@@ -3,9 +3,7 @@
   "version": "2.5.16",
   "scripts": {
     "ng": "ng",
-    "start-gfz": "ng serve -c=gfz",
-    "start-rifs": "ng serve -c=rifs",
-    "start-pik": "ng serve -c=pik",
+    "start-dev": "ng serve -c=dev",
     "build-gfz": "ng build --base-href=/admintool/ -c=gfz",
     "build-rifs": "ng build --base-href=/admintool/ -c=rifs",
     "build-pik": "ng build --base-href=/admintool/ -c=pik"

@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  baseUrl: 'http://localhost:4200',
   baseUrl: 'https://' + window.location.hostname,
+  proxyUrl: '',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   restLogin: '/rest/login',
