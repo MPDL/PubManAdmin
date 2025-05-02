@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:4200',
-  proxyUrl: '',
+  proxyUrl: 'http://localhost:4200',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   restLogin: '/rest/login',
@@ -24,5 +24,5 @@ export const environment = {
     name: 'users',
     type: 'user',
   },
-  icon: './assets/gfz.svg',
+  icon: './assets/gfz.png',
 };

@@ -24,4 +24,5 @@ export const environment = {
     name: 'users',
     type: 'user',
   },
+  icon: './assets/gfz.png',
 };
