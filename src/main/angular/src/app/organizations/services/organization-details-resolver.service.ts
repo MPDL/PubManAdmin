@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot} from '@angular/router';
-import {AuthenticationService} from 'app/base/services/authentication.service';
 import {environment} from 'environments/environment';
-import {Observable, of, Subscription} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {first, map} from 'rxjs/operators';
 import {Ou} from '../../base/common/model/inge';
 import {OrganizationsService} from './organizations.service';
@@ -13,14 +12,9 @@ import {OrganizationsService} from './organizations.service';
 export class OrganizationDetailsResolverService {
   ousPath: string = environment.restOus;
 
-  tokenSubscription: Subscription;
-  token: string;
-
   constructor(
-    private authenticationService: AuthenticationService,
     private organizationsService: OrganizationsService,
   ) {
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
   }
 
   resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<Ou> {
@@ -33,7 +27,7 @@ export class OrganizationDetailsResolverService {
       return of(ou);
     } else {
       let ou: Ou;
-      return this.organizationsService.get(this.ousPath, id, this.token)
+      return this.organizationsService.get(this.ousPath, id)
         .pipe(
           first(),
           map((response) => {

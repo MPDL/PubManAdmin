@@ -1,41 +1,34 @@
 import {CommonModule, Location} from '@angular/common';
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
-import {Subscription} from 'rxjs';
-import {Ctx, genres, Ou, subjects, User, workflow} from '../../base/common/model/inge';
+import {Ctx, genres, Ou, subjects, workflow} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {ContextsService} from '../services/contexts.service';
 import {NgxPaginationModule} from 'ngx-pagination';
-import {ContextDetailsResolverService} from '../services/context-details-resolver.service';
-import {
-  ClickOutsideDirective
-} from '../../base/directives/clickoutside.directive';
-import {
-  ForbiddenNameDirective
-} from '../../base/directives/forbidden-name.directive';
+import {ClickOutsideDirective} from '../../base/directives/clickoutside.directive';
+import {ForbiddenNameDirective} from '../../base/directives/forbidden-name.directive';
 
 @Component({
-    selector: 'context-details-component',
-    templateUrl: './context-details.component.html',
-    styleUrls: ['./context-details.component.scss'],
-    standalone: true,
+  selector: 'context-details-component',
+  templateUrl: './context-details.component.html',
+  styleUrls: ['./context-details.component.scss'],
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     NgxPaginationModule,
     ClickOutsideDirective,
     ForbiddenNameDirective,
-  ],
-    providers: [ContextsService, ContextDetailsResolverService]
+  ]
 })
-export class ContextDetailsComponent implements OnInit, OnDestroy {
+export class ContextDetailsComponent implements OnInit {
   @ViewChild('form')
-    form: NgForm;
+  form: NgForm;
 
   ctxsPath: string = environment.restCtxs;
   ousPath: string = environment.restOus;
@@ -60,32 +53,22 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   ouSearchTerm: string = '';
   isNewOu: boolean = false;
 
-  adminSubscription: Subscription;
-  isAdmin: boolean;
-  tokenSubscription: Subscription;
-  token: string;
-  userSubscription: Subscription;
-  loggedInUser: User;
-
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authenticationService: AuthenticationService,
+    public authenticationService: AuthenticationService,
     private contextsService: ContextsService,
     private location: Location,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
-
     this.setContext(this.activatedRoute.snapshot.data['ctx']);
 
-    if (!this.isAdmin) {
+    if (!this.authenticationService.isAdmin) {
       this.getLoggedInUserAllOpenOus();
     }
 
@@ -99,12 +82,6 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
     this.workflows2display = Object.keys(workflow).filter((val) => val.match(/^[A-Z]/));
     this.workflow = this.ctx.workflow;
-  }
-
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.tokenSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
   }
 
   addGenres(genre: string[]) {
@@ -145,12 +122,12 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   changeCtxState() {
     if (this.ctx.state === 'CLOSED') {
-      this.organizationsService.get(this.ousPath, this.ctx.responsibleAffiliations[0].objectId, this.token)
+      this.organizationsService.get(this.ousPath, this.ctx.responsibleAffiliations[0].objectId)
         .subscribe({
           next: (data: Ou) => {
             if (data.publicStatus !== 'OPENED') {
               if (confirm('Closed contexts of closed organizations should not be opened. Proceed?')) {
-                this.contextsService.openCtx(this.ctx, this.token)
+                this.contextsService.openCtx(this.ctx)
                   .subscribe({
                     next: (data: Ctx) => {
                       this.ctx = data;
@@ -160,7 +137,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
                   });
               }
             } else {
-              this.contextsService.openCtx(this.ctx, this.token)
+              this.contextsService.openCtx(this.ctx)
                 .subscribe({
                   next: (data: Ctx) => {
                     this.ctx = data;
@@ -173,7 +150,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.contextsService.closeCtx(this.ctx, this.token)
+      this.contextsService.closeCtx(this.ctx)
         .subscribe({
           next: (data: Ctx) => {
             this.ctx = data;
@@ -213,7 +190,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   deleteCtx() {
     if (confirm('Delete ' + this.ctx.name + '?')) {
       if (this.checkForm()) {
-        this.contextsService.delete(this.ctxsPath + '/' + this.ctx.objectId, this.token)
+        this.contextsService.delete(this.ctxsPath + '/' + this.ctx.objectId)
           .subscribe({
             next: (_data) => {
               this.messagesService.success('deleted context ' + this.ctx.objectId);
@@ -275,7 +252,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewCtx) {
-      this.contextsService.post(this.ctxsPath, this.ctx, this.token)
+      this.contextsService.post(this.ctxsPath, this.ctx)
         .subscribe({
           next: (data: Ctx) => {
             this.setContext(data);
@@ -287,7 +264,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.contextsService.put(this.ctxsPath + '/' + this.ctx.objectId, this.ctx, this.token)
+      this.contextsService.put(this.ctxsPath + '/' + this.ctx.objectId, this.ctx)
         .subscribe({
           next: (data: Ctx) => {
             this.setContext(data);
@@ -322,7 +299,7 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getLoggedInUserAllOpenOus() {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+    this.organizationsService.getallChildOus(this.authenticationService.loggedInUser.topLevelOuIds, null)
       .subscribe({
         next: (data: Ou[]) => {
           const ous: Ou[] = [];
@@ -361,9 +338,9 @@ export class ContextDetailsComponent implements OnInit, OnDestroy {
 
   private returnSuggestedOus(ouName: string) {
     const queryString = '?q=metadata.name.auto:' + ouName;
-    this.organizationsService.filter(this.ousPath, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, queryString, 1)
       .subscribe({
-        next: (data: {list: Ou[], records: number}) => {
+        next: (data: { list: Ou[], records: number }) => {
           const ous: Ou[] = [];
           data.list.forEach((ou: Ou) => {
             if (ou.publicStatus === 'OPENED') {

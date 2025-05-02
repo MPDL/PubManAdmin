@@ -1,5 +1,5 @@
-<form #form1="ngForm" [hidden]="loggedIn" *ngIf="empty">
-  <div class="row g-1">
+<form #form1="ngForm">
+  <div class="row g-1" *ngIf="!authenticationService.isLoggedIn">
     <div class="col">
     </div>
     <div class="col validation-field-parent">
@@ -14,14 +14,14 @@
       <input type="submit" [disabled]="form1.invalid" class="btn btn-outline-secondary btn-sm" (click)="login()" value="login" />
     </div>
   </div>
-</form>
-
-<form [hidden]="!loggedIn">
-  <div class="row g-1">
-    <div class="col">
-      <small class="form-text text-secondary me-2"><span>Welcome</span></small>
-      <small class="form-text text-muted me-2"><span>{{credentials.userName}} </span></small>
-      <a class="btn btn-outline-secondary btn-sm" routerLink="/home" (click)="logout()">Logout</a>
-    </div>
+  <div class="row g-1" *ngIf="authenticationService.isLoggedIn">
+        <div class="col">
+            <a class="form-text text-secondary me-3" href='{{appDisclaimer}}' target="_blank">Disclaimer</a>
+            <a class="form-text text-secondary me-3" href='{{appPrivacy}}' target="_blank">Privacy_Policy</a>
+            <a class="form-text text-secondary me-5" href='{{appHelp}}' target="_blank">Help</a>
+            <small class="form-text text-secondary me-2"><span>Welcome</span></small>
+            <small class="form-text text-muted me-2"><span>{{authenticationService.loggedInUser?.name}}</span></small>
+            <a class="btn btn-outline-secondary btn-sm" routerLink="/home" (click)="logout()">Logout</a>
+        </div>
   </div>
-</form>
+ </form>

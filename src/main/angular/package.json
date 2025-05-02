@@ -1,6 +1,6 @@
 {
   "name": "admintool",
-  "version": "2.5.15",
+  "version": "2.5.16",
   "scripts": {
     "ng": "ng",
     "start-gfz": "ng serve -c=gfz",

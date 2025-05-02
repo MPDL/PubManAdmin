@@ -1,18 +1,12 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {ConnectionService} from '../../services/connection.service';
-import {PubmanRestService} from '../../services/pubman-rest.service';
 import {Ou} from '../model/inge';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SearchService extends PubmanRestService {
+export class SearchService {
   constructor(
-    protected connectionService: ConnectionService,
-    protected httpClient: HttpClient,
   ) {
-    super(connectionService, httpClient);
   }
 
   convertSearchTerm(term: string): string {

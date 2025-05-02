@@ -1,43 +1,25 @@
 import {CommonModule, Location} from '@angular/common';
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
-import {
-  OrganizationsService,
-} from 'app/organizations/services/organizations.service';
+import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
-import {Subscription} from 'rxjs';
 import {Grant, Ou, User} from '../../base/common/model/inge';
-import {
-  AuthenticationService,
-} from '../../base/services/authentication.service';
+import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
-import {LoginGuardService} from '../../base/services/login-guard.service';
-import {
-  UserDetailsResolverService,
-} from '../services/user-details-resolver.service';
 import {GrantsComponent} from '../grants/grants.component';
-import {
-  ClickOutsideDirective,
-} from '../../base/directives/clickoutside.directive';
-import {
-  ForbiddenNameDirective,
-} from '../../base/directives/forbidden-name.directive';
-import {
-  ValidLoginnameDirective,
-} from '../../base/directives/valid-loginname.directive';
-import {
-  ForbiddenCharacterDirective,
-} from '../../base/directives/forbidden-character.directive';
+import {ClickOutsideDirective} from '../../base/directives/clickoutside.directive';
+import {ForbiddenNameDirective} from '../../base/directives/forbidden-name.directive';
+import {ValidLoginnameDirective} from '../../base/directives/valid-loginname.directive';
+import {ForbiddenCharacterDirective} from '../../base/directives/forbidden-character.directive';
 
 @Component({
   selector: 'user-details-component',
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
-  providers: [UsersService, UserDetailsResolverService, LoginGuardService],
   standalone: true,
   imports: [
     CommonModule,
@@ -49,7 +31,7 @@ import {
     ForbiddenCharacterDirective,
   ],
 })
-export class UserDetailsComponent implements OnInit, OnDestroy {
+export class UserDetailsComponent implements OnInit {
   @ViewChild('form')
   form: NgForm;
 
@@ -67,13 +49,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   isNewGrant: boolean = false;
 
-  adminSubscription: Subscription;
-  isAdmin: boolean;
-  tokenSubscription: Subscription;
-  token: string;
-  userSubscription: Subscription;
-  loggedInUser: User;
-
   constructor(
     private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService,
@@ -87,19 +62,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
-
     this.setUser(this.activatedRoute.snapshot.data['user']);
 
-    if (!this.isAdmin) {
+    if (!this.authenticationService.isAdmin) {
       this.getLoggedInUserFirstLevelOpenOus();
     }
 
     if (this.user.loginname === 'new user') {
       this.user.loginname = null;
-      this.usersService.generateRandomPassword(this.token)
+      this.usersService.generateRandomPassword()
         .subscribe({
           next: (data: string) => {
             this.user.password = data;
@@ -110,12 +81,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.isNewUser = true;
       this.isNewOu = true;
     }
-  }
-
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.tokenSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
   }
 
   addGrant() {
@@ -130,7 +95,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   changeUserState() {
     if (this.user.active === true) {
-      this.usersService.deactivate(this.user, this.token)
+      this.usersService.deactivate(this.user)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);
@@ -139,7 +104,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.usersService.activate(this.user, this.token)
+      this.usersService.activate(this.user)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);
@@ -159,7 +124,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   deleteUser() {
     if (confirm('Delete ' + this.user.name + '?')) {
       if (this.checkForm()) {
-        this.usersService.delete(this.usersPath + '/' + this.user.objectId, this.token)
+        this.usersService.delete(this.usersPath + '/' + this.user.objectId)
           .subscribe({
             next: (_data) => {
               this.messagesService.success('deleted user ' + this.user.loginname);
@@ -174,12 +139,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   generatePassword() {
     if (confirm('Generate a new random password?')) {
-      this.usersService.generateRandomPassword(this.token)
+      this.usersService.generateRandomPassword()
         .subscribe({
           next: (data: string) => {
             const pw: string = data;
             this.user.password = pw;
-            this.usersService.changePassword(this.user, this.token)
+            this.usersService.changePassword(this.user)
               .subscribe({
                 next: (data: User) => {
                   this.setUser(data);
@@ -229,7 +194,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     if (confirm('Remove the selected grant ' + grant.role + '?')) {
       const grantsToRemove: Grant[] = [];
       grantsToRemove.push(grant);
-      this.usersService.removeGrants(this.user, grantsToRemove, this.token)
+      this.usersService.removeGrants(this.user, grantsToRemove)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);
@@ -248,7 +213,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
     if (this.isNewUser) {
       const pw = this.user.password;
-      this.usersService.post(this.usersPath, this.user, this.token)
+      this.usersService.post(this.usersPath, this.user)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);
@@ -265,10 +230,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           },
         });
     } else {
-      this.usersService.put(this.usersPath + '/' + this.user.objectId, this.user, this.token)
+      this.usersService.put(this.usersPath + '/' + this.user.objectId, this.user)
         .subscribe({
           next: (data: User) => {
-            this.usersService.get(environment.restUsers, data.objectId, this.token)
+            this.usersService.get(environment.restUsers, data.objectId)
               .subscribe({
                 next: (data: User) => {
                   this.setUser(data);
@@ -307,8 +272,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   private getLoggedInUserFirstLevelOpenOus() {
     const ous: Ou[] = [];
-    this.loggedInUser.topLevelOuIds.forEach((ouId: string) => {
-      this.organizationsService.get(this.ousPath, ouId, null)
+    this.authenticationService.loggedInUser.topLevelOuIds.forEach((ouId: string) => {
+      this.organizationsService.get(this.ousPath, ouId)
         .subscribe({
           next: (data: Ou) => {
             if (data.publicStatus === 'OPENED') {
@@ -323,9 +288,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   private returnSuggestedOus(ouName: string) {
     const ous: Ou[] = [];
-    if (this.isAdmin) {
+    if (this.authenticationService.isAdmin) {
       const queryString = '?q=metadata.name.auto:' + ouName;
-      this.organizationsService.filter(this.ousPath, null, queryString, 1)
+      this.organizationsService.filter(this.ousPath, queryString, 1)
         .subscribe({
           next: (data: { list: Ou[], records: number }) => {
             data.list.forEach((ou: Ou) => {
@@ -340,9 +305,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         });
     } else {
       const body = ous4autoSelect;
-      body.query.bool.filter.terms['objectId'] = this.loggedInUser.topLevelOuIds;
+      body.query.bool.filter.terms['objectId'] = this.authenticationService.loggedInUser.topLevelOuIds;
       body.query.bool.must.term['metadata.name.auto'] = ouName;
-      this.organizationsService.query(this.ousPath, null, body)
+      this.organizationsService.query(this.ousPath, body)
         .subscribe({
           next: (data: { list: Ou[], records: number }) => {
             data.list.forEach((ou: Ou) => {

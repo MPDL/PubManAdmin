@@ -6,6 +6,7 @@ import {MessagesComponent} from '../messages/messages.component';
   providedIn: 'root',
 })
 export class MessagesService {
+
   messageDialogRef: MatDialogRef<MessagesComponent>;
 
   constructor(
@@ -18,8 +19,7 @@ export class MessagesService {
       msg.text = msg.text.substring(0, maxMsgLength - 1) + '...';
     }
     this.messageDialogRef = this.dialog.open(MessagesComponent, {
-      data: msg,
-      panelClass: 'isis-mat-dialog',
+      data: msg
     });
   }
 

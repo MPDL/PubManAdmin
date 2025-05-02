@@ -1,37 +1,35 @@
 import {CommonModule} from '@angular/common';
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {localAdminCtxs} from 'app/base/common/model/query-bodies';
 import {ContextsService} from 'app/contexts/services/contexts.service';
 import {OrganizationsService} from 'app/organizations/services/organizations.service';
 import {environment} from 'environments/environment';
-import {Subscription} from 'rxjs';
 import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {UsersService} from '../services/users.service';
 
 @Component({
-    selector: 'grants-component',
-    templateUrl: './grants.component.html',
-    styleUrls: ['./grants.component.scss'],
-    providers: [UsersService, ContextsService],
-    standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule
-    ]
+  selector: 'grants-component',
+  templateUrl: './grants.component.html',
+  styleUrls: ['./grants.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+  ],
 })
-export class GrantsComponent implements OnInit, OnDestroy {
+export class GrantsComponent implements OnInit {
   @Input()
-    isNewGrant: boolean;
+  isNewGrant: boolean;
   @Input()
-    user: User;
+  user: User;
 
   @Output()
-    isNewGrantChange = new EventEmitter<boolean>();
+  isNewGrantChange = new EventEmitter<boolean>();
   @Output()
-    userChange = new EventEmitter<User>();
+  userChange = new EventEmitter<User>();
 
   ousPath: string = environment.restOus;
   ctxsPath: string = environment.restCtxs;
@@ -47,17 +45,8 @@ export class GrantsComponent implements OnInit, OnDestroy {
   ous: Ou[] = [];
   selectedOu: Ou;
 
-  selectedGrantToAdd: Grant;
   selectedGrantsToAdd: Grant[] = [];
   grantsToAdd: string;
-  idString: string;
-
-  isAdmin: boolean;
-  adminSubscription: Subscription;
-  tokenSubscription: Subscription;
-  token: string;
-  userSubscription: Subscription;
-  loggedInUser: User;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -65,14 +54,11 @@ export class GrantsComponent implements OnInit, OnDestroy {
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private usersService: UsersService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
-
-    if (this.isAdmin) {
+    if (this.authenticationService.isAdmin) {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
     } else {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
@@ -81,15 +67,9 @@ export class GrantsComponent implements OnInit, OnDestroy {
     this.getCtxsAndOus();
   }
 
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.tokenSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
-  }
-
   private getCtxsAndOus() {
-    if (this.isAdmin) {
-      this.organizationsService.getFirstLevelOus(this.token)
+    if (this.authenticationService.isAdmin) {
+      this.organizationsService.getFirstLevelOus()
         .subscribe({
           next: (data: Ou[]) => {
             const ous: Ou[] = [];
@@ -103,27 +83,27 @@ export class GrantsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
       const queryString = '?q=state:OPENED&size=300';
-      this.usersService.filter(this.ctxsPath, null, queryString, 1)
+      this.usersService.filter(this.ctxsPath, queryString, 1)
         .subscribe({
-          next: (data: {list: Ctx[], records: number}) => {
+          next: (data: { list: Ctx[], records: number }) => {
             this.ctxs = data.list;
             this.filteredCtxs = data.list;
           },
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+      this.organizationsService.getallChildOus(this.authenticationService.loggedInUser.topLevelOuIds, null)
         .subscribe({
           next: (data: Ou[]) => {
             const allOuIds: string[] = [];
             data.forEach(
-              (ou: Ou) => allOuIds.push(ou.objectId)
+              (ou: Ou) => allOuIds.push(ou.objectId),
             );
             const body = localAdminCtxs;
             body.query.bool.filter.terms['responsibleAffiliations.objectId'] = allOuIds;
-            this.contextsService.query(this.ctxsPath, null, body)
+            this.contextsService.query(this.ctxsPath, body)
               .subscribe({
-                next: (data: {list: Ctx[], records: number}) => {
+                next: (data: { list: Ctx[], records: number }) => {
                   const ctxs: Ctx[] = [];
                   data.list.forEach((ctx: Ctx) => {
                     if (ctx.state === 'OPENED') {
@@ -196,7 +176,7 @@ export class GrantsComponent implements OnInit, OnDestroy {
 
   addGrants() {
     if (this.selectedGrantsToAdd.length > 0) {
-      this.usersService.addGrants(this.user, this.selectedGrantsToAdd, this.token)
+      this.usersService.addGrants(this.user, this.selectedGrantsToAdd)
         .subscribe({
           next: (data: User) => {
             this.setUser(data);

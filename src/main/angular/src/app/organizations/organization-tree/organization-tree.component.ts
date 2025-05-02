@@ -1,10 +1,17 @@
-import {CdkTree, CdkTreeNode, CdkTreeNodeDef, CdkTreeNodePadding, CdkTreeNodeToggle, FlatTreeControl} from '@angular/cdk/tree';
+import {
+  CdkTree,
+  CdkTreeNode,
+  CdkTreeNodeDef,
+  CdkTreeNodePadding,
+  CdkTreeNodeToggle,
+  FlatTreeControl,
+} from '@angular/cdk/tree';
 import {CommonModule} from '@angular/common';
 import {Component, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Ou, User} from 'app/base/common/model/inge';
+import {Ou} from 'app/base/common/model/inge';
 import {ous4autoSelect} from 'app/base/common/model/query-bodies';
 import {SearchService} from 'app/base/common/services/search.service';
 import {AuthenticationService} from 'app/base/services/authentication.service';
@@ -16,16 +23,13 @@ import {OrganizationsService} from '../services/organizations.service';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {NgxPaginationModule} from 'ngx-pagination';
-import {
-  ClickOutsideDirective
-} from '../../base/directives/clickoutside.directive';
+import {ClickOutsideDirective} from '../../base/directives/clickoutside.directive';
 
 @Component({
-    selector: 'organization-tree-component',
-    templateUrl: 'organization-tree.component.html',
-    styleUrls: ['organization-tree.component.scss'],
-    providers: [OrganizationTree2Service],
-    standalone: true,
+  selector: 'organization-tree-component',
+  templateUrl: 'organization-tree.component.html',
+  styleUrls: ['organization-tree.component.scss'],
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -88,50 +92,38 @@ export class OrganizationTreeComponent implements OnInit {
     return newNode;
   };
 
-  adminSubscription: Subscription;
-  isAdmin: boolean;
   databaseSubscription: Subscription;
-  userSubscription: Subscription;
-  loggedInUser: User;
 
   constructor(
     private authenticationService: AuthenticationService,
     private database: OrganizationTree2Service,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
-
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     this.databaseSubscription = this.database.dataChange.subscribe((data) => this.dataSource.data = data);
 
-    if (this.isAdmin) {
+    if (this.authenticationService.isAdmin) {
       this.database.initialize();
     } else {
-      this.database.initializeForLocalAdmin(this.loggedInUser.topLevelOuIds);
+      this.database.initializeForLocalAdmin(this.authenticationService.loggedInUser.topLevelOuIds);
     }
 
-    const ouId: string = this.route.snapshot.params['ouId'];
+    const ouId: string = this.activatedRoute.snapshot.params['ouId'];
 
     if (ouId != null) {
       this.expandNode(ouId);
       this.selectNode(ouId);
     }
-  }
-
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.databaseSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
   }
 
   addNewOu() {
@@ -173,10 +165,10 @@ export class OrganizationTreeComponent implements OnInit {
     const maxRepeat: number = 5;
     let countRepeat: number = 0;
     try {
-      const data: string = await lastValueFrom(this.organizationsService.getIdPath(ouId, null));
+      const data: string = await lastValueFrom(this.organizationsService.getIdPath(ouId));
       const path: string[] = data.split(',');
       for (let i = path.length - 1; i > 0; i--) {
-        if (!this.isAdmin && i === path.length - 1) {
+        if (!this.authenticationService.isAdmin && i === path.length - 1) {
           continue;
         }
         if (this.nodeMap.has(path[i])) {
@@ -221,15 +213,15 @@ export class OrganizationTreeComponent implements OnInit {
   }
 
   private returnSuggestedOus(ouName: string) {
-    if (this.isAdmin) {
+    if (this.authenticationService.isAdmin) {
       const queryString = '?q=metadata.name.auto:' + ouName;
-      this.organizationsService.filter(this.ousPath, null, queryString, 1)
+      this.organizationsService.filter(this.ousPath, queryString, 1)
         .subscribe({
-          next: (data: {list: Ou[], records: number}) => this.ous = data.list,
+          next: (data: { list: Ou[], records: number }) => this.ous = data.list,
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+      this.organizationsService.getallChildOus(this.authenticationService.loggedInUser.topLevelOuIds, null)
         .subscribe({
           next: (data: Ou[]) => {
             const allOuIds: string[] = [];
@@ -239,9 +231,9 @@ export class OrganizationTreeComponent implements OnInit {
             const body = ous4autoSelect;
             body.query.bool.filter.terms['objectId'] = allOuIds;
             body.query.bool.must.term['metadata.name.auto'] = ouName.toLowerCase();
-            this.organizationsService.query(this.ousPath, null, body)
+            this.organizationsService.query(this.ousPath, body)
               .subscribe({
-                next: (data: {list: Ou[], records: number}) => this.ous = data.list,
+                next: (data: { list: Ou[], records: number }) => this.ous = data.list,
                 error: (e) => this.messagesService.error(e),
               });
           },

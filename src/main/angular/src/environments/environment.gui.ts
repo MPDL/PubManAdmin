@@ -1,7 +1,7 @@
 export const environment = {
-  production: true,
-  baseUrl: 'https://' + window.location.hostname,
-  proxyUrl: '',
+  production: false,
+  baseUrl: 'http://localhost:4200',
+  proxyUrl: 'https://gui.inge.mpdl.mpg.de',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
   restLogin: '/rest/login',
@@ -24,5 +24,4 @@ export const environment = {
     name: 'users',
     type: 'user',
   },
-  icon: './assets/gfz.png',
 };

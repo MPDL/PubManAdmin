@@ -88,6 +88,7 @@
               ]
             },
             "pik": {
+            "dev": {
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -96,18 +97,56 @@
               ],
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "namedChunks": false,
               "extractLicenses": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.pik.ts"
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "qa": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.qa.ts"
+                }
+              ]
+            },
+            "gui": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.gui.ts"
                 }
               ]
             }
-          },
-          "defaultConfiguration": ""
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -123,6 +162,17 @@
             },
             "pik": {
               "buildTarget": "admintool:build:pik"
+            "dev": {
+              "buildTarget": "admintool:build:dev",
+              "proxyConfig": "src/proxy.conf.dev.json"
+            },
+            "qa": {
+              "buildTarget": "admintool:build:qa",
+              "proxyConfig": "src/proxy.conf.qa.json"
+            },
+            "gui": {
+              "buildTarget": "admintool:build:gui",
+              "proxyConfig": "src/proxy.conf.gui.json"
             }
           }
         }
