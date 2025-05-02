@@ -1,9 +1,11 @@
 {
   "name": "admintool",
-  "version": "2.5.15",
+  "version": "2.5.16",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start-dev": "ng serve -c=dev",
+    "start-qa": "ng serve -c=qa",
+    "start-gui": "ng serve -c=gui",
     "build-prod": "ng build --base-href=/admintool/ -c=production",
     "build-qa": "ng build --base-href=/admintool/ -c=qa",
     "build-dev": "ng build --base-href=/admintool/ -c=dev"

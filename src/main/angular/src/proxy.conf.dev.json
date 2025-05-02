@@ -1,0 +1,7 @@
+{
+  "/rest": {
+    "target": "https://dev.inge.mpdl.mpg.de",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}

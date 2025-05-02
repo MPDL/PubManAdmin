@@ -19,17 +19,32 @@ export const routes: Routes = [
   // Users routes
   {path: 'users', component: UserListComponent, canActivate: [LoginGuardService]},
   {path: 'users/:ouId/:page', component: UserListComponent, canActivate: [LoginGuardService]},
-  {path: 'user/:id', component: UserDetailsComponent, canActivate: [LoginGuardService], resolve: {user: UserDetailsResolverService}},
+  {
+    path: 'user/:id',
+    component: UserDetailsComponent,
+    canActivate: [LoginGuardService],
+    resolve: {user: UserDetailsResolverService},
+  },
 
   // Contexts routes
   {path: 'contexts', component: ContextListComponent, canActivate: [LoginGuardService]},
   {path: 'contexts/:ouId/:page', component: ContextListComponent, canActivate: [LoginGuardService]},
-  {path: 'context/:id', component: ContextDetailsComponent, canActivate: [LoginGuardService], resolve: {ctx: ContextDetailsResolverService}},
+  {
+    path: 'context/:id',
+    component: ContextDetailsComponent,
+    canActivate: [LoginGuardService],
+    resolve: {ctx: ContextDetailsResolverService},
+  },
 
   // Organizations routes
   {path: 'organizations', component: OrganizationTreeComponent, canActivate: [LoginGuardService]},
   {path: 'organizations/:ouId', component: OrganizationTreeComponent, canActivate: [LoginGuardService]},
-  {path: 'organization/:id', component: OrganizationDetailsComponent, canActivate: [LoginGuardService], resolve: {ou: OrganizationDetailsResolverService}},
+  {
+    path: 'organization/:id',
+    component: OrganizationDetailsComponent,
+    canActivate: [LoginGuardService],
+    resolve: {ou: OrganizationDetailsResolverService},
+  },
 
   {path: '**', component: PageNotFoundComponent}, // Wildcard route for page not found
 ];

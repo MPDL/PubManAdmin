@@ -48,7 +48,7 @@
 
       <div *ngIf="isNewOu" class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">parent*</label>
-        <div *ngIf="isAdmin" class="col-7">
+        <div *ngIf="authenticationService.isAdmin" class="col-7">
           <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="parentOuSearchTerm" name="_parentOuSearchTerm" (keyup)="getParentOus(parentOuSearchTerm)" autocomplete="off">
           <div *ngIf="parentOus.length > 0">
               <ul class="list-group" (clickOutside)="closeParentOus()">
@@ -61,7 +61,7 @@
             <div>*parent is required.</div>
           </div>
         </div>
-        <div *ngIf="!isAdmin" class="col-7">
+        <div *ngIf="!authenticationService.isAdmin" class="col-7">
           <select class="select form-select form-select-sm" [(ngModel)]="ou.parentAffiliation" name="_parentAffiliation" (ngModelChange)="onChangeParentOu($event)">
             <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
           </select>
@@ -70,10 +70,10 @@
           </div>
         </div>
         <label class="col-1 col-form-label col-form-label-sm">parentId</label>
-        <div *ngIf="!isAdmin && ou.parentAffiliation" class="col-2">
+        <div *ngIf="!authenticationService.isAdmin && ou.parentAffiliation" class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" readonly>
         </div>
-        <div *ngIf="isAdmin && ou.parentAffiliation" class="col-2">
+        <div *ngIf="authenticationService.isAdmin && ou.parentAffiliation" class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" (keyup)="clearParentOuSearchTerm()">
         </div>
         <div *ngIf="!ou.parentAffiliation" class="col-2">
@@ -204,7 +204,7 @@
       <div class="row w-100 mt-3 mb-2">
         <div class="col-3 ms-auto">
           <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
-          <input *ngIf="!isNewOu && isAdmin" type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
+          <input *ngIf="!isNewOu && authenticationService.isAdmin" type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
           <input type="button" [disabled]="form.invalid || isNewPredecessor || !form.dirty" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
         </div>
       </div>

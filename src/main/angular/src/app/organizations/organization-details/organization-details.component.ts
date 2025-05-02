@@ -1,31 +1,23 @@
 import {CommonModule} from '@angular/common';
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {environment} from 'environments/environment';
-import {Subscription} from 'rxjs';
-import {Identifier, Ou, User} from '../../base/common/model/inge';
+import {Identifier, Ou} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
 import {NgxPaginationModule} from 'ngx-pagination';
-import {OrganizationDetailsResolverService} from '../services/organization-details-resolver.service';
-import {
-  ClickOutsideDirective
-} from '../../base/directives/clickoutside.directive';
-import {
-  ForbiddenNameDirective
-} from '../../base/directives/forbidden-name.directive';
-import {
-  ForbiddenCharacterDirective
-} from '../../base/directives/forbidden-character.directive';
+import {ClickOutsideDirective} from '../../base/directives/clickoutside.directive';
+import {ForbiddenNameDirective} from '../../base/directives/forbidden-name.directive';
+import {ForbiddenCharacterDirective} from '../../base/directives/forbidden-character.directive';
 
 @Component({
-    selector: 'organization-details-component',
-    templateUrl: './organization-details.component.html',
-    styleUrls: ['./organization-details.component.scss'],
-    standalone: true,
+  selector: 'organization-details-component',
+  templateUrl: './organization-details.component.html',
+  styleUrls: ['./organization-details.component.scss'],
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -33,12 +25,11 @@ import {
     ClickOutsideDirective,
     ForbiddenNameDirective,
     ForbiddenCharacterDirective,
-  ],
-    providers: [OrganizationsService, OrganizationDetailsResolverService]
+  ]
 })
-export class OrganizationDetailsComponent implements OnInit, OnDestroy {
+export class OrganizationDetailsComponent implements OnInit {
   @ViewChild('form')
-    form: NgForm;
+  form: NgForm;
 
   ousPath: string = environment.restOus;
 
@@ -46,7 +37,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   ou: Ou;
   ousForLoggedInUser: Ou[];
 
-  parentOuId: string;
   parentOuSearchTerm: string = '';
   parentOus: Ou[] = [];
 
@@ -64,32 +54,22 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   description: string;
   identifier: string;
 
-  adminSubscription: Subscription;
-  isAdmin: boolean;
-  tokenSubscription: Subscription;
-  token: string;
-  userSubscription: Subscription;
-  loggedInUser: User;
-
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authenticationService: AuthenticationService,
+    public authenticationService: AuthenticationService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,
     private searchService: SearchService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.adminSubscription = this.authenticationService.isAdmin$.subscribe((data: boolean) => this.isAdmin = data);
-    this.tokenSubscription = this.authenticationService.token$.subscribe((data: string) => this.token = data);
-    this.userSubscription = this.authenticationService.loggedInUser$.subscribe((data: User) => this.loggedInUser = data);
-
     this.setOu(this.activatedRoute.snapshot.data['ou']);
     this.hasOpenChildren = false;
     this.hasOpenParent = true;
 
-    if (!this.isAdmin) {
+    if (!this.authenticationService.isAdmin) {
       this.getLoggedInUserAllOpenOus();
     }
 
@@ -97,12 +77,6 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ou.metadata.name = null;
       this.isNewOu = true;
     }
-  }
-
-  ngOnDestroy() {
-    this.adminSubscription.unsubscribe();
-    this.tokenSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
   }
 
   addAlternativeName(selected: string) {
@@ -150,7 +124,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   addPredecessor() {
-    this.organizationsService.addPredecessor(this.ou, this.predecessorOu.objectId, this.token)
+    this.organizationsService.addPredecessor(this.ou, this.predecessorOu.objectId)
       .subscribe({
         next: (data: Ou) => {
           this.setOu(data);
@@ -168,7 +142,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   changeOuState() {
     if (this.ou.publicStatus === 'CREATED' || this.ou.publicStatus === 'CLOSED') {
-      this.organizationsService.openOu(this.ou, this.token)
+      this.organizationsService.openOu(this.ou)
         .subscribe({
           next: (data: Ou) => {
             this.ou = data;
@@ -177,7 +151,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.closeOu(this.ou, this.token)
+      this.organizationsService.closeOu(this.ou)
         .subscribe({
           next: (data: Ou) => {
             this.ou = data;
@@ -251,7 +225,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   deleteOu() {
     if (confirm('Delete ' + this.ou.metadata.name + '?')) {
       if (this.checkForm()) {
-        this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId, this.token)
+        this.organizationsService.delete(this.ousPath + '/' + this.ou.objectId)
           .subscribe({
             next: (_data) => {
               this.messagesService.success('deleted organization ' + this.ou.objectId);
@@ -307,7 +281,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   removePredecessor(predecessor: Ou) {
     if (confirm('Remove predecessor ' + predecessor.metadata.name + '?')) {
-      this.organizationsService.removePredecessor(this.ou, predecessor.objectId, this.token)
+      this.organizationsService.removePredecessor(this.ou, predecessor.objectId)
         .subscribe({
           next: (data: Ou) => {
             this.setOu(data);
@@ -334,7 +308,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     }
 
     if (this.isNewOu) {
-      this.organizationsService.post(this.ousPath, this.ou, this.token)
+      this.organizationsService.post(this.ousPath, this.ou)
         .subscribe({
           next: (data: Ou) => {
             this.ou = data;
@@ -345,7 +319,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
           error: (e) => this.messagesService.error(e),
         });
     } else {
-      this.organizationsService.put(this.ousPath + '/' + this.ou.objectId, this.ou, this.token)
+      this.organizationsService.put(this.ousPath + '/' + this.ou.objectId, this.ou)
         .subscribe({
           next: (data: Ou) => {
             this.ou = data;
@@ -387,7 +361,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getLoggedInUserAllOpenOus() {
-    this.organizationsService.getallChildOus(this.loggedInUser.topLevelOuIds, null, null)
+    this.organizationsService.getallChildOus(this.authenticationService.loggedInUser.topLevelOuIds, null)
       .subscribe({
         next: (data: Ou[]) => {
           const ous: Ou[] = [];
@@ -403,7 +377,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private listChildren(mother: string) {
-    this.organizationsService.listChildren4Ou(mother, null)
+    this.organizationsService.listChildren4Ou(mother)
       .subscribe({
         next: (data: Ou[]) => {
           this.children = data;
@@ -417,11 +391,11 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private listPredecessors(listOfPredecessorIds: string, token: string) {
+  private listPredecessors(listOfPredecessorIds: string) {
     const queryString = '?q=' + listOfPredecessorIds;
-    this.organizationsService.filter(this.ousPath, token, queryString, 1)
+    this.organizationsService.filter(this.ousPath, queryString, 1)
       .subscribe({
-        next: (data: {list: Ou[], records: number}) => this.predecessors = data.list,
+        next: (data: { list: Ou[], records: number }) => this.predecessors = data.list,
         error: (e) => this.messagesService.error(e),
       });
   }
@@ -434,9 +408,9 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   private returnSuggestedParentOus(ouName: string) {
     const queryString = '?q=metadata.name.auto:' + ouName;
-    this.organizationsService.filter(this.ousPath, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, queryString, 1)
       .subscribe({
-        next: (data: {list: Ou[], records: number}) => {
+        next: (data: { list: Ou[], records: number }) => {
           const ous: Ou[] = [];
           data.list.forEach((ou: Ou) => {
             if (ou.publicStatus === 'OPENED') {
@@ -452,12 +426,12 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
 
   private returnSuggestedPredecessorOus(predecessorOuName: string) {
     const queryString = '?q=metadata.name.auto:' + predecessorOuName;
-    this.organizationsService.filter(this.ousPath, null, queryString, 1)
+    this.organizationsService.filter(this.ousPath, queryString, 1)
       .subscribe({
-        next: (data: {list: Ou[], records: number}) => {
+        next: (data: { list: Ou[], records: number }) => {
           const ous: Ou[] = [];
           data.list.forEach((ou: Ou) => {
-            if (ou.objectId != this.ou.objectId ) {
+            if (ou.objectId != this.ou.objectId) {
               ous.push(ou);
             }
           });
@@ -471,8 +445,8 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
     this.ou = ou;
     if (this.ou.parentAffiliation != null && this.ou.parentAffiliation.objectId !== '') {
       this.parentOuSearchTerm = this.ou.parentAffiliation.name;
-      let parentOu:Ou;
-      this.organizationsService.get(this.ousPath, this.ou.parentAffiliation.objectId, this.token)
+      let parentOu: Ou;
+      this.organizationsService.get(this.ousPath, this.ou.parentAffiliation.objectId)
         .subscribe({
           next: (data: Ou) => {
             parentOu = data;
@@ -488,7 +462,7 @@ export class OrganizationDetailsComponent implements OnInit, OnDestroy {
       this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
         predecessorIds.push(predecessor.objectId);
       });
-      this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'), this.token);
+      this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'));
     } else {
       this.predecessors = [];
     }

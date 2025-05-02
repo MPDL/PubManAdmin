@@ -7,9 +7,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {AppComponent} from 'app/app.component';
 import {environment} from 'environments/environment';
-import {AdminGuardService} from 'app/base/services/admin-guard.service';
 import {AuthenticationService} from 'app/base/services/authentication.service';
-import {ConnectionService} from 'app/base/services/connection.service';
 import {LoginGuardService} from 'app/base/services/login-guard.service';
 import {MessagesService} from 'app/base/services/messages.service';
 import {PubmanRestService} from 'app/base/services/pubman-rest.service';
@@ -28,11 +26,9 @@ bootstrapApplication(AppComponent, {
       MatDialogModule,
       MatInputModule,
     ),
-    ConnectionService,
     AuthenticationService,
     MessagesService,
     PubmanRestService,
-    AdminGuardService,
     LoginGuardService
   ]
 })

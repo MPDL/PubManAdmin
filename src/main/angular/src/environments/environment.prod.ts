@@ -1,8 +1,11 @@
 export const environment = {
   production: true,
   baseUrl: 'https://' + window.location.hostname,
+  proxyUrl: '',
   restCtxs: '/rest/contexts',
   restItems: '/rest/items',
+  restLogin: '/rest/login',
+  restLogout: '/rest/logout',
   restOus: '/rest/ous',
   restUsers: '/rest/users',
   ctxIndex: {

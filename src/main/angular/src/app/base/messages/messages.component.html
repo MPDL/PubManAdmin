@@ -1,11 +1,10 @@
-<div *ngIf="message" class="d-flex flex-sm-row border"
+<div *ngIf="message"
     [ngClass]="{ 'alert': message, 'alert-success border-success': message.type === 'success', 'alert-warning border-warning': message.type === 'warning', 'alert-danger border-danger': message.type === 'error' }">
     <div class="col-sm-11">
-        <span><small>{{message.text}}</small></span>
+        <h2 mat-dialog-title>{{message.type}}</h2>
     </div>
-    <div class="col-sm-1 ms-auto px-1">
-        <button type="button" class="btn-close" data-dismiss="alert" (click)="close()"
-            [ngClass]="{ 'text-primary': text, 'text-success': message.type === 'success', 'text-warning': message.type === 'warning', 'text-danger': message.type === 'error' }">
-        </button>
-    </div>
+    <mat-dialog-content>{{message.text}}</mat-dialog-content>
+    <mat-dialog-actions class="center-button">
+        <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
 </div>

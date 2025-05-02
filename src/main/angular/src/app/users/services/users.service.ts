@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MessagesService} from 'app/base/services/messages.service';
 import {ContextsService} from 'app/contexts/services/contexts.service';
@@ -6,7 +6,6 @@ import {OrganizationsService} from 'app/organizations/services/organizations.ser
 import {environment} from 'environments/environment';
 import {Observable} from 'rxjs';
 import {Ctx, Grant, Ou, User} from '../../base/common/model/inge';
-import {ConnectionService} from '../../base/services/connection.service';
 import {PubmanRestService} from '../../base/services/pubman-rest.service';
 
 @Injectable({
@@ -18,58 +17,57 @@ export class UsersService extends PubmanRestService {
   usersPath: string = environment.restUsers;
 
   constructor(
-    protected connectionService: ConnectionService,
     protected httpClient: HttpClient,
     private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
   ) {
-    super(connectionService, httpClient);
+    super(httpClient);
   }
 
-  activate(user: User, token: string): Observable<User> {
+  activate(user: User): Observable<User> {
     const path = this.usersPath + '/' + user.objectId + '/activate';
     const body = user.lastModificationDate;
-    const headers = this.addHeaders(token, true);
+    const headers = this.addHeaders(true);
 
     return this.getResource('PUT', path, headers, body);
   }
 
-  deactivate(user: User, token: string): Observable<User> {
+  deactivate(user: User): Observable<User> {
     const path = this.usersPath + '/' + user.objectId + '/deactivate';
     const body = user.lastModificationDate;
-    const headers = this.addHeaders(token, true);
+    const headers = this.addHeaders(true);
 
     return this.getResource('PUT', path, headers, body);
   }
 
-  addGrants(user: User, grants: Grant[], token: string): Observable<User> {
+  addGrants(user: User, grants: Grant[]): Observable<User> {
     const path = this.usersPath + '/' + user.objectId + '/add';
     const body = JSON.stringify(grants);
-    const headers = this.addHeaders(token, true);
+    const headers = this.addHeaders(true);
 
     return this.getResource('PUT', path, headers, body);
   }
 
-  removeGrants(user: User, grants: Grant[], token: string): Observable<User> {
+  removeGrants(user: User, grants: Grant[]): Observable<User> {
     const path = this.usersPath + '/' + user.objectId + '/remove';
     const body = JSON.stringify(grants);
-    const headers = this.addHeaders(token, true);
+    const headers = this.addHeaders(true);
 
     return this.getResource('PUT', path, headers, body);
   }
 
-  changePassword(user: User, token: string): Observable<User> {
+  changePassword(user: User): Observable<User> {
     const path = this.usersPath + '/' + user.objectId + '/password';
     const body = user.password;
-    const headers = this.addHeaders(token, true);
+    const headers = this.addHeaders(true);
 
     return this.getResource('PUT', path, headers, body);
   }
 
-  generateRandomPassword(token: string): Observable<string> {
+  generateRandomPassword(): Observable<string> {
     const path = this.usersPath + '/generateRandomPassword';
-    const headers = this.addHeaders(token, true);
+    const headers = this.addHeaders(true);
 
     return this.getStringResource('GET', path, headers);
   }
@@ -79,7 +77,7 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.organizationsService.get(this.ousPath, ref, null)
+        this.organizationsService.get(this.ousPath, ref)
           .subscribe({
             next: (data: Ou) => {
               grant.objectName = data.name;
@@ -89,7 +87,7 @@ export class UsersService extends PubmanRestService {
           });
       } else {
         if (ref.startsWith('ctx')) {
-          this.contextsService.get(this.ctxsPath, ref, null)
+          this.contextsService.get(this.ctxsPath, ref)
             .subscribe({
               next: (data: Ctx) => {
                 grant.objectName = data.name;
@@ -107,17 +105,17 @@ export class UsersService extends PubmanRestService {
     if (ref === undefined) {
     } else {
       if (ref.startsWith('ou')) {
-        this.organizationsService.get(this.ousPath, grant.objectRef, null)
+        this.organizationsService.get(this.ousPath, grant.objectRef)
           .subscribe({
             next: (data: Ou) => grant.parentName = data.parentAffiliation.name,
             error: (e) => this.messagesService.error(e),
           });
       } else {
         if (ref.startsWith('ctx')) {
-          this.contextsService.get(this.ctxsPath, ref, null)
+          this.contextsService.get(this.ctxsPath, ref)
             .subscribe({
               next: (data: Ctx) => {
-                this.organizationsService.getOuPath(data.responsibleAffiliations[0].objectId, null)
+                this.organizationsService.getOuPath(data.responsibleAffiliations[0].objectId)
                   .subscribe({
                     next: (data: string) => grant.parentName = data,
                     error: (e) => this.messagesService.error(e),

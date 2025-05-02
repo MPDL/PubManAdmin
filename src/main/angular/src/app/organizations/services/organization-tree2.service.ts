@@ -68,7 +68,7 @@ export class OrganizationTree2Service {
     body.query.bool.filter.terms['objectId'] = ouIds;
 
     try {
-      const data: {list: Ou[], records: number} = await lastValueFrom(this.organizationsService.query(this.ousPath, null, body));
+      const data: {list: Ou[], records: number} = await lastValueFrom(this.organizationsService.query(this.ousPath, body));
       data.list.forEach(
         (ou: Ou) => ouTreeNodes.push(this.generateNode(ou))
       );
@@ -106,11 +106,11 @@ export class OrganizationTree2Service {
   }
 
   private getChildren4Ou(ouId: string): Observable<Ou[]> {
-    return this.organizationsService.listChildren4Ou(ouId, null);
+    return this.organizationsService.listChildren4Ou(ouId);
   }
 
   private getTopLevelOus(): Observable<Ou[]> {
-    return this.organizationsService.getTopLevelOus(null);
+    return this.organizationsService.getTopLevelOus();
   }
 }
 
