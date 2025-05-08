@@ -10,7 +10,7 @@
 
         <div class="row">
             <div class="col-7">
-                <input type="text" class="form-control form-control-sm" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
+                <input type="text" class="filter form-control form-control-sm" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
                 <div *ngIf="ous.length > 0">
                     <ul class="list-group" (clickOutside)="closeOus()">
                         <li *ngFor="let ou of ous" class="list-group-item list-group-item-action list-group-item-success text-start py-0" (click)="gotoFilteredOu(ou)">
@@ -23,7 +23,7 @@
 
         <div class="row">
             <div class="col-7">
-                <input type="text" class="form-control form-control-sm" placeholder="search by name of context" [(ngModel)]="ctxSearchTerm" (keyup)="getCtxsByName(ctxSearchTerm)" autocomplete="off">
+                <input type="text" class="filter form-control form-control-sm" placeholder="search by name of context" [(ngModel)]="ctxSearchTerm" (keyup)="getCtxsByName(ctxSearchTerm)" autocomplete="off">
                 <div *ngIf="ctxsByName.length > 0">
                     <ul class="list-group" (clickOutside)="closeCtxsByName()">
                         <li *ngFor="let ctx of ctxsByName" class="list-group-item list-group-item-action list-group-item-success text-start py-0" (click)="gotoCtx(ctx)">

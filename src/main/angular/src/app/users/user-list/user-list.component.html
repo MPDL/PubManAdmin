@@ -10,7 +10,7 @@
 
     <div class="row">
       <div class="col-7">
-        <input class="form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
+        <input class="filter form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" (clickOutside)="closeOus()">
             <li *ngFor="let ou of ous" class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="gotoFilteredOu(ou)">
@@ -23,7 +23,7 @@
 
     <div class="row">
       <div class="col-7">
-        <input class="form-control form-control-sm" type="text" placeholder="search by name of user" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" autocomplete="off">
+        <input class="filter form-control form-control-sm" type="text" placeholder="search by name of user" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" autocomplete="off">
         <div *ngIf="usersByName.length > 0">
           <ul class="list-group" (clickOutside)="closeUsersByName()">
             <li *ngFor="let user of usersByName" class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="selectUserByName(user)">
@@ -37,7 +37,7 @@
 
     <div class="row">
       <div class="col-7">
-        <input class="form-control form-control-sm" type="text" placeholder="search by loginname of user" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" autocomplete="off">
+        <input class="filter form-control form-control-sm" type="text" placeholder="search by loginname of user" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" autocomplete="off">
         <div *ngIf="usersByLogin.length > 0">
           <ul class="list-group" (clickOutside)="closeUsersByLogin()">
             <li *ngFor="let user of usersByLogin" class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="selectUserByLogin(user)">

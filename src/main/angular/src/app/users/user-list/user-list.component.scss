@@ -1,9 +1,9 @@
 .admin-pagination ::ng-deep .ngx-pagination .current {
     background: silver;
  }
- ul {
-   list-style:none;
-}
-.active {
-  background: silver;
+
+.filter:focus {
+  border: 2px solid gray;
+  outline: none;
+  box-shadow: 0 0 3px gray;
 }
