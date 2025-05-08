@@ -10,7 +10,7 @@
 
     <div class="row">
       <div class="col-7 pb-3">
-        <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
+        <input type="text" class="filter form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
         <div *ngIf="ous.length > 0">
           <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="closeOus()">
             <li class="list-group-item list-group-item-action list-group-item-info text-start py-0 d-flex no-gutters" (click)="selectOu(ou)">

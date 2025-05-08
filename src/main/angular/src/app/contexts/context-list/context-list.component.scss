@@ -1,8 +1,9 @@
-
 .admin-pagination ::ng-deep .ngx-pagination .current {
     background: #91eed2;
- }
+}
 
- ul {
-   list-style:none;
+.filter:focus {
+  border: 2px solid green;
+  outline: none;
+  box-shadow: 0 0 3px gray;
 }

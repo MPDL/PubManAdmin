@@ -3,7 +3,7 @@
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-.isis-mat-dialog .mat-dialog-container {
+.isis-mat-dialog {
   padding: 0 !important;
   transition: none !important;
   background: none;

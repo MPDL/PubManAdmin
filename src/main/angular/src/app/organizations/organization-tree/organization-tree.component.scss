@@ -1,7 +1,10 @@
-ul {
-    list-style:none;
- }
  .boldandlarger {
     font-size: 125%;
-    fw: bold;
  }
+
+ .filter:focus {
+   border: 2px solid indigo;
+   outline: none;
+   box-shadow: 0 0 3px gray;
+ }
+
