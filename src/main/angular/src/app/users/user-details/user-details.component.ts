@@ -51,7 +51,7 @@ export class UserDetailsComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authenticationService: AuthenticationService,
+    protected authenticationService: AuthenticationService,
     private location: Location,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
