@@ -56,7 +56,7 @@ export class OrganizationDetailsComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    public authenticationService: AuthenticationService,
+    protected authenticationService: AuthenticationService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,
     private router: Router,

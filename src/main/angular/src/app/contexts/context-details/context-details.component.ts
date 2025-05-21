@@ -55,7 +55,7 @@ export class ContextDetailsComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    public authenticationService: AuthenticationService,
+    protected authenticationService: AuthenticationService,
     private contextsService: ContextsService,
     private location: Location,
     private messagesService: MessagesService,
