@@ -236,10 +236,6 @@ export class ContextDetailsComponent implements OnInit {
     }
   }
 
-  onChangedWorkflow(value: string) {
-    this.ctx.workflow = value;
-  }
-
   saveCtx() {
     if (this.ctx.responsibleAffiliations.length === 0) {
       this.messagesService.warning('you MUST select an organization');
