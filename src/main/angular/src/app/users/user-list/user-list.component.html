@@ -49,13 +49,13 @@
       </div>
       <div class="col-5">
         <div *ngIf="total > 0" class="has-text-centered">
-          <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="gotoFilteredPage($event)"></pagination-controls>
+          <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
         </div>
       </div>
     </div>
 
     <ul class="list-group">
-      <div class="list-group-item list-group-item-action list-group-item-secondary text-secondary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
+      <li class="list-group-item list-group-item-action list-group-item-secondary text-secondary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
         <div class="row">
             <span class="col-3"><label class="col-form-label-sm p-0 ms-2">{{user.name}}</label></span>
             <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.loginname}}</label></span>
@@ -64,7 +64,7 @@
             <span *ngIf="!user.affiliation" class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0">N.N.</label></span>
             <span *ngIf="user.affiliation" class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.affiliation?.name}}</label></span>
         </div>
-      </div>
+      </li>
     </ul>
   </div>
 </div>
