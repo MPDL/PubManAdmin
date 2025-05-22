@@ -105,24 +105,27 @@ export class OrganizationTreeComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<OuTreeFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+    // Set up database subscription
     this.databaseSubscription = this.database.dataChange.subscribe((data) => this.dataSource.data = data);
 
+    // Initialize database and wait for it to complete
     if (this.authenticationService.isAdmin) {
-      this.database.initialize();
+      await this.database.initialize();
     } else {
-      this.database.initializeForLocalAdmin(this.authenticationService.loggedInUser.topLevelOuIds);
+      await this.database.initializeForLocalAdmin(this.authenticationService.loggedInUser.topLevelOuIds);
     }
 
     const ouId: string = this.activatedRoute.snapshot.params['ouId'];
 
     if (ouId != null) {
-      this.expandNode(ouId);
-      this.selectNode(ouId);
+      // Wait for expandNode to complete before calling selectNode
+      await this.expandNode(ouId);
+      await this.selectNode(ouId);
     }
   }
 
@@ -180,7 +183,7 @@ export class OrganizationTreeComponent implements OnInit {
           countRepeat++;
           if (countRepeat < maxRepeat) {
             i++;
-            await this.sleep(500);
+            await this.sleep(100);
           } else {
             break;
           }
@@ -204,7 +207,7 @@ export class OrganizationTreeComponent implements OnInit {
       } else {
         countRepeat++;
         if (countRepeat < maxRepeat) {
-          await this.sleep(700);
+          await this.sleep(100);
         } else {
           break;
         }
