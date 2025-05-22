@@ -97,7 +97,7 @@
         <div class="col-10 text-end">
           <div class="row">
             <div class="col-5">
-              <select class="select form-select form-select-sm" [(ngModel)]="workflow" name="_workflow" (change)="onChangedWorkflow($event.target.value)">
+                <select class="select form-select form-select-sm" [(ngModel)]="ctx.workflow" name="_workflow">
                 <option *ngFor="let workflow of workflows2display" [value]="workflow">{{workflow}}</option>
               </select>
             </div>
