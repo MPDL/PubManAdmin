@@ -34,19 +34,19 @@
             </div>
             <div class="col-5">
                 <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
-                <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize=11 (pageChange)="gotoFilteredPage($event)"></pagination-controls>
+                <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
             </div>
         </div>
 
         <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let ctx of ctxs | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoCtx(ctx)">
+            <li class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let ctx of ctxs | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoCtx(ctx)">
                 <div class="row">
                     <span class="col-7"><label class="col-form-label-sm p-0 ms-2">{{ctx.name}}</label></span>
                     <span class="col-1"><label class="col-form-label-sm p-0 ms-2">{{ctx.objectId}}</label></span>
                     <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{ctx.state}}</label></span>
                     <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{ctx.responsibleAffiliations[0].name}}</label></span>
                 </div>
-            </div>
+            </li>
         </ul>
     </div>
 </div>
