@@ -200,8 +200,8 @@ export class UserListComponent implements OnInit {
       });
   }
 
-  private listUsers(listOfUserIds: string, page: number) {
-    const queryString = '?q=' + listOfUserIds;
+  private listUsers(listOfOuIds: string, page: number) {
+    const queryString = '?q=' + listOfOuIds;
     this.usersService.filter(this.usersPath, queryString, page)
       .subscribe({
         next: (data: { list: User[], records: number }) => {

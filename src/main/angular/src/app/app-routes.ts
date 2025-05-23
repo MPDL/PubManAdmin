@@ -11,6 +11,9 @@ import {ContextDetailsResolverService} from './contexts/services/context-details
 import {OrganizationTreeComponent} from './organizations/organization-tree/organization-tree.component';
 import {OrganizationDetailsComponent} from './organizations/organization-details/organization-details.component';
 import {OrganizationDetailsResolverService} from './organizations/services/organization-details-resolver.service';
+import {OuGuardService} from './base/services/ou-guard.service';
+import {CtxGuardService} from './base/services/ctx-guard.service';
+import {UserGuardService} from './base/services/user-guard.service';
 
 export const routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -18,31 +21,31 @@ export const routes: Routes = [
 
   // Users routes
   {path: 'users', component: UserListComponent, canActivate: [LoginGuardService]},
-  {path: 'users/:ouId/:page', component: UserListComponent, canActivate: [LoginGuardService]},
+  {path: 'users/:ouId/:page', component: UserListComponent, canActivate: [LoginGuardService, OuGuardService]},
   {
-    path: 'user/:id',
+    path: 'user/:userId',
     component: UserDetailsComponent,
-    canActivate: [LoginGuardService],
+    canActivate: [LoginGuardService, UserGuardService],
     resolve: {user: UserDetailsResolverService},
   },
 
   // Contexts routes
   {path: 'contexts', component: ContextListComponent, canActivate: [LoginGuardService]},
-  {path: 'contexts/:ouId/:page', component: ContextListComponent, canActivate: [LoginGuardService]},
+  {path: 'contexts/:ouId/:page', component: ContextListComponent, canActivate: [LoginGuardService, OuGuardService]},
   {
-    path: 'context/:id',
+    path: 'context/:ctxId',
     component: ContextDetailsComponent,
-    canActivate: [LoginGuardService],
+    canActivate: [LoginGuardService, CtxGuardService],
     resolve: {ctx: ContextDetailsResolverService},
   },
 
   // Organizations routes
   {path: 'organizations', component: OrganizationTreeComponent, canActivate: [LoginGuardService]},
-  {path: 'organizations/:ouId', component: OrganizationTreeComponent, canActivate: [LoginGuardService]},
+  {path: 'organizations/:ouId', component: OrganizationTreeComponent, canActivate: [LoginGuardService, OuGuardService]},
   {
-    path: 'organization/:id',
+    path: 'organization/:ouId',
     component: OrganizationDetailsComponent,
-    canActivate: [LoginGuardService],
+    canActivate: [LoginGuardService, OuGuardService],
     resolve: {ou: OrganizationDetailsResolverService},
   },
 
