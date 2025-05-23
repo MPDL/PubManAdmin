@@ -18,7 +18,7 @@ export class OrganizationDetailsResolverService {
   }
 
   resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<Ou> {
-    const id = activatedRouteSnapshot.params['id'];
+    const id = activatedRouteSnapshot.params['ouId'];
 
     if (id === 'new ou') {
       const ou = new Ou();

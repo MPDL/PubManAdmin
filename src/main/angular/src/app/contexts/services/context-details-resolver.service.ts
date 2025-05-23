@@ -20,7 +20,7 @@ export class ContextDetailsResolverService {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Ctx> {
-    const id = route.params['id'];
+    const id = route.params['ctxId'];
 
     if (id === 'new ctx') {
       const ctx = new Ctx();

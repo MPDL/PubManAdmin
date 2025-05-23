@@ -18,7 +18,7 @@ export class UserDetailsResolverService {
   }
 
   resolve(activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<User> {
-    const id = activatedRouteSnapshot.params['id'];
+    const id = activatedRouteSnapshot.params['userId'];
 
     if (id === 'new user') {
       const user = new User();

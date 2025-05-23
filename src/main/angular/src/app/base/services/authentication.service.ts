@@ -104,7 +104,11 @@ export class AuthenticationService {
         if (user) {
           principal.loggedIn = true;
           principal.user = user;
-          if (user.grantList.find((grant: any) => grant.role === 'SYSADMIN')) {
+          // Check if grantList is undefined or empty
+          if (!user.grantList || user.grantList.length === 0) {
+            this.logout();
+            this.messagesService.error('User has no permissions (grantList is undefined or empty)');
+          } else if (user.grantList.find((grant: any) => grant.role === 'SYSADMIN')) {
             principal.isAdmin = true;
           } else if (user.grantList.find((grant) => grant.role === 'LOCAL_ADMIN')) {
             user.grantList.forEach((grant) => {
@@ -113,6 +117,9 @@ export class AuthenticationService {
               }
             });
             user.topLevelOuIds = localAdminTopLevelOuIds;
+          } else {
+            this.logout();
+            this.messagesService.error('User is no admin oder local admin.');
           }
           this.principal.next(principal);
           console.log('User:' + JSON.stringify(user, null, 2));
