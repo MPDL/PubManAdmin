@@ -29,6 +29,9 @@ export class UserGuardService extends BaseGuardService {
 
   protected checkAccess(route: ActivatedRouteSnapshot): Observable<boolean> {
     const userId: string = route.params['userId'];
+
+    if (userId === 'new user') return of(true);
+
     const topLevelOuIds = this.authenticationService.loggedInUser.topLevelOuIds;
 
     // First get all child OUs
