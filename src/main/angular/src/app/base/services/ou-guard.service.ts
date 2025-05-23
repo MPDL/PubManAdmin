@@ -27,6 +27,7 @@ export class OuGuardService extends BaseGuardService {
     const ouId: string = route.params['ouId'];
 
     if (ouId === 'ou_unselected') return of(true);
+    if (ouId === 'new ou') return of(true);
 
     return this.organizationsService.getallChildOus(
       this.authenticationService.loggedInUser.topLevelOuIds,

@@ -28,6 +28,9 @@ export class CtxGuardService extends BaseGuardService {
   }
   protected checkAccess(route: ActivatedRouteSnapshot): Observable<boolean> {
     const ctxId: string = route.params['ctxId'];
+
+    if (ctxId === 'new ctx') return of(true);
+
     const topLevelOuIds = this.authenticationService.loggedInUser.topLevelOuIds;
 
     // First get all child OUs
