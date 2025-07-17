@@ -1,4 +1,4 @@
-import {CommonModule, Location} from '@angular/common';
+import { Location } from '@angular/common';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,12 +19,11 @@ import {ForbiddenNameDirective} from '../../base/directives/forbidden-name.direc
   styleUrls: ['./context-details.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     NgxPaginationModule,
     ClickOutsideDirective,
-    ForbiddenNameDirective,
-  ]
+    ForbiddenNameDirective
+]
 })
 export class ContextDetailsComponent implements OnInit {
   @ViewChild('form')

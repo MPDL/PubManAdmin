@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
+
 import {environment} from '../../../environments/environment';
 
 const {version: appVersion} = require('../../../../package.json');
@@ -10,7 +10,7 @@ const {homepage: appHome} = require('../../../../package.json');
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
     standalone: true,
-    imports: [CommonModule]
+    imports: []
 })
 export class FooterComponent implements OnInit {
   appVersion: any;

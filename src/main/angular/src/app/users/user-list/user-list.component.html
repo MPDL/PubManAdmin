@@ -11,60 +11,88 @@
     <div class="row">
       <div class="col-7">
         <input class="filter form-control form-control-sm" type="text" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
-        <div *ngIf="ous.length > 0">
-          <ul class="list-group" (clickOutside)="closeOus()">
-            <li *ngFor="let ou of ous" class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="gotoFilteredOu(ou)">
-              <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
-            </li>
-          </ul>
-        </div>
+        @if (ous.length > 0) {
+          <div>
+            <ul class="list-group" (clickOutside)="closeOus()">
+              @for (ou of ous; track ou) {
+                <li class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="gotoFilteredOu(ou)">
+                  <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+                </li>
+              }
+            </ul>
+          </div>
+        }
       </div>
     </div>
 
     <div class="row">
       <div class="col-7">
         <input class="filter form-control form-control-sm" type="text" placeholder="search by name of user" [(ngModel)]="userNameSearchTerm" (keyup)="getUsersByName(userNameSearchTerm)" autocomplete="off">
-        <div *ngIf="usersByName.length > 0">
-          <ul class="list-group" (clickOutside)="closeUsersByName()">
-            <li *ngFor="let user of usersByName" class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="selectUserByName(user)">
-              <small *ngIf="!user.affiliation">{{user.name}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- N.N.</small>
-              <small *ngIf="user.affiliation">{{user.name}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- {{user.affiliation.name}}</small>
-            </li>
-          </ul>
-        </div>
+        @if (usersByName.length > 0) {
+          <div>
+            <ul class="list-group" (clickOutside)="closeUsersByName()">
+              @for (user of usersByName; track user) {
+                <li class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="selectUserByName(user)">
+                  @if (!user.affiliation) {
+                    <small>{{user.name}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- N.N.</small>
+                  }
+                  @if (user.affiliation) {
+                    <small>{{user.name}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- {{user.affiliation.name}}</small>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        }
       </div>
     </div>
 
     <div class="row">
       <div class="col-7">
         <input class="filter form-control form-control-sm" type="text" placeholder="search by loginname of user" [(ngModel)]="userLoginSearchTerm" (keyup)="getUsersByLogin(userLoginSearchTerm)" autocomplete="off">
-        <div *ngIf="usersByLogin.length > 0">
-          <ul class="list-group" (clickOutside)="closeUsersByLogin()">
-            <li *ngFor="let user of usersByLogin" class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="selectUserByLogin(user)">
-              <small *ngIf="!user.affiliation">{{user.loginname}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- N.N.</small>
-              <small *ngIf="user.affiliation">{{user.loginname}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- {{user.affiliation.name}}</small>
-            </li>
-          </ul>
-        </div>
+        @if (usersByLogin.length > 0) {
+          <div>
+            <ul class="list-group" (clickOutside)="closeUsersByLogin()">
+              @for (user of usersByLogin; track user) {
+                <li class="list-group-item list-group-item-action list-group-item-secondary text-start py-0" (click)="selectUserByLogin(user)">
+                  @if (!user.affiliation) {
+                    <small>{{user.loginname}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- N.N.</small>
+                  }
+                  @if (user.affiliation) {
+                    <small>{{user.loginname}} - {{user.objectId}} - {{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}} <-- {{user.affiliation.name}}</small>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        }
       </div>
       <div class="col-5">
-        <div *ngIf="total > 0" class="has-text-centered">
-          <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
-        </div>
+        @if (total > 0) {
+          <div class="has-text-centered">
+            <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
+          </div>
+        }
       </div>
     </div>
 
     <ul class="list-group">
-      <li class="list-group-item list-group-item-action list-group-item-secondary text-secondary py-0" *ngFor="let user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoUser(user)">
-        <div class="row">
+      @for (user of users | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; track user) {
+        <li class="list-group-item list-group-item-action list-group-item-secondary text-secondary py-0" (click)="gotoUser(user)">
+          <div class="row">
             <span class="col-3"><label class="col-form-label-sm p-0 ms-2">{{user.name}}</label></span>
             <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.loginname}}</label></span>
             <span class="col-1"><label class="col-form-label-sm p-0">{{user.objectId}}</label></span>
             <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{user.active === true ? 'ACTIVE' : 'DEACTIVATED'}}</label></span>
-            <span *ngIf="!user.affiliation" class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0">N.N.</label></span>
-            <span *ngIf="user.affiliation" class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.affiliation?.name}}</label></span>
-        </div>
-      </li>
+            @if (!user.affiliation) {
+              <span class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0">N.N.</label></span>
+            }
+            @if (user.affiliation) {
+              <span class="col-4 text-start text-truncate"><label class="col-form-label-sm p-0">{{user.affiliation?.name}}</label></span>
+            }
+          </div>
+        </li>
+      }
     </ul>
   </div>
 </div>

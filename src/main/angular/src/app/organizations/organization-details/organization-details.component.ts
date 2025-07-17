@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,13 +19,12 @@ import {ForbiddenCharacterDirective} from '../../base/directives/forbidden-chara
   styleUrls: ['./organization-details.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     NgxPaginationModule,
     ClickOutsideDirective,
     ForbiddenNameDirective,
-    ForbiddenCharacterDirective,
-  ]
+    ForbiddenCharacterDirective
+]
 })
 export class OrganizationDetailsComponent implements OnInit {
   @ViewChild('form')

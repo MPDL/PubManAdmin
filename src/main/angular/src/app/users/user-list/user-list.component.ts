@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+
 import {Component, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -19,11 +19,10 @@ import {ClickOutsideDirective} from '../../base/directives/clickoutside.directiv
   styleUrls: ['./user-list.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     NgxPaginationModule,
-    ClickOutsideDirective,
-  ]
+    ClickOutsideDirective
+]
 })
 export class UserListComponent implements OnInit {
   ousPath: string = environment.restOus;

@@ -1,199 +1,251 @@
-<div *ngIf="ctx" class="container">
-  <div class="card text-white bg-success text-end">
-    <div class="card-body">
-      <h4 class="card-title">{{ctx.name}}</h4>
-    </div>
-
-    <form #form="ngForm" class="list-group-item text-success bg-white" novalidate>
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">name*</label>
-        <div class="col-7">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.name" name="_ctxName" #ctxName="ngModel" required minlength="4" forbiddenName="new ctx">
-          <div class="text-danger">
-            <div *ngIf="ctxName.errors?.required">*name is required.</div>
-            <div *ngIf="ctxName.errors?.minlength">*name must be at least 4 characters long.</div>
-            <div *ngIf="ctx.name === 'new ctx'">*name MUST NOT be 'new ctx'.</div>
-          </div>
-        </div>
-        <label *ngIf="!isNewCtx" class="col-1 col-form-label col-form-label-sm">id</label>
-        <div *ngIf="!isNewCtx" class="col-2">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.objectId" name="_ctxId" readonly>
-        </div>
+@if (ctx) {
+  <div class="container">
+    <div class="card text-white bg-success text-end">
+      <div class="card-body">
+        <h4 class="card-title">{{ctx.name}}</h4>
       </div>
-
-      <div *ngIf="!isNewCtx && !isNewOu" class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">organization*</label>
-        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0] && ctx.state !== 'OPENED'" class="col-7">
-            <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
-        </div>
-        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0] && ctx.state === 'OPENED'" class="col-6">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
-        </div>
-        <div *ngIf="ctx.state === 'OPENED'" class="col-1">
-          <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeOu()" value="change" />
-        </div>
-        <div class="col-1">
-          <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId || form.dirty" class="btn btn-outline-success btn-sm" (click)="gotoRef(ctx.responsibleAffiliations[0]?.objectId)" value="ouId" title="goto organization" />
-        </div>
-        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
-        </div>
-        <div *ngIf="!ctx.responsibleAffiliations[0]" class="col-2">
-          <input type="text" class="form-control form-control-sm" readonly>
-        </div>
-      </div>
-
-      <div *ngIf="isNewCtx || isNewOu" class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">organization*</label>
-        <div *ngIf="authenticationService.isAdmin" class="col-7">
-          <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off" required>
-          <div *ngIf="ous.length > 0">
-              <ul class="list-group" (clickOutside)="closeOus()">
-                  <li *ngFor="let ou of ous" class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-                      <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
-                  </li>
-              </ul>
-          </div>
-          <div *ngIf="!selectedOu" class="text-danger">
-            <div>*organization is required.</div>
-          </div>
-        </div>
-        <div *ngIf="!authenticationService.isAdmin" class="col-7">
-          <select class="select form-select form-select-sm" [(ngModel)]="selectedOu" name="_responsibleAffiliation" (ngModelChange)="selectOu($event)" required>
-            <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
-          </select>
-          <div *ngIf="!selectedOu" class="text-danger">
-            <div>*organization is required.</div>
-          </div>
-        </div>
-        <label class="col-1 col-form-label col-form-label-sm">ouId</label>
-        <div *ngIf="ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]" class="col-2">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
-        </div>
-        <div *ngIf="!ctx.responsibleAffiliations[0]" class="col-2">
-            <input type="text" class="form-control form-control-sm" readonly>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">description</label>
-        <div class="col-10">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.description" name="_ctxDescription">
-        </div>
-      </div>
-
-      <div *ngIf="!isNewCtx" class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">state</label>
-        <div class="col-2">
-          <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
-        </div>
-        <div *ngIf="ctx.state" class="col-2">
-          <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-success btn-sm float-start" (click)="changeCtxState()" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">workflow</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-                <select class="select form-select form-select-sm" [(ngModel)]="ctx.workflow" name="_workflow">
-                <option *ngFor="let workflow of workflows2display" [value]="workflow">{{workflow}}</option>
-              </select>
+      <form #form="ngForm" class="list-group-item text-success bg-white" novalidate>
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">name*</label>
+          <div class="col-7">
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.name" name="_ctxName" #ctxName="ngModel" required minlength="4" forbiddenName="new ctx">
+            <div class="text-danger">
+              @if (ctxName.errors?.required) {
+                <div>*name is required.</div>
+              }
+              @if (ctxName.errors?.minlength) {
+                <div>*name must be at least 4 characters long.</div>
+              }
+              @if (ctx.name === 'new ctx') {
+                <div>*name MUST NOT be 'new ctx'.</div>
+              }
             </div>
           </div>
+          @if (!isNewCtx) {
+            <label class="col-1 col-form-label col-form-label-sm">id</label>
+          }
+          @if (!isNewCtx) {
+            <div class="col-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.objectId" name="_ctxId" readonly>
+            </div>
+          }
         </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">contact email</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.contactEmail" name="_contactEmail">
-            </div>
-            <div class="col-1">
-            </div>
-            <div class="col-6">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label *ngIf="allowedGenres.length" class="col-12 col-form-label col-form-label-sm text-warning text-end">(attention: the genre to be deleted must not be included in the organization's publication data!)</label>
-      </div>
-
-      <div class="row w-100 mt-1">
-        <label class="col-2 col-form-label col-form-label-sm">allowed genres*</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <select class="select form-control form-control-sm" size="10" multiple [(ngModel)]="selectedGenres" name="_selectedGenres">
-                <option *ngFor="let genre of genres2display" [value]="genre">{{genre}}</option>
-              </select>
-            </div>
-            <div class="col-1 justify-content-start">
-              <input type="button" [disabled]="!selectedGenres" class="btn btn-outline-success btn-sm m-1" (click)="addGenres(selectedGenres)" value=">>" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" title="ADD ALL!" (click)="addAllGenres()" value="all" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" title="REMOVE ALL!" (click)="clearGenres()" value="<<" />
-            </div>
-            <div class="col-6">
-              <div *ngIf="!allowedGenres.length" class="text-danger">
-                <div>*select at least one allowed genre.</div>
+        @if (!isNewCtx && !isNewOu) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">organization*</label>
+            @if (ctx.responsibleAffiliations && ctx.responsibleAffiliations[0] && ctx.state !== 'OPENED') {
+              <div class="col-7">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
               </div>
-                    <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let genre of allowedGenres">
-                  <span class="col-11"><label class="col-form-label-sm me-2">{{genre}}</label></span>
-                  <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteGenre(genre); $event.stopPropagation()" value="x" /></span>
-                </div>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">subject classifications</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <select class="select form-control form-control-sm" size="10" multiple [(ngModel)]="selectedSubjects" name="_selectedSubjects">
-                <option *ngFor="let subject of subjects2display" [value]="subject">{{subject}}</option>
-              </select>
-            </div>
+            }
+            @if (ctx.responsibleAffiliations && ctx.responsibleAffiliations[0] && ctx.state === 'OPENED') {
+              <div class="col-6">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].name" name="_ctxOu" readonly>
+              </div>
+            }
+            @if (ctx.state === 'OPENED') {
+              <div class="col-1">
+                <input type="button" class="btn btn-outline-success btn-sm float-start" (click)="changeOu()" value="change" />
+              </div>
+            }
             <div class="col-1">
-              <input type="button" [disabled]="!selectedSubjects" class="btn btn-outline-success btn-sm m-1" title="ADD selected" (click)="addSubjects(selectedSubjects)" value=">>" />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" title="ADD ALL!" (click)="addAllSubjects()" value="all"  />
-              <input type="button" class="btn btn-outline-success btn-sm m-1" title="REMOVE ALL!" (click)="clearSubjects()" value="<<" />
+              <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId || form.dirty" class="btn btn-outline-success btn-sm" (click)="gotoRef(ctx.responsibleAffiliations[0]?.objectId)" value="ouId" title="goto organization" />
             </div>
-            <div class="col-6">
-              <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let subject of allowedSubjects">
-                  <span class="col-sm-11"><label class="col-form-label-sm me-2">{{subject}}</label></span>
-                  <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()" value="x" /></span>
-                </div>
-              </ul>
+            @if (ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
+              </div>
+            }
+            @if (!ctx.responsibleAffiliations[0]) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" readonly>
+              </div>
+            }
+          </div>
+        }
+        @if (isNewCtx || isNewOu) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">organization*</label>
+            @if (authenticationService.isAdmin) {
+              <div class="col-7">
+                <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off" required>
+                @if (ous.length > 0) {
+                  <div>
+                    <ul class="list-group" (clickOutside)="closeOus()">
+                      @for (ou of ous; track ou) {
+                        <li class="list-group-item-success list-group-item-action py-0 text-start" (click)="selectOu(ou)">
+                          <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+                @if (!selectedOu) {
+                  <div class="text-danger">
+                    <div>*organization is required.</div>
+                  </div>
+                }
+              </div>
+            }
+            @if (!authenticationService.isAdmin) {
+              <div class="col-7">
+                <select class="select form-select form-select-sm" [(ngModel)]="selectedOu" name="_responsibleAffiliation" (ngModelChange)="selectOu($event)" required>
+                  @for (ou of ousForLoggedInUser; track ou) {
+                    <option [ngValue]="ou">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
+                  }
+                </select>
+                @if (!selectedOu) {
+                  <div class="text-danger">
+                    <div>*organization is required.</div>
+                  </div>
+                }
+              </div>
+            }
+            <label class="col-1 col-form-label col-form-label-sm">ouId</label>
+            @if (ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.responsibleAffiliations[0].objectId" name="_ouId" readonly>
+              </div>
+            }
+            @if (!ctx.responsibleAffiliations[0]) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" readonly>
+              </div>
+            }
+          </div>
+        }
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">description</label>
+          <div class="col-10">
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.description" name="_ctxDescription">
+          </div>
+        </div>
+        @if (!isNewCtx) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">state</label>
+            <div class="col-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.state" name="_ctxState" readonly>
+            </div>
+            @if (ctx.state) {
+              <div class="col-2">
+                <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-success btn-sm float-start" (click)="changeCtxState()" [value]="ctx.state === 'CLOSED' ? 'open' : 'close'" />
+              </div>
+            }
+          </div>
+        }
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">workflow</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-5">
+                <select class="select form-select form-select-sm" [(ngModel)]="ctx.workflow" name="_workflow">
+                  @for (workflow of workflows2display; track workflow) {
+                    <option [value]="workflow">{{workflow}}</option>
+                  }
+                </select>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="row w-100 mt-3 mb-2">
-        <div class="col-3 ms-auto">
-          <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
-          <input *ngIf="!isNewCtx && authenticationService.isAdmin" type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />
-          <input type="button" [disabled]="form.invalid || !form.dirty" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">contact email</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-5">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ctx.contactEmail" name="_contactEmail">
+              </div>
+              <div class="col-1">
+              </div>
+              <div class="col-6">
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-    </form>
+        <div class="row w-100 mt-3">
+          @if (allowedGenres.length) {
+            <label class="col-12 col-form-label col-form-label-sm text-warning text-end">(attention: the genre to be deleted must not be included in the organization's publication data!)</label>
+          }
+        </div>
+        <div class="row w-100 mt-1">
+          <label class="col-2 col-form-label col-form-label-sm">allowed genres*</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-5">
+                <select class="select form-control form-control-sm" size="10" multiple [(ngModel)]="selectedGenres" name="_selectedGenres">
+                  @for (genre of genres2display; track genre) {
+                    <option [value]="genre">{{genre}}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-1 justify-content-start">
+                <input type="button" [disabled]="!selectedGenres" class="btn btn-outline-success btn-sm m-1" (click)="addGenres(selectedGenres)" value=">>" />
+                <input type="button" class="btn btn-outline-success btn-sm m-1" title="ADD ALL!" (click)="addAllGenres()" value="all" />
+                <input type="button" class="btn btn-outline-success btn-sm m-1" title="REMOVE ALL!" (click)="clearGenres()" value="<<" />
+              </div>
+              <div class="col-6">
+                @if (!allowedGenres.length) {
+                  <div class="text-danger">
+                    <div>*select at least one allowed genre.</div>
+                  </div>
+                }
+                <ul class="list-group">
+                  @for (genre of allowedGenres; track genre) {
+                    <div class="list-group-item list-group-item-action list-group-item-success py-0">
+                      <span class="col-11"><label class="col-form-label-sm me-2">{{genre}}</label></span>
+                      <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteGenre(genre); $event.stopPropagation()" value="x" /></span>
+                    </div>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">subject classifications</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-5">
+                <select class="select form-control form-control-sm" size="10" multiple [(ngModel)]="selectedSubjects" name="_selectedSubjects">
+                  @for (subject of subjects2display; track subject) {
+                    <option [value]="subject">{{subject}}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-1">
+                <input type="button" [disabled]="!selectedSubjects" class="btn btn-outline-success btn-sm m-1" title="ADD selected" (click)="addSubjects(selectedSubjects)" value=">>" />
+                <input type="button" class="btn btn-outline-success btn-sm m-1" title="ADD ALL!" (click)="addAllSubjects()" value="all"  />
+                <input type="button" class="btn btn-outline-success btn-sm m-1" title="REMOVE ALL!" (click)="clearSubjects()" value="<<" />
+              </div>
+              <div class="col-6">
+                <ul class="list-group">
+                  @for (subject of allowedSubjects; track subject) {
+                    <div class="list-group-item list-group-item-action list-group-item-success py-0">
+                      <span class="col-sm-11"><label class="col-form-label-sm me-2">{{subject}}</label></span>
+                      <span class="col-1"><input type="submit" class="btn btn-outline-success btn-sm float-end" (click)="deleteSubject(subject); $event.stopPropagation()" value="x" /></span>
+                    </div>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row w-100 mt-3 mb-2">
+          <div class="col-3 ms-auto">
+            <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="gotoCtxList()" value="cancel" />
+            @if (!isNewCtx && authenticationService.isAdmin) {
+              <input type="button" class="btn btn-outline-success btn-sm me-2" (click)="deleteCtx()" value="delete" />
+            }
+            <input type="button" [disabled]="form.invalid || !form.dirty" class="btn btn-outline-success btn-sm" (click)="saveCtx()" value="save" />
+          </div>
+        </div>
+      </form>
+    </div>
+    <!--
+    <p></p>
+    Form status: {{form.status}}<p>
+    Form dirty: {{form.dirty}}<p>
+    <p>Context:</p>
+    <pre>{{ctx | json}}</pre>
+    -->
   </div>
-  <!--
-  <p></p>
-  Form status: {{form.status}}<p>
-  Form dirty: {{form.dirty}}<p>
-  <p>Context:</p>
-  <pre>{{ctx | json}}</pre>
-  -->
-</div>
+}

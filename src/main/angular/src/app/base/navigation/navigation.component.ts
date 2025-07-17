@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
+
 import {RouterModule} from '@angular/router';
 import {LoginComponent} from '../login/login.component';
 
@@ -8,7 +8,7 @@ import {LoginComponent} from '../login/login.component';
     templateUrl: './navigation.component.html',
     styleUrls: ['./navigation.component.scss'],
     standalone: true,
-    imports: [CommonModule, RouterModule, LoginComponent]
+    imports: [RouterModule, LoginComponent]
 })
 export class NavigationComponent {
 }
