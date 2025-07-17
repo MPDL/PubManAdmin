@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
+
 import {RouterModule} from '@angular/router';
 import {environment} from '../../../environments/environment';
 
@@ -8,7 +8,7 @@ import {environment} from '../../../environments/environment';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
 })
 export class HomeComponent {
   hostName: string = environment.baseUrl;

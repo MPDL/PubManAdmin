@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
+
 import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {AuthenticationService} from '../services/authentication.service';
@@ -11,7 +11,7 @@ import {tap} from 'rxjs';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule]
+    imports: [FormsModule, RouterModule]
 })
 export class LoginComponent implements OnInit {
   credentials: any = {};

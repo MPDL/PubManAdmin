@@ -6,7 +6,7 @@ import {
   CdkTreeNodeToggle,
   FlatTreeControl,
 } from '@angular/cdk/tree';
-import {CommonModule} from '@angular/common';
+
 import {Component, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
@@ -31,7 +31,6 @@ import {ClickOutsideDirective} from '../../base/directives/clickoutside.directiv
   styleUrls: ['organization-tree.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatButtonModule,
     MatIconModule,
@@ -41,8 +40,8 @@ import {ClickOutsideDirective} from '../../base/directives/clickoutside.directiv
     CdkTreeNode,
     CdkTreeNodeDef,
     CdkTreeNodePadding,
-    CdkTreeNodeToggle,
-  ],
+    CdkTreeNodeToggle
+],
 })
 export class OrganizationTreeComponent implements OnInit {
   ousPath: string = environment.restOus;

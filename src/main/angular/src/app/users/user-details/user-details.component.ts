@@ -1,4 +1,4 @@
-import {CommonModule, Location} from '@angular/common';
+import { Location } from '@angular/common';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -22,14 +22,13 @@ import {ForbiddenCharacterDirective} from '../../base/directives/forbidden-chara
   styleUrls: ['./user-details.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     GrantsComponent,
     ClickOutsideDirective,
     ForbiddenNameDirective,
     ValidLoginnameDirective,
-    ForbiddenCharacterDirective,
-  ],
+    ForbiddenCharacterDirective
+],
 })
 export class UserDetailsComponent implements OnInit {
   @ViewChild('form')

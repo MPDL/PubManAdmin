@@ -1,275 +1,346 @@
-<div *ngIf="ou" class="container">
-  <div class="card text-white bg-info text-end">
-    <div class="card-body">
-      <h4 class="card-title">{{ou.metadata.name}}</h4>
-    </div>
-
-    <form #form="ngForm" class="list-group-item text-info bg-white" novalidate>
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">name*</label>
-        <div class="col-7">
+@if (ou) {
+  <div class="container">
+    <div class="card text-white bg-info text-end">
+      <div class="card-body">
+        <h4 class="card-title">{{ou.metadata.name}}</h4>
+      </div>
+      <form #form="ngForm" class="list-group-item text-info bg-white" novalidate>
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">name*</label>
+          <div class="col-7">
           <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.name" name="_ouName" #ouName="ngModel" required minlength="4" forbiddenName="new ou" forbiddenCharacter='"\\'>
           <div class="text-danger">
-            <div *ngIf="ouName.errors?.required">*name is required.</div>
-            <div *ngIf="ouName.errors?.minlength">*name must be at least 4 characters long.</div>
-            <div *ngIf="ouName.errors?.forbiddenName">*name MUST NOT be 'new ou'.</div>
-            <div *ngIf="ouName.errors?.forbiddenCharacter">*name must not contain the special characters " and \.</div>
+            @if (ouName.errors?.required) {
+<div>*name is required.</div>
+}
+            @if (ouName.errors?.minlength) {
+<div>*name must be at least 4 characters long.</div>
+}
+            @if (ouName.errors?.forbiddenName) {
+<div>*name MUST NOT be 'new ou'.</div>
+}
+            @if (ouName.errors?.forbiddenCharacter) {
+<div>*name must not contain the special characters " and \.</div>
+}
           </div>
         </div>
-        <label *ngIf="!isNewOu" class="col-1 col-form-label col-form-label-sm">id</label>
-        <div *ngIf="!isNewOu" class="col-2">
+        @if (!isNewOu) {
+<label class="col-1 col-form-label col-form-label-sm">id</label>
+}
+        @if (!isNewOu) {
+<div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.objectId" name="_ouId" readonly>
         </div>
+}
       </div>
 
-      <div *ngIf="!isNewOu" class="row w-100 mt-0">
+      @if (!isNewOu) {
+<div class="row w-100 mt-0">
         <label class="col-2 col-form-label col-form-label-sm"></label>
         <label class="col-8 col-form-label col-form-label-sm text-warning text-start">(attention: changes to organization names are NOT automatically reflected in existing records or CoNE author entries!)</label>
       </div>
+}
 
-      <div *ngIf="!isNewOu" class="row w-100 mt-3">
+      @if (!isNewOu) {
+<div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">parent*</label>
-        <div *ngIf="ou.parentAffiliation" class="col-7">
+        @if (ou.parentAffiliation) {
+<div class="col-7">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.name" name="_parentOu" readonly>
         </div>
-        <div *ngIf="!ou.parentAffiliation" class="col-7">
+}
+        @if (!ou.parentAffiliation) {
+<div class="col-7">
           <input type="text" class="form-control form-control-sm" readonly>
         </div>
+}
         <div class="col-1">
           <input type="button" [disabled]="!ou.parentAffiliation?.objectId || form.dirty || isNewPredecessor" class="btn btn-outline-info btn-sm" (click)="gotoRef(ou.parentAffiliation.objectId)" value="parentId" title="goto parent" />
         </div>
-        <div *ngIf="ou.parentAffiliation" class="col-2">
+        @if (ou.parentAffiliation) {
+<div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" readonly>
         </div>
-        <div *ngIf="!ou.parentAffiliation" class="col-2">
+}
+        @if (!ou.parentAffiliation) {
+<div class="col-2">
           <input type="text" class="form-control form-control-sm" readonly>
         </div>
+}
       </div>
+}
 
-      <div *ngIf="isNewOu" class="row w-100 mt-3">
+      @if (isNewOu) {
+<div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">parent*</label>
-        <div *ngIf="authenticationService.isAdmin" class="col-7">
+        @if (authenticationService.isAdmin) {
+<div class="col-7">
           <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="parentOuSearchTerm" name="_parentOuSearchTerm" (keyup)="getParentOus(parentOuSearchTerm)" autocomplete="off">
-          <div *ngIf="parentOus.length > 0">
+          @if (parentOus.length > 0) {
+<div>
               <ul class="list-group" (clickOutside)="closeParentOus()">
-                  <li *ngFor="let ou of parentOus" class="list-group-item-info list-group-item-action py-0 text-start" (click)="selectParentOu(ou)">
+                  @for (ou of parentOus; track ou) {
+<li class="list-group-item-info list-group-item-action py-0 text-start" (click)="selectParentOu(ou)">
                     <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
                   </li>
+}
               </ul>
           </div>
-          <div *ngIf="!ou.parentAffiliation.objectId" class="text-danger">
+}
+          @if (!ou.parentAffiliation.objectId) {
+<div class="text-danger">
             <div>*parent is required.</div>
           </div>
+}
         </div>
-        <div *ngIf="!authenticationService.isAdmin" class="col-7">
+}
+        @if (!authenticationService.isAdmin) {
+<div class="col-7">
           <select class="select form-select form-select-sm" [(ngModel)]="ou.parentAffiliation" name="_parentAffiliation" (ngModelChange)="onChangeParentOu($event)">
-            <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
+            @for (ou of ousForLoggedInUser; track ou) {
+<option [ngValue]="ou">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
+}
           </select>
-          <div *ngIf="!this.ou.parentAffiliation.objectId" class="text-danger">
+          @if (!this.ou.parentAffiliation.objectId) {
+<div class="text-danger">
             <div>*parent is required.</div>
           </div>
+}
         </div>
+}
         <label class="col-1 col-form-label col-form-label-sm">parentId</label>
-        <div *ngIf="!authenticationService.isAdmin && ou.parentAffiliation" class="col-2">
+        @if (!authenticationService.isAdmin && ou.parentAffiliation) {
+<div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" readonly>
         </div>
-        <div *ngIf="authenticationService.isAdmin && ou.parentAffiliation" class="col-2">
+}
+        @if (authenticationService.isAdmin && ou.parentAffiliation) {
+<div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.parentAffiliation.objectId" name="_parentOuId" (keyup)="clearParentOuSearchTerm()">
         </div>
-        <div *ngIf="!ou.parentAffiliation" class="col-2">
+}
+        @if (!ou.parentAffiliation) {
+<div class="col-2">
           <input type="text" class="form-control form-control-sm">
         </div>
+}
       </div>
+}
 
-      <div *ngIf="!isNewOu" class="row w-100 mt-3">
+      @if (!isNewOu) {
+<div class="row w-100 mt-3">
         <label class="col-2 col-form-label col-form-label-sm">state</label>
         <div class="col-2">
           <input type="text" class="form-control form-control-sm" [(ngModel)]="ou.publicStatus" name="_state" readonly>
         </div>
-        <div *ngIf="!isNewOu && ou.publicStatus === 'OPENED'" class="col-1">
-          <input type="button" [disabled]="hasOpenChildren || isNewPredecessor" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'close'" />
+        @if (!isNewOu && ou.publicStatus === 'OPENED') {
+              <div class="col-1">
+                <input type="button" [disabled]="hasOpenChildren || isNewPredecessor" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'close'" />
+              </div>
+            }
+            @if (!isNewOu && ou.publicStatus === 'CLOSED') {
+              <div class="col-1">
+                <input type="button" [disabled]="!hasOpenParent || isNewPredecessor" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'open'" />
+              </div>
+            }
+          </div>
+        }
+        <div class="row w-100 mt-0">
+          <label class="col-4 col-form-label col-form-label-sm"></label>
+          @if (!isNewOu && ou.publicStatus === 'CLOSED' && !hasOpenParent) {
+            <label class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be opened, if the parent is open)</label>
+          }
         </div>
-        <div *ngIf="!isNewOu && ou.publicStatus === 'CLOSED'" class="col-1">
-          <input type="button" [disabled]="!hasOpenParent || isNewPredecessor" class="btn btn-outline-info btn-sm float-start" (click)="changeOuState()" [value]="'open'" />
+        <div class="row w-100 mt-0">
+          <label class="col-4 col-form-label col-form-label-sm"></label>
+          @if (!isNewOu && ou.publicStatus === 'OPENED' && hasOpenChildren) {
+            <label class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be closed, if all children are closed)</label>
+          }
         </div>
-      </div>
-
-      <div class="row w-100 mt-0">
-        <label class="col-4 col-form-label col-form-label-sm"></label>
-        <label *ngIf="!isNewOu && ou.publicStatus === 'CLOSED' && !hasOpenParent" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be opened, if the parent is open)</label>
-      </div>
-
-      <div class="row w-100 mt-0">
-        <label class="col-4 col-form-label col-form-label-sm"></label>
-        <label *ngIf="!isNewOu && ou.publicStatus === 'OPENED' && hasOpenChildren" class="col-8 col-form-label col-form-label-sm text-primary text-start">(organizations can only be closed, if all children are closed)</label>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">address</label>
-        <div class="col-4">
-          <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.city" name="_address">
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">address</label>
+          <div class="col-4">
+            <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.city" name="_address">
+          </div>
+          <label class="col-1 col-form-label col-form-label-sm">country</label>
+          <div class="col-1">
+            <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.countryCode" name="_country">
+          </div>
+          <label class="col-1 col-form-label col-form-label-sm">start</label>
+          <div class="col-1">
+            <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.startDate" name="_startDate">
+          </div>
+          <label class="col-1 col-form-label col-form-label-sm">end</label>
+          <div class="col-1">
+            <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.endDate" name="_endDate">
+          </div>
         </div>
-        <label class="col-1 col-form-label col-form-label-sm">country</label>
-        <div class="col-1">
-          <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.countryCode" name="_country">
-        </div>
-        <label class="col-1 col-form-label col-form-label-sm">start</label>
-        <div class="col-1">
-          <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.startDate" name="_startDate">
-        </div>
-        <label class="col-1 col-form-label col-form-label-sm">end</label>
-        <div class="col-1">
-          <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="ou.metadata.endDate" name="_endDate">
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">alternative names</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <input class="form-control form-control-sm" [disabled]="isNewPredecessor" type="text" [(ngModel)]="alternativeName" name="_alternativeName">
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">alternative names</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-5">
+                <input class="form-control form-control-sm" [disabled]="isNewPredecessor" type="text" [(ngModel)]="alternativeName" name="_alternativeName">
+              </div>
+              <div class="col-1 justify-content-start">
+                <input type="button" [disabled]="!alternativeName || isNewPredecessor" class="btn btn-outline-info btn-sm m-1" (click)="addAlternativeName(alternativeName)" value=">>" />
+                <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearAlternativeNames()" value="<<" />
+              </div>
+              <div class="col-6">
+                <ul class="list-group">
+                  @for (name of ou.metadata.alternativeNames; track name) {
+                    <div class="list-group-item list-group-item-action list-group-item-info py-0">
+                      <div class="row">
+                        <span class="col-11"><label class="col-form-label-sm">{{name}}</label></span>
+                        <span class="col-1"><input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm float-end" (click)="deleteAlternativeName(name); $event.stopPropagation()" value="x" /></span>
+                      </div>
+                    </div>
+                  }
+                </ul>
+              </div>
             </div>
-            <div class="col-1 justify-content-start">
-              <input type="button" [disabled]="!alternativeName || isNewPredecessor" class="btn btn-outline-info btn-sm m-1" (click)="addAlternativeName(alternativeName)" value=">>" />
-              <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearAlternativeNames()" value="<<" />
+          </div>
+        </div>
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">descriptions</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-11">
+                <textarea type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="description" name="_descriptions"></textarea>
+              </div>
+              <div class="col-1 justify-content-start">
+                <input type="button" [disabled]="!description || isNewPredecessor" class="btn btn-outline-info btn-sm m-1" (click)="addDescription(description)" value=">>" />
+                <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearDescriptions()" value="<<" />
+              </div>
             </div>
-            <div class="col-6">
-              <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let name of ou.metadata.alternativeNames">
+          </div>
+        </div>
+        <div class="row w-100 mt-3">
+          <div class="col-10 ms-auto">
+            <ul class="list-group">
+              @for (desc of ou.metadata.descriptions; track desc) {
+                <div class="list-group-item list-group-item-action list-group-item-info py-0">
                   <div class="row">
-                    <span class="col-11"><label class="col-form-label-sm">{{name}}</label></span>
-                    <span class="col-1"><input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm float-end" (click)="deleteAlternativeName(name); $event.stopPropagation()" value="x" /></span>
+                    <label class="col-11 col-form-label-sm text-start">{{desc}}</label>
+                    <span class="col-1"><input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm float-end" (click)="deleteDescription(desc); $event.stopPropagation()" value="x" /></span>
                   </div>
                 </div>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">descriptions</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-11">
-              <textarea type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="description" name="_descriptions"></textarea>
-            </div>
-            <div class="col-1 justify-content-start">
-              <input type="button" [disabled]="!description || isNewPredecessor" class="btn btn-outline-info btn-sm m-1" (click)="addDescription(description)" value=">>" />
-              <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearDescriptions()" value="<<" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <div class="col-10 ms-auto">
-          <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let desc of ou.metadata.descriptions">
-              <div class="row">
-                <label class="col-11 col-form-label-sm text-start">{{desc}}</label>
-                <span class="col-1"><input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm float-end" (click)="deleteDescription(desc); $event.stopPropagation()" value="x" /></span>
-              </div>
-            </div>
-          </ul>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm">identifiers</label>
-        <div class="col-10 text-end">
-          <div class="row">
-            <div class="col-5">
-              <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="identifier" name="_identifier">
-            </div>
-            <div class="col-1 justify-content-start">
-              <input type="button" [disabled]="!identifier || isNewPredecessor" class="btn btn-outline-info btn-sm m-1" (click)="addIdentifier(identifier)" value=">>" />
-              <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearIdentifiers()" value="<<" />
-            </div>
-            <div class="col-6">
-              <ul class="list-group">
-                <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let id of ou.metadata.identifiers">
-                  <div class="row">
-                    <span class="col-11"><label class="col-form-label-sm p-0">{{id.id}}</label></span>
-                    <span class="col-1"><input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm float-end" (click)="deleteIdentifier(id); $event.stopPropagation()" value="x" /></span>
-                  </div>
-                </div>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row w-100 mt-3 mb-2">
-        <div class="col-3 ms-auto">
-          <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
-          <input *ngIf="!isNewOu && authenticationService.isAdmin" type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
-          <input type="button" [disabled]="form.invalid || isNewPredecessor || !form.dirty" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
-        </div>
-      </div>
-
-      <div *ngIf="ou.hasChildren" class="row w-100 mt-5">
-        <label class="col-2 col-form-label col-form-label-sm">children</label>
-        <div class="col-10">
-          <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let child of children" (click)="!isNewPredecessor && !form.dirty && gotoRef(child.objectId)">
-              <div class="row">
-                <span class="col-3"><label class="col-form-label-sm p-0">{{child.objectId}}</label></span>
-                <span class="col-2"><label class="col-form-label-sm p-0">{{child.publicStatus}}</label></span>
-                <span class="col-6"><label class="col-form-label-sm p-0">{{child.metadata.name}}</label></span>
-              </div>
-            </div>
-          </ul>
-        </div>
-      </div>
-
-      <div *ngIf="!isNewOu && !isNewPredecessor && ou.hasPredecessors || isNewPredecessor" class="row w-100 mt-5">
-        <label class="col-2 col-form-label col-form-label-sm">predecessors</label>
-        <div *ngIf="ou.hasPredecessors" class="col-10">
-          <ul class="list-group">
-            <div class="list-group-item list-group-item-action list-group-item-info py-0" *ngFor="let predecessor of predecessors" (click)="!isNewPredecessor && !form.dirty && gotoRef(predecessor.objectId)">
-              <div class="row">
-                <span class="col-3"><label class="col-form-label-sm">{{predecessor.objectId}}</label></span>
-                <span class="col-2"><label class="col-form-label-sm">{{predecessor.publicStatus}}</label></span>
-                <span class="col-6"><label class="col-form-label-sm">{{predecessor.metadata.name}}</label></span>
-                <span class="col-1"><input type="button" [disabled]="isNewPredecessor || form.dirty" class="btn btn-outline-info btn-sm" (click)="removePredecessor(predecessor); $event.stopPropagation()" value="x" /></span>
-              </div>
-            </div>
-          </ul>
-        </div>
-      </div>
-
-      <div *ngIf="!isNewPredecessor && !isNewOu" class="row w-100 mt-3">
-        <div class="col-2 ms-auto">
-            <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-info btn-sm float-end mb-2" (click)="addPredecessors(); $event.stopPropagation()" value="add predecessor" />
-        </div>
-      </div>
-
-      <div *ngIf="isNewPredecessor" class="row w-100 mt-3">
-        <label class="col-2 col-form-label col-form-label-sm"></label>
-        <div class="col-8">
-          <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="predecessorOuSearchTerm" name="_predecessorOuSearchTerm" (keyup)="getPredecessorOus(predecessorOuSearchTerm)" autocomplete="off">
-          <div *ngIf="predecessorOus.length > 0">
-            <ul class="list-group mb-2" (clickOutside)="closePredecessorOus()">
-              <li *ngFor="let ou of predecessorOus" class="list-group-item-info list-group-item-action py-0 text-start" (click)="selectPredecessorOu(ou)">
-                <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
-              </li>
+              }
             </ul>
           </div>
         </div>
-        <div class="col-1">
-          <input [disabled]="!predecessorOu" type="button" class="btn btn-outline-info btn-sm float-start" (click)="addPredecessor()" value="add predecessor" />
-          <input type="button" class="btn btn-outline-info btn-sm float-start mt-1 mb-2" (click)="resetPredecessors()" value="cancel" />
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">identifiers</label>
+          <div class="col-10 text-end">
+            <div class="row">
+              <div class="col-5">
+                <input type="text" [disabled]="isNewPredecessor" class="form-control form-control-sm" [(ngModel)]="identifier" name="_identifier">
+              </div>
+              <div class="col-1 justify-content-start">
+                <input type="button" [disabled]="!identifier || isNewPredecessor" class="btn btn-outline-info btn-sm m-1" (click)="addIdentifier(identifier)" value=">>" />
+                <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm m-1" title="REMOVE ALL!" (click)="clearIdentifiers()" value="<<" />
+              </div>
+              <div class="col-6">
+                <ul class="list-group">
+                  @for (id of ou.metadata.identifiers; track id) {
+                    <div class="list-group-item list-group-item-action list-group-item-info py-0">
+                      <div class="row">
+                        <span class="col-11"><label class="col-form-label-sm p-0">{{id.id}}</label></span>
+                        <span class="col-1"><input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm float-end" (click)="deleteIdentifier(id); $event.stopPropagation()" value="x" /></span>
+                      </div>
+                    </div>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
+        <div class="row w-100 mt-3 mb-2">
+          <div class="col-3 ms-auto">
+            <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="gotoOrganizationList()" value="cancel" />
+            @if (!isNewOu && authenticationService.isAdmin) {
+              <input type="button" [disabled]="isNewPredecessor" class="btn btn-outline-info btn-sm me-2" (click)="deleteOu()" value="delete" />
+            }
+            <input type="button" [disabled]="form.invalid || isNewPredecessor || !form.dirty" class="btn btn-outline-info btn-sm" (click)="saveOu()" value="save" />
+          </div>
+        </div>
+        @if (ou.hasChildren) {
+          <div class="row w-100 mt-5">
+            <label class="col-2 col-form-label col-form-label-sm">children</label>
+            <div class="col-10">
+              <ul class="list-group">
+                @for (child of children; track child) {
+                  <div class="list-group-item list-group-item-action list-group-item-info py-0" (click)="!isNewPredecessor && !form.dirty && gotoRef(child.objectId)">
+                    <div class="row">
+                      <span class="col-3"><label class="col-form-label-sm p-0">{{child.objectId}}</label></span>
+                      <span class="col-2"><label class="col-form-label-sm p-0">{{child.publicStatus}}</label></span>
+                      <span class="col-6"><label class="col-form-label-sm p-0">{{child.metadata.name}}</label></span>
+                    </div>
+                  </div>
+                }
+              </ul>
+            </div>
+          </div>
+        }
+        @if (!isNewOu && !isNewPredecessor && ou.hasPredecessors || isNewPredecessor) {
+          <div class="row w-100 mt-5">
+            <label class="col-2 col-form-label col-form-label-sm">predecessors</label>
+            @if (ou.hasPredecessors) {
+              <div class="col-10">
+                <ul class="list-group">
+                  @for (predecessor of predecessors; track predecessor) {
+                    <div class="list-group-item list-group-item-action list-group-item-info py-0" (click)="!isNewPredecessor && !form.dirty && gotoRef(predecessor.objectId)">
+                      <div class="row">
+                        <span class="col-3"><label class="col-form-label-sm">{{predecessor.objectId}}</label></span>
+                        <span class="col-2"><label class="col-form-label-sm">{{predecessor.publicStatus}}</label></span>
+                        <span class="col-6"><label class="col-form-label-sm">{{predecessor.metadata.name}}</label></span>
+                        <span class="col-1"><input type="button" [disabled]="isNewPredecessor || form.dirty" class="btn btn-outline-info btn-sm" (click)="removePredecessor(predecessor); $event.stopPropagation()" value="x" /></span>
+                      </div>
+                    </div>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        }
+        @if (!isNewPredecessor && !isNewOu) {
+          <div class="row w-100 mt-3">
+            <div class="col-2 ms-auto">
+              <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-info btn-sm float-end mb-2" (click)="addPredecessors(); $event.stopPropagation()" value="add predecessor" />
+            </div>
+          </div>
+        }
+        @if (isNewPredecessor) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm"></label>
+            <div class="col-8">
+              <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="predecessorOuSearchTerm" name="_predecessorOuSearchTerm" (keyup)="getPredecessorOus(predecessorOuSearchTerm)" autocomplete="off">
+              @if (predecessorOus.length > 0) {
+                <div>
+                  <ul class="list-group mb-2" (clickOutside)="closePredecessorOus()">
+                    @for (ou of predecessorOus; track ou) {
+                      <li class="list-group-item-info list-group-item-action py-0 text-start" (click)="selectPredecessorOu(ou)">
+                        <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+            <div class="col-1">
+              <input [disabled]="!predecessorOu" type="button" class="btn btn-outline-info btn-sm float-start" (click)="addPredecessor()" value="add predecessor" />
+              <input type="button" class="btn btn-outline-info btn-sm float-start mt-1 mb-2" (click)="resetPredecessors()" value="cancel" />
+            </div>
+          </div>
+        }
+      </form>
+    </div>
+    <!--
+    <p></p>
+    Form status: {{form.status}}<p>
+    Form dirty: {{form.dirty}}<p>
+    <p>Organization:</p>
+    <pre>{{ou | json}}</pre>
+    -->
   </div>
-  <!--
-  <p></p>
-  Form status: {{form.status}}<p>
-  Form dirty: {{form.dirty}}<p>
-  <p>Organization:</p>
-  <pre>{{ou | json}}</pre>
-  -->
-</div>
+}

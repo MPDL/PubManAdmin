@@ -1,4 +1,4 @@
-import {CommonModule} from '@angular/common';
+
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {localAdminCtxs} from 'app/base/common/model/query-bodies';
@@ -16,9 +16,8 @@ import {UsersService} from '../services/users.service';
   styleUrls: ['./grants.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-  ],
+    FormsModule
+],
 })
 export class GrantsComponent implements OnInit {
   @Input()

@@ -1,114 +1,165 @@
-<div *ngIf="user" class="container">
+@if (user) {
+  <div class="container">
     <div class="card text-white bg-secondary text-end">
-        <div class="card-body">
-            <h4 class="card-title">{{user.loginname}}</h4>
+      <div class="card-body">
+        <h4 class="card-title">{{user.loginname}}</h4>
+      </div>
+      <form #form="ngForm" class="list-group-item text-secondary bg-white" novalidate>
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">loginname*</label>
+          <div class="col-7">
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="user.loginname" name="_loginname" #loginName="ngModel" required minlength="4" forbiddenName="new user" validLoginname [readonly]="!isNewUser">
+            <div class="text-danger">
+              @if (loginName.errors?.required) {
+                <div>*loginname is required.</div>
+              }
+              @if (loginName.errors?.minlength) {
+                <div>*loginname must be at least 4 characters long.</div>
+              }
+              @if (loginName.errors?.forbiddenName) {
+                <div>*loginname MUST NOT be 'new user'.</div>
+              }
+              @if (loginName.errors?.validLoginname) {
+                <div>*loginname must not include special characters except those of an email adress.</div>
+              }
+            </div>
+          </div>
+          @if (!isNewUser) {
+            <label class="col-1 col-form-label col-form-label-sm">id</label>
+          }
+          @if (!isNewUser) {
+            <div class="col-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="user.objectId" name="_userId" readonly>
+            </div>
+          }
         </div>
-
-        <form #form="ngForm" class="list-group-item text-secondary bg-white" novalidate>
-            <div class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">loginname*</label>
-                <div class="col-7">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.loginname" name="_loginname" #loginName="ngModel" required minlength="4" forbiddenName="new user" validLoginname [readonly]="!isNewUser">
-                    <div class="text-danger">
-                        <div *ngIf="loginName.errors?.required">*loginname is required.</div>
-                        <div *ngIf="loginName.errors?.minlength">*loginname must be at least 4 characters long.</div>
-                        <div *ngIf="loginName.errors?.forbiddenName">*loginname MUST NOT be 'new user'.</div>
-                        <div *ngIf="loginName.errors?.validLoginname">*loginname must not include special characters except those of an email adress.</div>
-                    </div>
-                </div>
-                <label *ngIf="!isNewUser" class="col-1 col-form-label col-form-label-sm">id</label>
-                <div *ngIf="!isNewUser" class="col-2">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.objectId" name="_userId" readonly>
-                </div>
-            </div>
-
-            <div *ngIf="!isNewUser && !isNewOu" class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">organization*</label>
-                <div *ngIf="user.affiliation && user.active !== true" class="col-7">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
-                </div>
-                <div *ngIf="user.affiliation && user.active === true" class="col-6">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
-                </div>
-                <div *ngIf="!user.affiliation && user.active !== true" class="col-7">
-                    <input type="text" class="form-control form-control-sm" readonly>
-                </div>
-                <div *ngIf="!user.affiliation && user.active === true" class="col-6">
-                    <input type="text" class="form-control form-control-sm" readonly>
-                </div>
-                <div *ngIf="user.active === true" class="col-1">
-                    <input type="button" [disabled]="isNewGrant" class="btn btn-outline-secondary btn-sm float-start" (click)="changeOu()" value="change" />
-                </div>
-                <div class="col-1">
-                    <input type="button" [disabled]="!user.affiliation?.objectId || isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm" (click)="gotoRef(user.affiliation.objectId)" value="ouId" title="goto organization" />
-                </div>
-                <div *ngIf="user.affiliation" class="col-2">
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.objectId" name="_ouId" readonly>
-                </div>
-                <div *ngIf="!user.affiliation" class="col-2">
-                  <input type="text" class="form-control form-control-sm" readonly>
-                </div>
-            </div>
-
-            <div *ngIf="isNewUser || isNewOu" class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">organization*</label>
-                <div *ngIf="authenticationService.isAdmin" class="col-7">
-                    <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off" required>
-                    <div *ngIf="ous.length > 0">
-                        <ul class="list-group" (clickOutside)="closeOus()">
-                            <li *ngFor="let ou of ous" class="list-group-item-secondary list-group-item-action py-0 text-start" (click)="selectOu(ou)">
-                                <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
-                            </li>
-                        </ul>
-                    </div>
-                    <div *ngIf="!selectedOu" class="text-danger">
-                        <div>*organization is required.</div>
-                    </div>
-                </div>
-                <div *ngIf="!authenticationService.isAdmin" class="col-7">
-                    <select class="select form-select form-select-sm" [(ngModel)]="selectedOu" name="_affiliation" (ngModelChange)="selectOu($event)" required>
-                      <option [ngValue]="ou" *ngFor="let ou of ousForLoggedInUser">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
-                    </select>
-                    <div *ngIf="!selectedOu" class="text-danger">
-                        <div>*organization is required.</div>
-                    </div>
-                </div>
-                <label class="col-1 col-form-label col-form-label-sm">ouId</label>
-                <div *ngIf="user.affiliation" class="col-2">
-                  <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.objectId" name="_ouId" readonly>
-                </div>
-                <div *ngIf="!user.affiliation" class="col-2">
-                    <input type="text" class="form-control form-control-sm" readonly>
-                </div>
+        @if (!isNewUser && !isNewOu) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">organization*</label>
+            @if (user.affiliation && user.active !== true) {
+              <div class="col-7">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
               </div>
-
-            <div *ngIf="isNewUser" class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">active</label>
-                <div class="col-2">
-                    <select class="select form-select form-select-sm" [(ngModel)]="user.active" name="_active">
-	    			<option [ngValue]="true">true</option>
-	    			<option [ngValue]="false">false</option>
-    			</select>
-                </div>
+            }
+            @if (user.affiliation && user.active === true) {
+              <div class="col-6">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.name" name="_userOu" readonly>
+              </div>
+            }
+            @if (!user.affiliation && user.active !== true) {
+              <div class="col-7">
+                <input type="text" class="form-control form-control-sm" readonly>
+              </div>
+            }
+            @if (!user.affiliation && user.active === true) {
+              <div class="col-6">
+                <input type="text" class="form-control form-control-sm" readonly>
+              </div>
+            }
+            @if (user.active === true) {
+              <div class="col-1">
+                <input type="button" [disabled]="isNewGrant" class="btn btn-outline-secondary btn-sm float-start" (click)="changeOu()" value="change" />
+              </div>
+            }
+            <div class="col-1">
+              <input type="button" [disabled]="!user.affiliation?.objectId || isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm" (click)="gotoRef(user.affiliation.objectId)" value="ouId" title="goto organization" />
             </div>
-
-            <div *ngIf="!isNewUser" class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">active</label>
-                <div class="col-2">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="user.active" name="_active" readonly>
-                </div>
-                <div class="col-2">
-                    <input type="button" [disabled]="isNewOu || isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm float-start" (click)="changeUserState()" [value]="user.active === false ? 'activate' : 'deactivate'" />
-                </div>
+            @if (user.affiliation) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.objectId" name="_ouId" readonly>
+              </div>
+            }
+            @if (!user.affiliation) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" readonly>
+              </div>
+            }
+          </div>
+        }
+        @if (isNewUser || isNewOu) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">organization*</label>
+            @if (authenticationService.isAdmin) {
+              <div class="col-7">
+                <input type="text" class="form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off" required>
+                @if (ous.length > 0) {
+                  <div>
+                    <ul class="list-group" (clickOutside)="closeOus()">
+                      @for (ou of ous; track ou) {
+                        <li class="list-group-item-secondary list-group-item-action py-0 text-start" (click)="selectOu(ou)">
+                          <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+                @if (!selectedOu) {
+                  <div class="text-danger">
+                    <div>*organization is required.</div>
+                  </div>
+                }
+              </div>
+            }
+            @if (!authenticationService.isAdmin) {
+              <div class="col-7">
+                <select class="select form-select form-select-sm" [(ngModel)]="selectedOu" name="_affiliation" (ngModelChange)="selectOu($event)" required>
+                  @for (ou of ousForLoggedInUser; track ou) {
+                    <option [ngValue]="ou">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
+                  }
+                </select>
+                @if (!selectedOu) {
+                  <div class="text-danger">
+                    <div>*organization is required.</div>
+                  </div>
+                }
+              </div>
+            }
+            <label class="col-1 col-form-label col-form-label-sm">ouId</label>
+            @if (user.affiliation) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="user.affiliation.objectId" name="_ouId" readonly>
+              </div>
+            }
+            @if (!user.affiliation) {
+              <div class="col-2">
+                <input type="text" class="form-control form-control-sm" readonly>
+              </div>
+            }
+          </div>
+        }
+        @if (isNewUser) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">active</label>
+            <div class="col-2">
+              <select class="select form-select form-select-sm" [(ngModel)]="user.active" name="_active">
+                <option [ngValue]="true">true</option>
+                <option [ngValue]="false">false</option>
+              </select>
             </div>
-
-            <div class="row w-100 mt-3">
-                <label class="col-2 col-form-label col-form-label-sm">name*</label>
-                <div class="col-7">
+          </div>
+        }
+        @if (!isNewUser) {
+          <div class="row w-100 mt-3">
+            <label class="col-2 col-form-label col-form-label-sm">active</label>
+            <div class="col-2">
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="user.active" name="_active" readonly>
+            </div>
+            <div class="col-2">
+              <input type="button" [disabled]="isNewOu || isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm float-start" (click)="changeUserState()" [value]="user.active === false ? 'activate' : 'deactivate'" />
+            </div>
+          </div>
+        }
+        <div class="row w-100 mt-3">
+          <label class="col-2 col-form-label col-form-label-sm">name*</label>
+          <div class="col-7">
                     <input type="text" [disabled]="isNewGrant" class="form-control form-control-sm" [(ngModel)]="user.name" name="_userName" #userName="ngModel" forbiddenCharacter='"\\' required>
                     <div class="text-danger">
-                        <div *ngIf="userName.errors?.required">*name is required.</div>
-                        <div *ngIf="userName.errors?.forbiddenCharacter">*name must not contain the special characters " and \.</div>
+                        @if (userName.errors?.required) {
+<div>*name is required.</div>
+}
+                        @if (userName.errors?.forbiddenCharacter) {
+<div>*name must not contain the special characters " and \.</div>
+}
                     </div>
                 </div>
             </div>
@@ -123,23 +174,29 @@
             <div class="row w-100 mt-4">
                 <div class="col-3 ms-auto">
                     <input type="button" [disabled]="isNewGrant" class="btn btn-outline-secondary btn-sm me-2" (click)="gotoUserList()" value="cancel" />
-                    <input *ngIf="!isNewUser && authenticationService.isAdmin" type="button" [disabled]="isNewGrant" class="btn btn-outline-secondary btn-sm me-2" (click)="deleteUser()" value="delete" />
+                    @if (!isNewUser && authenticationService.isAdmin) {
+<input type="button" [disabled]="isNewGrant" class="btn btn-outline-secondary btn-sm me-2" (click)="deleteUser()" value="delete" />
+}
                     <input type="button" [disabled]="form.invalid || isNewGrant || !form.dirty" class="btn btn-outline-secondary btn-sm" (click)="saveUser()" value="save" />
                 </div>
             </div>
 
             <div class="row w-100 mt-2">
                 <div class="col-1 ms-auto">
-                    <input *ngIf="user.active == true && !user.password" type="button" [disabled]="isNewOu || isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm float-end" (click)="generatePassword()" value="generate password" />
+                    @if (user.active == true && !user.password) {
+<input type="button" [disabled]="isNewOu || isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm float-end" (click)="generatePassword()" value="generate password" />
+}
                 </div>
             </div>
 
-            <div *ngIf="!isNewUser && !isNewGrant && user.grantList || isNewGrant" class="w-100">
+            @if (!isNewUser && !isNewGrant && user.grantList || isNewGrant) {
+<div class="w-100">
                 <div class="row w-100 mt-3">
                     <label class="col-2 col-form-label col-form-label-sm">grants</label>
                     <div class="col-10 text-end">
                         <ul class="list-group">
-                            <li class="list-group-item list-group-item-action list-group-item-secondary py-0" *ngFor="let grant of user.grantList" (click)="!isNewGrant && !form.dirty && gotoRefByGrant(grant)">
+                            @for (grant of user.grantList; track grant) {
+<li class="list-group-item list-group-item-action list-group-item-secondary py-0" (click)="!isNewGrant && !form.dirty && gotoRefByGrant(grant)">
                                 <div class="row">
                                     <span class="col-2 text-start text-truncate"><label class="col-form-label-sm p-0 ms-2">{{grant.role}}</label></span>
                                     <span class="col-3 text-start"><label class="col-form-label-sm p-0">{{grant.objectName}}</label></span>
@@ -149,24 +206,32 @@
                                     <span class="col-1"><input type="button" [disabled]="isNewGrant || form.dirty" class="btn btn-outline-secondary btn-sm" (click)="removeGrant(grant); $event.stopPropagation()" value="x" /></span>
                                 </div>
                             </li>
+}
                         </ul>
                     </div>
                 </div>
             </div>
+}
 
-            <div *ngIf="!isNewUser" class="w-100">
-                <div *ngIf="!isNewGrant" class="row w-100 mt-2">
+            @if (!isNewUser) {
+<div class="w-100">
+                @if (!isNewGrant) {
+<div class="row w-100 mt-2">
                     <div class="col-2 ms-auto">
                         <input type="button" [disabled]="isNewOu || form.dirty" class="btn btn-outline-secondary btn-sm float-end mb-2" (click)="addGrant(); $event.stopPropagation()" value="add grants" />
                     </div>
                 </div>
+}
 
-                <div *ngIf="isNewGrant" class="row w-100 mt-3">
+                @if (isNewGrant) {
+<div class="row w-100 mt-3">
                     <div class="col-10 ms-auto">
                         <grants-component class="row w-100 mt-3 mb-2" [(isNewGrant)]="isNewGrant" [(user)]="user"></grants-component>
                     </div>
                 </div>
+}
             </div>
+}
         </form>
     </div>
     <!--
@@ -177,3 +242,4 @@
     <pre>{{user | json}}</pre>
     -->
 </div>
+}

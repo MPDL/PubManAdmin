@@ -1,51 +1,71 @@
 <div class="container">
-	<div class="row w-100">
-		<div class="col-4">
-			<select class="select form-select form-select-sm" [(ngModel)]="selectedRole" (ngModelChange)="onChangeRole($event)">
-				<option [ngValue]="role" *ngFor="let role of roles">{{role}}</option>
-			</select>
-		</div>
-		<div *ngIf="selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')">
-			<input type="text" class="form-control form-control-sm" placeholder="filter by name of context" [(ngModel)]="filterText" (ngModelChange)="filterCtxs($event)" />
-			<select class="select form-select form-select-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)">
-				<option [ngValue]="ctx" *ngFor="let ctx of filteredCtxs">{{ctx.name}} - {{ctx.objectId}} - {{ctx.state}} <-- {{ctx.responsibleAffiliations[0].name}}</option>
-			</select>
-		</div>
-		<div *ngIf="selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-7">
-			<select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)">
-				<option [ngValue]="ou" *ngFor="let ou of ous">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
-			</select>
-		</div>
-		<div *ngIf="!selectedRole" class="col-7">
-			<input type="text" class="form-control form-control-sm" value="select a role ..." readonly />
-		</div>
-	</div>
+  <div class="row w-100">
+    <div class="col-4">
+      <select class="select form-select form-select-sm" [(ngModel)]="selectedRole" (ngModelChange)="onChangeRole($event)">
+        @for (role of roles; track role) {
+          <option [ngValue]="role">{{role}}</option>
+        }
+      </select>
+    </div>
+    @if (selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')) {
+      <div>
+        <input type="text" class="form-control form-control-sm" placeholder="filter by name of context" [(ngModel)]="filterText" (ngModelChange)="filterCtxs($event)" />
+        <select class="select form-select form-select-sm" [(ngModel)]="selectedCtx" (ngModelChange)="onChangeCtx($event)">
+          @for (ctx of filteredCtxs; track ctx) {
+            <option [ngValue]="ctx">{{ctx.name}} - {{ctx.objectId}} - {{ctx.state}} <-- {{ctx.responsibleAffiliations[0].name}}</option>
+          }
+        </select>
+      </div>
+    }
+    @if (selectedRole && selectedRole === 'LOCAL_ADMIN') {
+      <div class="col-7">
+        <select class="select form-select form-select-sm" [(ngModel)]="selectedOu" (ngModelChange)="onChangeOu($event)">
+          @for (ou of ous; track ou) {
+            <option [ngValue]="ou">{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</option>
+          }
+        </select>
+      </div>
+    }
+    @if (!selectedRole) {
+      <div class="col-7">
+        <input type="text" class="form-control form-control-sm" value="select a role ..." readonly />
+      </div>
+    }
+  </div>
 
-	<div class="row w-100 mt-1">
-		<div *ngIf="selectedOu && selectedRole && selectedRole === 'LOCAL_ADMIN'" class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
-		</div>
-	</div>
+  <div class="row w-100 mt-1">
+    @if (selectedOu && selectedRole && selectedRole === 'LOCAL_ADMIN') {
+      <div class="col-1">
+        <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
+      </div>
+    }
+  </div>
 
-	<div class="row w-100 mt-1">
-		<div *ngIf="selectedCtx && selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')" class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
-		</div>
-	</div>
+  <div class="row w-100 mt-1">
+    @if (selectedCtx && selectedRole && (selectedRole === 'DEPOSITOR' || selectedRole === 'MODERATOR')) {
+      <div class="col-1">
+        <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
+      </div>
+    }
+  </div>
 
-	<div class="row w-100 mt-1">
-		<div *ngIf="selectedRole && (selectedRole.startsWith('CONE') || selectedRole === 'REPORTER')" class="col-1">
-			<input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
-		</div>
-	</div>
+  <div class="row w-100 mt-1">
+    @if (selectedRole && (selectedRole.startsWith('CONE') || selectedRole === 'REPORTER')) {
+      <div class="col-1">
+        <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
+      </div>
+    }
+  </div>
 
-	<div class="row w-100 mt-1">
-		<div class="col-11">
-			<textarea class="form-control form-control-sm" rows="3" [(ngModel)]="grantsToAdd" readonly></textarea>
-		</div>
-		<div class="col-1">
-			<input *ngIf="grantsToAdd" type="button" class="btn btn-outline-primary btn-sm float-start" (click)="addGrants()" value="add grants" />
-			<input type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetGrants()" value="cancel" />
-		</div>
-	</div>
+  <div class="row w-100 mt-1">
+    <div class="col-11">
+      <textarea class="form-control form-control-sm" rows="3" [(ngModel)]="grantsToAdd" readonly></textarea>
+    </div>
+    <div class="col-1">
+      @if (grantsToAdd) {
+        <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="addGrants()" value="add grants" />
+      }
+      <input type="button" class="btn btn-outline-primary btn-sm float-start mt-1" (click)="resetGrants()" value="cancel" />
+    </div>
+  </div>
 </div>

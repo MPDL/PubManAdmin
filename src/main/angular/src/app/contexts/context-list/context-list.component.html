@@ -1,52 +1,62 @@
 <div class="container-sm">
 
-    <h3 class="text-success">Context Administration</h3>
+  <h3 class="text-success">Context Administration</h3>
 
-    <div class="card text-white bg-success text-end">
-        <div class="card-body">
-            <h4 class="card-title">{{title}}</h4>
-            <input type="submit" class="btn btn-success btn-sm" (click)="addNewCtx()" value="+" />
-        </div>
-
-        <div class="row">
-            <div class="col-7">
-                <input type="text" class="filter form-control form-control-sm" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
-                <div *ngIf="ous.length > 0">
-                    <ul class="list-group" (clickOutside)="closeOus()">
-                        <li *ngFor="let ou of ous" class="list-group-item list-group-item-action list-group-item-success text-start py-0" (click)="gotoFilteredOu(ou)">
-                            <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-7">
-                <input type="text" class="filter form-control form-control-sm" placeholder="search by name of context" [(ngModel)]="ctxSearchTerm" (keyup)="getCtxsByName(ctxSearchTerm)" autocomplete="off">
-                <div *ngIf="ctxsByName.length > 0">
-                    <ul class="list-group" (clickOutside)="closeCtxsByName()">
-                        <li *ngFor="let ctx of ctxsByName" class="list-group-item list-group-item-action list-group-item-success text-start py-0" (click)="gotoCtx(ctx)">
-                            <small>{{ctx.name}} - {{ctx.objectId}} - {{ctx.state}} <-- {{ctx.responsibleAffiliations[0].name}}</small>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-5">
-                <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
-                <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
-            </div>
-        </div>
-
-        <ul class="list-group">
-            <li class="list-group-item list-group-item-action list-group-item-success py-0" *ngFor="let ctx of ctxs | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }" (click)="gotoCtx(ctx)">
-                <div class="row">
-                    <span class="col-7"><label class="col-form-label-sm p-0 ms-2">{{ctx.name}}</label></span>
-                    <span class="col-1"><label class="col-form-label-sm p-0 ms-2">{{ctx.objectId}}</label></span>
-                    <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{ctx.state}}</label></span>
-                    <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{ctx.responsibleAffiliations[0].name}}</label></span>
-                </div>
-            </li>
-        </ul>
+  <div class="card text-white bg-success text-end">
+    <div class="card-body">
+      <h4 class="card-title">{{title}}</h4>
+      <input type="submit" class="btn btn-success btn-sm" (click)="addNewCtx()" value="+" />
     </div>
+
+    <div class="row">
+      <div class="col-7">
+        <input type="text" class="filter form-control form-control-sm" placeholder="filter by name of organization" [(ngModel)]="ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
+        @if (ous.length > 0) {
+          <div>
+            <ul class="list-group" (clickOutside)="closeOus()">
+              @for (ou of ous; track ou) {
+                <li class="list-group-item list-group-item-action list-group-item-success text-start py-0" (click)="gotoFilteredOu(ou)">
+                  <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-7">
+        <input type="text" class="filter form-control form-control-sm" placeholder="search by name of context" [(ngModel)]="ctxSearchTerm" (keyup)="getCtxsByName(ctxSearchTerm)" autocomplete="off">
+        @if (ctxsByName.length > 0) {
+          <div>
+            <ul class="list-group" (clickOutside)="closeCtxsByName()">
+              @for (ctx of ctxsByName; track ctx) {
+                <li class="list-group-item list-group-item-action list-group-item-success text-start py-0" (click)="gotoCtx(ctx)">
+                  <small>{{ctx.name}} - {{ctx.objectId}} - {{ctx.state}} <-- {{ctx.responsibleAffiliations[0].name}}</small>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+      <div class="col-5">
+        <div class="spinner" [ngClass]="{ 'hidden': !loading }"></div>
+        <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
+      </div>
+    </div>
+
+    <ul class="list-group">
+      @for (ctx of ctxs | paginate: { id: 'iPaginator', itemsPerPage: pageSize, currentPage: currentPage, totalItems: total }; track ctx) {
+        <li class="list-group-item list-group-item-action list-group-item-success py-0" (click)="gotoCtx(ctx)">
+          <div class="row">
+            <span class="col-7"><label class="col-form-label-sm p-0 ms-2">{{ctx.name}}</label></span>
+            <span class="col-1"><label class="col-form-label-sm p-0 ms-2">{{ctx.objectId}}</label></span>
+            <span class="col-1 text-start"><label class="col-form-label-sm p-0">{{ctx.state}}</label></span>
+            <span class="col-3 text-start text-truncate"><label class="col-form-label-sm p-0">{{ctx.responsibleAffiliations[0].name}}</label></span>
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
 </div>

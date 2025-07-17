@@ -1,6 +1,6 @@
 {
   "name": "admintool",
-  "version": "2.5.21",
+  "version": "2.6.1",
   "scripts": {
     "ng": "ng",
     "start-dev": "ng serve -c=dev",
@@ -10,27 +10,27 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.2.12",
-    "@angular/cdk": "^19.2.17",
-    "@angular/common": "^19.2.12",
-    "@angular/compiler": "^19.2.12",
-    "@angular/core": "^19.2.12",
-    "@angular/forms": "^19.2.12",
-    "@angular/material": "^19.2.17",
-    "@angular/platform-browser": "^19.2.12",
-    "@angular/platform-browser-dynamic": "^19.2.12",
-    "@angular/router": "^19.2.12",
+    "@angular/animations": "^20.1.1",
+    "@angular/cdk": "^20.1.2",
+    "@angular/common": "^20.1.1",
+    "@angular/compiler": "^20.1.1",
+    "@angular/core": "^20.1.1",
+    "@angular/forms": "^20.1.1",
+    "@angular/material": "^20.1.2",
+    "@angular/platform-browser": "^20.1.1",
+    "@angular/platform-browser-dynamic": "^20.1.1",
+    "@angular/router": "^20.1.1",
     "@popperjs/core": "~2.11.8",
-    "bootstrap": "^5.3.6",
+    "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
     "ngx-pagination": "~6.0.3",
     "rxjs": "^7.8.2",
-    "zone.js": "^0.15.0"
+    "zone.js": "^0.15.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.2.13",
-    "@angular/cli": "^19.2.13",
-    "@angular/compiler-cli": "^19.2.12",
+    "@angular/build": "^20.1.1",
+    "@angular/cli": "^20.1.1",
+    "@angular/compiler-cli": "^20.1.1",
     "typescript": "^5.8.3"
   },
   "repository": {

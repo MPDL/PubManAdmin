@@ -11,21 +11,25 @@
     <div class="row">
       <div class="col-7 pb-3">
         <input type="text" class="filter form-control form-control-sm" placeholder="search by name of organization" [(ngModel)]="ouSearchTerm" name="_ouSearchTerm" (keyup)="getOus(ouSearchTerm)" autocomplete="off">
-        <div *ngIf="ous.length > 0">
-          <ul class="list-group" *ngFor="let ou of ous" (clickOutside)="closeOus()">
-            <li class="list-group-item list-group-item-action list-group-item-info text-start py-0 d-flex no-gutters" (click)="selectOu(ou)">
-              <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
-            </li>
-          </ul>
-        </div>
+        @if (ous.length > 0) {
+          <div>
+            @for (ou of ous; track ou) {
+              <ul class="list-group" (clickOutside)="closeOus()">
+                <li class="list-group-item list-group-item-action list-group-item-info text-start py-0 d-flex no-gutters" (click)="selectOu(ou)">
+                  <small>{{ou.metadata.name}} - {{ou.objectId}} - {{ou.publicStatus}} <-- {{ou.parentAffiliation?.name}}</small>
+                </li>
+              </ul>
+            }
+          </div>
+        }
       </div>
     </div>
 
     <div class="row w-100">
       <div class="col-1 ms-start">
-          <input type="button" class="btn btn-outline-info text-white btn-sm me-2" (click)="collapsAll()" value="collapse all" />
+        <input type="button" class="btn btn-outline-info text-white btn-sm me-2" (click)="collapsAll()" value="collapse all" />
       </div>
-  </div>
+    </div>
 
     <cdk-tree #tree [dataSource]="dataSource" [treeControl]="treeControl">
       <cdk-tree-node *cdkTreeNodeDef="let node; when: hasNotChildAndIsNotSelected" cdkTreeNodePadding (click)="gotoOu(node)" class="list-group-item list-group-item-action list-group-item-info text-info py-0 d-flex flex-sm-row no-gutters align-items-center">
