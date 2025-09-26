@@ -1,14 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 
 import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import {AuthenticationService} from '../services/authentication.service';
 import {MessagesService} from '../services/messages.service';
 import {tap} from 'rxjs';
-
-const {disclaimer: appDisclaimer} = require('../../../../package.json');
-const {privacy: appPrivacy} = require('../../../../package.json');
-const {help: appHelp} = require('../../../../package.json');
+import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'login-component',
@@ -26,12 +23,13 @@ export class LoginComponent implements OnInit {
   constructor(
     protected authenticationService: AuthenticationService,
     private messagesService: MessagesService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.appDisclaimer = appDisclaimer;
-    this.appPrivacy = appPrivacy;
-    this.appHelp = appHelp;
+    this.appDisclaimer = environment.appDisclaimer;
+    this.appPrivacy = environment.appPrivacy;
+    this.appHelp = environment.appHelp;
   }
 
   login(): void {
@@ -47,11 +45,13 @@ export class LoginComponent implements OnInit {
             }
           }
         )
-
   }
 
   logout() {
-    this.authenticationService.logout();
+    this.authenticationService.logout().subscribe({
+      next: () => this.router.navigate(['/home']),
+      error: () => this.router.navigate(['/home']), // selbst bei Fehler nicht eingeloggt lassen
+    });
     this.credentials = {};
   }
 }

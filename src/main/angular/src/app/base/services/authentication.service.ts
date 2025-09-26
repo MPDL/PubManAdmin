@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, EMPTY, Observable, of, switchMap, tap, throwError} from 'rxjs';
+import {BehaviorSubject, EMPTY, finalize, Observable, of, switchMap, tap, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {User} from '../common/model/inge';
 import {MessagesService} from './messages.service';
@@ -28,7 +28,7 @@ export class AuthenticationService {
   isLoggedInObservable(): Observable<boolean> {
     // Return an observable that completes only after the authentication check
     return this.checkLogin().pipe(
-      map(principal => principal.loggedIn)
+      map(principal => principal.loggedIn),
     );
   }
 
@@ -51,7 +51,6 @@ export class AuthenticationService {
   ) {
     const principal: Principal = new Principal();
     this.principal = new BehaviorSubject<Principal>(principal);
-    this.checkLogin();
     AuthenticationService.instance = this;
   }
 
@@ -80,66 +79,105 @@ export class AuthenticationService {
     );
   }
 
-  logout(): void {
-    this.http.request('GET', this.logoutUrl, {observe: 'response', responseType: 'text'}).pipe(
+  logoutInProgress = new BehaviorSubject<boolean>(false);
+
+  logout(): Observable<void> {
+    this.logoutInProgress.next(true);
+    return this.http.request('GET', this.logoutUrl, {
+      observe: 'response', responseType: 'text', withCredentials: true,
+    }).pipe(
       tap(res => {
         if (res.status === 200) {
           console.log('Successfully logged out from backend');
         }
+        // Client-Zustand sofort zurücksetzen
         sessionStorage.clear();
         localStorage.clear();
         this.principal.next(new Principal());
         this.messagesService.info('Logged out successfully');
-        this.router.navigate(['/home']);
       }),
-    ).subscribe();
+      finalize(() => this.logoutInProgress.next(false)),
+      map(() => void 0),
+    );
   }
 
-  private checkLogin(): Observable<Principal> {
+  checkLogin(): Observable<Principal> {
     const localAdminTopLevelOuIds: string[] = [];
+
+    // Wenn gerade ein Logout läuft, keinen Server-Check durchführen und garantiert "ausgeloggt" melden
+    if (this.logoutInProgress.getValue()) {
+      const principal = new Principal();
+      this.principal.next(principal);
+      return of(principal);
+    }
 
     return this.who().pipe(
       map(user => {
-        let principal: Principal = new Principal();
-        if (user) {
-          principal.loggedIn = true;
-          principal.user = user;
-          // Check if grantList is undefined or empty
-          if (!user.grantList || user.grantList.length === 0) {
-            this.logout();
-            this.messagesService.error('User has no permissions (grantList is undefined or empty)');
-          } else if (user.grantList.find((grant: any) => grant.role === 'SYSADMIN')) {
-            principal.isAdmin = true;
-          } else if (user.grantList.find((grant) => grant.role === 'LOCAL_ADMIN')) {
-            user.grantList.forEach((grant) => {
-              if (grant.role === 'LOCAL_ADMIN') {
-                localAdminTopLevelOuIds.push(grant.objectRef);
-              }
-            });
-            user.topLevelOuIds = localAdminTopLevelOuIds;
-          } else {
-            this.logout();
-            this.messagesService.error('User is no admin oder local admin.');
-          }
+        // Standardmäßig: ausgeloggt
+        let principal = new Principal();
+
+        if (!user?.active) {
+          // nicht aktiv → ausgeloggt bleiben
           this.principal.next(principal);
-          console.log('User:' + JSON.stringify(user, null, 2));
-          console.log('Prinzipal:' + JSON.stringify(principal, null, 2));
+          return principal;
         }
+
+        // Benutzer ist aktiv → prüfen, ob berechtigt
+        const grants = user.grantList || [];
+        if (grants.length === 0) {
+          this.messagesService.error('User has no permissions (grantList is undefined or empty)');
+          // KEIN logout() hier; einfach ausgeloggt signalisieren
+          this.principal.next(principal);
+          return principal;
+        }
+
+        // Berechtigt → eingeloggt setzen
+        principal.loggedIn = true;
+        principal.user = user;
+
+        if (grants.find((g: any) => g.role === 'SYSADMIN')) {
+          principal.isAdmin = true;
+        } else if (grants.find((g: any) => g.role === 'LOCAL_ADMIN')) {
+          grants.forEach((grant: any) => {
+            if (grant.role === 'LOCAL_ADMIN') {
+              localAdminTopLevelOuIds.push(grant.objectRef);
+            }
+          });
+          (user as any).topLevelOuIds = localAdminTopLevelOuIds;
+        } else {
+          // keine passende Rolle → ausgeloggt signalisieren
+          this.messagesService.error('User is no admin oder local admin.');
+          principal = new Principal();
+          this.principal.next(principal);
+          return principal;
+        }
+
+        this.principal.next(principal);
+        console.log('User:' + JSON.stringify(user, null, 2));
+        console.log('Prinzipal:' + JSON.stringify(principal, null, 2));
         return principal;
       }),
       catchError(error => {
         console.log(error);
-        return of(new Principal()); // Return a default principal with loggedIn = false
-      })
+        const principal = new Principal();
+        this.principal.next(principal);
+        return of(principal); // Return a default principal with loggedIn = false
+      }),
     );
   }
 
   private who(): Observable<User> {
     const whoUrl = this.loginUrl + '/who';
+    const headers = new HttpHeaders({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+    });
+    const urlWithTs = `${whoUrl}?ts=${Date.now()}`; // Cache-Buster
 
-    return this.http.request<User>('GET', whoUrl, {
+    return this.http.request<User>('GET', urlWithTs, {
       observe: 'body',
       withCredentials: true,
+      headers,
     }).pipe(
       catchError((error) => {
         console.log(error);

@@ -8,6 +8,10 @@ export const environment = {
   restLogout: '/rest/logout',
   restOus: '/rest/ous',
   restUsers: '/rest/users',
+  appHome: 'https://github.com/MPDL/PubManAdmin#readme',
+  appDisclaimer: 'https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Impressum',
+  appPrivacy: 'https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Datenschutzhinweis',
+  appHelp: 'https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Help',
   ctxIndex: {
     name: 'contexts',
     type: 'context',

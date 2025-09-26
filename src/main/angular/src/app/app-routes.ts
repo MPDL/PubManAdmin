@@ -17,7 +17,7 @@ import {UserGuardService} from './base/services/user-guard.service';
 
 export const routes: Routes = [
   {path: 'home', component: HomeComponent},
-  {path: '', redirectTo: '/home', pathMatch: 'full'}, // Default route
+  {path: '', redirectTo: 'home', pathMatch: 'full'}, // Default route
 
   // Users routes
   {path: 'users', component: UserListComponent, canActivate: [LoginGuardService]},

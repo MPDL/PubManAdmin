@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {environment} from '../../../environments/environment';
-
-const {version: appVersion} = require('../../../../package.json');
-const {homepage: appHome} = require('../../../../package.json');
+import packageJson from '../../../../package.json';
 
 @Component({
     selector: 'footer-component',
@@ -15,7 +13,7 @@ const {homepage: appHome} = require('../../../../package.json');
 export class FooterComponent implements OnInit {
   appVersion: any;
   appHome: any;
-  hostName: string;
+  hostName: string = '';
 
   constructor(
   ) {}
@@ -25,7 +23,7 @@ export class FooterComponent implements OnInit {
     if (environment.proxyUrl) {
       this.hostName += ' (-> ' + environment.proxyUrl + ')';
     }
-    this.appVersion = appVersion;
-    this.appHome = appHome;
+    this.appVersion = packageJson.version;
+    this.appHome = environment.appHome;
   }
 }

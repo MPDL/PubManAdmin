@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
-
+import {Component, OnInit} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {environment} from '../../../environments/environment';
+import {AuthenticationService} from '../services/authentication.service';
 
 @Component({
     selector: 'home-component',
@@ -10,9 +10,14 @@ import {environment} from '../../../environments/environment';
     standalone: true,
   imports: [RouterModule],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   hostName: string = environment.baseUrl;
 
-  constructor(
-  ) {}
+  constructor(private authenticationService: AuthenticationService) {} // <- Service injizieren
+
+  ngOnInit(): void {
+    // Stößt einen einmaligen Auth-Refresh an, der den BehaviorSubject 'principal'
+    // aktualisiert. Die login.component zieht ihren Status daraus.
+    this.authenticationService.checkLogin().subscribe();
+  }
 }

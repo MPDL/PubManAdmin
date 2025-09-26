@@ -1,6 +1,5 @@
-import {enableProdMode, importProvidersFrom} from '@angular/core';
+import {enableProdMode, importProvidersFrom, inject, provideAppInitializer} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
-import {provideAnimations} from '@angular/platform-browser/animations';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 import {MatDialogModule} from '@angular/material/dialog';
@@ -12,6 +11,8 @@ import {LoginGuardService} from 'app/base/services/login-guard.service';
 import {MessagesService} from 'app/base/services/messages.service';
 import {PubmanRestService} from 'app/base/services/pubman-rest.service';
 import {routes} from 'app/app-routes';
+import {lastValueFrom} from 'rxjs';
+
 
 if (environment.production) {
   enableProdMode();
@@ -19,7 +20,6 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
     provideRouter(routes),
     importProvidersFrom(
@@ -29,7 +29,11 @@ bootstrapApplication(AppComponent, {
     AuthenticationService,
     MessagesService,
     PubmanRestService,
-    LoginGuardService
+    LoginGuardService,
+    provideAppInitializer(async () => {
+      const authenticationService = inject(AuthenticationService);
+      await lastValueFrom(authenticationService.checkLogin())
+    })
   ]
 })
   .then((success) => console.log(`Bootstrap success`))
