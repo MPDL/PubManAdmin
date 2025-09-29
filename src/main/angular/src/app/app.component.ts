@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {NavigationComponent} from './base/navigation/navigation.component';
 import {FooterComponent} from './base/footer/footer.component';
+import {AuthenticationService} from './base/services/authentication.service';
+
 
 @Component({
     selector: 'app-component',
@@ -10,4 +12,12 @@ import {FooterComponent} from './base/footer/footer.component';
     standalone: true,
     imports: [RouterModule, NavigationComponent, FooterComponent]
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(
+    private authenticationService: AuthenticationService
+  ) {
+    window.onfocus = function() {
+      authenticationService.checkLoginChanged();
+    };
+  }}
+

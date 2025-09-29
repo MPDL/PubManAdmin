@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
-import {FormsModule} from '@angular/forms';
+import {FormsModule, NgForm} from '@angular/forms';
 import {Router, RouterModule} from '@angular/router';
 import {AuthenticationService} from '../services/authentication.service';
 import {MessagesService} from '../services/messages.service';
-import {tap} from 'rxjs';
+import {tap, finalize} from 'rxjs';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -15,6 +15,8 @@ import {environment} from '../../../environments/environment';
     imports: [FormsModule, RouterModule]
 })
 export class LoginComponent implements OnInit {
+  @ViewChild('form1') form1?: NgForm;
+
   appDisclaimer: any;
   appPrivacy: any;
   appHelp: any;
@@ -33,24 +35,26 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
-      this.authenticationService.login(this.credentials.userName, this.credentials.password)
+    this.authenticationService.login(this.credentials.userName, this.credentials.password)
         .pipe(
-          tap( p=> {
+          tap(p => {
+          }),
+          finalize(() => {
+            this.form1?.resetForm();
+            this.credentials = {};
           })
         )
-        .subscribe(
-          {
-            error : (e) => {
-              this.messagesService.error(e)
-            }
+        .subscribe({
+          error: (e) => {
+            this.messagesService.error(e);
           }
-        )
+        });
   }
 
   logout() {
     this.authenticationService.logout().subscribe({
-      next: () => this.router.navigate(['/home']),
-      error: () => this.router.navigate(['/home']), // selbst bei Fehler nicht eingeloggt lassen
+      next: () => this.router.navigate(['/']),
+      error: () => this.router.navigate(['/']), // selbst bei Fehler nicht eingeloggt lassen
     });
     this.credentials = {};
   }

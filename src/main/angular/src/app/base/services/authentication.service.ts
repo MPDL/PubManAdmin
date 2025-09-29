@@ -166,6 +166,19 @@ export class AuthenticationService {
     );
   }
 
+  checkLoginChanged() {
+    this.who().pipe(
+      tap(user => {
+          if(this.principal?.value?.user?.loginname != user?.loginname) {
+            this.messagesService.warning("Your login is not valid anymore and was updated with '" + user?.loginname + "' (Did you login in another window/tab?)");
+            this.checkLogin().subscribe();
+            this.router.navigate(['/'])
+          }
+        }
+      )
+    ).subscribe();
+  }
+
   private who(): Observable<User> {
     const whoUrl = this.loginUrl + '/who';
     const headers = new HttpHeaders({

@@ -26,7 +26,7 @@ export class LoginGuardService implements CanActivate {
           return true;
         }
         this.messagesService.warning('This site requires you to login ...');
-        this.router.navigate(['home']);
+        this.router.navigate(['/']);
         return false;
       })
     );
