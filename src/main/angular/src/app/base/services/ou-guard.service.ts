@@ -15,9 +15,9 @@ export class OuGuardService extends BaseGuardService {
   static instance: OuGuardService;
 
   constructor(
-    protected authenticationService: AuthenticationService,
-    protected messagesService: MessagesService,
-    protected router: Router,
+    protected override authenticationService: AuthenticationService,
+    protected override messagesService: MessagesService,
+    protected override router: Router,
     private organizationsService: OrganizationsService
   ) {
     super(authenticationService, messagesService, router);

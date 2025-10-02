@@ -15,7 +15,7 @@ export class OrganizationsService extends PubmanRestService {
 
   constructor(
     protected messagesService: MessagesService,
-    protected httpClient: HttpClient,
+    protected override httpClient: HttpClient,
   ) {
     super(httpClient);
   }

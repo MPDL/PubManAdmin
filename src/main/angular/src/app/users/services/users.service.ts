@@ -17,7 +17,7 @@ export class UsersService extends PubmanRestService {
   usersPath: string = environment.restUsers;
 
   constructor(
-    protected httpClient: HttpClient,
+    protected override httpClient: HttpClient,
     private contextsService: ContextsService,
     private messagesService: MessagesService,
     private organizationsService: OrganizationsService,

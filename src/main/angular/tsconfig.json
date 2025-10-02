@@ -18,6 +18,12 @@
       "es2022",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }

@@ -16,9 +16,9 @@ export class CtxGuardService extends BaseGuardService {
   static instance: CtxGuardService;
 
   constructor(
-    protected authenticationService: AuthenticationService,
-    protected messagesService: MessagesService,
-    protected router: Router,
+    protected override authenticationService: AuthenticationService,
+    protected override messagesService: MessagesService,
+    protected override router: Router,
     private searchService: SearchService,
     private organizationsService: OrganizationsService,
     private contextsService: ContextsService

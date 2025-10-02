@@ -16,9 +16,9 @@ export class UserGuardService extends BaseGuardService {
   static instance: UserGuardService;
 
   constructor(
-    protected authenticationService: AuthenticationService,
-    protected messagesService: MessagesService,
-    protected router: Router,
+    protected override authenticationService: AuthenticationService,
+    protected override messagesService: MessagesService,
+    protected override router: Router,
     private usersService: UsersService,
     private searchService: SearchService,
     private organizationsService: OrganizationsService,

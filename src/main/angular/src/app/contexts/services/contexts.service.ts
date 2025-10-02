@@ -12,7 +12,7 @@ export class ContextsService extends PubmanRestService {
   ctxsPath:string = environment.restCtxs;
 
   constructor(
-    protected httpClient: HttpClient,
+    protected override httpClient: HttpClient,
   ) {
     super(httpClient);
   }
