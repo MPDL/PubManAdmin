@@ -1,4 +1,4 @@
-import {enableProdMode, importProvidersFrom, inject, provideAppInitializer} from '@angular/core';
+import {enableProdMode, importProvidersFrom, inject, provideAppInitializer, provideZoneChangeDetection} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
@@ -20,7 +20,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(withInterceptorsFromDi()),
+    provideZoneChangeDetection(),provideHttpClient(withInterceptorsFromDi()),
     provideRouter(routes),
     importProvidersFrom(
       MatDialogModule,
