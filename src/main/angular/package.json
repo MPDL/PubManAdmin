@@ -1,6 +1,6 @@
 {
   "name": "admintool",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "scripts": {
     "ng": "ng",
     "start-dev": "ng serve -c=dev",
@@ -8,32 +8,32 @@
     "start-gui": "ng serve -c=gui",
     "build-prod": "ng build --base-href=/admintool/ -c=production",
     "build-qa": "ng build --base-href=/admintool/ -c=qa",
-    "build-dev": "ng build --base-href=/admintool/ -c=dev"
+    "build-gui": "ng build --base-href=/admintool/ -c=gui"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^21.1.0",
-    "@angular/cdk": "^21.1.0",
-    "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/material": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/platform-browser-dynamic": "^21.1.0",
-    "@angular/router": "^21.1.0",
+    "@angular/animations": "^21.2.3",
+    "@angular/cdk": "^21.2.2",
+    "@angular/common": "^21.2.3",
+    "@angular/compiler": "^21.2.3",
+    "@angular/core": "^21.2.3",
+    "@angular/forms": "^21.2.3",
+    "@angular/material": "^21.2.2",
+    "@angular/platform-browser": "^21.2.3",
+    "@angular/platform-browser-dynamic": "^21.2.3",
+    "@angular/router": "^21.2.3",
     "@popperjs/core": "~2.11.8",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "ngx-pagination": "~6.0.3",
     "rxjs": "^7.8.2",
-    "zone.js": "^0.16.0"
+    "zone.js": "^0.16.1"
   },
   "devDependencies": {
-    "@angular/build": "^21.1.0",
-    "@angular/cli": "^21.1.0",
-    "@angular/compiler-cli": "^21.1.0",
-    "baseline-browser-mapping": "^2.9.14",
+    "@angular/build": "^21.2.2",
+    "@angular/cli": "^21.2.2",
+    "@angular/compiler-cli": "^21.2.3",
+    "baseline-browser-mapping": "^2.10.0",
     "typescript": "^5.9.3"
   },
   "repository": {

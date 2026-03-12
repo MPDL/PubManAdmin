@@ -2,6 +2,7 @@
   "/rest": {
     "target": "https://gui.inge.mpdl.mpg.de",
     "secure": false,
+    "changeOrigin": true,
     "logLevel": "debug"
   }
 }
