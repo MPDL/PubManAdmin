@@ -1,10 +1,10 @@
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
 import {environment} from 'environments/environment';
-import {Identifier, Ou} from '../../base/common/model/inge';
+import {Identifier, Ou, BasicRO} from '../../base/common/model/inge';
 import {AuthenticationService} from '../../base/services/authentication.service';
 import {MessagesService} from '../../base/services/messages.service';
 import {OrganizationsService} from '../services/organizations.service';
@@ -18,6 +18,7 @@ import {ForbiddenCharacterDirective} from '../../base/directives/forbidden-chara
   templateUrl: './organization-details.component.html',
   styleUrls: ['./organization-details.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     NgxPaginationModule,
@@ -458,7 +459,7 @@ export class OrganizationDetailsComponent implements OnInit {
     }
     if (this.ou.hasPredecessors) {
       const predecessorIds: string[] = [];
-      this.ou.predecessorAffiliations.forEach((predecessor: Ou) => {
+      this.ou.predecessorAffiliations.forEach((predecessor: BasicRO) => {
         predecessorIds.push(predecessor.objectId);
       });
       this.listPredecessors(this.searchService.getListOfIds(predecessorIds, 'objectId'));

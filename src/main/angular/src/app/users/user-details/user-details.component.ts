@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4autoSelect} from 'app/base/common/model/query-bodies';
@@ -21,6 +21,7 @@ import {ForbiddenCharacterDirective} from '../../base/directives/forbidden-chara
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     GrantsComponent,

@@ -5,23 +5,19 @@
     "ng": "ng",
     "start-dev": "ng serve -c=dev",
     "start-qa": "ng serve -c=qa",
-    "start-gui": "ng serve -c=gui",
-    "build-prod": "ng build --base-href=/admintool/ -c=production",
-    "build-qa": "ng build --base-href=/admintool/ -c=qa",
-    "build-gui": "ng build --base-href=/admintool/ -c=gui"
+    "start-prod": "ng serve -c=prod",
+    "build-produktion": "ng build --base-href=/admintool/ -c=production"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^21.2.3",
-    "@angular/cdk": "^21.2.2",
-    "@angular/common": "^21.2.3",
-    "@angular/compiler": "^21.2.3",
-    "@angular/core": "^21.2.3",
-    "@angular/forms": "^21.2.3",
-    "@angular/material": "^21.2.2",
-    "@angular/platform-browser": "^21.2.3",
-    "@angular/platform-browser-dynamic": "^21.2.3",
-    "@angular/router": "^21.2.3",
+    "@angular/cdk": "^22.0.5",
+    "@angular/common": "^22.0.7",
+    "@angular/compiler": "^22.0.7",
+    "@angular/core": "^22.0.7",
+    "@angular/forms": "^22.0.7",
+    "@angular/material": "^22.0.5",
+    "@angular/platform-browser": "^22.0.7",
+    "@angular/router": "^22.0.7",
     "@popperjs/core": "~2.11.8",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
@@ -30,11 +26,11 @@
     "zone.js": "^0.16.1"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.2",
-    "@angular/cli": "^21.2.2",
-    "@angular/compiler-cli": "^21.2.3",
+    "@angular/build": "^22.0.7",
+    "@angular/cli": "^22.0.7",
+    "@angular/compiler-cli": "^22.0.7",
     "baseline-browser-mapping": "^2.10.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "repository": {
     "type": "git",
@@ -43,5 +39,12 @@
   "homepage": "https://github.com/MPDL/PubManAdmin#readme",
   "disclaimer": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Impressum",
   "privacy": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Datenschutzhinweis",
-  "help": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Help"
+  "help": "https://colab.mpdl.mpg.de/mediawiki/MPG.PuRe_Help",
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.27.7": true,
+    "@parcel/watcher@2.5.6": true,
+    "lmdb@3.5.4": true,
+    "msgpackr-extract@3.0.4": true
+  }
 }

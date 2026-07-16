@@ -7,7 +7,7 @@ import {
   FlatTreeControl,
 } from '@angular/cdk/tree';
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -30,6 +30,7 @@ import {ClickOutsideDirective} from '../../base/directives/clickoutside.directiv
   templateUrl: 'organization-tree.component.html',
   styleUrls: ['organization-tree.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     MatButtonModule,

@@ -1,5 +1,5 @@
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {localAdminCtxs} from 'app/base/common/model/query-bodies';
 import {ContextsService} from 'app/contexts/services/contexts.service';
@@ -15,6 +15,7 @@ import {UsersService} from '../services/users.service';
   templateUrl: './grants.component.html',
   styleUrls: ['./grants.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule
 ],
@@ -40,6 +41,7 @@ export class GrantsComponent implements OnInit {
   ctxs: Ctx[] = [];
   filteredCtxs: Ctx[] = [];
   selectedCtx: Ctx;
+  filterText: string = '';
 
   ous: Ou[] = [];
   selectedOu: Ou;

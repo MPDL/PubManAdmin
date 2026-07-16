@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {AuthenticationService} from '../services/authentication.service';
@@ -8,6 +8,7 @@ import {AuthenticationService} from '../services/authentication.service';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterModule],
 })
 export class HomeComponent implements OnInit {

@@ -19,7 +19,7 @@ export class PubmanRestService {
 
   getSearchResults(method: string, path: string, headers: HttpHeaders, body: any): Observable<any> {
     const requestUrl = this.baseUrl + path;
-    return this.httpClient.request(method, requestUrl, {
+    return this.httpClient.request<any>(method, requestUrl, {
       headers: headers,
       observe: 'body',
       responseType: 'json',
@@ -48,9 +48,9 @@ export class PubmanRestService {
 
   getStringResource(method: string, path: string, headers: HttpHeaders): Observable<any> {
     const requestUrl = this.baseUrl + path;
-    return this.httpClient.request(method, requestUrl, {
+    return this.httpClient.request<any>(method, requestUrl, {
       headers: headers,
-      responseType: 'text',
+      responseType: 'text' as 'json',
       withCredentials: true
     }).pipe(
       map((response: any) => {
@@ -66,11 +66,11 @@ export class PubmanRestService {
   getResource(method: string, path: string, headers: HttpHeaders, body: object | string | Date): Observable<any> {
     const requestUrl = this.baseUrl + path;
     if (body == null) {
-      return this.httpClient.request(method, requestUrl, {
+      return this.httpClient.request<any>(method, requestUrl, {
         headers: headers,
         withCredentials: true
       }).pipe(
-        map((response: HttpResponse<any>) => {
+        map((response: any) => {
           const resource = response;
           return resource;
         }),
@@ -79,12 +79,12 @@ export class PubmanRestService {
         })
       );
     } else {
-      return this.httpClient.request(method, requestUrl, {
+      return this.httpClient.request<any>(method, requestUrl, {
         headers: headers,
         body: body,
         withCredentials: true
       }).pipe(
-        map((response: HttpResponse<any>) => {
+        map((response: any) => {
           const resource = response;
           return resource;
         }),
@@ -151,14 +151,14 @@ export class PubmanRestService {
 
   private getHttpStatus(method: string, path: string, headers: HttpHeaders, body: Date): Observable<any> {
     const requestUrl = this.baseUrl + path;
-    return this.httpClient.request(method, requestUrl, {
+    return this.httpClient.request<any>(method, requestUrl, {
       headers: headers,
       body: body,
       observe: 'response',
-      responseType: 'text',
+      responseType: 'text' as 'json',
       withCredentials: true
     }).pipe(
-      map((response) => {
+      map((response: any) => {
         const status = response.status;
         return status;
       }),

@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "importHelpers": true,
     "module": "es2022",
     "esModuleInterop": true,
@@ -16,10 +17,13 @@
     ],
     "useDefineForClassFields": true,
     "noImplicitOverride": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
     "skipLibCheck": true
   }
 }

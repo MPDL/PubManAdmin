@@ -13,9 +13,9 @@ export class MessagesService {
     private dialog: MatDialog,
   ) {}
 
-  displayMessage(msg?: { text: any; type?: string; length?: any; substring?: any; }) {
+  displayMessage(msg: { text: any; type?: string; length?: any; substring?: any; }) {
     const maxMsgLength: number = 5000;
-    if (msg.text.length > maxMsgLength) {
+    if (msg && msg.text && msg.text.length > maxMsgLength) {
       msg.text = msg.text.substring(0, maxMsgLength - 1) + '...';
     }
     this.messageDialogRef = this.dialog.open(MessagesComponent, {
@@ -23,22 +23,22 @@ export class MessagesService {
     });
   }
 
-  info(message: string) {
+  info(message: any) {
     const msg = {text: message};
     this.displayMessage(msg);
   }
 
-  success(message: string) {
+  success(message: any) {
     const msg = {type: 'success', text: message};
     this.displayMessage(msg);
   }
 
-  warning(message: string) {
+  warning(message: any) {
     const msg = {type: 'warning', text: message};
     this.displayMessage(msg);
   }
 
-  error(message: string) {
+  error(message: any) {
     const msg = {type: 'error', text: message};
     this.displayMessage(msg);
   }

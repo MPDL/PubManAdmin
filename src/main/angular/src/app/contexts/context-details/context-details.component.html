@@ -49,7 +49,7 @@
               </div>
             }
             <div class="col-1">
-              <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId || form.dirty" class="btn btn-outline-success btn-sm" (click)="gotoRef(ctx.responsibleAffiliations[0]?.objectId)" value="ouId" title="goto organization" />
+              <input type="button" [disabled]="!ctx.responsibleAffiliations[0]?.objectId || form.dirty" class="btn btn-outline-success btn-sm" (click)="gotoRef($safeNavigationMigration(ctx.responsibleAffiliations[0]?.objectId))" value="ouId" title="goto organization" />
             </div>
             @if (ctx.responsibleAffiliations && ctx.responsibleAffiliations[0]) {
               <div class="col-2">

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import {environment} from '../../../environments/environment';
 import packageJson from '../../../../package.json';
@@ -8,6 +8,7 @@ import packageJson from '../../../../package.json';
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class FooterComponent implements OnInit {

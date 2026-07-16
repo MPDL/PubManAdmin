@@ -1,5 +1,5 @@
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ous4autoSelect, users4autoSelectByLogin, users4autoSelectByName} from 'app/base/common/model/query-bodies';
@@ -18,6 +18,7 @@ import {ClickOutsideDirective} from '../../base/directives/clickoutside.directiv
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     NgxPaginationModule,

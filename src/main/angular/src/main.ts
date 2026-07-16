@@ -1,6 +1,6 @@
 import {enableProdMode, importProvidersFrom, inject, provideAppInitializer, provideZoneChangeDetection} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
@@ -20,7 +20,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),provideHttpClient(withInterceptorsFromDi()),
+    provideZoneChangeDetection(),provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideRouter(routes),
     importProvidersFrom(
       MatDialogModule,

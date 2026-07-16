@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from 'app/base/common/services/search.service';
@@ -18,6 +18,7 @@ import {ForbiddenNameDirective} from '../../base/directives/forbidden-name.direc
   templateUrl: './context-details.component.html',
   styleUrls: ['./context-details.component.scss'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     NgxPaginationModule,

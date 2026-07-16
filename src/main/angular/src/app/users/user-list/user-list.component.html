@@ -70,7 +70,7 @@
       <div class="col-5">
         @if (total > 0) {
           <div class="has-text-centered">
-            <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" maxSize="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
+            <pagination-controls class="admin-pagination" id="iPaginator" previousLabel="prev" nextLabel="next" [maxSize]="9" (pageChange)="gotoFilteredPage($event)"></pagination-controls>
           </div>
         }
       </div>

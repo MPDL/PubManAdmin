@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 
 import {FormsModule, NgForm} from '@angular/forms';
 import {Router, RouterModule} from '@angular/router';
@@ -12,6 +12,7 @@ import {environment} from '../../../environments/environment';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, RouterModule]
 })
 export class LoginComponent implements OnInit {

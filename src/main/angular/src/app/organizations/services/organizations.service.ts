@@ -20,7 +20,7 @@ export class OrganizationsService extends PubmanRestService {
     super(httpClient);
   }
 
-  getallChildOus(parentAffiliationIds: string[], ignoreOuId: string): Observable<Ou[]> {
+  getallChildOus(parentAffiliationIds: string[], ignoreOuId: string | null): Observable<Ou[]> {
     const path = this.ousPath + '/allchildren/' + ignoreOuId;
     const headers = this.addHeaders(false);
     const body = parentAffiliationIds;

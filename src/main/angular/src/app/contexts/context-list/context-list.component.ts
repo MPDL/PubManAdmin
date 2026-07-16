@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Ctx, Ou} from 'app/base/common/model/inge';
 import {ctxs4autoSelectByName, ous4autoSelect} from 'app/base/common/model/query-bodies';
@@ -24,6 +24,7 @@ import {ClickOutsideDirective} from '../../base/directives/clickoutside.directiv
     NgxPaginationModule,
     ClickOutsideDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ContextsService],
 })
 export class ContextListComponent implements OnInit {

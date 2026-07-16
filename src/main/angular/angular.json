@@ -75,7 +75,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.produktion.ts"
                 }
               ]
             },
@@ -117,7 +117,7 @@
                 }
               ]
             },
-            "gui": {
+            "prod": {
               "budgets": [
                 {
                   "type": "anyComponentStyle",
@@ -132,7 +132,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.gui.ts"
+                  "with": "src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -155,9 +155,9 @@
               "buildTarget": "admintool:build:qa",
               "proxyConfig": "src/proxy.conf.qa.json"
             },
-            "gui": {
-              "buildTarget": "admintool:build:gui",
-              "proxyConfig": "src/proxy.conf.gui.json"
+            "prod": {
+              "buildTarget": "admintool:build:prod",
+              "proxyConfig": "src/proxy.conf.prod.json"
             }
           }
         }
