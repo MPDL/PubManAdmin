@@ -1,6 +1,6 @@
 {
   "name": "admintool",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "scripts": {
     "ng": "ng",
     "start-dev": "ng serve -c=dev",
