@@ -60,7 +60,7 @@ export class GrantsComponent implements OnInit {
 
   ngOnInit() {
     if (this.authenticationService.isAdmin) {
-      this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN'];
+      this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR', 'CONE_CLOSED_VOCABULARY_EDITOR', 'REPORTER', 'LOCAL_ADMIN', 'ORCID_ADMIN'];
     } else {
       this.roles = ['DEPOSITOR', 'MODERATOR', 'CONE_OPEN_VOCABULARY_EDITOR'];
     }
