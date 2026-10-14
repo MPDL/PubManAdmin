@@ -50,7 +50,7 @@
   </div>
 
   <div class="row w-100 mt-1">
-    @if (selectedRole && (selectedRole.startsWith('CONE') || selectedRole === 'REPORTER')) {
+    @if (selectedRole && (selectedRole.startsWith('CONE') || selectedRole === 'REPORTER' || selectedRole === 'ORCID_ADMIN')) {
       <div class="col-1">
         <input type="button" class="btn btn-outline-primary btn-sm float-start" (click)="validateSelection()" value="add" />
       </div>

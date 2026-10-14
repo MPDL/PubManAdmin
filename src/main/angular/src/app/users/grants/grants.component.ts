@@ -137,7 +137,7 @@ export class GrantsComponent implements OnInit {
   validateSelection() {
     const role = this.selectedRole;
     if (role) {
-      if (role.startsWith('CONE') || role === 'REPORTER') {
+      if (role.startsWith('CONE') || role === 'REPORTER' || role == 'ORCID_ADMIN') {
         this.addGrant(role, null);
       } else if (role === 'LOCAL_ADMIN') {
         if (this.selectedOu != null) {
